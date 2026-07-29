@@ -9,43 +9,127 @@
  */
 {
   "sections": {
-    "image_banner": {
-      "type": "image-banner",
+    "furflaps_hero": {
+      "type": "furflaps-hero",
       "blocks": {
-        "heading": {
-          "type": "heading",
+        "care": {
+          "type": "slide",
           "settings": {
-            "heading": "Browse our latest products",
-            "heading_size": "h0"
+            "heading": "Pet care, done right",
+            "description": "<p>Toys that spark joy, food that fuels, and essentials that care. All handpicked with love for the furry (or feathery) members of your family.</p>",
+            "button_label": "Shop now",
+            "button_link": "shopify://collections/all",
+            "background_color": "#D8E8C8",
+            "heading_color": "#111111",
+            "text_color": "#202020",
+            "button_background": "#FFFFFF",
+            "button_text_color": "#111111",
+            "button_border_color": "#FFFFFF"
           }
         },
-        "button": {
-          "type": "buttons",
+        "play": {
+          "type": "slide",
           "settings": {
-            "button_label_1": "Shop all",
-            "button_link_1": "shopify://collections/all",
-            "button_style_secondary_1": true,
-            "button_label_2": "",
-            "button_link_2": "",
-            "button_style_secondary_2": false
+            "heading": "Play more, worry less",
+            "description": "<p>Discover thoughtful toys and everyday essentials selected for happier, healthier pets.</p>",
+            "button_label": "Explore toys",
+            "button_link": "shopify://collections/all",
+            "background_color": "#F3D6B8",
+            "heading_color": "#111111",
+            "text_color": "#202020",
+            "button_background": "#FFFFFF",
+            "button_text_color": "#111111",
+            "button_border_color": "#FFFFFF"
+          }
+        },
+        "family": {
+          "type": "slide",
+          "settings": {
+            "heading": "Made for every family member",
+            "description": "<p>Find practical, playful products chosen to make daily care feel simple.</p>",
+            "button_label": "Browse essentials",
+            "button_link": "shopify://collections/all",
+            "background_color": "#CFE2EF",
+            "heading_color": "#111111",
+            "text_color": "#202020",
+            "button_background": "#FFFFFF",
+            "button_text_color": "#111111",
+            "button_border_color": "#FFFFFF"
           }
         }
       },
       "block_order": [
-        "heading",
-        "button"
+        "care",
+        "play",
+        "family"
       ],
       "settings": {
-        "image_overlay_opacity": 40,
-        "image_height": "large",
-        "desktop_content_position": "bottom-center",
-        "show_text_box": false,
-        "image_behavior": "none",
-        "desktop_content_alignment": "center",
-        "color_scheme": "scheme-3",
-        "mobile_content_alignment": "center",
-        "stack_images_on_mobile": false,
-        "show_text_below": false
+        "desktop_height": 600,
+        "content_width": 50,
+        "panel_gap": 16,
+        "panel_radius": 16,
+        "content_max_width": 520,
+        "content_padding_vertical": 64,
+        "content_padding_horizontal": 64,
+        "content_position": "bottom",
+        "content_alignment": "center",
+        "mobile_content_height": 430,
+        "mobile_media_height": 420,
+        "mobile_panel_gap": 12,
+        "mobile_panel_radius": 14,
+        "mobile_content_padding_vertical": 48,
+        "mobile_content_padding_horizontal": 28,
+        "mobile_panel_order": "content_first",
+        "heading_size": 52,
+        "mobile_heading_size": 38,
+        "heading_weight": "700",
+        "heading_line_height": 105,
+        "heading_letter_spacing": -5,
+        "body_size": 18,
+        "mobile_body_size": 16,
+        "body_weight": "400",
+        "body_line_height": 140,
+        "body_letter_spacing": 0,
+        "description_spacing": 20,
+        "button_spacing": 28,
+        "button_height": 48,
+        "mobile_button_height": 46,
+        "button_padding": 26,
+        "mobile_button_padding": 24,
+        "button_radius": 24,
+        "button_border_width": 0,
+        "button_font_size": 16,
+        "mobile_button_font_size": 15,
+        "button_font_weight": "600",
+        "show_button_icon": true,
+        "button_icon_gap": 8,
+        "button_icon_size": 16,
+        "show_pagination": true,
+        "autoplay": false,
+        "autoplay_delay": 5,
+        "pagination_alignment": "center",
+        "pagination_offset_vertical": 44,
+        "pagination_offset_horizontal": 44,
+        "indicator_width": 30,
+        "indicator_height": 6,
+        "indicator_gap": 8,
+        "indicator_radius": 6,
+        "indicator_border_width": 1,
+        "indicator_color": "#D8E3CE",
+        "indicator_border_color": "#AAB6A0",
+        "indicator_active_color": "#111111",
+        "media_background": "#D9E7F2",
+        "image_fit": "cover",
+        "image_position": "center center",
+        "padding_top": 12,
+        "padding_inline": 12,
+        "padding_bottom": 12,
+        "mobile_padding_top": 8,
+        "mobile_padding_inline": 8,
+        "mobile_padding_bottom": 8,
+        "accessibility_label": "Featured promotions",
+        "pagination_label": "Choose a promotion",
+        "pagination_item_label": "Go to promotion"
       }
     },
     "featured_collection": {
@@ -78,7 +162,7 @@
     }
   },
   "order": [
-    "image_banner",
+    "furflaps_hero",
     "featured_collection"
   ]
 }
