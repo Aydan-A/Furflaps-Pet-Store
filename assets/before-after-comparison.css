@@ -1,0 +1,219 @@
+.before-after-comparison {
+  display: block;
+  padding: var(--bac-padding-top) var(--bac-padding-inline) var(--bac-padding-bottom);
+  background: var(--bac-background);
+}
+
+.before-after-comparison__grid {
+  display: grid;
+  grid-template-columns: minmax(0, var(--bac-content-width)) minmax(0, 1fr);
+  gap: var(--bac-gap);
+  height: var(--bac-height);
+}
+
+.before-after-comparison__content,
+.before-after-comparison__media {
+  min-width: 0;
+  border-radius: var(--bac-radius);
+  overflow: hidden;
+}
+
+.before-after-comparison__content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--bac-content-padding-v) var(--bac-content-padding-h);
+  color: var(--bac-text-color);
+  background: var(--bac-content-background);
+  text-align: center;
+}
+
+.before-after-comparison__content-inner {
+  width: min(100%, 52rem);
+}
+
+.before-after-comparison__heading {
+  margin: 0;
+  color: var(--bac-heading-color);
+  font-size: var(--bac-heading-size);
+  font-weight: 700;
+  line-height: 1.08;
+}
+
+.before-after-comparison__text {
+  margin-top: 1.8rem;
+  color: var(--bac-text-color);
+  font-size: 1.7rem;
+  line-height: 1.45;
+}
+
+.before-after-comparison__text p {
+  margin: 0;
+}
+
+.before-after-comparison__button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 4.6rem;
+  margin-top: 2.6rem;
+  padding: 0 2.6rem;
+  border: 1px solid var(--bac-button-border);
+  border-radius: 999px;
+  color: var(--bac-button-color);
+  background: var(--bac-button-background);
+  font-size: 1.5rem;
+  font-weight: 700;
+  line-height: 1;
+  text-decoration: none;
+}
+
+.before-after-comparison__media {
+  position: relative;
+  isolation: isolate;
+  background: #eeeeee;
+  user-select: none;
+  touch-action: pan-y;
+}
+
+.before-after-comparison__image,
+.before-after-comparison__image picture,
+.before-after-comparison__image img,
+.before-after-comparison__placeholder {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.before-after-comparison__image img,
+.before-after-comparison__placeholder {
+  object-fit: cover;
+  object-position: center;
+}
+
+.before-after-comparison__image--after {
+  z-index: 1;
+  clip-path: inset(0 calc(100% - var(--bac-position)) 0 0);
+}
+
+.before-after-comparison__divider {
+  position: absolute;
+  z-index: 3;
+  top: 0;
+  bottom: 0;
+  left: var(--bac-position);
+  width: 2px;
+  background: var(--bac-divider-color);
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+
+.before-after-comparison__handle {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  display: grid;
+  width: 5.6rem;
+  height: 5.6rem;
+  place-items: center;
+  border: 2px solid var(--bac-divider-color);
+  border-radius: 50%;
+  color: var(--bac-handle-color);
+  background: var(--bac-handle-background);
+  box-shadow: 0 2px 12px rgb(0 0 0 / 18%);
+  transform: translate(-50%, -50%);
+}
+
+.before-after-comparison__handle svg {
+  width: 2.8rem;
+  height: 1.8rem;
+}
+
+.before-after-comparison__range {
+  position: absolute;
+  z-index: 4;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  opacity: 0;
+  cursor: ew-resize;
+}
+
+.before-after-comparison__range:focus-visible + * {
+  outline: none;
+}
+
+.before-after-comparison__media:has(.before-after-comparison__range:focus-visible) {
+  outline: 3px solid currentColor;
+  outline-offset: 3px;
+}
+
+.before-after-comparison__label {
+  position: absolute;
+  z-index: 2;
+  bottom: 1.6rem;
+  padding: 0.6rem 1rem;
+  border-radius: 999px;
+  color: var(--bac-label-color);
+  background: var(--bac-label-background);
+  font-size: 1.2rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.before-after-comparison__label--before {
+  right: 1.6rem;
+}
+
+.before-after-comparison__label--after {
+  left: 1.6rem;
+}
+
+@media screen and (min-width: 750px) and (max-width: 989px) {
+  .before-after-comparison__grid {
+    grid-template-columns: minmax(0, 42%) minmax(0, 58%);
+  }
+
+  .before-after-comparison__content {
+    padding: 3.6rem 2.8rem;
+  }
+}
+
+@media screen and (max-width: 749px) {
+  .before-after-comparison__grid {
+    grid-template-columns: minmax(0, 1fr);
+    height: auto;
+  }
+
+  .before-after-comparison__content {
+    min-height: var(--bac-mobile-content-height);
+    padding: 3.6rem 2rem;
+  }
+
+  .before-after-comparison__media {
+    height: var(--bac-mobile-media-height);
+  }
+
+  .before-after-comparison__heading {
+    font-size: var(--bac-mobile-heading-size);
+  }
+
+  .before-after-comparison__text {
+    font-size: 1.5rem;
+  }
+
+  .before-after-comparison__handle {
+    width: 4.8rem;
+    height: 4.8rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .before-after-comparison__image--after,
+  .before-after-comparison__divider {
+    transition: none;
+  }
+}
