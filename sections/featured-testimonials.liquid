@@ -1,0 +1,222 @@
+{{ 'featured-testimonials.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'featured-testimonials.js' | asset_url }}" defer="defer"></script>
+
+{%- liquid
+  assign loading = 'lazy'
+  assign fetch_priority = 'auto'
+  if section.index == 1
+    assign loading = 'eager'
+    assign fetch_priority = 'high'
+  endif
+-%}
+
+{%- style -%}
+  #shopify-section-{{ section.id }} {
+    --ft-section-bg: {{ section.settings.section_background }};
+    --ft-panel-bg: {{ section.settings.panel_background }};
+    --ft-text: {{ section.settings.text_color }};
+    --ft-accent: {{ section.settings.accent_color }};
+    --ft-card-bg: {{ section.settings.card_background }};
+    --ft-card-text: {{ section.settings.card_text_color }};
+    --ft-button-bg: {{ section.settings.button_background }};
+    --ft-button-text: {{ section.settings.button_text_color }};
+    --ft-radius: {{ section.settings.corner_radius }}px;
+    --ft-max-width: {{ section.settings.max_width }}px;
+    --ft-media-width: {{ section.settings.media_width }}%;
+    --ft-desktop-height: {{ section.settings.desktop_height }}px;
+    --ft-content-padding: {{ section.settings.content_padding }}px;
+    --ft-quote-size: {{ section.settings.quote_size }}px;
+    --ft-mobile-quote-size: {{ section.settings.mobile_quote_size }}px;
+    --ft-padding-top: {{ section.settings.padding_top }}px;
+    --ft-padding-bottom: {{ section.settings.padding_bottom }}px;
+    --ft-side-padding: {{ section.settings.side_padding }}px;
+  }
+{%- endstyle -%}
+
+<featured-testimonials
+  class="featured-testimonials{% unless section.settings.show_on_mobile %} featured-testimonials--hide-mobile{% endunless %}{% unless section.settings.show_on_desktop %} featured-testimonials--hide-desktop{% endunless %}"
+  data-section-id="{{ section.id }}"
+  data-autoplay="{{ section.settings.autoplay }}"
+  data-interval="{{ section.settings.autoplay_speed | times: 1000 }}"
+  style="text-align: {{ section.settings.text_alignment }};"
+>
+  <div class="featured-testimonials__outer{% if section.settings.use_page_width %} page-width{% endif %}">
+    <div class="featured-testimonials__frame">
+      {%- if section.blocks.size > 0 -%}
+        {%- for block in section.blocks -%}
+          {%- liquid
+            assign selected_product = block.settings.product
+            assign product_image = block.settings.product_image | default: selected_product.featured_image
+            assign product_title = block.settings.product_title | default: selected_product.title
+            assign product_link = block.settings.button_link | default: selected_product.url
+            assign desktop_image = block.settings.image
+            assign mobile_image = block.settings.mobile_image | default: desktop_image
+          -%}
+          <article
+            class="featured-testimonials__slide{% if forloop.first %} is-active{% endif %}"
+            data-slide
+            data-index="{{ forloop.index0 }}"
+            aria-hidden="{% if forloop.first %}false{% else %}true{% endif %}"
+            {{ block.shopify_attributes }}
+          >
+            <div class="featured-testimonials__media">
+              {%- if desktop_image != blank -%}
+                <picture>
+                  {%- if block.settings.mobile_image != blank -%}
+                    <source
+                      media="(max-width: 749px)"
+                      srcset="{{ mobile_image | image_url: width: 550 }} 550w, {{ mobile_image | image_url: width: 750 }} 750w, {{ mobile_image | image_url: width: 1100 }} 1100w"
+                      sizes="100vw"
+                    >
+                  {%- endif -%}
+                  {{
+                    desktop_image
+                    | image_url: width: 1800
+                    | image_tag:
+                      widths: '550, 750, 990, 1200, 1500, 1800',
+                      sizes: '(min-width: 990px) 42vw, (min-width: 750px) 45vw, 100vw',
+                      loading: loading,
+                      fetchpriority: fetch_priority,
+                      class: 'featured-testimonials__main-image'
+                  }}
+                </picture>
+              {%- else -%}
+                {{ 'lifestyle-1' | placeholder_svg_tag: 'featured-testimonials__placeholder' }}
+              {%- endif -%}
+
+              {%- if section.settings.show_product_card and selected_product != blank -%}
+                <div class="featured-testimonials__product-card">
+                  {%- if product_image != blank -%}
+                    {{ product_image | image_url: width: 160 | image_tag: widths: '80, 120, 160', sizes: '56px', loading: 'lazy', class: 'featured-testimonials__product-image' }}
+                  {%- endif -%}
+                  <div class="featured-testimonials__product-info">
+                    <p class="featured-testimonials__product-title">{{ product_title | escape }}</p>
+                    <p class="featured-testimonials__price">
+                      {{ selected_product.price | money }}
+                      {%- if selected_product.compare_at_price > selected_product.price -%}
+                        <s>{{ selected_product.compare_at_price | money }}</s>
+                      {%- endif -%}
+                    </p>
+                  </div>
+                  {%- if block.settings.button_label != blank -%}
+                    <a class="button featured-testimonials__shop-button" {% if product_link != blank %}href="{{ product_link }}"{% else %}role="link" aria-disabled="true"{% endif %}>
+                      {{ block.settings.button_label | escape }}
+                    </a>
+                  {%- endif -%}
+                </div>
+              {%- endif -%}
+            </div>
+
+            <div class="featured-testimonials__content">
+              <div class="featured-testimonials__copy">
+                {%- if section.settings.eyebrow != blank -%}
+                  <p class="featured-testimonials__eyebrow">{{ section.settings.eyebrow | escape }}</p>
+                {%- endif -%}
+                {%- if block.settings.quote != blank -%}
+                  <div class="featured-testimonials__quote rte">{{ block.settings.quote }}</div>
+                {%- endif -%}
+              </div>
+
+              <div class="featured-testimonials__footer">
+                <div class="featured-testimonials__customer">
+                  {%- if block.settings.avatar != blank -%}
+                    {{ block.settings.avatar | image_url: width: 160 | image_tag: widths: '80, 120, 160', sizes: '56px', loading: 'lazy', class: 'featured-testimonials__avatar' }}
+                  {%- endif -%}
+                  <div>
+                    {%- if block.settings.customer_name != blank -%}<p class="featured-testimonials__name">{{ block.settings.customer_name | escape }}</p>{%- endif -%}
+                    {%- if block.settings.show_verified and block.settings.verified_label != blank -%}
+                      <p class="featured-testimonials__verified"><span aria-hidden="true">✓</span>{{ block.settings.verified_label | escape }}</p>
+                    {%- endif -%}
+                  </div>
+                </div>
+
+                {%- if section.settings.show_navigation and section.blocks.size > 1 -%}
+                  <div class="featured-testimonials__navigation">
+                    <span class="featured-testimonials__count" aria-live="polite"><b data-current>{{ forloop.index }}</b> / {{ section.blocks.size }}</span>
+                    <span class="featured-testimonials__progress"><span data-progress style="width: {{ forloop.index | times: 100.0 | divided_by: section.blocks.size }}%"></span></span>
+                    <button type="button" class="featured-testimonials__arrow" data-previous aria-label="Previous testimonial">‹</button>
+                    <button type="button" class="featured-testimonials__arrow" data-next aria-label="Next testimonial">›</button>
+                  </div>
+                {%- endif -%}
+              </div>
+            </div>
+          </article>
+        {%- endfor -%}
+      {%- else -%}
+        <div class="featured-testimonials__empty">Add testimonial blocks to this section.</div>
+      {%- endif -%}
+    </div>
+  </div>
+</featured-testimonials>
+
+{% schema %}
+{
+  "name": "Featured testimonials",
+  "tag": "section",
+  "class": "section",
+  "disabled_on": { "groups": ["header", "footer"] },
+  "settings": [
+    { "type": "header", "content": "Content" },
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "OUR FAVORITE PRODUCTS" },
+    { "type": "checkbox", "id": "show_product_card", "label": "Show product card", "default": true },
+    { "type": "checkbox", "id": "show_navigation", "label": "Show navigation", "default": true },
+    { "type": "checkbox", "id": "autoplay", "label": "Auto-rotate testimonials", "default": false },
+    { "type": "range", "id": "autoplay_speed", "label": "Auto-rotate interval", "min": 3, "max": 10, "step": 1, "unit": "s", "default": 5 },
+    { "type": "select", "id": "text_alignment", "label": "Text alignment", "default": "left", "options": [{ "value": "left", "label": "Left" }, { "value": "center", "label": "Center" }] },
+
+    { "type": "header", "content": "Layout" },
+    { "type": "checkbox", "id": "use_page_width", "label": "Constrain to theme page width", "default": true },
+    { "type": "range", "id": "max_width", "label": "Maximum width", "min": 900, "max": 1600, "step": 20, "unit": "px", "default": 1200 },
+    { "type": "range", "id": "desktop_height", "label": "Desktop height", "min": 440, "max": 760, "step": 10, "unit": "px", "default": 560 },
+    { "type": "range", "id": "media_width", "label": "Image width", "min": 32, "max": 55, "step": 1, "unit": "%", "default": 38 },
+    { "type": "range", "id": "content_padding", "label": "Content padding", "min": 24, "max": 100, "step": 4, "unit": "px", "default": 64 },
+    { "type": "range", "id": "corner_radius", "label": "Corner radius", "min": 0, "max": 40, "step": 1, "unit": "px", "default": 18 },
+    { "type": "range", "id": "side_padding", "label": "Side padding", "min": 0, "max": 60, "step": 2, "unit": "px", "default": 20 },
+    { "type": "range", "id": "padding_top", "label": "Top padding", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 32 },
+    { "type": "range", "id": "padding_bottom", "label": "Bottom padding", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 32 },
+
+    { "type": "header", "content": "Typography" },
+    { "type": "range", "id": "quote_size", "label": "Desktop quote size", "min": 24, "max": 54, "step": 1, "unit": "px", "default": 32 },
+    { "type": "range", "id": "mobile_quote_size", "label": "Mobile quote size", "min": 20, "max": 38, "step": 1, "unit": "px", "default": 26 },
+
+    { "type": "header", "content": "Colors" },
+    { "type": "color", "id": "section_background", "label": "Section background", "default": "#F3F3F3" },
+    { "type": "color", "id": "panel_background", "label": "Content background", "default": "#DFF3F5" },
+    { "type": "color", "id": "text_color", "label": "Text", "default": "#111111" },
+    { "type": "color", "id": "accent_color", "label": "Progress and icons", "default": "#111111" },
+    { "type": "color_background", "id": "card_background", "label": "Product card background", "default": "linear-gradient(90deg, rgba(132, 63, 75, 0.92), rgba(135, 96, 72, 0.88))" },
+    { "type": "color", "id": "card_text_color", "label": "Product card text", "default": "#FFFFFF" },
+    { "type": "color", "id": "button_background", "label": "Button background", "default": "#FFFFFF" },
+    { "type": "color", "id": "button_text_color", "label": "Button text", "default": "#111111" },
+
+    { "type": "header", "content": "Visibility" },
+    { "type": "checkbox", "id": "show_on_desktop", "label": "Show on desktop and tablet", "default": true },
+    { "type": "checkbox", "id": "show_on_mobile", "label": "Show on mobile", "default": true }
+  ],
+  "blocks": [
+    {
+      "type": "testimonial",
+      "name": "Testimonial",
+      "settings": [
+        { "type": "image_picker", "id": "image", "label": "Main image" },
+        { "type": "image_picker", "id": "mobile_image", "label": "Mobile image" },
+        { "type": "richtext", "id": "quote", "label": "Quote", "default": "<p>“I love this product because the ingredients are clean and transparent—and I could see a real difference within weeks.”</p>" },
+        { "type": "image_picker", "id": "avatar", "label": "Customer avatar" },
+        { "type": "text", "id": "customer_name", "label": "Customer name", "default": "Anna Williams" },
+        { "type": "checkbox", "id": "show_verified", "label": "Show verified label", "default": true },
+        { "type": "text", "id": "verified_label", "label": "Verified label", "default": "Verified customer" },
+        { "type": "header", "content": "Featured product" },
+        { "type": "product", "id": "product", "label": "Product" },
+        { "type": "image_picker", "id": "product_image", "label": "Product image override" },
+        { "type": "text", "id": "product_title", "label": "Product title override" },
+        { "type": "text", "id": "button_label", "label": "Button label", "default": "Shop" },
+        { "type": "url", "id": "button_link", "label": "Button link override" }
+      ]
+    }
+  ],
+  "max_blocks": 8,
+  "presets": [
+    { "name": "Featured testimonials", "blocks": [{ "type": "testimonial" }, { "type": "testimonial" }, { "type": "testimonial" }] }
+  ]
+}
+{% endschema %}
