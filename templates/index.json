@@ -19,12 +19,12 @@
             "description": "<p>Toys that spark joy, food that fuels, and essentials that care. All handpicked with love for the furry (or feathery) members of your family.</p>",
             "button_label": "Shop now",
             "button_link": "shopify://collections/all",
-            "background_color": "#D8E8C8",
+            "background_color": "#d8e8c8",
             "heading_color": "#111111",
             "text_color": "#202020",
-            "button_background": "#FFFFFF",
+            "button_background": "#ffffff",
             "button_text_color": "#111111",
-            "button_border_color": "#FFFFFF"
+            "button_border_color": "#ffffff"
           }
         },
         "play": {
@@ -34,12 +34,12 @@
             "description": "<p>Discover thoughtful toys and everyday essentials selected for happier, healthier pets.</p>",
             "button_label": "Explore toys",
             "button_link": "shopify://collections/all",
-            "background_color": "#F3D6B8",
+            "background_color": "#f3d6b8",
             "heading_color": "#111111",
             "text_color": "#202020",
-            "button_background": "#FFFFFF",
+            "button_background": "#ffffff",
             "button_text_color": "#111111",
-            "button_border_color": "#FFFFFF"
+            "button_border_color": "#ffffff"
           }
         },
         "family": {
@@ -49,12 +49,12 @@
             "description": "<p>Find practical, playful products chosen to make daily care feel simple.</p>",
             "button_label": "Browse essentials",
             "button_link": "shopify://collections/all",
-            "background_color": "#CFE2EF",
+            "background_color": "#cfe2ef",
             "heading_color": "#111111",
             "text_color": "#202020",
-            "button_background": "#FFFFFF",
+            "button_background": "#ffffff",
             "button_text_color": "#111111",
-            "button_border_color": "#FFFFFF"
+            "button_border_color": "#ffffff"
           }
         }
       },
@@ -64,14 +64,18 @@
         "family"
       ],
       "settings": {
+        "image": "shopify://shop_images/ChatGPT_Image_Jul_18_2026_at_09_45_06_PM.png",
+        "media_background": "#d9e7f2",
+        "image_fit": "contain",
+        "image_position": "center center",
         "desktop_height": 600,
-        "content_width": 50,
+        "content_width": 70,
         "panel_gap": 16,
         "panel_radius": 16,
         "content_max_width": 520,
         "content_padding_vertical": 64,
         "content_padding_horizontal": 64,
-        "content_position": "bottom",
+        "content_position": "center",
         "content_alignment": "center",
         "mobile_content_height": 430,
         "mobile_media_height": 420,
@@ -80,11 +84,13 @@
         "mobile_content_padding_vertical": 48,
         "mobile_content_padding_horizontal": 28,
         "mobile_panel_order": "content_first",
+        "heading_font": "assistant_n7",
         "heading_size": 52,
         "mobile_heading_size": 38,
         "heading_weight": "700",
         "heading_line_height": 105,
         "heading_letter_spacing": -5,
+        "body_font": "assistant_n4",
         "body_size": 18,
         "mobile_body_size": 16,
         "body_weight": "400",
@@ -115,12 +121,9 @@
         "indicator_gap": 8,
         "indicator_radius": 6,
         "indicator_border_width": 1,
-        "indicator_color": "#D8E3CE",
-        "indicator_border_color": "#AAB6A0",
+        "indicator_color": "#d8e3ce",
+        "indicator_border_color": "#aab6a0",
         "indicator_active_color": "#111111",
-        "media_background": "#D9E7F2",
-        "image_fit": "cover",
-        "image_position": "center center",
         "padding_top": 12,
         "padding_inline": 12,
         "padding_bottom": 12,
@@ -135,20 +138,19 @@
     "featured_collection": {
       "type": "featured-collection",
       "settings": {
+        "collection": "all",
+        "products_to_show": 8,
         "title": "Featured products",
         "heading_size": "h2",
         "description": "",
         "show_description": false,
         "description_style": "body",
-        "collection": "all",
-        "products_to_show": 8,
         "columns_desktop": 4,
-        "color_scheme": "scheme-1",
+        "enable_desktop_slider": false,
         "full_width": false,
         "show_view_all": true,
         "view_all_style": "solid",
-        "enable_desktop_slider": false,
-        "swipe_on_mobile": false,
+        "color_scheme": "scheme-1",
         "image_ratio": "adapt",
         "image_shape": "default",
         "show_secondary_image": true,
@@ -156,6 +158,7 @@
         "show_rating": false,
         "quick_add": "none",
         "columns_mobile": "2",
+        "swipe_on_mobile": false,
         "padding_top": 44,
         "padding_bottom": 36
       }
