@@ -19,11 +19,11 @@
             "description": "<p>Toys that spark joy, food that fuels, and essentials that care. All handpicked with love for the furry (or feathery) members of your family.</p>",
             "button_label": "Shop now",
             "button_link": "shopify://collections/all",
-            "background_color": "#CC302A",
-            "heading_color": "#FFFFFF",
-            "text_color": "#FFFFFF",
-            "button_background": "#FFFFFF",
-            "button_text_color": "#CC302A",
+            "background_color": "#cc302a",
+            "heading_color": "#ffffff",
+            "text_color": "#ffffff",
+            "button_background": "#ffffff",
+            "button_text_color": "#cc302a",
             "button_border_color": "#ffffff"
           }
         },
@@ -65,7 +65,7 @@
       ],
       "settings": {
         "image": "shopify://shop_images/08e25e0f6fb56c07d54a8ed0e0d4d1a3.jpg",
-        "media_background": "#FFFFFF",
+        "media_background": "#ffffff",
         "image_fit": "cover",
         "image_position": "center center",
         "desktop_height": 400,
@@ -125,9 +125,9 @@
         "indicator_gap": 8,
         "indicator_radius": 6,
         "indicator_border_width": 1,
-        "indicator_color": "#FFFFFF",
-        "indicator_border_color": "#FFFFFF",
-        "indicator_active_color": "#7D0501",
+        "indicator_color": "#ffffff",
+        "indicator_border_color": "#ffffff",
+        "indicator_active_color": "#7d0501",
         "padding_top": 12,
         "padding_inline": 12,
         "padding_bottom": 12,
@@ -197,10 +197,99 @@
         "mobile_padding_bottom": 36,
         "mobile_padding_inline": 16
       }
+    },
+    "dress_up_steps_L8FhwL": {
+      "type": "dress-up-steps",
+      "blocks": {
+        "step_zWNjhr": {
+          "type": "step",
+          "settings": {
+            "title": "Pick a top you love",
+            "collection": "",
+            "benefit_1": "4-Way Stretch",
+            "benefit_2": "Eco-Friendly",
+            "open_by_default": true
+          }
+        },
+        "step_G9XGPD": {
+          "type": "step",
+          "settings": {
+            "title": "Match it with cool bottoms",
+            "collection": "",
+            "benefit_1": "100% Cotton",
+            "benefit_2": "Water Proof",
+            "open_by_default": false
+          }
+        },
+        "step_33GmAx": {
+          "type": "step",
+          "settings": {
+            "title": "Add fun extras",
+            "collection": "",
+            "benefit_1": "100% Cotton",
+            "benefit_2": "Colorful",
+            "open_by_default": false
+          }
+        }
+      },
+      "block_order": [
+        "step_zWNjhr",
+        "step_G9XGPD",
+        "step_33GmAx"
+      ],
+      "name": "Dress up in steps",
+      "settings": {
+        "eyebrow": "How you style it",
+        "heading": "Dress up in 3 steps.\nPick - Pair - Play!",
+        "products_to_show": 4,
+        "columns_desktop": 4,
+        "image_ratio": "4 / 5",
+        "image_fit": "contain",
+        "show_swatches": true,
+        "color_option_name": "Color",
+        "swatches_to_show": 4,
+        "show_custom_badge": false,
+        "badge_namespace": "custom",
+        "badge_key": "badge",
+        "eyebrow_size": 11,
+        "heading_size": 34,
+        "mobile_heading_size": 28,
+        "heading_weight": "700",
+        "step_title_size": 20,
+        "mobile_step_title_size": 17,
+        "card_title_size": 13,
+        "price_size": 13,
+        "background": "#FFFFFF",
+        "text_color": "#111111",
+        "panel_background": "#F4F4F4",
+        "image_background": "#E9EEF1",
+        "number_background": "#050505",
+        "number_text": "#FFFFFF",
+        "pill_background": "#FFFFFF",
+        "pill_border": "#D6D6D6",
+        "sale_color": "#D93A2F",
+        "sold_out_color": "#555555",
+        "custom_badge_color": "#7A59D1",
+        "badge_text": "#FFFFFF",
+        "max_width": 1320,
+        "panel_radius": 12,
+        "card_radius": 12,
+        "summary_height": 72,
+        "heading_gap": 38,
+        "step_gap": 8,
+        "card_gap": 10,
+        "padding_top": 32,
+        "padding_bottom": 40,
+        "padding_inline": 48,
+        "mobile_padding_top": 28,
+        "mobile_padding_bottom": 32,
+        "mobile_padding_inline": 16
+      }
     }
   },
   "order": [
     "furflaps_hero",
-    "hot_this_week"
+    "hot_this_week",
+    "dress_up_steps_L8FhwL"
   ]
 }
