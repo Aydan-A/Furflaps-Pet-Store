@@ -33,8 +33,6 @@
     --bac-divider-color: {{ section.settings.divider_color }};
     --bac-handle-background: {{ section.settings.handle_background }};
     --bac-handle-color: {{ section.settings.handle_color }};
-    --bac-label-background: {{ section.settings.label_background }};
-    --bac-label-color: {{ section.settings.label_color }};
     --bac-image-background: {{ section.settings.image_background }};
     --bac-image-fit: {{ section.settings.image_fit }};
     --bac-image-zoom: {{ section.settings.image_zoom | divided_by: 100.0 }};
@@ -143,9 +141,6 @@
         {%- endif -%}
       </div>
 
-      <span class="before-after-comparison__label before-after-comparison__label--before">{{ section.settings.before_label | escape }}</span>
-      <span class="before-after-comparison__label before-after-comparison__label--after">{{ section.settings.after_label | escape }}</span>
-
       <div class="before-after-comparison__divider" aria-hidden="true">
         <span class="before-after-comparison__handle">
           <svg viewBox="0 0 28 18" aria-hidden="true">
@@ -189,8 +184,6 @@
     { "type": "image_picker", "id": "after_image", "label": "After image" },
     { "type": "image_picker", "id": "before_mobile_image", "label": "Before mobile image" },
     { "type": "image_picker", "id": "after_mobile_image", "label": "After mobile image" },
-    { "type": "text", "id": "before_label", "label": "Before label", "default": "Without" },
-    { "type": "text", "id": "after_label", "label": "After label", "default": "With" },
     {
       "type": "select",
       "id": "image_fit",
@@ -232,9 +225,6 @@
     { "type": "color", "id": "divider_color", "label": "Divider", "default": "#FFFFFF" },
     { "type": "color", "id": "handle_background", "label": "Handle background", "default": "#FFFFFF" },
     { "type": "color", "id": "handle_color", "label": "Handle icon", "default": "#111111" },
-    { "type": "color", "id": "label_background", "label": "Image label background", "default": "#FFFFFF" },
-    { "type": "color", "id": "label_color", "label": "Image label text", "default": "#111111" },
-
     { "type": "header", "content": "Section spacing" },
     { "type": "range", "id": "padding_top", "label": "Top padding", "min": 0, "max": 100, "step": 2, "unit": "px", "default": 16 },
     { "type": "range", "id": "padding_bottom", "label": "Bottom padding", "min": 0, "max": 100, "step": 2, "unit": "px", "default": 16 },

@@ -153,27 +153,6 @@
   outline-offset: 3px;
 }
 
-.before-after-comparison__label {
-  position: absolute;
-  z-index: 2;
-  bottom: 1.6rem;
-  padding: 0.6rem 1rem;
-  border-radius: 999px;
-  color: var(--bac-label-color);
-  background: var(--bac-label-background);
-  font-size: 1.2rem;
-  font-weight: 700;
-  line-height: 1;
-}
-
-.before-after-comparison__label--before {
-  right: 1.6rem;
-}
-
-.before-after-comparison__label--after {
-  left: 1.6rem;
-}
-
 @media screen and (min-width: 750px) and (max-width: 989px) {
   .before-after-comparison__grid {
     grid-template-columns: minmax(0, 42%) minmax(0, 58%);
