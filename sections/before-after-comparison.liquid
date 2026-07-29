@@ -35,6 +35,9 @@
     --bac-handle-color: {{ section.settings.handle_color }};
     --bac-label-background: {{ section.settings.label_background }};
     --bac-label-color: {{ section.settings.label_color }};
+    --bac-image-background: {{ section.settings.image_background }};
+    --bac-image-fit: {{ section.settings.image_fit }};
+    --bac-image-zoom: {{ section.settings.image_zoom | divided_by: 100.0 }};
     --bac-position: {{ section.settings.initial_position }}%;
     --bac-height: {{ section.settings.desktop_height }}px;
     --bac-mobile-content-height: {{ section.settings.mobile_content_height }}px;
@@ -188,6 +191,18 @@
     { "type": "image_picker", "id": "after_mobile_image", "label": "After mobile image" },
     { "type": "text", "id": "before_label", "label": "Before label", "default": "Without" },
     { "type": "text", "id": "after_label", "label": "After label", "default": "With" },
+    {
+      "type": "select",
+      "id": "image_fit",
+      "label": "Image fit",
+      "default": "cover",
+      "options": [
+        { "value": "cover", "label": "Cover" },
+        { "value": "contain", "label": "Contain" }
+      ]
+    },
+    { "type": "range", "id": "image_zoom", "label": "Image zoom", "min": 60, "max": 140, "step": 5, "unit": "%", "default": 100 },
+    { "type": "color", "id": "image_background", "label": "Image background", "default": "#EEEEEE" },
     { "type": "range", "id": "initial_position", "label": "Initial handle position", "min": 10, "max": 90, "step": 5, "unit": "%", "default": 50 },
 
     { "type": "header", "content": "Desktop layout" },
