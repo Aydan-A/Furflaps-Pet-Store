@@ -13,7 +13,6 @@
 
   assign before_mobile = section.settings.before_mobile_image | default: section.settings.before_image
   assign after_mobile = section.settings.after_mobile_image | default: section.settings.after_image
-  assign comparison_aspect_ratio = section.settings.before_image.aspect_ratio | default: 1
   assign loading = 'lazy'
   assign fetch_priority = 'auto'
   if section.index == 1
@@ -35,7 +34,6 @@
     --bac-handle-background: {{ section.settings.handle_background }};
     --bac-handle-color: {{ section.settings.handle_color }};
     --bac-image-zoom: {{ section.settings.image_zoom | divided_by: 100.0 }};
-    --bac-image-ratio: {{ comparison_aspect_ratio }};
     --bac-position: {{ section.settings.initial_position }}%;
     --bac-height: {{ section.settings.desktop_height }}px;
     --bac-mobile-content-height: {{ section.settings.mobile_content_height }}px;
@@ -54,7 +52,7 @@
 {%- endstyle -%}
 
 <before-after-comparison class="before-after-comparison" data-before-after>
-  <div class="before-after-comparison__grid{% if section.settings.adapt_height_to_image %} before-after-comparison__grid--adapt{% endif %}">
+  <div class="before-after-comparison__grid">
     <div class="before-after-comparison__content">
       <div class="before-after-comparison__content-inner">
         {%- if section.settings.heading != blank -%}
@@ -190,8 +188,6 @@
 
     { "type": "header", "content": "Desktop layout" },
     { "type": "range", "id": "desktop_height", "label": "Height", "min": 360, "max": 900, "step": 10, "unit": "px", "default": 540 },
-    { "type": "checkbox", "id": "adapt_height_to_image", "label": "Adapt height to before image", "default": true },
-    { "type": "paragraph", "content": "When enabled, the comparison panel uses the before image's natural proportions so the full image is visible at 100% zoom. Both images should have the same dimensions." },
     { "type": "range", "id": "content_width", "label": "Content panel width", "min": 30, "max": 60, "step": 1, "unit": "%", "default": 40 },
     { "type": "range", "id": "panel_gap", "label": "Panel gap", "min": 0, "max": 40, "step": 1, "unit": "px", "default": 16 },
     { "type": "range", "id": "panel_radius", "label": "Panel corner radius", "min": 0, "max": 50, "step": 1, "unit": "px", "default": 12 },
