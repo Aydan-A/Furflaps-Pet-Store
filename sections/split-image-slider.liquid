@@ -1,143 +1,134 @@
-{{ 'furflaps-hero.css' | asset_url | stylesheet_tag }}
-<script src="{{ 'furflaps-hero.js' | asset_url }}" defer="defer"></script>
-
-{%- liquid
-  assign desktop_image = section.settings.image
-  assign mobile_image = section.settings.mobile_image | default: desktop_image
-  assign fetch_priority = 'auto'
-  assign loading = 'lazy'
-  if section.index == 1
-    assign fetch_priority = 'high'
-    assign loading = 'eager'
-  endif
--%}
+{{ 'split-image-slider.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'split-image-slider.js' | asset_url }}" defer="defer"></script>
 
 {%- style -%}
   {{ section.settings.heading_font | font_face: font_display: 'swap' }}
   {{ section.settings.body_font | font_face: font_display: 'swap' }}
 
   #shopify-section-{{ section.id }} {
-    --ff-section-padding-top: {{ section.settings.padding_top }}px;
-    --ff-section-padding-inline: {{ section.settings.padding_inline }}px;
-    --ff-section-padding-bottom: {{ section.settings.padding_bottom }}px;
-    --ff-mobile-section-padding-top: {{ section.settings.mobile_padding_top }}px;
-    --ff-mobile-section-padding-inline: {{ section.settings.mobile_padding_inline }}px;
-    --ff-mobile-section-padding-bottom: {{ section.settings.mobile_padding_bottom }}px;
-    --ff-desktop-height: {{ section.settings.desktop_height }}px;
-    --ff-mobile-content-height: {{ section.settings.mobile_content_height }}px;
-    --ff-mobile-media-height: {{ section.settings.mobile_media_height }}px;
-    --ff-content-ratio: {{ section.settings.content_width }}fr;
-    --ff-media-ratio: {{ 100 | minus: section.settings.content_width }}fr;
-    --ff-panel-gap: {{ section.settings.panel_gap }}px;
-    --ff-mobile-panel-gap: {{ section.settings.mobile_panel_gap }}px;
-    --ff-panel-radius: {{ section.settings.panel_radius }}px;
-    --ff-mobile-panel-radius: {{ section.settings.mobile_panel_radius }}px;
-    --ff-content-padding-vertical: {{ section.settings.content_padding_vertical }}px;
-    --ff-content-padding-horizontal: {{ section.settings.content_padding_horizontal }}px;
-    --ff-mobile-content-padding-vertical: {{ section.settings.mobile_content_padding_vertical }}px;
-    --ff-mobile-content-padding-horizontal: {{ section.settings.mobile_content_padding_horizontal }}px;
-    --ff-mobile-description-spacing: {{ section.settings.mobile_description_spacing }}px;
-    --ff-mobile-button-spacing: {{ section.settings.mobile_button_spacing }}px;
-    --ff-content-max-width: {{ section.settings.content_max_width }}px;
-    --ff-heading-font-family: {{ section.settings.heading_font.family }}, {{ section.settings.heading_font.fallback_families }};
-    --ff-heading-font-style: {{ section.settings.heading_font.style }};
-    --ff-heading-size: {{ section.settings.heading_size }}px;
-    --ff-mobile-heading-size: {{ section.settings.mobile_heading_size }}px;
-    --ff-heading-weight: {{ section.settings.heading_weight }};
-    --ff-heading-line-height: {{ section.settings.heading_line_height | divided_by: 100.0 }};
-    --ff-heading-letter-spacing: {{ section.settings.heading_letter_spacing | divided_by: 10.0 }}px;
-    --ff-body-font-family: {{ section.settings.body_font.family }}, {{ section.settings.body_font.fallback_families }};
-    --ff-body-font-style: {{ section.settings.body_font.style }};
-    --ff-body-size: {{ section.settings.body_size }}px;
-    --ff-mobile-body-size: {{ section.settings.mobile_body_size }}px;
-    --ff-body-weight: {{ section.settings.body_weight }};
-    --ff-body-line-height: {{ section.settings.body_line_height | divided_by: 100.0 }};
-    --ff-body-letter-spacing: {{ section.settings.body_letter_spacing | divided_by: 10.0 }}px;
-    --ff-description-spacing: {{ section.settings.description_spacing }}px;
-    --ff-button-spacing: {{ section.settings.button_spacing }}px;
-    --ff-button-height: {{ section.settings.button_height }}px;
-    --ff-mobile-button-height: {{ section.settings.mobile_button_height }}px;
-    --ff-button-padding: {{ section.settings.button_padding }}px;
-    --ff-mobile-button-padding: {{ section.settings.mobile_button_padding }}px;
-    --ff-button-radius: {{ section.settings.button_radius }}px;
-    --ff-button-border-width: {{ section.settings.button_border_width }}px;
-    --ff-button-font-size: {{ section.settings.button_font_size }}px;
-    --ff-mobile-button-font-size: {{ section.settings.mobile_button_font_size }}px;
-    --ff-button-font-weight: {{ section.settings.button_font_weight }};
-    --ff-button-icon-gap: {{ section.settings.button_icon_gap }}px;
-    --ff-button-icon-size: {{ section.settings.button_icon_size }}px;
-    --ff-pagination-offset-vertical: {{ section.settings.pagination_offset_vertical }}px;
-    --ff-pagination-offset-horizontal: {{ section.settings.pagination_offset_horizontal }}px;
-    --ff-mobile-pagination-offset-vertical: {{ section.settings.mobile_pagination_offset_vertical }}px;
-    --ff-mobile-pagination-offset-horizontal: {{ section.settings.mobile_pagination_offset_horizontal }}px;
-    --ff-indicator-width: {{ section.settings.indicator_width }}px;
-    --ff-indicator-height: {{ section.settings.indicator_height }}px;
-    --ff-indicator-gap: {{ section.settings.indicator_gap }}px;
-    --ff-indicator-radius: {{ section.settings.indicator_radius }}px;
-    --ff-indicator-border-width: {{ section.settings.indicator_border_width }}px;
-    --ff-indicator-background: {{ section.settings.indicator_color }};
-    --ff-indicator-border: {{ section.settings.indicator_border_color }};
-    --ff-indicator-active: {{ section.settings.indicator_active_color }};
-    --ff-media-background: {{ section.settings.media_background }};
-    --ff-image-fit: {{ section.settings.image_fit }};
-    --ff-image-position: {{ section.settings.image_position }};
+    --sis-section-padding-top: {{ section.settings.padding_top }}px;
+    --sis-section-padding-inline: {{ section.settings.padding_inline }}px;
+    --sis-section-padding-bottom: {{ section.settings.padding_bottom }}px;
+    --sis-mobile-section-padding-top: {{ section.settings.mobile_padding_top }}px;
+    --sis-mobile-section-padding-inline: {{ section.settings.mobile_padding_inline }}px;
+    --sis-mobile-section-padding-bottom: {{ section.settings.mobile_padding_bottom }}px;
+    --sis-desktop-height: {{ section.settings.desktop_height }}px;
+    --sis-mobile-content-height: {{ section.settings.mobile_content_height }}px;
+    --sis-mobile-media-height: {{ section.settings.mobile_media_height }}px;
+    --sis-content-ratio: {{ section.settings.content_width }}fr;
+    --sis-media-ratio: {{ 100 | minus: section.settings.content_width }}fr;
+    --sis-panel-gap: {{ section.settings.panel_gap }}px;
+    --sis-mobile-panel-gap: {{ section.settings.mobile_panel_gap }}px;
+    --sis-panel-radius: {{ section.settings.panel_radius }}px;
+    --sis-mobile-panel-radius: {{ section.settings.mobile_panel_radius }}px;
+    --sis-content-padding-vertical: {{ section.settings.content_padding_vertical }}px;
+    --sis-content-padding-horizontal: {{ section.settings.content_padding_horizontal }}px;
+    --sis-mobile-content-padding-vertical: {{ section.settings.mobile_content_padding_vertical }}px;
+    --sis-mobile-content-padding-horizontal: {{ section.settings.mobile_content_padding_horizontal }}px;
+    --sis-mobile-description-spacing: {{ section.settings.mobile_description_spacing }}px;
+    --sis-mobile-button-spacing: {{ section.settings.mobile_button_spacing }}px;
+    --sis-content-max-width: {{ section.settings.content_max_width }}px;
+    --sis-heading-font-family: {{ section.settings.heading_font.family }}, {{ section.settings.heading_font.fallback_families }};
+    --sis-heading-font-style: {{ section.settings.heading_font.style }};
+    --sis-heading-size: {{ section.settings.heading_size }}px;
+    --sis-mobile-heading-size: {{ section.settings.mobile_heading_size }}px;
+    --sis-heading-weight: {{ section.settings.heading_weight }};
+    --sis-heading-line-height: {{ section.settings.heading_line_height | divided_by: 100.0 }};
+    --sis-heading-letter-spacing: {{ section.settings.heading_letter_spacing | divided_by: 10.0 }}px;
+    --sis-body-font-family: {{ section.settings.body_font.family }}, {{ section.settings.body_font.fallback_families }};
+    --sis-body-font-style: {{ section.settings.body_font.style }};
+    --sis-body-size: {{ section.settings.body_size }}px;
+    --sis-mobile-body-size: {{ section.settings.mobile_body_size }}px;
+    --sis-body-weight: {{ section.settings.body_weight }};
+    --sis-body-line-height: {{ section.settings.body_line_height | divided_by: 100.0 }};
+    --sis-body-letter-spacing: {{ section.settings.body_letter_spacing | divided_by: 10.0 }}px;
+    --sis-description-spacing: {{ section.settings.description_spacing }}px;
+    --sis-button-spacing: {{ section.settings.button_spacing }}px;
+    --sis-button-height: {{ section.settings.button_height }}px;
+    --sis-mobile-button-height: {{ section.settings.mobile_button_height }}px;
+    --sis-button-padding: {{ section.settings.button_padding }}px;
+    --sis-mobile-button-padding: {{ section.settings.mobile_button_padding }}px;
+    --sis-button-radius: {{ section.settings.button_radius }}px;
+    --sis-button-border-width: {{ section.settings.button_border_width }}px;
+    --sis-button-font-size: {{ section.settings.button_font_size }}px;
+    --sis-mobile-button-font-size: {{ section.settings.mobile_button_font_size }}px;
+    --sis-button-font-weight: {{ section.settings.button_font_weight }};
+    --sis-button-icon-gap: {{ section.settings.button_icon_gap }}px;
+    --sis-button-icon-size: {{ section.settings.button_icon_size }}px;
+    --sis-pagination-offset-vertical: {{ section.settings.pagination_offset_vertical }}px;
+    --sis-pagination-offset-horizontal: {{ section.settings.pagination_offset_horizontal }}px;
+    --sis-mobile-pagination-offset-vertical: {{ section.settings.mobile_pagination_offset_vertical }}px;
+    --sis-mobile-pagination-offset-horizontal: {{ section.settings.mobile_pagination_offset_horizontal }}px;
+    --sis-indicator-width: {{ section.settings.indicator_width }}px;
+    --sis-indicator-height: {{ section.settings.indicator_height }}px;
+    --sis-indicator-gap: {{ section.settings.indicator_gap }}px;
+    --sis-indicator-radius: {{ section.settings.indicator_radius }}px;
+    --sis-indicator-border-width: {{ section.settings.indicator_border_width }}px;
+    --sis-indicator-background: {{ section.settings.indicator_color }};
+    --sis-indicator-border: {{ section.settings.indicator_border_color }};
+    --sis-indicator-active: {{ section.settings.indicator_active_color }};
+    --sis-media-background: {{ section.settings.media_background }};
+    --sis-image-fit: {{ section.settings.image_fit }};
+    --sis-image-position: {{ section.settings.image_position }};
   }
 {%- endstyle -%}
 
-<furflaps-hero
-  class="furflaps-hero"
+<split-image-slider
+  class="split-image-slider"
   data-autoplay="{{ section.settings.autoplay }}"
   data-autoplay-delay="{{ section.settings.autoplay_delay }}"
 >
-  <div class="furflaps-hero__grid{% if section.settings.mobile_panel_order == 'media_first' %} furflaps-hero__grid--media-first{% endif %}">
-    <div class="furflaps-hero__content">
+  <div class="split-image-slider__grid{% if section.settings.mobile_panel_order == 'media_first' %} split-image-slider__grid--media-first{% endif %}">
+    <div class="split-image-slider__content">
       <div
-        class="furflaps-hero__track"
+        class="split-image-slider__track"
         data-hero-track
-        tabindex="0"
-        role="region"
-        aria-roledescription="carousel"
-        aria-label="{{ section.settings.accessibility_label | escape }}"
       >
-        {%- for block in section.blocks -%}
+        {%- for block in section.blocks limit: 1 -%}
+          {%- liquid
+            assign button_link = section.settings.button_link
+            if button_link == blank and section.settings.product != blank
+              assign button_link = section.settings.product.url
+            elsif button_link == blank and section.settings.collection != blank
+              assign button_link = section.settings.collection.url
+            elsif button_link == blank and section.settings.page != blank
+              assign button_link = section.settings.page.url
+            endif
+          -%}
           <article
-            class="furflaps-hero__slide furflaps-hero__slide--{{ section.settings.content_position }} furflaps-hero__slide--align-{{ section.settings.content_alignment }}"
+            class="split-image-slider__slide split-image-slider__slide--{{ section.settings.content_position }} split-image-slider__slide--align-{{ section.settings.content_alignment }}"
             data-hero-slide
-            role="group"
-            aria-roledescription="slide"
-            aria-label="{{ forloop.index }} {{ 'general.slider.of' | t }} {{ forloop.length }}"
             style="
-              --ff-slide-background: {{ block.settings.background_color }};
-              --ff-slide-heading: {{ block.settings.heading_color }};
-              --ff-slide-text: {{ block.settings.text_color }};
-              --ff-slide-button-background: {{ block.settings.button_background }};
-              --ff-slide-button-text: {{ block.settings.button_text_color }};
-              --ff-slide-button-border: {{ block.settings.button_border_color }};
+              --sis-slide-background: {{ section.settings.background_color }};
+              --sis-slide-heading: {{ section.settings.heading_color }};
+              --sis-slide-text: {{ section.settings.text_color }};
+              --sis-slide-button-background: {{ section.settings.button_background }};
+              --sis-slide-button-text: {{ section.settings.button_text_color }};
+              --sis-slide-button-border: {{ section.settings.button_border_color }};
             "
-            {{ block.shopify_attributes }}
           >
-            <div class="furflaps-hero__slide-inner">
-              {%- if block.settings.heading != blank -%}
-                <h2 class="furflaps-hero__heading">{{ block.settings.heading }}</h2>
+            <div class="split-image-slider__slide-inner">
+              {%- if section.settings.heading != blank -%}
+                <h2 class="split-image-slider__heading">{{ section.settings.heading }}</h2>
               {%- endif -%}
 
-              {%- if block.settings.description != blank -%}
-                <div class="furflaps-hero__description rte">{{ block.settings.description }}</div>
+              {%- if section.settings.description != blank -%}
+                <div class="split-image-slider__description rte">{{ section.settings.description }}</div>
               {%- endif -%}
 
-              {%- if block.settings.button_label != blank -%}
-                <div class="furflaps-hero__actions">
+              {%- if section.settings.button_label != blank -%}
+                <div class="split-image-slider__actions">
                   <a
-                    class="furflaps-hero__button"
-                    {% if block.settings.button_link != blank %}
-                      href="{{ block.settings.button_link }}"
+                    class="split-image-slider__button"
+                    {% if button_link != blank %}
+                      href="{{ button_link }}"
                     {% else %}
                       role="link" aria-disabled="true"
                     {% endif %}
                   >
-                    <span>{{ block.settings.button_label | escape }}</span>
+                    <span>{{ section.settings.button_label | escape }}</span>
                     {%- if section.settings.show_button_icon -%}
-                      <svg class="furflaps-hero__button-icon" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                      <svg class="split-image-slider__button-icon" viewBox="0 0 16 16" fill="none" aria-hidden="true">
                         <path d="M3.5 12.5 12.5 3.5M6 3.5h6.5V10" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
                       </svg>
                     {%- endif -%}
@@ -150,10 +141,10 @@
       </div>
 
       {%- if section.blocks.size > 1 and section.settings.show_pagination -%}
-        <div class="furflaps-hero__pagination furflaps-hero__pagination--{{ section.settings.pagination_alignment }}" aria-label="{{ section.settings.pagination_label | escape }}">
+        <div class="split-image-slider__pagination split-image-slider__pagination--{{ section.settings.pagination_alignment }}" aria-label="{{ section.settings.pagination_label | escape }}">
           {%- for block in section.blocks -%}
             <button
-              class="furflaps-hero__indicator"
+              class="split-image-slider__indicator"
               type="button"
               data-hero-indicator="{{ forloop.index0 }}"
               aria-label="{{ section.settings.pagination_item_label | escape }} {{ forloop.index }}"
@@ -164,47 +155,95 @@
       {%- endif -%}
     </div>
 
-    <div class="furflaps-hero__media">
-      {%- if desktop_image != blank -%}
-        <picture>
-          {%- if mobile_image != blank -%}
-            <source
-              media="(max-width: 749px)"
-              srcset="
-                {{ mobile_image | image_url: width: 375 }} 375w,
-                {{ mobile_image | image_url: width: 550 }} 550w,
-                {{ mobile_image | image_url: width: 750 }} 750w,
-                {{ mobile_image | image_url: width: 1100 }} 1100w
-              "
-              sizes="100vw"
-            >
-          {%- endif -%}
-          {{
-            desktop_image
-            | image_url: width: 2400
-            | image_tag:
-              class: 'furflaps-hero__image',
-              widths: '550, 750, 1100, 1500, 2000, 2400',
-              sizes: '(min-width: 750px) 50vw, 100vw',
-              loading: loading,
-              fetchpriority: fetch_priority
-          }}
-        </picture>
-      {%- else -%}
-        {{ 'lifestyle-1' | placeholder_svg_tag: 'furflaps-hero__placeholder' }}
-      {%- endif -%}
+    <div class="split-image-slider__media">
+      <div
+        class="split-image-slider__media-track"
+        data-hero-media-track
+        tabindex="0"
+        role="region"
+        aria-roledescription="carousel"
+        aria-label="{{ section.settings.media_accessibility_label | escape }}"
+      >
+        {%- for block in section.blocks -%}
+          {%- liquid
+            assign desktop_image = block.settings.image | default: section.settings.image
+            assign mobile_image = block.settings.mobile_image | default: desktop_image
+            assign loading = 'lazy'
+            assign fetch_priority = 'auto'
+            if section.index == 1 and forloop.first
+              assign loading = 'eager'
+              assign fetch_priority = 'high'
+            endif
+          -%}
+          <figure
+            class="split-image-slider__media-slide"
+            data-hero-media-slide
+            role="group"
+            aria-roledescription="slide"
+            aria-label="{{ block.settings.slide_label | default: section.settings.pagination_item_label | escape }}, {{ forloop.index }} {{ 'general.slider.of' | t }} {{ forloop.length }}"
+            {{ block.shopify_attributes }}
+          >
+            {%- if desktop_image != blank -%}
+              <picture>
+                {%- if mobile_image != blank -%}
+                  <source
+                    media="(max-width: 749px)"
+                    srcset="
+                      {{ mobile_image | image_url: width: 375 }} 375w,
+                      {{ mobile_image | image_url: width: 550 }} 550w,
+                      {{ mobile_image | image_url: width: 750 }} 750w,
+                      {{ mobile_image | image_url: width: 1100 }} 1100w
+                    "
+                    sizes="100vw"
+                  >
+                {%- endif -%}
+                {{
+                  desktop_image
+                  | image_url: width: 2400
+                  | image_tag:
+                    class: 'split-image-slider__image',
+                    widths: '550, 750, 1100, 1500, 2000, 2400',
+                    sizes: '(min-width: 990px) 60vw, (min-width: 750px) 50vw, 100vw',
+                    loading: loading,
+                    fetchpriority: fetch_priority
+                }}
+              </picture>
+            {%- else -%}
+              {{ 'lifestyle-1' | placeholder_svg_tag: 'split-image-slider__placeholder' }}
+            {%- endif -%}
+
+            {%- if block.settings.image_caption != blank -%}
+              <figcaption class="split-image-slider__caption rte">{{ block.settings.image_caption }}</figcaption>
+            {%- endif -%}
+          </figure>
+        {%- endfor -%}
+      </div>
     </div>
   </div>
-</furflaps-hero>
+</split-image-slider>
 
 {% schema %}
 {
-  "name": "Furflaps hero",
+  "name": "Split image slider",
   "tag": "section",
   "class": "section",
   "disabled_on": { "groups": ["header", "footer"] },
   "max_blocks": 3,
   "settings": [
+    { "type": "header", "content": "Content" },
+    { "type": "inline_richtext", "id": "heading", "label": "Heading", "default": "Upgrade their everyday look" },
+    { "type": "richtext", "id": "description", "label": "Description", "default": "<p>Add your promotional message here.</p>" },
+    { "type": "text", "id": "button_label", "label": "Button label", "default": "Shop now" },
+    { "type": "url", "id": "button_link", "label": "Button link" },
+    { "type": "product", "id": "product", "label": "Fallback button product" },
+    { "type": "collection", "id": "collection", "label": "Fallback button collection" },
+    { "type": "page", "id": "page", "label": "Fallback button page" },
+    { "type": "color", "id": "background_color", "label": "Background", "default": "#F44316" },
+    { "type": "color", "id": "heading_color", "label": "Heading", "default": "#FFFFFF" },
+    { "type": "color", "id": "text_color", "label": "Description", "default": "#FFFFFF" },
+    { "type": "color", "id": "button_background", "label": "Button background", "default": "#FFFFFF" },
+    { "type": "color", "id": "button_text_color", "label": "Button text", "default": "#111111" },
+    { "type": "color", "id": "button_border_color", "label": "Button border", "default": "#FFFFFF" },
     { "type": "header", "content": "Media" },
     { "type": "image_picker", "id": "image", "label": "Desktop image" },
     { "type": "image_picker", "id": "mobile_image", "label": "Mobile image" },
@@ -356,30 +395,26 @@
     { "type": "range", "id": "mobile_padding_bottom", "label": "Mobile bottom padding", "min": 0, "max": 80, "step": 2, "unit": "px", "default": 8 },
     { "type": "header", "content": "Accessibility" },
     { "type": "text", "id": "accessibility_label", "label": "Slider label", "default": "Featured promotions" },
+    { "type": "text", "id": "media_accessibility_label", "label": "Image slider label", "default": "Featured promotion images" },
     { "type": "text", "id": "pagination_label", "label": "Pagination label", "default": "Choose a promotion" },
     { "type": "text", "id": "pagination_item_label", "label": "Pagination item label", "default": "Go to promotion" }
   ],
   "blocks": [
     {
       "type": "slide",
-      "name": "Content slide",
+      "name": "Image slide",
       "settings": [
-        { "type": "inline_richtext", "id": "heading", "label": "Heading", "default": "Share your story" },
-        { "type": "richtext", "id": "description", "label": "Description", "default": "<p>Introduce your products and invite customers to explore your collection.</p>" },
-        { "type": "text", "id": "button_label", "label": "Button label", "default": "Shop now" },
-        { "type": "url", "id": "button_link", "label": "Button link" },
-        { "type": "color", "id": "background_color", "label": "Background", "default": "#D8E8C8" },
-        { "type": "color", "id": "heading_color", "label": "Heading", "default": "#111111" },
-        { "type": "color", "id": "text_color", "label": "Description", "default": "#202020" },
-        { "type": "color", "id": "button_background", "label": "Button background", "default": "#FFFFFF" },
-        { "type": "color", "id": "button_text_color", "label": "Button text", "default": "#111111" },
-        { "type": "color", "id": "button_border_color", "label": "Button border", "default": "#FFFFFF" }
+        { "type": "header", "content": "Media" },
+        { "type": "image_picker", "id": "image", "label": "Desktop image" },
+        { "type": "image_picker", "id": "mobile_image", "label": "Mobile image" },
+        { "type": "richtext", "id": "image_caption", "label": "Image caption" },
+        { "type": "text", "id": "slide_label", "label": "Accessible slide label", "default": "Product styling example" }
       ]
     }
   ],
   "presets": [
     {
-      "name": "Furflaps hero",
+      "name": "Split image slider",
       "blocks": [
         { "type": "slide" },
         { "type": "slide" },
@@ -389,3 +424,4 @@
   ]
 }
 {% endschema %}
+

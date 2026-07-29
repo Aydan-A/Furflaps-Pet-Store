@@ -22,8 +22,7 @@
   position: relative;
 }
 
-.furflaps-hero__track,
-.furflaps-hero__media-track {
+.furflaps-hero__track {
   display: flex;
   height: 100%;
   overflow-x: auto;
@@ -35,14 +34,7 @@
   -webkit-overflow-scrolling: touch;
 }
 
-.furflaps-hero__track {
-  overflow: hidden;
-  scroll-behavior: auto;
-  scroll-snap-type: none;
-}
-
-.furflaps-hero__track::-webkit-scrollbar,
-.furflaps-hero__media-track::-webkit-scrollbar {
+.furflaps-hero__track::-webkit-scrollbar {
   display: none;
 }
 
@@ -210,21 +202,7 @@
   background: var(--ff-media-background);
 }
 
-.furflaps-hero__media-track {
-  width: 100%;
-}
-
-.furflaps-hero__media-slide {
-  position: relative;
-  flex: 0 0 100%;
-  width: 100%;
-  height: 100%;
-  margin: 0;
-  scroll-snap-align: start;
-  scroll-snap-stop: always;
-}
-
-.furflaps-hero__media-slide picture {
+.furflaps-hero__media picture {
   display: block;
   width: 100%;
   height: 100%;
@@ -245,35 +223,6 @@
 .furflaps-hero__placeholder {
   display: block;
   fill: currentColor;
-}
-
-.furflaps-hero__caption {
-  position: absolute;
-  right: 1.6rem;
-  bottom: 1.4rem;
-  left: 1.6rem;
-  z-index: 1;
-  color: inherit;
-  text-align: right;
-}
-
-.furflaps-hero__caption p {
-  display: inline;
-  margin: 0 0 0 1.2rem;
-}
-
-@media screen and (min-width: 750px) and (max-width: 989px) {
-  .furflaps-hero__grid {
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr);
-  }
-
-  .furflaps-hero__slide {
-    padding: max(3.2rem, calc(var(--ff-content-padding-vertical) * 0.7)) max(2.4rem, calc(var(--ff-content-padding-horizontal) * 0.55));
-  }
-
-  .furflaps-hero__heading {
-    font-size: clamp(var(--ff-mobile-heading-size), 4vw, var(--ff-heading-size));
-  }
 }
 
 @media screen and (max-width: 749px) {
@@ -342,8 +291,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .furflaps-hero__track,
-  .furflaps-hero__media-track {
+  .furflaps-hero__track {
     scroll-behavior: auto;
   }
 
