@@ -285,11 +285,54 @@
         "mobile_padding_bottom": 32,
         "mobile_padding_inline": 16
       }
+    },
+    "before_after_comparison_H4KUmY": {
+      "type": "before-after-comparison",
+      "name": "Before/after comparison",
+      "settings": {
+        "heading": "See the difference",
+        "text": "<p>Drag the handle to compare the look before and after.</p>",
+        "button_label": "Shop now",
+        "button_link": "",
+        "product": "",
+        "collection": "",
+        "page": "",
+        "before_label": "Without",
+        "after_label": "With",
+        "initial_position": 50,
+        "desktop_height": 540,
+        "content_width": 40,
+        "panel_gap": 16,
+        "panel_radius": 12,
+        "content_padding_vertical": 64,
+        "content_padding_horizontal": 48,
+        "mobile_content_height": 320,
+        "mobile_media_height": 360,
+        "heading_size": 46,
+        "mobile_heading_size": 32,
+        "section_background": "#FFFFFF",
+        "content_background": "#F44316",
+        "heading_color": "#FFFFFF",
+        "text_color": "#FFFFFF",
+        "button_background": "#FFFFFF",
+        "button_color": "#111111",
+        "button_border": "#FFFFFF",
+        "divider_color": "#FFFFFF",
+        "handle_background": "#FFFFFF",
+        "handle_color": "#111111",
+        "label_background": "#FFFFFF",
+        "label_color": "#111111",
+        "padding_top": 16,
+        "padding_bottom": 16,
+        "padding_inline": 16,
+        "accessibility_label": "Reveal the before and after images"
+      }
     }
   },
   "order": [
     "furflaps_hero",
     "hot_this_week",
-    "dress_up_steps_L8FhwL"
+    "dress_up_steps_L8FhwL",
+    "before_after_comparison_H4KUmY"
   ]
 }
