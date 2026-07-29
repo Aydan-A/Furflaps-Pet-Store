@@ -190,7 +190,17 @@
 }
 
 @media screen and (max-width: 989px) {
-  .hot-this-week__products { --hot-columns: var(--hot-columns-tablet); }
+  .hot-this-week__header {
+    gap: 1.6rem;
+  }
+
+  .hot-this-week__heading {
+    font-size: min(var(--hot-heading-size), 2.8rem);
+  }
+
+  .hot-this-week__products {
+    --hot-columns: var(--hot-columns-tablet);
+  }
 }
 
 @media screen and (max-width: 749px) {
@@ -198,31 +208,58 @@
     padding-block: var(--hot-mobile-padding-top) var(--hot-mobile-padding-bottom);
   }
 
-  .hot-this-week__inner { padding-inline: var(--hot-mobile-padding-inline); }
+  .hot-this-week__inner {
+    padding-inline: var(--hot-mobile-padding-inline);
+  }
+
   .hot-this-week__header {
     align-items: center;
-    flex-direction: row;
-    gap: 1rem;
+    display: grid;
+    grid-template-columns: max-content minmax(0, 1fr);
+    gap: clamp(0.6rem, 2.5vw, 1rem);
+    width: 100%;
   }
 
   .hot-this-week__heading {
-    flex-shrink: 0;
-    font-size: min(var(--hot-mobile-heading-size), 2.2rem);
+    min-width: 0;
+    font-size: min(var(--hot-mobile-heading-size), clamp(1.6rem, 5.4vw, 2.2rem));
     white-space: nowrap;
   }
+
   .hot-this-week__tabs {
-    max-width: 58%;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: min(var(--hot-tab-gap), 0.4rem);
+    width: 100%;
+    max-width: none;
+    min-width: 0;
     margin-left: auto;
-    overflow-x: auto;
+    overflow: visible;
   }
 
   .hot-this-week__tab {
+    min-width: 0;
     min-height: min(var(--hot-tab-height), 3.2rem);
-    padding-inline: min(var(--hot-tab-padding), 1.2rem);
+    padding-inline: min(var(--hot-tab-padding), clamp(0.4rem, 1.8vw, 1rem));
+    font-size: min(var(--hot-tab-font-size), clamp(1rem, 3vw, 1.2rem));
+    line-height: 1.1;
     white-space: nowrap;
   }
 
-  .hot-this-week__products { --hot-columns: var(--hot-columns-mobile); }
+  .hot-this-week__products {
+    --hot-columns: var(--hot-columns-mobile);
+  }
+}
+
+@media screen and (max-width: 374px) {
+  .hot-this-week__heading {
+    font-size: min(var(--hot-mobile-heading-size), 1.8rem);
+  }
+
+  .hot-this-week__tab {
+    padding-inline: 0.4rem;
+    font-size: min(var(--hot-tab-font-size), 1rem);
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
