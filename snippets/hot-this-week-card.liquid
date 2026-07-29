@@ -1,0 +1,78 @@
+{% comment %}
+  Product card used by the Hot this week section.
+
+  Accepts:
+  - product: Product object
+  - section: Section object
+  - lazy_load: Boolean
+{% endcomment %}
+
+{%- liquid
+  assign custom_badge = blank
+  if section.settings.show_metafield_badge and section.settings.badge_metafield_namespace != blank and section.settings.badge_metafield_key != blank
+    assign custom_badge = product.metafields[section.settings.badge_metafield_namespace][section.settings.badge_metafield_key].value
+  endif
+
+  assign color_option_name = section.settings.color_option_name | downcase
+  assign color_value = blank
+  for option in product.options_with_values
+    assign option_name = option.name | downcase
+    if option_name == color_option_name
+      assign color_value = option.values.first
+      break
+    endif
+  endfor
+-%}
+
+<article class="hot-card">
+  <a class="hot-card__media" href="{{ product.url }}" aria-label="{{ product.title | escape }}">
+    <div class="hot-card__badges">
+      {%- if custom_badge != blank -%}
+        <span class="hot-card__badge hot-card__badge--custom">{{ custom_badge | escape }}</span>
+      {%- endif -%}
+      {%- unless product.available -%}
+        <span class="hot-card__badge hot-card__badge--sold-out">{{ 'products.product.sold_out' | t }}</span>
+      {%- elsif product.compare_at_price > product.price -%}
+        <span class="hot-card__badge hot-card__badge--sale">{{ 'products.product.on_sale' | t }}</span>
+      {%- endunless -%}
+    </div>
+
+    {%- if product.featured_media -%}
+      {{
+        product.featured_media
+        | image_url: width: 900
+        | image_tag:
+          class: 'hot-card__image hot-card__image--primary',
+          widths: '240, 360, 480, 640, 750, 900',
+          sizes: '(min-width: 990px) 25vw, (min-width: 750px) 38vw, 72vw',
+          loading: lazy_load
+      }}
+      {%- if section.settings.show_secondary_image and product.media[1].media_type == 'image' -%}
+        {{
+          product.media[1]
+          | image_url: width: 900
+          | image_tag:
+            class: 'hot-card__image hot-card__image--secondary',
+            widths: '240, 360, 480, 640, 750, 900',
+            sizes: '(min-width: 990px) 25vw, (min-width: 750px) 38vw, 72vw',
+            loading: 'lazy'
+        }}
+      {%- endif -%}
+    {%- else -%}
+      {{ 'product-apparel-1' | placeholder_svg_tag: 'hot-card__placeholder' }}
+    {%- endif -%}
+  </a>
+
+  <div class="hot-card__details">
+    <h3 class="hot-card__title">
+      <a href="{{ product.url }}">{{ product.title | escape }}</a>
+    </h3>
+    {% render 'price', product: product, price_class: 'hot-card__price', show_compare_at_price: true %}
+    {%- if section.settings.show_color_swatch and color_value != blank and color_value.swatch != blank -%}
+      <span class="hot-card__swatch" title="{{ color_value | escape }}">
+        <span class="visually-hidden">{{ color_value }}</span>
+        {% render 'swatch', swatch: color_value.swatch, shape: 'square' %}
+      </span>
+    {%- endif -%}
+  </div>
+</article>
