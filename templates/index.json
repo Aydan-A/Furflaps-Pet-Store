@@ -145,7 +145,7 @@
         "heading": "Hot This Week",
         "best_sellers_collection": "all",
         "best_sellers_label": "Best Sellers",
-        "new_arrivals_collection": "all",
+        "new_arrivals_collection": "{{ section.settings.best_sellers_collection }}",
         "new_arrivals_label": "New Arrivals",
         "default_tab": "best_sellers",
         "products_to_show": 8,
@@ -205,7 +205,7 @@
           "type": "step",
           "settings": {
             "title": "Pick a top you love",
-            "collection": "",
+            "collection": "frontpage",
             "benefit_1": "4-Way Stretch",
             "benefit_2": "Eco-Friendly",
             "open_by_default": true
