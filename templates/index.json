@@ -496,14 +496,100 @@
         "padding_bottom": 32,
         "quote_size": 32,
         "mobile_quote_size": 26,
-        "section_background": "#F3F3F3",
-        "panel_background": "#DFF3F5",
+        "section_background": "#f3f3f3",
+        "panel_background": "#dff3f5",
         "text_color": "#111111",
         "accent_color": "#111111",
         "card_background": "linear-gradient(90deg, rgba(132, 63, 75, 0.92), rgba(135, 96, 72, 0.88) 100%)",
-        "card_text_color": "#FFFFFF",
-        "button_background": "#FFFFFF",
+        "card_text_color": "#ffffff",
+        "button_background": "#ffffff",
         "button_text_color": "#111111",
+        "show_on_desktop": true,
+        "show_on_mobile": true
+      }
+    },
+    "feature_highlights_iY7VnD": {
+      "type": "feature-highlights",
+      "blocks": {
+        "highlight_zYFQcM": {
+          "type": "highlight",
+          "settings": {
+            "show_item": true,
+            "title": "Soft & Comfortable",
+            "text": "<p>Lightweight fabric made for all-day wear.</p>",
+            "button_label": "",
+            "button_link": "",
+            "button_style_secondary": false
+          }
+        },
+        "highlight_ALCEyj": {
+          "type": "highlight",
+          "settings": {
+            "show_item": true,
+            "title": "Adventure Ready",
+            "text": "<p>Durable enough for parks, walks, and zoomies.</p>",
+            "button_label": "",
+            "button_link": "",
+            "button_style_secondary": false
+          }
+        },
+        "highlight_RmBCeP": {
+          "type": "highlight",
+          "settings": {
+            "show_item": true,
+            "title": "Collectable Designs",
+            "text": "<p>New patch drops to keep the style fresh.</p>",
+            "button_label": "",
+            "button_link": "",
+            "button_style_secondary": false
+          }
+        }
+      },
+      "block_order": [
+        "highlight_zYFQcM",
+        "highlight_ALCEyj",
+        "highlight_RmBCeP"
+      ],
+      "name": "Feature highlights",
+      "settings": {
+        "heading": "",
+        "intro_text": "",
+        "section_heading_size": "h1",
+        "header_alignment": "center",
+        "use_page_width": false,
+        "max_width": 1600,
+        "columns_desktop": 3,
+        "columns_tablet": "3",
+        "columns_mobile": "1",
+        "alignment": "center",
+        "column_gap": 40,
+        "mobile_column_gap": 16,
+        "mobile_row_gap": 40,
+        "corner_radius": 0,
+        "icon_size": 60,
+        "image_fit": "contain",
+        "icon_spacing": 18,
+        "heading_size": 24,
+        "mobile_heading_size": 21,
+        "heading_weight": "700",
+        "text_size": 16,
+        "mobile_text_size": 15,
+        "text_max_width": 380,
+        "text_spacing": 6,
+        "button_spacing": 20,
+        "section_background": "#F7F7F7",
+        "panel_background": "#FDE6DE",
+        "text_color": "#FF4B22",
+        "padding_top": 14,
+        "padding_bottom": 14,
+        "padding_inline": 14,
+        "panel_padding_top": 44,
+        "panel_padding_bottom": 42,
+        "mobile_padding_top": 10,
+        "mobile_padding_bottom": 10,
+        "mobile_padding_inline": 10,
+        "mobile_panel_padding_top": 36,
+        "mobile_panel_padding_bottom": 36,
         "show_on_desktop": true,
         "show_on_mobile": true
       }
@@ -515,6 +601,7 @@
     "dress_up_steps_L8FhwL",
     "before_after_comparison_H4KUmY",
     "product_feature_tabs_EpMe6d",
-    "featured_testimonials_GdmtJw"
+    "featured_testimonials_GdmtJw",
+    "feature_highlights_iY7VnD"
   ]
 }
