@@ -26,8 +26,8 @@
     --ff-desktop-height: {{ section.settings.desktop_height }}px;
     --ff-mobile-content-height: {{ section.settings.mobile_content_height }}px;
     --ff-mobile-media-height: {{ section.settings.mobile_media_height }}px;
-    --ff-content-ratio: {{ section.settings.content_width }};
-    --ff-media-ratio: {{ 100 | minus: section.settings.content_width }};
+    --ff-content-ratio: {{ section.settings.content_width }}fr;
+    --ff-media-ratio: {{ 100 | minus: section.settings.content_width }}fr;
     --ff-panel-gap: {{ section.settings.panel_gap }}px;
     --ff-mobile-panel-gap: {{ section.settings.mobile_panel_gap }}px;
     --ff-panel-radius: {{ section.settings.panel_radius }}px;
