@@ -33,8 +33,6 @@
     --bac-divider-color: {{ section.settings.divider_color }};
     --bac-handle-background: {{ section.settings.handle_background }};
     --bac-handle-color: {{ section.settings.handle_color }};
-    --bac-image-background: {{ section.settings.image_background }};
-    --bac-image-fit: {{ section.settings.image_fit }};
     --bac-image-zoom: {{ section.settings.image_zoom | divided_by: 100.0 }};
     --bac-position: {{ section.settings.initial_position }}%;
     --bac-height: {{ section.settings.desktop_height }}px;
@@ -184,18 +182,8 @@
     { "type": "image_picker", "id": "after_image", "label": "After image" },
     { "type": "image_picker", "id": "before_mobile_image", "label": "Before mobile image" },
     { "type": "image_picker", "id": "after_mobile_image", "label": "After mobile image" },
-    {
-      "type": "select",
-      "id": "image_fit",
-      "label": "Image fit",
-      "default": "cover",
-      "options": [
-        { "value": "cover", "label": "Cover" },
-        { "value": "contain", "label": "Contain" }
-      ]
-    },
-    { "type": "range", "id": "image_zoom", "label": "Image zoom", "min": 60, "max": 140, "step": 5, "unit": "%", "default": 100 },
-    { "type": "color", "id": "image_background", "label": "Image background", "default": "#EEEEEE" },
+    { "type": "range", "id": "image_zoom", "label": "Image zoom", "min": 100, "max": 200, "step": 5, "unit": "%", "default": 100 },
+    { "type": "paragraph", "content": "100% fills the comparison frame. Increase the value to zoom in, or return it toward 100% to zoom out without exposing empty space." },
     { "type": "range", "id": "initial_position", "label": "Initial handle position", "min": 10, "max": 90, "step": 5, "unit": "%", "default": 50 },
 
     { "type": "header", "content": "Desktop layout" },

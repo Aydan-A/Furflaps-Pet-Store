@@ -71,7 +71,7 @@
 .before-after-comparison__media {
   position: relative;
   isolation: isolate;
-  background: var(--bac-image-background);
+  background: #eeeeee;
   user-select: none;
   touch-action: pan-y;
 }
@@ -89,7 +89,7 @@
 
 .before-after-comparison__image img,
 .before-after-comparison__placeholder {
-  object-fit: var(--bac-image-fit);
+  object-fit: cover;
   object-position: center;
   transform: scale(var(--bac-image-zoom));
   transform-origin: center;
