@@ -1,0 +1,174 @@
+{{ 'component-price.css' | asset_url | stylesheet_tag }}
+{{ 'component-swatch.css' | asset_url | stylesheet_tag }}
+{{ 'dress-up-steps.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'dress-up-steps.js' | asset_url }}" defer="defer"></script>
+
+{%- style -%}
+  #shopify-section-{{ section.id }} {
+    --ds-background: {{ section.settings.background }};
+    --ds-text: {{ section.settings.text_color }};
+    --ds-panel-background: {{ section.settings.panel_background }};
+    --ds-image-background: {{ section.settings.image_background }};
+    --ds-number-background: {{ section.settings.number_background }};
+    --ds-number-text: {{ section.settings.number_text }};
+    --ds-pill-background: {{ section.settings.pill_background }};
+    --ds-pill-border: {{ section.settings.pill_border }};
+    --ds-sale: {{ section.settings.sale_color }};
+    --ds-sold-out: {{ section.settings.sold_out_color }};
+    --ds-custom-badge: {{ section.settings.custom_badge_color }};
+    --ds-badge-text: {{ section.settings.badge_text }};
+    --ds-max-width: {{ section.settings.max_width }}px;
+    --ds-padding-top: {{ section.settings.padding_top }}px;
+    --ds-padding-bottom: {{ section.settings.padding_bottom }}px;
+    --ds-padding-inline: {{ section.settings.padding_inline }}px;
+    --ds-mobile-padding-top: {{ section.settings.mobile_padding_top }}px;
+    --ds-mobile-padding-bottom: {{ section.settings.mobile_padding_bottom }}px;
+    --ds-mobile-padding-inline: {{ section.settings.mobile_padding_inline }}px;
+    --ds-heading-gap: {{ section.settings.heading_gap }}px;
+    --ds-step-gap: {{ section.settings.step_gap }}px;
+    --ds-card-gap: {{ section.settings.card_gap }}px;
+    --ds-radius: {{ section.settings.panel_radius }}px;
+    --ds-card-radius: {{ section.settings.card_radius }}px;
+    --ds-summary-height: {{ section.settings.summary_height }}px;
+    --ds-columns: {{ section.settings.columns_desktop }};
+    --ds-image-ratio: {{ section.settings.image_ratio }};
+    --ds-image-fit: {{ section.settings.image_fit }};
+    --ds-eyebrow-size: {{ section.settings.eyebrow_size }}px;
+    --ds-heading-size: {{ section.settings.heading_size }}px;
+    --ds-mobile-heading-size: {{ section.settings.mobile_heading_size }}px;
+    --ds-heading-weight: {{ section.settings.heading_weight }};
+    --ds-step-title-size: {{ section.settings.step_title_size }}px;
+    --ds-mobile-step-title-size: {{ section.settings.mobile_step_title_size }}px;
+    --ds-card-title-size: {{ section.settings.card_title_size }}px;
+    --ds-price-size: {{ section.settings.price_size }}px;
+  }
+{%- endstyle -%}
+
+<dress-up-steps class="dress-up-steps">
+  <div class="dress-up-steps__inner">
+    <header class="dress-up-steps__header">
+      {%- if section.settings.eyebrow != blank -%}<p class="dress-up-steps__eyebrow">{{ section.settings.eyebrow | escape }}</p>{%- endif -%}
+      {%- if section.settings.heading != blank -%}<h2 class="dress-up-steps__heading">{{ section.settings.heading | escape | newline_to_br }}</h2>{%- endif -%}
+    </header>
+
+    <div class="dress-up-steps__list">
+      {%- for block in section.blocks -%}
+        <details class="dress-up-steps__step" data-dress-step {% if block.settings.open_by_default %}open{% endif %} {{ block.shopify_attributes }}>
+          <summary class="dress-up-steps__summary">
+            <span class="dress-up-steps__number" aria-hidden="true">{{ forloop.index }}</span>
+            <h3 class="dress-up-steps__step-title">{{ block.settings.title | escape }}</h3>
+            {%- if block.settings.benefit_1 != blank or block.settings.benefit_2 != blank -%}
+              <ul class="dress-up-steps__benefits" role="list">
+                {%- if block.settings.benefit_1 != blank -%}<li class="dress-up-steps__benefit"><svg viewBox="0 0 12 12" aria-hidden="true"><path d="m2 6 2.5 2.5L10 3" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>{{ block.settings.benefit_1 | escape }}</li>{%- endif -%}
+                {%- if block.settings.benefit_2 != blank -%}<li class="dress-up-steps__benefit"><svg viewBox="0 0 12 12" aria-hidden="true"><path d="m2 6 2.5 2.5L10 3" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>{{ block.settings.benefit_2 | escape }}</li>{%- endif -%}
+              </ul>
+            {%- endif -%}
+          </summary>
+
+          <div class="dress-up-steps__content">
+            {%- if block.settings.collection != blank and block.settings.collection.products_count > 0 -%}
+              <ul class="dress-up-steps__products" role="list">
+                {%- for product in block.settings.collection.products limit: section.settings.products_to_show -%}
+                  <li class="dress-up-steps__product">
+                    {% render 'dress-up-product-card', product: product, section: section, loading: 'lazy' %}
+                  </li>
+                {%- endfor -%}
+              </ul>
+            {%- elsif request.design_mode -%}
+              <div class="dress-up-steps__empty">Choose a collection for this step in the Theme Editor.</div>
+            {%- endif -%}
+          </div>
+        </details>
+      {%- endfor -%}
+    </div>
+  </div>
+</dress-up-steps>
+
+{% schema %}
+{
+  "name": "Dress up in steps",
+  "tag": "section",
+  "class": "section",
+  "disabled_on": { "groups": ["header", "footer"] },
+  "max_blocks": 6,
+  "settings": [
+    { "type": "header", "content": "Content" },
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "How you style it" },
+    { "type": "textarea", "id": "heading", "label": "Heading", "default": "Dress up in 3 steps.\nPick - Pair - Play!" },
+    { "type": "range", "id": "products_to_show", "label": "Products per step", "min": 2, "max": 8, "step": 1, "default": 4 },
+    { "type": "range", "id": "columns_desktop", "label": "Desktop columns", "min": 2, "max": 5, "step": 1, "default": 4 },
+
+    { "type": "header", "content": "Product cards" },
+    { "type": "select", "id": "image_ratio", "label": "Image ratio", "default": "4 / 5", "options": [{ "value": "1 / 1", "label": "Square" }, { "value": "4 / 5", "label": "Portrait" }, { "value": "3 / 4", "label": "Tall portrait" }] },
+    { "type": "select", "id": "image_fit", "label": "Image fit", "default": "contain", "options": [{ "value": "contain", "label": "Contain" }, { "value": "cover", "label": "Cover" }] },
+    { "type": "checkbox", "id": "show_swatches", "label": "Show Shopify color swatches", "default": true },
+    { "type": "text", "id": "color_option_name", "label": "Color option name", "default": "Color" },
+    { "type": "range", "id": "swatches_to_show", "label": "Swatches to show", "min": 1, "max": 6, "step": 1, "default": 4 },
+    { "type": "checkbox", "id": "show_custom_badge", "label": "Show metafield badge", "default": false },
+    { "type": "text", "id": "badge_namespace", "label": "Badge metafield namespace", "default": "custom" },
+    { "type": "text", "id": "badge_key", "label": "Badge metafield key", "default": "badge" },
+
+    { "type": "header", "content": "Typography" },
+    { "type": "range", "id": "eyebrow_size", "label": "Eyebrow size", "min": 9, "max": 18, "step": 1, "unit": "px", "default": 11 },
+    { "type": "range", "id": "heading_size", "label": "Desktop heading size", "min": 24, "max": 64, "step": 1, "unit": "px", "default": 34 },
+    { "type": "range", "id": "mobile_heading_size", "label": "Mobile heading size", "min": 22, "max": 42, "step": 1, "unit": "px", "default": 28 },
+    { "type": "select", "id": "heading_weight", "label": "Heading weight", "default": "700", "options": [{ "value": "600", "label": "Semibold" }, { "value": "700", "label": "Bold" }, { "value": "800", "label": "Extra bold" }] },
+    { "type": "range", "id": "step_title_size", "label": "Step title size", "min": 14, "max": 28, "step": 1, "unit": "px", "default": 20 },
+    { "type": "range", "id": "mobile_step_title_size", "label": "Mobile step title size", "min": 14, "max": 22, "step": 1, "unit": "px", "default": 17 },
+    { "type": "range", "id": "card_title_size", "label": "Product title size", "min": 11, "max": 20, "step": 1, "unit": "px", "default": 13 },
+    { "type": "range", "id": "price_size", "label": "Price size", "min": 11, "max": 20, "step": 1, "unit": "px", "default": 13 },
+
+    { "type": "header", "content": "Colors" },
+    { "type": "color", "id": "background", "label": "Section background", "default": "#FFFFFF" },
+    { "type": "color", "id": "text_color", "label": "Text", "default": "#111111" },
+    { "type": "color", "id": "panel_background", "label": "Step background", "default": "#F4F4F4" },
+    { "type": "color", "id": "image_background", "label": "Image background", "default": "#E9EEF1" },
+    { "type": "color", "id": "number_background", "label": "Step number background", "default": "#050505" },
+    { "type": "color", "id": "number_text", "label": "Step number text", "default": "#FFFFFF" },
+    { "type": "color", "id": "pill_background", "label": "Benefit background", "default": "#FFFFFF" },
+    { "type": "color", "id": "pill_border", "label": "Benefit border", "default": "#D6D6D6" },
+    { "type": "color", "id": "sale_color", "label": "Sale color", "default": "#D93A2F" },
+    { "type": "color", "id": "sold_out_color", "label": "Sold out badge", "default": "#555555" },
+    { "type": "color", "id": "custom_badge_color", "label": "Custom badge", "default": "#7A59D1" },
+    { "type": "color", "id": "badge_text", "label": "Badge text", "default": "#FFFFFF" },
+
+    { "type": "header", "content": "Layout and spacing" },
+    { "type": "range", "id": "max_width", "label": "Content max width", "min": 900, "max": 1600, "step": 20, "unit": "px", "default": 1320 },
+    { "type": "range", "id": "panel_radius", "label": "Step corner radius", "min": 0, "max": 30, "step": 1, "unit": "px", "default": 12 },
+    { "type": "range", "id": "card_radius", "label": "Image corner radius", "min": 0, "max": 30, "step": 1, "unit": "px", "default": 12 },
+    { "type": "range", "id": "summary_height", "label": "Collapsed step height", "min": 56, "max": 100, "step": 2, "unit": "px", "default": 72 },
+    { "type": "range", "id": "heading_gap", "label": "Space below heading", "min": 20, "max": 70, "step": 2, "unit": "px", "default": 38 },
+    { "type": "range", "id": "step_gap", "label": "Space between steps", "min": 4, "max": 24, "step": 1, "unit": "px", "default": 8 },
+    { "type": "range", "id": "card_gap", "label": "Product card gap", "min": 6, "max": 30, "step": 1, "unit": "px", "default": 10 },
+    { "type": "range", "id": "padding_top", "label": "Desktop top padding", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 32 },
+    { "type": "range", "id": "padding_bottom", "label": "Desktop bottom padding", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 40 },
+    { "type": "range", "id": "padding_inline", "label": "Desktop side padding", "min": 12, "max": 80, "step": 2, "unit": "px", "default": 48 },
+    { "type": "range", "id": "mobile_padding_top", "label": "Mobile top padding", "min": 0, "max": 80, "step": 4, "unit": "px", "default": 28 },
+    { "type": "range", "id": "mobile_padding_bottom", "label": "Mobile bottom padding", "min": 0, "max": 80, "step": 4, "unit": "px", "default": 32 },
+    { "type": "range", "id": "mobile_padding_inline", "label": "Mobile side padding", "min": 8, "max": 36, "step": 2, "unit": "px", "default": 16 }
+  ],
+  "blocks": [
+    {
+      "type": "step",
+      "name": "Step",
+      "settings": [
+        { "type": "text", "id": "title", "label": "Title", "default": "Pick a top you love" },
+        { "type": "collection", "id": "collection", "label": "Collection" },
+        { "type": "text", "id": "benefit_1", "label": "Benefit 1", "default": "4-Way Stretch" },
+        { "type": "text", "id": "benefit_2", "label": "Benefit 2", "default": "Eco-Friendly" },
+        { "type": "checkbox", "id": "open_by_default", "label": "Open by default", "default": false }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Dress up in steps",
+      "blocks": [
+        { "type": "step", "settings": { "title": "Pick a top you love", "benefit_1": "4-Way Stretch", "benefit_2": "Eco-Friendly", "open_by_default": true } },
+        { "type": "step", "settings": { "title": "Match it with cool bottoms", "benefit_1": "100% Cotton", "benefit_2": "Water Proof" } },
+        { "type": "step", "settings": { "title": "Add fun extras", "benefit_1": "100% Cotton", "benefit_2": "Colorful" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

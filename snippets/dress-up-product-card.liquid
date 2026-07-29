@@ -1,0 +1,69 @@
+{% comment %}
+  Product card for the Dress up in 3 steps section.
+
+  Accepts:
+  - product: Shopify product object
+  - section: parent section object
+  - loading: image loading strategy
+{% endcomment %}
+
+{%- liquid
+  assign custom_badge = blank
+  if section.settings.show_custom_badge
+    assign custom_badge = product.metafields[section.settings.badge_namespace][section.settings.badge_key].value
+  endif
+  assign color_option_name = section.settings.color_option_name | downcase
+-%}
+
+<article class="dress-steps-card">
+  <a class="dress-steps-card__media" href="{{ product.url }}" aria-label="{{ product.title | escape }}">
+    <span class="dress-steps-card__badges">
+      {%- if custom_badge != blank -%}
+        <span class="dress-steps-card__badge dress-steps-card__badge--custom">{{ custom_badge | escape }}</span>
+      {%- endif -%}
+      {%- unless product.available -%}
+        <span class="dress-steps-card__badge dress-steps-card__badge--sold-out">{{ 'products.product.sold_out' | t }}</span>
+      {%- elsif product.compare_at_price > product.price -%}
+        <span class="dress-steps-card__badge dress-steps-card__badge--sale">{{ 'products.product.on_sale' | t }}</span>
+      {%- endunless -%}
+    </span>
+
+    {%- if product.featured_media != blank -%}
+      {{
+        product.featured_media
+        | image_url: width: 900
+        | image_tag:
+          class: 'dress-steps-card__image',
+          widths: '180, 240, 320, 420, 560, 720, 900',
+          sizes: '(min-width: 1200px) 260px, (min-width: 750px) 23vw, 72vw',
+          loading: loading
+      }}
+    {%- else -%}
+      {{ 'product-apparel-1' | placeholder_svg_tag: 'dress-steps-card__image dress-steps-card__placeholder' }}
+    {%- endif -%}
+  </a>
+
+  <div class="dress-steps-card__content">
+    <h3 class="dress-steps-card__title"><a href="{{ product.url }}">{{ product.title | escape }}</a></h3>
+    {% render 'price', product: product, price_class: 'dress-steps-card__price', show_compare_at_price: true %}
+
+    {%- if section.settings.show_swatches -%}
+      {%- for option in product.options_with_values -%}
+        {%- assign option_name = option.name | downcase -%}
+        {%- if option_name == color_option_name -%}
+          <ul class="dress-steps-card__swatches" role="list" aria-label="{{ option.name | escape }}">
+            {%- for value in option.values limit: section.settings.swatches_to_show -%}
+              {%- if value.swatch != blank -%}
+                <li title="{{ value | escape }}">
+                  <span class="visually-hidden">{{ value }}</span>
+                  {% render 'swatch', swatch: value.swatch, shape: 'square' %}
+                </li>
+              {%- endif -%}
+            {%- endfor -%}
+          </ul>
+          {%- break -%}
+        {%- endif -%}
+      {%- endfor -%}
+    {%- endif -%}
+  </div>
+</article>
