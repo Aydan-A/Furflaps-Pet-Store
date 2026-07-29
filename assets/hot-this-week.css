@@ -199,9 +199,29 @@
   }
 
   .hot-this-week__inner { padding-inline: var(--hot-mobile-padding-inline); }
-  .hot-this-week__header { align-items: flex-start; flex-direction: column; gap: 1.4rem; }
-  .hot-this-week__heading { font-size: var(--hot-mobile-heading-size); }
-  .hot-this-week__tabs { max-width: 100%; overflow-x: auto; }
+  .hot-this-week__header {
+    align-items: center;
+    flex-direction: row;
+    gap: 1rem;
+  }
+
+  .hot-this-week__heading {
+    flex-shrink: 0;
+    font-size: min(var(--hot-mobile-heading-size), 2.2rem);
+    white-space: nowrap;
+  }
+  .hot-this-week__tabs {
+    max-width: 58%;
+    margin-left: auto;
+    overflow-x: auto;
+  }
+
+  .hot-this-week__tab {
+    min-height: min(var(--hot-tab-height), 3.2rem);
+    padding-inline: min(var(--hot-tab-padding), 1.2rem);
+    white-space: nowrap;
+  }
+
   .hot-this-week__products { --hot-columns: var(--hot-columns-mobile); }
 }
 
