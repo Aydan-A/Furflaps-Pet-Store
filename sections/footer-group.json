@@ -11,8 +11,73 @@
   "name": "t:sections.footer.name",
   "type": "footer",
   "sections": {
+    "editorial_footer": {
+      "type": "editorial-footer",
+      "blocks": {
+        "company_menu": {
+          "type": "menu",
+          "settings": {
+            "show_item": true,
+            "heading": "Company"
+          }
+        },
+        "collection_menu": {
+          "type": "menu",
+          "settings": {
+            "show_item": true,
+            "heading": "Collection"
+          }
+        },
+        "help_menu": {
+          "type": "menu",
+          "settings": {
+            "show_item": true,
+            "heading": "Get help"
+          }
+        },
+        "gallery_image_1": {
+          "type": "social_image",
+          "settings": {
+            "show_item": true
+          }
+        },
+        "gallery_image_2": {
+          "type": "social_image",
+          "settings": {
+            "show_item": true
+          }
+        },
+        "gallery_image_3": {
+          "type": "social_image",
+          "settings": {
+            "show_item": true
+          }
+        }
+      },
+      "block_order": [
+        "company_menu",
+        "collection_menu",
+        "help_menu",
+        "gallery_image_1",
+        "gallery_image_2",
+        "gallery_image_3"
+      ],
+      "settings": {
+        "show_on_desktop": true,
+        "show_on_mobile": true,
+        "show_newsletter": true,
+        "heading": "Subscribe today & get 10% off your first purchase",
+        "show_gallery": true,
+        "gallery_heading": "Follow us on Instagram",
+        "show_social": true,
+        "show_country_selector": true,
+        "show_language_selector": true,
+        "show_payment_icons": true
+      }
+    },
     "footer": {
       "type": "footer",
+      "disabled": true,
       "settings": {
         "color_scheme": "scheme-1",
         "newsletter_enable": true,
@@ -30,6 +95,7 @@
     }
   },
   "order": [
+    "editorial_footer",
     "footer"
   ]
 }
