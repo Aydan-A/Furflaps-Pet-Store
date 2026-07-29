@@ -299,8 +299,7 @@
         "page": "",
         "before_image": "shopify://shop_images/08e25e0f6fb56c07d54a8ed0e0d4d1a3.jpg",
         "after_image": "shopify://shop_images/ChatGPT_Image_Jul_29_2026_at_02_04_37_PM.png",
-        "before_label": "Without",
-        "after_label": "With",
+        "image_zoom": 100,
         "initial_position": 50,
         "desktop_height": 540,
         "content_width": 40,
@@ -322,12 +321,119 @@
         "divider_color": "#ffffff",
         "handle_background": "#ffffff",
         "handle_color": "#111111",
-        "label_background": "#ffffff",
-        "label_color": "#111111",
         "padding_top": 16,
         "padding_bottom": 16,
         "padding_inline": 16,
         "accessibility_label": "Reveal the before and after images"
+      }
+    },
+    "product_feature_tabs_EpMe6d": {
+      "type": "product-feature-tabs",
+      "blocks": {
+        "tab_ADXaf6": {
+          "type": "tab",
+          "settings": {
+            "label": "",
+            "collection": "frontpage"
+          }
+        },
+        "tab_Yf6YBD": {
+          "type": "tab",
+          "settings": {
+            "label": "",
+            "collection": "frontpage"
+          }
+        },
+        "tab_EbGHnG": {
+          "type": "tab",
+          "settings": {
+            "label": "",
+            "collection": "frontpage"
+          }
+        },
+        "feature_BJ8cR6": {
+          "type": "feature",
+          "settings": {
+            "visible": true,
+            "text": "App connectivity"
+          }
+        },
+        "feature_xTptCE": {
+          "type": "feature",
+          "settings": {
+            "visible": true,
+            "text": "App connectivity"
+          }
+        },
+        "feature_BCiAgf": {
+          "type": "feature",
+          "settings": {
+            "visible": true,
+            "text": "App connectivity"
+          }
+        }
+      },
+      "block_order": [
+        "tab_ADXaf6",
+        "tab_Yf6YBD",
+        "tab_EbGHnG",
+        "feature_BJ8cR6",
+        "feature_xTptCE",
+        "feature_BCiAgf"
+      ],
+      "name": "Product feature tabs",
+      "settings": {
+        "show_header": false,
+        "heading": "Shop by ride",
+        "text": "",
+        "heading_size": "h1",
+        "alignment": "center",
+        "button_label": "",
+        "button_link": "",
+        "button_style": "primary",
+        "products_to_show": 8,
+        "columns_desktop": 4,
+        "columns_tablet": 2.5,
+        "columns_mobile": 1.2,
+        "image_ratio": "4 / 5",
+        "image_fit": "contain",
+        "show_product_info": false,
+        "show_sale_badge": true,
+        "sale_label": "Sale",
+        "features_label": "Product features",
+        "tabs_label": "Product categories",
+        "tabs_alignment": "center",
+        "tab_height": 44,
+        "tab_padding": 20,
+        "tab_font_size": 13,
+        "tab_gap": 2,
+        "tab_radius": 3,
+        "tab_shell_radius": 3,
+        "tab_shell_padding": 5,
+        "background_color": "#FFFFFF",
+        "text_color": "#1A1A1A",
+        "card_background": "#F3F2F2",
+        "feature_background": "#F7F7F7",
+        "feature_pill": "#FFFFFF",
+        "feature_border": "#ECECEC",
+        "tab_shell_background": "#F5F5F5",
+        "tab_border": "#E4E4E4",
+        "tab_text": "#222222",
+        "active_tab_background": "#1D1D1D",
+        "active_tab_text": "#FFFFFF",
+        "badge_background": "#FF5A3C",
+        "badge_text": "#FFFFFF",
+        "card_gap": 18,
+        "card_radius": 10,
+        "badge_offset": 12,
+        "header_gap": 24,
+        "tabs_gap": 30,
+        "padding_top": 40,
+        "padding_bottom": 40,
+        "padding_inline": 40,
+        "mobile_padding_top": 28,
+        "mobile_padding_bottom": 28,
+        "mobile_padding_inline": 16
       }
     }
   },
@@ -335,6 +441,7 @@
     "furflaps_hero",
     "hot_this_week",
     "dress_up_steps_L8FhwL",
-    "before_after_comparison_H4KUmY"
+    "before_after_comparison_H4KUmY",
+    "product_feature_tabs_EpMe6d"
   ]
 }
