@@ -36,6 +36,8 @@
     --ff-content-padding-horizontal: {{ section.settings.content_padding_horizontal }}px;
     --ff-mobile-content-padding-vertical: {{ section.settings.mobile_content_padding_vertical }}px;
     --ff-mobile-content-padding-horizontal: {{ section.settings.mobile_content_padding_horizontal }}px;
+    --ff-mobile-description-spacing: {{ section.settings.mobile_description_spacing }}px;
+    --ff-mobile-button-spacing: {{ section.settings.mobile_button_spacing }}px;
     --ff-content-max-width: {{ section.settings.content_max_width }}px;
     --ff-heading-font-family: {{ section.settings.heading_font.family }}, {{ section.settings.heading_font.fallback_families }};
     --ff-heading-font-style: {{ section.settings.heading_font.style }};
@@ -66,6 +68,8 @@
     --ff-button-icon-size: {{ section.settings.button_icon_size }}px;
     --ff-pagination-offset-vertical: {{ section.settings.pagination_offset_vertical }}px;
     --ff-pagination-offset-horizontal: {{ section.settings.pagination_offset_horizontal }}px;
+    --ff-mobile-pagination-offset-vertical: {{ section.settings.mobile_pagination_offset_vertical }}px;
+    --ff-mobile-pagination-offset-horizontal: {{ section.settings.mobile_pagination_offset_horizontal }}px;
     --ff-indicator-width: {{ section.settings.indicator_width }}px;
     --ff-indicator-height: {{ section.settings.indicator_height }}px;
     --ff-indicator-gap: {{ section.settings.indicator_gap }}px;
@@ -251,12 +255,14 @@
       ]
     },
     { "type": "header", "content": "Mobile layout" },
-    { "type": "range", "id": "mobile_content_height", "label": "Content panel height", "min": 280, "max": 700, "step": 10, "unit": "px", "default": 430 },
-    { "type": "range", "id": "mobile_media_height", "label": "Media panel height", "min": 240, "max": 700, "step": 10, "unit": "px", "default": 420 },
+    { "type": "range", "id": "mobile_content_height", "label": "Content panel height", "min": 280, "max": 700, "step": 10, "unit": "px", "default": 340 },
+    { "type": "range", "id": "mobile_media_height", "label": "Media panel height", "min": 240, "max": 700, "step": 10, "unit": "px", "default": 320 },
     { "type": "range", "id": "mobile_panel_gap", "label": "Panel gap", "min": 0, "max": 30, "step": 1, "unit": "px", "default": 12 },
     { "type": "range", "id": "mobile_panel_radius", "label": "Panel corner radius", "min": 0, "max": 40, "step": 1, "unit": "px", "default": 14 },
-    { "type": "range", "id": "mobile_content_padding_vertical", "label": "Content vertical padding", "min": 16, "max": 100, "step": 2, "unit": "px", "default": 48 },
-    { "type": "range", "id": "mobile_content_padding_horizontal", "label": "Content horizontal padding", "min": 16, "max": 80, "step": 2, "unit": "px", "default": 28 },
+    { "type": "range", "id": "mobile_content_padding_vertical", "label": "Content vertical padding", "min": 16, "max": 100, "step": 2, "unit": "px", "default": 38 },
+    { "type": "range", "id": "mobile_content_padding_horizontal", "label": "Content horizontal padding", "min": 16, "max": 80, "step": 2, "unit": "px", "default": 20 },
+    { "type": "range", "id": "mobile_description_spacing", "label": "Heading-to-description spacing", "min": 0, "max": 40, "step": 2, "unit": "px", "default": 16 },
+    { "type": "range", "id": "mobile_button_spacing", "label": "Spacing above button", "min": 0, "max": 50, "step": 2, "unit": "px", "default": 20 },
     {
       "type": "select", "id": "mobile_panel_order", "label": "Panel order", "default": "content_first",
       "options": [
@@ -267,7 +273,7 @@
     { "type": "header", "content": "Typography" },
     { "type": "font_picker", "id": "heading_font", "label": "Heading font", "default": "assistant_n7" },
     { "type": "range", "id": "heading_size", "label": "Heading size", "min": 24, "max": 96, "step": 1, "unit": "px", "default": 52 },
-    { "type": "range", "id": "mobile_heading_size", "label": "Mobile heading size", "min": 22, "max": 60, "step": 1, "unit": "px", "default": 38 },
+    { "type": "range", "id": "mobile_heading_size", "label": "Mobile heading size", "min": 22, "max": 60, "step": 1, "unit": "px", "default": 32 },
     {
       "type": "select", "id": "heading_weight", "label": "Heading weight", "default": "700",
       "options": [
@@ -282,7 +288,7 @@
     { "type": "range", "id": "heading_letter_spacing", "label": "Heading letter spacing (tenths of a pixel)", "min": -20, "max": 40, "step": 1, "default": -5 },
     { "type": "font_picker", "id": "body_font", "label": "Body font", "default": "assistant_n4" },
     { "type": "range", "id": "body_size", "label": "Body size", "min": 12, "max": 32, "step": 1, "unit": "px", "default": 18 },
-    { "type": "range", "id": "mobile_body_size", "label": "Mobile body size", "min": 12, "max": 24, "step": 1, "unit": "px", "default": 16 },
+    { "type": "range", "id": "mobile_body_size", "label": "Mobile body size", "min": 12, "max": 24, "step": 1, "unit": "px", "default": 15 },
     {
       "type": "select", "id": "body_weight", "label": "Body weight", "default": "400",
       "options": [
@@ -331,6 +337,8 @@
     },
     { "type": "range", "id": "pagination_offset_vertical", "label": "Top offset", "min": 10, "max": 100, "step": 2, "unit": "px", "default": 44 },
     { "type": "range", "id": "pagination_offset_horizontal", "label": "Side offset", "min": 10, "max": 100, "step": 2, "unit": "px", "default": 44 },
+    { "type": "range", "id": "mobile_pagination_offset_vertical", "label": "Mobile top offset", "min": 10, "max": 80, "step": 2, "unit": "px", "default": 28 },
+    { "type": "range", "id": "mobile_pagination_offset_horizontal", "label": "Mobile side offset", "min": 10, "max": 80, "step": 2, "unit": "px", "default": 24 },
     { "type": "range", "id": "indicator_width", "label": "Indicator width", "min": 12, "max": 60, "step": 1, "unit": "px", "default": 30 },
     { "type": "range", "id": "indicator_height", "label": "Indicator height", "min": 3, "max": 16, "step": 1, "unit": "px", "default": 6 },
     { "type": "range", "id": "indicator_gap", "label": "Indicator gap", "min": 2, "max": 20, "step": 1, "unit": "px", "default": 8 },

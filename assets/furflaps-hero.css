@@ -258,12 +258,29 @@
     padding: var(--ff-mobile-content-padding-vertical) var(--ff-mobile-content-padding-horizontal);
   }
 
+  .furflaps-hero__pagination {
+    top: var(--ff-mobile-pagination-offset-vertical);
+  }
+
+  .furflaps-hero__pagination--left {
+    left: var(--ff-mobile-pagination-offset-horizontal);
+  }
+
+  .furflaps-hero__pagination--right {
+    right: var(--ff-mobile-pagination-offset-horizontal);
+  }
+
   .furflaps-hero__heading {
     font-size: var(--ff-mobile-heading-size);
   }
 
   .furflaps-hero__description {
+    margin-top: var(--ff-mobile-description-spacing);
     font-size: var(--ff-mobile-body-size);
+  }
+
+  .furflaps-hero__actions {
+    margin-top: var(--ff-mobile-button-spacing);
   }
 
   .furflaps-hero__button {
