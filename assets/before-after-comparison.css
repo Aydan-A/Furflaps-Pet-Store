@@ -11,6 +11,14 @@
   height: var(--bac-height);
 }
 
+.before-after-comparison__grid--adapt {
+  height: auto;
+}
+
+.before-after-comparison__grid--adapt .before-after-comparison__media {
+  aspect-ratio: var(--bac-image-ratio);
+}
+
 .before-after-comparison__content,
 .before-after-comparison__media {
   min-width: 0;
@@ -176,6 +184,10 @@
 
   .before-after-comparison__media {
     height: var(--bac-mobile-media-height);
+  }
+
+  .before-after-comparison__grid--adapt .before-after-comparison__media {
+    height: auto;
   }
 
   .before-after-comparison__heading {
