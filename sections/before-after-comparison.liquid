@@ -1,0 +1,235 @@
+{{ 'before-after-comparison.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'before-after-comparison.js' | asset_url }}" defer="defer"></script>
+
+{%- liquid
+  assign button_link = section.settings.button_link
+  if button_link == blank and section.settings.product != blank
+    assign button_link = section.settings.product.url
+  elsif button_link == blank and section.settings.collection != blank
+    assign button_link = section.settings.collection.url
+  elsif button_link == blank and section.settings.page != blank
+    assign button_link = section.settings.page.url
+  endif
+
+  assign before_mobile = section.settings.before_mobile_image | default: section.settings.before_image
+  assign after_mobile = section.settings.after_mobile_image | default: section.settings.after_image
+  assign loading = 'lazy'
+  assign fetch_priority = 'auto'
+  if section.index == 1
+    assign loading = 'eager'
+    assign fetch_priority = 'high'
+  endif
+-%}
+
+{%- style -%}
+  #shopify-section-{{ section.id }} {
+    --bac-background: {{ section.settings.section_background }};
+    --bac-content-background: {{ section.settings.content_background }};
+    --bac-heading-color: {{ section.settings.heading_color }};
+    --bac-text-color: {{ section.settings.text_color }};
+    --bac-button-background: {{ section.settings.button_background }};
+    --bac-button-color: {{ section.settings.button_color }};
+    --bac-button-border: {{ section.settings.button_border }};
+    --bac-divider-color: {{ section.settings.divider_color }};
+    --bac-handle-background: {{ section.settings.handle_background }};
+    --bac-handle-color: {{ section.settings.handle_color }};
+    --bac-label-background: {{ section.settings.label_background }};
+    --bac-label-color: {{ section.settings.label_color }};
+    --bac-position: {{ section.settings.initial_position }}%;
+    --bac-height: {{ section.settings.desktop_height }}px;
+    --bac-mobile-content-height: {{ section.settings.mobile_content_height }}px;
+    --bac-mobile-media-height: {{ section.settings.mobile_media_height }}px;
+    --bac-content-width: {{ section.settings.content_width }}%;
+    --bac-gap: {{ section.settings.panel_gap }}px;
+    --bac-radius: {{ section.settings.panel_radius }}px;
+    --bac-content-padding-v: {{ section.settings.content_padding_vertical }}px;
+    --bac-content-padding-h: {{ section.settings.content_padding_horizontal }}px;
+    --bac-heading-size: {{ section.settings.heading_size }}px;
+    --bac-mobile-heading-size: {{ section.settings.mobile_heading_size }}px;
+    --bac-padding-top: {{ section.settings.padding_top }}px;
+    --bac-padding-bottom: {{ section.settings.padding_bottom }}px;
+    --bac-padding-inline: {{ section.settings.padding_inline }}px;
+  }
+{%- endstyle -%}
+
+<before-after-comparison class="before-after-comparison" data-before-after>
+  <div class="before-after-comparison__grid">
+    <div class="before-after-comparison__content">
+      <div class="before-after-comparison__content-inner">
+        {%- if section.settings.heading != blank -%}
+          <h2 class="before-after-comparison__heading">{{ section.settings.heading }}</h2>
+        {%- endif -%}
+
+        {%- if section.settings.text != blank -%}
+          <div class="before-after-comparison__text rte">{{ section.settings.text }}</div>
+        {%- endif -%}
+
+        {%- if section.settings.button_label != blank -%}
+          <a
+            class="before-after-comparison__button"
+            {% if button_link != blank %}
+              href="{{ button_link }}"
+            {% else %}
+              role="link" aria-disabled="true"
+            {% endif %}
+          >
+            {{ section.settings.button_label | escape }}
+          </a>
+        {%- endif -%}
+      </div>
+    </div>
+
+    <div class="before-after-comparison__media" data-comparison-media>
+      <div class="before-after-comparison__image before-after-comparison__image--before">
+        {%- if section.settings.before_image != blank -%}
+          <picture>
+            {%- if before_mobile != blank -%}
+              <source
+                media="(max-width: 749px)"
+                srcset="
+                  {{ before_mobile | image_url: width: 375 }} 375w,
+                  {{ before_mobile | image_url: width: 550 }} 550w,
+                  {{ before_mobile | image_url: width: 750 }} 750w,
+                  {{ before_mobile | image_url: width: 1100 }} 1100w
+                "
+                sizes="100vw"
+              >
+            {%- endif -%}
+            {{
+              section.settings.before_image
+              | image_url: width: 2400
+              | image_tag:
+                widths: '550, 750, 1100, 1500, 2000, 2400',
+                sizes: '(min-width: 990px) 60vw, (min-width: 750px) 50vw, 100vw',
+                loading: loading,
+                fetchpriority: fetch_priority
+            }}
+          </picture>
+        {%- else -%}
+          {{ 'lifestyle-1' | placeholder_svg_tag: 'before-after-comparison__placeholder' }}
+        {%- endif -%}
+      </div>
+
+      <div class="before-after-comparison__image before-after-comparison__image--after" aria-hidden="true">
+        {%- if section.settings.after_image != blank -%}
+          <picture>
+            {%- if after_mobile != blank -%}
+              <source
+                media="(max-width: 749px)"
+                srcset="
+                  {{ after_mobile | image_url: width: 375 }} 375w,
+                  {{ after_mobile | image_url: width: 550 }} 550w,
+                  {{ after_mobile | image_url: width: 750 }} 750w,
+                  {{ after_mobile | image_url: width: 1100 }} 1100w
+                "
+                sizes="100vw"
+              >
+            {%- endif -%}
+            {{
+              section.settings.after_image
+              | image_url: width: 2400
+              | image_tag:
+                widths: '550, 750, 1100, 1500, 2000, 2400',
+                sizes: '(min-width: 990px) 60vw, (min-width: 750px) 50vw, 100vw',
+                loading: loading,
+                fetchpriority: fetch_priority
+            }}
+          </picture>
+        {%- else -%}
+          {{ 'lifestyle-2' | placeholder_svg_tag: 'before-after-comparison__placeholder' }}
+        {%- endif -%}
+      </div>
+
+      <span class="before-after-comparison__label before-after-comparison__label--before">{{ section.settings.before_label | escape }}</span>
+      <span class="before-after-comparison__label before-after-comparison__label--after">{{ section.settings.after_label | escape }}</span>
+
+      <div class="before-after-comparison__divider" aria-hidden="true">
+        <span class="before-after-comparison__handle">
+          <svg viewBox="0 0 28 18" aria-hidden="true">
+            <path d="M10 3 4 9l6 6M18 3l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </span>
+      </div>
+
+      <input
+        class="before-after-comparison__range"
+        data-comparison-range
+        type="range"
+        min="0"
+        max="100"
+        step="1"
+        value="{{ section.settings.initial_position }}"
+        aria-label="{{ section.settings.accessibility_label | escape }}"
+      >
+    </div>
+  </div>
+</before-after-comparison>
+
+{% schema %}
+{
+  "name": "Before/after comparison",
+  "tag": "section",
+  "class": "section",
+  "disabled_on": { "groups": ["header", "footer"] },
+  "settings": [
+    { "type": "header", "content": "Content" },
+    { "type": "inline_richtext", "id": "heading", "label": "Heading", "default": "See the difference" },
+    { "type": "richtext", "id": "text", "label": "Text", "default": "<p>Drag the handle to compare the look before and after.</p>" },
+    { "type": "text", "id": "button_label", "label": "Button label", "default": "Shop now" },
+    { "type": "url", "id": "button_link", "label": "Button link" },
+    { "type": "product", "id": "product", "label": "Fallback button product" },
+    { "type": "collection", "id": "collection", "label": "Fallback button collection" },
+    { "type": "page", "id": "page", "label": "Fallback button page" },
+
+    { "type": "header", "content": "Comparison images" },
+    { "type": "image_picker", "id": "before_image", "label": "Before image" },
+    { "type": "image_picker", "id": "after_image", "label": "After image" },
+    { "type": "image_picker", "id": "before_mobile_image", "label": "Before mobile image" },
+    { "type": "image_picker", "id": "after_mobile_image", "label": "After mobile image" },
+    { "type": "text", "id": "before_label", "label": "Before label", "default": "Without" },
+    { "type": "text", "id": "after_label", "label": "After label", "default": "With" },
+    { "type": "range", "id": "initial_position", "label": "Initial handle position", "min": 10, "max": 90, "step": 5, "unit": "%", "default": 50 },
+
+    { "type": "header", "content": "Desktop layout" },
+    { "type": "range", "id": "desktop_height", "label": "Height", "min": 360, "max": 900, "step": 10, "unit": "px", "default": 540 },
+    { "type": "range", "id": "content_width", "label": "Content panel width", "min": 30, "max": 60, "step": 1, "unit": "%", "default": 40 },
+    { "type": "range", "id": "panel_gap", "label": "Panel gap", "min": 0, "max": 40, "step": 1, "unit": "px", "default": 16 },
+    { "type": "range", "id": "panel_radius", "label": "Panel corner radius", "min": 0, "max": 50, "step": 1, "unit": "px", "default": 12 },
+    { "type": "range", "id": "content_padding_vertical", "label": "Content vertical padding", "min": 20, "max": 140, "step": 4, "unit": "px", "default": 64 },
+    { "type": "range", "id": "content_padding_horizontal", "label": "Content horizontal padding", "min": 20, "max": 140, "step": 4, "unit": "px", "default": 48 },
+
+    { "type": "header", "content": "Mobile layout" },
+    { "type": "range", "id": "mobile_content_height", "label": "Content height", "min": 240, "max": 600, "step": 10, "unit": "px", "default": 320 },
+    { "type": "range", "id": "mobile_media_height", "label": "Comparison height", "min": 260, "max": 700, "step": 10, "unit": "px", "default": 360 },
+
+    { "type": "header", "content": "Typography" },
+    { "type": "range", "id": "heading_size", "label": "Heading size", "min": 24, "max": 80, "step": 1, "unit": "px", "default": 46 },
+    { "type": "range", "id": "mobile_heading_size", "label": "Mobile heading size", "min": 22, "max": 52, "step": 1, "unit": "px", "default": 32 },
+
+    { "type": "header", "content": "Colors" },
+    { "type": "color", "id": "section_background", "label": "Section background", "default": "#FFFFFF" },
+    { "type": "color", "id": "content_background", "label": "Content background", "default": "#F44316" },
+    { "type": "color", "id": "heading_color", "label": "Heading", "default": "#FFFFFF" },
+    { "type": "color", "id": "text_color", "label": "Text", "default": "#FFFFFF" },
+    { "type": "color", "id": "button_background", "label": "Button background", "default": "#FFFFFF" },
+    { "type": "color", "id": "button_color", "label": "Button text", "default": "#111111" },
+    { "type": "color", "id": "button_border", "label": "Button border", "default": "#FFFFFF" },
+    { "type": "color", "id": "divider_color", "label": "Divider", "default": "#FFFFFF" },
+    { "type": "color", "id": "handle_background", "label": "Handle background", "default": "#FFFFFF" },
+    { "type": "color", "id": "handle_color", "label": "Handle icon", "default": "#111111" },
+    { "type": "color", "id": "label_background", "label": "Image label background", "default": "#FFFFFF" },
+    { "type": "color", "id": "label_color", "label": "Image label text", "default": "#111111" },
+
+    { "type": "header", "content": "Section spacing" },
+    { "type": "range", "id": "padding_top", "label": "Top padding", "min": 0, "max": 100, "step": 2, "unit": "px", "default": 16 },
+    { "type": "range", "id": "padding_bottom", "label": "Bottom padding", "min": 0, "max": 100, "step": 2, "unit": "px", "default": 16 },
+    { "type": "range", "id": "padding_inline", "label": "Side padding", "min": 0, "max": 100, "step": 2, "unit": "px", "default": 16 },
+
+    { "type": "header", "content": "Accessibility" },
+    { "type": "text", "id": "accessibility_label", "label": "Slider label", "default": "Reveal the before and after images" }
+  ],
+  "presets": [
+    { "name": "Before/after comparison" }
+  ]
+}
+{% endschema %}
