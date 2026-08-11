@@ -215,7 +215,7 @@
           "type": "step",
           "settings": {
             "title": "Match it with cool bottoms",
-            "collection": "",
+            "collection": "dress-up",
             "benefit_1": "100% Cotton",
             "benefit_2": "Water Proof",
             "open_by_default": false
