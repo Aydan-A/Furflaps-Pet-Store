@@ -244,7 +244,7 @@
         "products_to_show": 4,
         "columns_desktop": 4,
         "image_ratio": "4 / 5",
-        "image_fit": "cover",
+        "image_fit": "contain",
         "show_swatches": true,
         "color_option_name": "Color",
         "swatches_to_show": 4,
