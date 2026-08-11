@@ -215,7 +215,7 @@
           "type": "step",
           "settings": {
             "title": "Match it with cool bottoms",
-            "collection": "icons",
+            "collection": "letters",
             "benefit_1": "100% Cotton",
             "benefit_2": "Water Proof",
             "open_by_default": false
@@ -434,7 +434,6 @@
         "testimonial_TjKy8E": {
           "type": "testimonial",
           "settings": {
-            "image": "shopify://shop_images/iap_1200x1200_8227111728_6lsni365_jpg.avif",
             "quote": "<p>“I love this product because the ingredients are clean and transparent—and I could see a real difference within weeks.”</p>",
             "customer_name": "Anna Williams",
             "show_verified": true,
