@@ -205,7 +205,7 @@
           "type": "step",
           "settings": {
             "title": "Pick a top you love",
-            "collection": "frontpage",
+            "collection": "all-products",
             "benefit_1": "4-Way Stretch",
             "benefit_2": "Eco-Friendly",
             "open_by_default": true
