@@ -225,7 +225,7 @@
           "type": "step",
           "settings": {
             "title": "Add fun extras",
-            "collection": "",
+            "collection": "icons",
             "benefit_1": "100% Cotton",
             "benefit_2": "Colorful",
             "open_by_default": false
