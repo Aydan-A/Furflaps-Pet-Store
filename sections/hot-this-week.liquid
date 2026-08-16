@@ -17,7 +17,7 @@
 
     /* new */
     --hot-description-color:#6E7787;
-    --hot-description-size:13px;
+    --hot-description-size:14px;
     --hot-description-lines:2;
     --hot-compare-price-color:#8A93A0;
     --hot-discount-pill-background:#00B878;
@@ -37,8 +37,8 @@
     --hot-heading-size:32px;
     --hot-heading-weight:700;
     --hot-heading-letter-spacing:-0.3px;
-    --hot-product-title-size:14px;
-    --hot-price-size:14px;
+    --hot-product-title-size:18px;
+    --hot-price-size:18px;
     --hot-tab-font-size:13px;
     --hot-tab-height:36px;
     --hot-tab-padding:16px;
@@ -148,17 +148,18 @@
   }
 
   .hot-card__prices{
-    display:flex; flex-wrap:wrap; align-items:center;
+    display:flex; flex-wrap:wrap; align-items:baseline;
     gap:8px;
     margin-top:auto;          /* aligns price rows across the grid */
     padding-top:8px;
+    font-size:var(--hot-price-size);
   }
   .hot-card__price{
-    font-size:var(--hot-price-size);
+    font-size:1em;
     font-weight:700;
   }
   .hot-card__price-was{
-    font-size:calc(var(--hot-price-size) - 2px);
+    font-size:.85em;
     font-weight:500;
     color:var(--hot-compare-price-color);
     text-decoration:line-through;
@@ -167,10 +168,11 @@
   .hot-card__discount{
     background:var(--hot-discount-pill-background);
     color:var(--hot-discount-pill-text);
-    font-size:calc(var(--hot-price-size) - 2.5px);
+    font-size:.72em;
     font-weight:700;
-    padding:3px 9px; border-radius:999px;
+    padding:.25em .6em; border-radius:999px;
     white-space:nowrap;
+    align-self:center;
   }
 
   .visually-hidden{
