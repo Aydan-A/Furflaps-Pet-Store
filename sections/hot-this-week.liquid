@@ -1,286 +1,40 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Hot This Week — static preview</title>
-<style>
-  /* ------------------------------------------------------------------
-  ------------------------------------------------------------------ */
-  .hot-this-week{
-    --hot-section-background:#FFFFFF;
-    --hot-text-color:#111111;
-    --hot-image-background:#F0F3F5;
-    --hot-tab-active-background:#EEEEEC;
-    --hot-tab-active-text:#111111;
-    --hot-tab-text:#111111;
+        { "value": "600", "label": "Semibold" },
+        { "value": "700", "label": "Bold" },
+        { "value": "800", "label": "Extra bold" }
+      ]
+    },
+    { "type": "range", "id": "heading_letter_spacing", "label": "Heading letter spacing", "min": -10, "max": 10, "step": 1, "unit": "px", "default": -3 },
+    { "type": "range", "id": "tab_font_size", "label": "Tab font size", "min": 11, "max": 20, "step": 1, "unit": "px", "default": 13 },
 
-    /* new */
-    --hot-description-color:#6E7787;
-    --hot-description-size:14px;
-    --hot-description-lines:2;
-    --hot-compare-price-color:#8A93A0;
-    --hot-discount-pill-background:#00B878;
-    --hot-discount-pill-text:#FFFFFF;
+    { "type": "header", "content": "Tabs" },
+    { "type": "range", "id": "tab_height", "label": "Tab height", "min": 28, "max": 56, "step": 2, "unit": "px", "default": 36 },
+    { "type": "range", "id": "tab_padding", "label": "Horizontal padding", "min": 8, "max": 32, "step": 1, "unit": "px", "default": 16 },
+    { "type": "range", "id": "tab_radius", "label": "Corner radius", "min": 0, "max": 28, "step": 1, "unit": "px", "default": 18 },
+    { "type": "range", "id": "tab_gap", "label": "Gap", "min": 0, "max": 16, "step": 1, "unit": "px", "default": 4 },
 
-    --hot-padding-top:40px;
-    --hot-padding-bottom:48px;
-    --hot-padding-inline:40px;
-    --hot-header-spacing:28px;
-    --hot-card-gap:12px;
-    --hot-card-radius:16px;
-    --hot-card-content-spacing:12px;
-    --hot-badge-offset:10px;
-    --hot-columns:4;
-    --hot-image-ratio:3 / 4;
-    --hot-image-fit:contain;
-    --hot-heading-size:32px;
-    --hot-heading-weight:700;
-    --hot-heading-letter-spacing:-0.3px;
-    --hot-product-title-size:18px;
-    --hot-price-size:18px;
-    --hot-tab-font-size:13px;
-    --hot-tab-height:36px;
-    --hot-tab-padding:16px;
-    --hot-tab-radius:18px;
-    --hot-tab-gap:4px;
-  }
+    { "type": "header", "content": "Colors" },
+    { "type": "color", "id": "background_color", "label": "Section background", "default": "#FFFFFF" },
+    { "type": "color", "id": "text_color", "label": "Text", "default": "#111111" },
+    { "type": "color", "id": "image_background", "label": "Image background", "default": "#F0F3F5" },
+    { "type": "color", "id": "tab_text", "label": "Inactive tab text", "default": "#111111" },
+    { "type": "color", "id": "tab_active_background", "label": "Active tab background", "default": "#EEEEEC" },
+    { "type": "color", "id": "tab_active_text", "label": "Active tab text", "default": "#111111" },
+    { "type": "color", "id": "sale_price_color", "label": "Sale price", "default": "#E13C2F" },
+    { "type": "color", "id": "sale_badge_background", "label": "Sale badge", "default": "#E13C2F" },
+    { "type": "color", "id": "sold_out_badge_background", "label": "Sold-out badge", "default": "#555555" },
+    { "type": "color", "id": "custom_badge_background", "label": "Custom badge", "default": "#7961D7" },
+    { "type": "color", "id": "badge_text_color", "label": "Badge text", "default": "#FFFFFF" },
 
-  *{box-sizing:border-box}
-  body{
-    margin:0;
-    font-family:Assistant,"Inter",system-ui,-apple-system,sans-serif;
-    background:#F7F8FA;
-  }
-
-  /* ---------- SECTION ---------- */
-  .hot-this-week{
-    background:var(--hot-section-background);
-    color:var(--hot-text-color);
-    padding:var(--hot-padding-top) var(--hot-padding-inline) var(--hot-padding-bottom);
-  }
-  .hot-this-week__inner{ max-width:1280px; margin:0 auto }
-
-  .hot-this-week__header{
-    display:flex; align-items:center; justify-content:space-between;
-    flex-wrap:wrap; gap:16px;
-    margin-bottom:var(--hot-header-spacing);
-  }
-  .hot-this-week__heading{
-    margin:0;
-    font-size:var(--hot-heading-size);
-    font-weight:var(--hot-heading-weight);
-    letter-spacing:var(--hot-heading-letter-spacing);
-  }
-  .hot-this-week__tabs{ display:flex; gap:var(--hot-tab-gap) }
-  .hot-this-week__tab{
-    border:0; background:transparent; cursor:pointer;
-    font:inherit; font-size:var(--hot-tab-font-size); font-weight:600;
-    color:var(--hot-tab-text);
-    height:var(--hot-tab-height);
-    padding-inline:var(--hot-tab-padding);
-    border-radius:var(--hot-tab-radius);
-  }
-  .hot-this-week__tab[aria-selected="true"]{
-    background:var(--hot-tab-active-background);
-    color:var(--hot-tab-active-text);
-  }
-  .hot-this-week__tab:focus-visible{ outline:2px solid currentColor; outline-offset:2px }
-
-  .hot-this-week__products{
-    list-style:none; margin:0; padding:0;
-    display:grid;
-    grid-template-columns:repeat(var(--hot-columns),minmax(0,1fr));
-    gap:var(--hot-card-gap);
-  }
-  .hot-this-week__product{ display:flex }
-
-  /* ---------- CARD ---------- */
-  .hot-this-week__card{
-    display:flex; flex-direction:column;
-    width:100%;
-    text-decoration:none; color:inherit;
-  }
-
-  .hot-card__media{
-    position:relative;
-    background:var(--hot-image-background);
-    border-radius:var(--hot-card-radius);
-    aspect-ratio:var(--hot-image-ratio);
-    overflow:hidden;
-    display:grid; place-items:center;
-  }
-  .hot-card__media img{
-    width:100%; height:100%;
-    object-fit:var(--hot-image-fit);
-  }
-  .hot-card__badge{
-    position:absolute;
-    top:var(--hot-badge-offset); left:var(--hot-badge-offset);
-    background:#7961D7; color:#fff;
-    font-size:10.5px; font-weight:700;
-    letter-spacing:.06em; text-transform:uppercase;
-    padding:4px 10px; border-radius:999px;
-  }
-
-  /* ---------- CARD BOTTOM (the part you're changing) ---------- */
-  .hot-card__info{
-    display:flex; flex-direction:column; gap:4px;
-    flex:1 1 auto;
-    margin-top:var(--hot-card-content-spacing);
-  }
-  .hot-card__title{
-    margin:0;
-    font-size:var(--hot-product-title-size);
-    font-weight:700; line-height:1.3;
-  }
-  .hot-card__link{ text-decoration:none; color:inherit }
-
-  .hot-card__description{
-    margin:0;
-    font-size:var(--hot-description-size);
-    line-height:1.45;
-    color:var(--hot-description-color);
-    display:-webkit-box;
-    -webkit-line-clamp:var(--hot-description-lines);
-    -webkit-box-orient:vertical;
-    overflow:hidden;
-  }
-
-  .hot-card__prices{
-    display:flex; flex-wrap:wrap; align-items:baseline;
-    gap:8px;
-    margin-top:auto;          /* aligns price rows across the grid */
-    padding-top:8px;
-    font-size:var(--hot-price-size);
-  }
-  .hot-card__price{
-    font-size:1em;
-    font-weight:700;
-  }
-  .hot-card__price-was{
-    font-size:.85em;
-    font-weight:500;
-    color:var(--hot-compare-price-color);
-    text-decoration:line-through;
-    text-decoration-thickness:1.5px;
-  }
-  .hot-card__discount{
-    background:var(--hot-discount-pill-background);
-    color:var(--hot-discount-pill-text);
-    font-size:.72em;
-    font-weight:700;
-    padding:.25em .6em; border-radius:999px;
-    white-space:nowrap;
-    align-self:center;
-  }
-
-  .visually-hidden{
-    position:absolute; width:1px; height:1px; padding:0; margin:-1px;
-    overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; border:0;
-  }
-
-  @media (max-width:990px){
-    .hot-this-week__products{ grid-template-columns:repeat(2,minmax(0,1fr)) }
-  }
-  @media (max-width:600px){
-    .hot-this-week{ padding:32px 16px 36px }
-    .hot-this-week__heading{ font-size:28px }
-    .hot-this-week__products{ grid-template-columns:repeat(1,minmax(0,1fr)) }
-  }
-
-  /* preview-only: stands in for the product photo */
-  .mock{ text-align:center; font-weight:800; font-size:38px; letter-spacing:.12em }
-  .mock small{ display:block; font-size:10px; font-weight:600; color:#8a8178; letter-spacing:0; margin-top:4px }
-</style>
-</head>
-<body>
-
-<section class="hot-this-week">
-  <div class="hot-this-week__inner">
-
-    <div class="hot-this-week__header">
-      <h2 class="hot-this-week__heading">Hot This Week</h2>
-      <div class="hot-this-week__tabs" role="tablist" aria-label="Product collections">
-        <button class="hot-this-week__tab" type="button" role="tab" aria-selected="true">Best Sellers</button>
-        <button class="hot-this-week__tab" type="button" role="tab" aria-selected="false">New Arrivals</button>
-      </div>
-    </div>
-
-    <ul class="hot-this-week__products" role="list">
-
-      <!-- on sale + custom badge -->
-      <li class="hot-this-week__product">
-        <div class="hot-this-week__card">
-          <div class="hot-card__media">
-            <span class="hot-card__badge">New</span>
-            <div class="mock" style="color:#e8b93c">A B C<small>Yellow</small></div>
-          </div>
-          <div class="hot-card__info">
-            <h3 class="hot-card__title"><a class="hot-card__link" href="#">Charm Bundle</a></h3>
-            <p class="hot-card__description">Pick any four charms and save — mix letters, numbers and shapes in whichever colours you like.</p>
-            <div class="hot-card__prices">
-              <span class="hot-card__price">$9.99</span>
-              <s class="hot-card__price-was"><span class="visually-hidden">Regular price</span>$11.75</s>
-              <span class="hot-card__discount">15% off</span>
-            </div>
-          </div>
-        </div>
-      </li>
-
-      <!-- on sale, no badge -->
-      <li class="hot-this-week__product">
-        <div class="hot-this-week__card">
-          <div class="hot-card__media">
-            <div class="mock" style="color:#1b3563">A B C<small>Dark blue</small></div>
-          </div>
-          <div class="hot-card__info">
-            <h3 class="hot-card__title"><a class="hot-card__link" href="#">Waterproof Dog Leash + Collar Set</a></h3>
-            <p class="hot-card__description">5ft leash + waterproof collar + charm add-ons.</p>
-            <div class="hot-card__prices">
-              <span class="hot-card__price">$60.00</span>
-              <s class="hot-card__price-was"><span class="visually-hidden">Regular price</span>$63.00</s>
-              <span class="hot-card__discount">4% off</span>
-            </div>
-          </div>
-        </div>
-      </li>
-
-      <!-- full price, long title -->
-      <li class="hot-this-week__product">
-        <div class="hot-this-week__card">
-          <div class="hot-card__media">
-            <div class="mock" style="color:#7cb6e8">A B C<small>Light blue</small></div>
-          </div>
-          <div class="hot-card__info">
-            <h3 class="hot-card__title"><a class="hot-card__link" href="#">Letter Charm — Personalised Collar Add-on</a></h3>
-            <p class="hot-card__description">Three colours, fits 5/8" and 1" collar widths.</p>
-            <div class="hot-card__prices">
-              <span class="hot-card__price">$2.99</span>
-            </div>
-          </div>
-        </div>
-      </li>
-
-      <!-- full price, no discount -->
-      <li class="hot-this-week__product">
-        <div class="hot-this-week__card">
-          <div class="hot-card__media">
-            <div class="mock" style="color:#e8b93c">1 2 3<small>Yellow</small></div>
-          </div>
-          <div class="hot-card__info">
-            <h3 class="hot-card__title"><a class="hot-card__link" href="#">Number Charm</a></h3>
-            <p class="hot-card__description">Add a house number or birth year — same three colours as the letters.</p>
-            <div class="hot-card__prices">
-              <span class="hot-card__price">From $2.99</span>
-            </div>
-          </div>
-        </div>
-      </li>
-
-    </ul>
-  </div>
-</section>
-
-</body>
-</html>
+    { "type": "header", "content": "Spacing" },
+    { "type": "range", "id": "header_spacing", "label": "Space below heading", "min": 12, "max": 60, "step": 2, "unit": "px", "default": 28 },
+    { "type": "range", "id": "padding_top", "label": "Desktop top padding", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 40 },
+    { "type": "range", "id": "padding_bottom", "label": "Desktop bottom padding", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 48 },
+    { "type": "range", "id": "padding_inline", "label": "Desktop side padding", "min": 12, "max": 80, "step": 2, "unit": "px", "default": 40 },
+    { "type": "range", "id": "mobile_padding_top", "label": "Mobile top padding", "min": 0, "max": 80, "step": 4, "unit": "px", "default": 32 },
+    { "type": "range", "id": "mobile_padding_bottom", "label": "Mobile bottom padding", "min": 0, "max": 80, "step": 4, "unit": "px", "default": 36 },
+    { "type": "range", "id": "mobile_padding_inline", "label": "Mobile side padding", "min": 8, "max": 40, "step": 2, "unit": "px", "default": 16 }
+  ],
+  "presets": [
+    { "name": "Hot this week" }
+  ]
+}
