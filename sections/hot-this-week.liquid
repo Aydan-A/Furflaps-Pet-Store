@@ -20,10 +20,16 @@
 
   *{box-sizing:border-box}
   body{
-    margin:0; padding:32px 20px;
+    margin:0; padding:0;
     background:#f7f8fa;
     font-family:"Inter","Segoe UI",system-ui,-apple-system,sans-serif;
     color:var(--ink);
+  }
+
+  /* section wrapper — the card should never sit flush against the edges */
+  .product-section{
+    padding-block:36px;     /* 36px top + bottom */
+    padding-inline:20px;
   }
 
   .grid{
@@ -120,6 +126,7 @@
 </head>
 <body>
 
+<section class="product-section">
 <div class="grid">
 
   <a class="card" href="#">
@@ -142,5 +149,6 @@
   </a>
 
 </div>
+</section>
 </body>
 </html>
