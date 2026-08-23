@@ -30,11 +30,11 @@
         "change_slides_speed": 5,
         "color_scheme": "scheme-1",
         "show_line_separator": true,
+        "message_font_size": 12,
+        "message_vertical_padding": 7,
         "show_social": false,
         "enable_country_selector": false,
-        "enable_language_selector": false,
-        "message_font_size": 12,
-        "message_vertical_padding": 7
+        "enable_language_selector": false
       }
     },
     "header": {
@@ -47,7 +47,7 @@
         "nav_link_gap": 32,
         "nav_font_size": 13,
         "nav_alignment": "center",
-        "search_bg_color": "#FFFFFF",
+        "search_bg_color": "#ffffff",
         "search_max_width": 580,
         "search_border_radius": 0,
         "search_border_thickness": 1,
