@@ -1,6 +1,8 @@
 .hot-week-picks {
+  display: block;
   background: var(--hot-section-background);
   color: var(--hot-text-color);
+  margin-block: var(--hot-margin-top) var(--hot-margin-bottom);
   padding-block: var(--hot-padding-top) var(--hot-padding-bottom);
 }
 
@@ -269,6 +271,7 @@
 
 @media screen and (max-width: 749px) {
   .hot-week-picks {
+    margin-block: var(--hot-mobile-margin-top) var(--hot-mobile-margin-bottom);
     padding-block: var(--hot-mobile-padding-top) var(--hot-mobile-padding-bottom);
   }
 
