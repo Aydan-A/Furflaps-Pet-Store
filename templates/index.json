@@ -142,60 +142,16 @@
     },
     "hot_this_week": {
       "type": "hot-this-week",
-      "blocks": {
-        "card_charm_bundle": {
-          "type": "product_card",
-          "settings": {
-            "custom_title": "Charm Bundle",
-            "description": "Pick any four charms and save — mix letters, numbers and shapes in whichever colours you like.",
-            "show_badge": true,
-            "badge_text": "New",
-            "custom_price": "$9.99",
-            "custom_compare_price": "$11.75",
-            "show_discount": true,
-            "discount_text": "15% off",
-            "tab": "best_sellers"
-          }
-        },
-        "card_leash_collar": {
-          "type": "product_card",
-          "settings": {
-            "custom_title": "Waterproof Dog Leash + Collar Set",
-            "description": "5ft leash + waterproof collar + charm add-ons.",
-            "custom_price": "$60.00",
-            "custom_compare_price": "$63.00",
-            "show_discount": true,
-            "discount_text": "4% off",
-            "tab": "best_sellers"
-          }
-        },
-        "card_letter_charm": {
-          "type": "product_card",
-          "settings": {
-            "custom_title": "Letter Charm — Personalised Collar Add-on",
-            "description": "Three colours, fits 5/8\" and 1\" collar widths.",
-            "custom_price": "$2.99",
-            "tab": "new_arrivals"
-          }
-        },
-        "card_number_charm": {
-          "type": "product_card",
-          "settings": {
-            "custom_title": "Number Charm",
-            "description": "Add a house number or birth year — same three colours as the letters.",
-            "custom_price": "From $2.99",
-            "tab": "new_arrivals"
-          }
-        }
-      },
-      "block_order": ["card_charm_bundle", "card_leash_collar", "card_letter_charm", "card_number_charm"],
       "settings": {
         "show_heading": true,
         "heading": "Hot This Week",
         "show_tabs": true,
+        "best_sellers_collection": "all",
         "best_sellers_label": "Best Sellers",
+        "new_arrivals_collection": "all",
         "new_arrivals_label": "New Arrivals",
         "default_tab": "best_sellers",
+        "products_to_show": 8,
         "tabs_accessibility_label": "Product collections",
         "columns_desktop": 4,
         "columns_tablet": 2,
@@ -207,12 +163,19 @@
         "image_fit": "contain",
         "product_title_size": 18,
         "price_size": 18,
+        "show_description": true,
+        "description_metafield_namespace": "custom",
+        "description_metafield_key": "card_description",
         "description_color": "#6e7787",
         "description_size": 14,
         "description_lines": 2,
+        "show_metafield_badge": false,
+        "badge_metafield_namespace": "custom",
+        "badge_metafield_key": "badge",
         "badge_offset": 10,
         "badge_background": "#7961d7",
         "badge_text_color": "#ffffff",
+        "show_discount": true,
         "compare_price_color": "#8a93a0",
         "discount_pill_background": "#00b878",
         "discount_pill_text": "#ffffff",
