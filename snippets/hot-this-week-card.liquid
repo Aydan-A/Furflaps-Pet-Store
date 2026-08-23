@@ -2,77 +2,119 @@
   Product card used by the Hot this week section.
 
   Accepts:
-  - product: Product object
+  - block: Block object (type "product_card")
   - section: Section object
   - lazy_load: Boolean
 {% endcomment %}
 
 {%- liquid
-  assign custom_badge = blank
-  if section.settings.show_metafield_badge and section.settings.badge_metafield_namespace != blank and section.settings.badge_metafield_key != blank
-    assign custom_badge = product.metafields[section.settings.badge_metafield_namespace][section.settings.badge_metafield_key].value
+  assign product = block.settings.product
+  assign card_title = block.settings.custom_title | default: product.title
+  assign card_url = block.settings.custom_link | default: product.url
+
+  assign is_clickable = false
+  if card_url != blank
+    assign is_clickable = true
   endif
 
-  assign color_option_name = section.settings.color_option_name | downcase
-  assign color_value = blank
-  for option in product.options_with_values
-    assign option_name = option.name | downcase
-    if option_name == color_option_name
-      assign color_value = option.values.first
-      break
+  assign discount_final = blank
+  if block.settings.show_discount
+    assign discount_final = block.settings.discount_text
+    if discount_final == blank and block.settings.custom_price == blank and product.compare_at_price > product.price
+      assign discount_pct = product.compare_at_price | minus: product.price | times: 100 | divided_by: product.compare_at_price
+      assign discount_final = discount_pct | append: '% off'
     endif
-  endfor
+  endif
+
+  assign money_price = blank
+  assign money_compare_price = blank
+  if block.settings.custom_price != blank
+    assign money_price = block.settings.custom_price
+    assign money_compare_price = block.settings.custom_compare_price
+  elsif product != blank
+    if settings.currency_code_enabled
+      assign money_price = product.price | money_with_currency
+    else
+      assign money_price = product.price | money
+    endif
+    if product.price_varies
+      assign money_price = 'products.product.price.from_price_html' | t: price: money_price
+    endif
+    if product.compare_at_price > product.price and product.price_varies == false and product.compare_at_price_varies == false
+      if settings.currency_code_enabled
+        assign money_compare_price = product.compare_at_price | money_with_currency
+      else
+        assign money_compare_price = product.compare_at_price | money
+      endif
+    endif
+  endif
 -%}
 
-<article class="hot-card">
-  <a class="hot-card__media" href="{{ product.url }}" aria-label="{{ product.title | escape }}">
-    <div class="hot-card__badges">
-      {%- if custom_badge != blank -%}
-        <span class="hot-card__badge hot-card__badge--custom">{{ custom_badge | escape }}</span>
-      {%- endif -%}
-      {%- unless product.available -%}
-        <span class="hot-card__badge hot-card__badge--sold-out">{{ 'products.product.sold_out' | t }}</span>
-      {%- elsif product.compare_at_price > product.price -%}
-        <span class="hot-card__badge hot-card__badge--sale">{{ 'products.product.on_sale' | t }}</span>
-      {%- endunless -%}
-    </div>
+<div class="hot-this-week__card">
+  {%- if is_clickable -%}
+    <a class="hot-card__media" href="{{ card_url }}" aria-label="{{ card_title | escape }}">
+  {%- else -%}
+    <div class="hot-card__media">
+  {%- endif -%}
+    {%- if block.settings.show_badge and block.settings.badge_text != blank -%}
+      <span class="hot-card__badge">{{ block.settings.badge_text | escape }}</span>
+    {%- endif -%}
 
-    {%- if product.featured_media -%}
+    {%- if block.settings.custom_image != blank -%}
       {{
-        product.featured_media
+        block.settings.custom_image
         | image_url: width: 900
         | image_tag:
-          class: 'hot-card__image hot-card__image--primary',
+          class: 'hot-card__image',
           widths: '240, 360, 480, 640, 750, 900',
           sizes: '(min-width: 990px) 25vw, (min-width: 750px) 38vw, 72vw',
           loading: lazy_load
       }}
-      {%- if section.settings.show_secondary_image and product.media[1].media_type == 'image' -%}
-        {{
-          product.media[1]
-          | image_url: width: 900
-          | image_tag:
-            class: 'hot-card__image hot-card__image--secondary',
-            widths: '240, 360, 480, 640, 750, 900',
-            sizes: '(min-width: 990px) 25vw, (min-width: 750px) 38vw, 72vw',
-            loading: 'lazy'
-        }}
-      {%- endif -%}
+    {%- elsif product.featured_media -%}
+      {{
+        product.featured_media
+        | image_url: width: 900
+        | image_tag:
+          class: 'hot-card__image',
+          widths: '240, 360, 480, 640, 750, 900',
+          sizes: '(min-width: 990px) 25vw, (min-width: 750px) 38vw, 72vw',
+          loading: lazy_load
+      }}
     {%- else -%}
       {{ 'product-apparel-1' | placeholder_svg_tag: 'hot-card__placeholder' }}
     {%- endif -%}
-  </a>
+  {%- if is_clickable -%}
+    </a>
+  {%- else -%}
+    </div>
+  {%- endif -%}
 
-  <div class="hot-card__details">
+  <div class="hot-card__info">
     <h3 class="hot-card__title">
-      <a href="{{ product.url }}">{{ product.title | escape }}</a>
+      {%- if is_clickable -%}
+        <a class="hot-card__link" href="{{ card_url }}">{{ card_title | escape }}</a>
+      {%- else -%}
+        {{ card_title | escape }}
+      {%- endif -%}
     </h3>
-    {% render 'price', product: product, price_class: 'hot-card__price', show_compare_at_price: true %}
-    {%- if section.settings.show_color_swatch and color_value != blank and color_value.swatch != blank -%}
-      <span class="hot-card__swatch" title="{{ color_value | escape }}">
-        <span class="visually-hidden">{{ color_value }}</span>
-        {% render 'swatch', swatch: color_value.swatch, shape: 'square' %}
-      </span>
+
+    {%- if block.settings.description != blank -%}
+      <p class="hot-card__description">{{ block.settings.description | escape }}</p>
+    {%- endif -%}
+
+    {%- if money_price != blank -%}
+      <div class="hot-card__prices">
+        <span class="hot-card__price">{{ money_price }}</span>
+        {%- if money_compare_price != blank -%}
+          <s class="hot-card__price-was">
+            <span class="visually-hidden">{{ 'products.product.price.regular_price' | t }}</span>
+            {{ money_compare_price }}
+          </s>
+        {%- endif -%}
+        {%- if discount_final != blank -%}
+          <span class="hot-card__discount">{{ discount_final | escape }}</span>
+        {%- endif -%}
+      </div>
     {%- endif -%}
   </div>
-</article>
+</div>
