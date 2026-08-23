@@ -160,7 +160,7 @@
         "card_gap": 12,
         "card_radius": 16,
         "card_content_spacing": 12,
-        "image_ratio": "3 / 4",
+        "image_ratio": "1 / 1",
         "image_fit": "contain",
         "product_title_size": 18,
         "price_size": 18,
