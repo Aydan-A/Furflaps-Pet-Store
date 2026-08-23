@@ -17,7 +17,7 @@
         "announcement-bar-0": {
           "type": "announcement",
           "settings": {
-            "text": "Welcome to our store",
+            "text": "Free shipping across Canada on orders $50+",
             "link": ""
           }
         }
@@ -39,7 +39,7 @@
       "type": "header",
       "settings": {
         "logo_position": "middle-left",
-        "mobile_logo_position": "center",
+        "mobile_logo_position": "left",
         "menu": "main-menu",
         "menu_type_desktop": "dropdown",
         "sticky_header_type": "on-scroll-up",

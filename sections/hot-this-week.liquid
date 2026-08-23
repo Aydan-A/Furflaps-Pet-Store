@@ -1,5 +1,3 @@
-{{ 'component-price.css' | asset_url | stylesheet_tag }}
-{{ 'component-swatch.css' | asset_url | stylesheet_tag }}
 {{ 'hot-this-week.css' | asset_url | stylesheet_tag }}
 <script src="{{ 'hot-this-week.js' | asset_url }}" defer="defer"></script>
 
@@ -31,10 +29,13 @@
     --hot-tab-active-background: {{ section.settings.tab_active_background }};
     --hot-tab-active-text: {{ section.settings.tab_active_text }};
     --hot-tab-text: {{ section.settings.tab_text }};
-    --hot-sale-price-color: {{ section.settings.sale_price_color }};
-    --hot-sale-badge-background: {{ section.settings.sale_badge_background }};
-    --hot-sold-out-badge-background: {{ section.settings.sold_out_badge_background }};
-    --hot-custom-badge-background: {{ section.settings.custom_badge_background }};
+    --hot-description-color: {{ section.settings.description_color }};
+    --hot-description-size: {{ section.settings.description_size }}px;
+    --hot-description-lines: {{ section.settings.description_lines }};
+    --hot-compare-price-color: {{ section.settings.compare_price_color }};
+    --hot-discount-pill-background: {{ section.settings.discount_pill_background }};
+    --hot-discount-pill-text: {{ section.settings.discount_pill_text }};
+    --hot-badge-background: {{ section.settings.badge_background }};
     --hot-badge-text: {{ section.settings.badge_text_color }};
     --hot-padding-top: {{ section.settings.padding_top }}px;
     --hot-padding-bottom: {{ section.settings.padding_bottom }}px;
@@ -65,7 +66,6 @@
     --hot-tab-padding: {{ section.settings.tab_padding }}px;
     --hot-tab-radius: {{ section.settings.tab_radius }}px;
     --hot-tab-gap: {{ section.settings.tab_gap }}px;
-    --hot-swatch-size: {{ section.settings.swatch_size }}px;
   }
 {%- endstyle -%}
 
@@ -132,14 +132,16 @@
         {%- if tab_count > 0 -%}
           <ul class="hot-this-week__products" role="list">
             {%- for block in section.blocks -%}
-              {%- if block.type == 'product_card' and (block.settings.tab == tab_value or block.settings.tab == 'both') -%}
-                <li class="hot-this-week__product" {{ block.shopify_attributes }}>
-                  {% render 'hot-this-week-card',
-                    block: block,
-                    section: section,
-                    lazy_load: 'lazy'
-                  %}
-                </li>
+              {%- if block.type == 'product_card' -%}
+                {%- if block.settings.tab == tab_value or block.settings.tab == 'both' -%}
+                  <li class="hot-this-week__product" {{ block.shopify_attributes }}>
+                    {% render 'hot-this-week-card',
+                      block: block,
+                      section: section,
+                      lazy_load: 'lazy'
+                    %}
+                  </li>
+                {%- endif -%}
               {%- endif -%}
             {%- endfor -%}
           </ul>
@@ -181,8 +183,8 @@
 
     { "type": "header", "content": "Product cards" },
     { "type": "range", "id": "columns_desktop", "label": "Desktop products per row", "min": 2, "max": 6, "step": 1, "default": 4 },
-    { "type": "range", "id": "columns_tablet", "label": "Tablet products per row", "min": 1, "max": 4, "step": 0.1, "default": 2.5 },
-    { "type": "range", "id": "columns_mobile", "label": "Mobile products per row", "min": 1, "max": 2, "step": 0.1, "default": 1.4 },
+    { "type": "range", "id": "columns_tablet", "label": "Tablet products per row", "min": 1, "max": 4, "step": 1, "default": 2 },
+    { "type": "range", "id": "columns_mobile", "label": "Mobile products per row", "min": 1, "max": 2, "step": 1, "default": 1 },
     { "type": "range", "id": "card_gap", "label": "Card gap", "min": 4, "max": 40, "step": 2, "unit": "px", "default": 12 },
     { "type": "range", "id": "card_radius", "label": "Image corner radius", "min": 0, "max": 40, "step": 1, "unit": "px", "default": 16 },
     { "type": "range", "id": "card_content_spacing", "label": "Space below image", "min": 4, "max": 30, "step": 1, "unit": "px", "default": 12 },
@@ -201,17 +203,23 @@
         { "value": "cover", "label": "Cover" }
       ]
     },
-    { "type": "checkbox", "id": "show_secondary_image", "label": "Show second image on hover", "default": true },
-    { "type": "range", "id": "product_title_size", "label": "Product title size", "min": 11, "max": 24, "step": 1, "unit": "px", "default": 14 },
-    { "type": "range", "id": "price_size", "label": "Price size", "min": 11, "max": 22, "step": 1, "unit": "px", "default": 14 },
+    { "type": "range", "id": "product_title_size", "label": "Product title size", "min": 11, "max": 24, "step": 1, "unit": "px", "default": 18 },
+    { "type": "range", "id": "price_size", "label": "Price size", "min": 11, "max": 24, "step": 1, "unit": "px", "default": 18 },
 
-    { "type": "header", "content": "Product swatches" },
-    { "type": "checkbox", "id": "show_color_swatch", "label": "Show first Shopify color swatch", "default": true },
-    { "type": "text", "id": "color_option_name", "label": "Color option name", "default": "Color", "info": "Must match the product option name. Only configured Shopify swatches are shown." },
-    { "type": "range", "id": "swatch_size", "label": "Swatch size", "min": 8, "max": 24, "step": 1, "unit": "px", "default": 12 },
+    { "type": "header", "content": "Description" },
+    { "type": "color", "id": "description_color", "label": "Description text", "default": "#6E7787" },
+    { "type": "range", "id": "description_size", "label": "Description size", "min": 10, "max": 18, "step": 1, "unit": "px", "default": 14 },
+    { "type": "range", "id": "description_lines", "label": "Description max lines", "min": 1, "max": 4, "step": 1, "default": 2 },
 
-    { "type": "header", "content": "Badge inset" },
+    { "type": "header", "content": "Badge" },
     { "type": "range", "id": "badge_offset", "label": "Badge inset", "min": 4, "max": 24, "step": 1, "unit": "px", "default": 10 },
+    { "type": "color", "id": "badge_background", "label": "Badge background", "default": "#7961D7" },
+    { "type": "color", "id": "badge_text_color", "label": "Badge text", "default": "#FFFFFF" },
+
+    { "type": "header", "content": "Discount badge" },
+    { "type": "color", "id": "compare_price_color", "label": "Compare-at price text", "default": "#8A93A0" },
+    { "type": "color", "id": "discount_pill_background", "label": "Discount pill background", "default": "#00B878" },
+    { "type": "color", "id": "discount_pill_text", "label": "Discount pill text", "default": "#FFFFFF" },
 
     { "type": "header", "content": "Typography" },
     { "type": "font_picker", "id": "heading_font", "label": "Heading font", "default": "assistant_n7" },
@@ -242,11 +250,6 @@
     { "type": "color", "id": "tab_text", "label": "Inactive tab text", "default": "#111111" },
     { "type": "color", "id": "tab_active_background", "label": "Active tab background", "default": "#EEEEEC" },
     { "type": "color", "id": "tab_active_text", "label": "Active tab text", "default": "#111111" },
-    { "type": "color", "id": "sale_price_color", "label": "Sale price", "default": "#E13C2F" },
-    { "type": "color", "id": "sale_badge_background", "label": "Discount badge", "default": "#E13C2F" },
-    { "type": "color", "id": "sold_out_badge_background", "label": "Sold-out badge", "default": "#555555" },
-    { "type": "color", "id": "custom_badge_background", "label": "Custom badge", "default": "#7961D7" },
-    { "type": "color", "id": "badge_text_color", "label": "Badge text", "default": "#FFFFFF" },
 
     { "type": "header", "content": "Spacing" },
     { "type": "range", "id": "header_spacing", "label": "Space below heading", "min": 12, "max": 60, "step": 2, "unit": "px", "default": 28 },
@@ -302,19 +305,47 @@
       "blocks": [
         {
           "type": "product_card",
-          "settings": { "custom_title": "Charm Bundle", "description": "Pick any four charms and save — mix letters, numbers and shapes in.", "tab": "best_sellers" }
+          "settings": {
+            "custom_title": "Charm Bundle",
+            "description": "Pick any four charms and save — mix letters, numbers and shapes in whichever colours you like.",
+            "show_badge": true,
+            "badge_text": "New",
+            "custom_price": "$9.99",
+            "custom_compare_price": "$11.75",
+            "show_discount": true,
+            "discount_text": "15% off",
+            "tab": "best_sellers"
+          }
         },
         {
           "type": "product_card",
-          "settings": { "custom_title": "Waterproof Dog Leash + Collar Set", "description": "5ft leash + waterproof collar + charm add-ons.", "tab": "best_sellers" }
+          "settings": {
+            "custom_title": "Waterproof Dog Leash + Collar Set",
+            "description": "5ft leash + waterproof collar + charm add-ons.",
+            "custom_price": "$60.00",
+            "custom_compare_price": "$63.00",
+            "show_discount": true,
+            "discount_text": "4% off",
+            "tab": "best_sellers"
+          }
         },
         {
           "type": "product_card",
-          "settings": { "custom_title": "Letter Charm — Personalised Collar Add-on", "description": "", "tab": "new_arrivals" }
+          "settings": {
+            "custom_title": "Letter Charm — Personalised Collar Add-on",
+            "description": "Three colours, fits 5/8\" and 1\" collar widths.",
+            "custom_price": "$2.99",
+            "tab": "new_arrivals"
+          }
         },
         {
           "type": "product_card",
-          "settings": { "custom_title": "Number Charm", "description": "", "tab": "new_arrivals" }
+          "settings": {
+            "custom_title": "Number Charm",
+            "description": "Add a house number or birth year — same three colours as the letters.",
+            "custom_price": "From $2.99",
+            "tab": "new_arrivals"
+          }
         }
       ]
     }
