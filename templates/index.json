@@ -199,7 +199,7 @@
         "text_color": "#111111",
         "image_background": "#f0f3f5",
         "tab_text": "#111111",
-        "tab_active_background": "#eeeeec",
+        "tab_active_background": "#E5E7EB",
         "tab_active_text": "#111111",
         "header_spacing": 28,
         "padding_top": 40,
