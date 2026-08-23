@@ -44,6 +44,7 @@
         },
         "family": {
           "type": "slide",
+          "disabled": true,
           "settings": {
             "heading": "Made for every family member",
             "description": "<p>Find practical, playful products chosen to make daily care feel simple.</p>",
@@ -185,7 +186,7 @@
       "name": "Dress up in steps",
       "settings": {
         "eyebrow": "How you style it",
-        "heading": "Dress up in 3 steps.\nPick - Pair - Play!",
+        "heading": "Pick - Pair - Play!",
         "products_to_show": 4,
         "columns_desktop": 4,
         "image_ratio": "4 / 5",
