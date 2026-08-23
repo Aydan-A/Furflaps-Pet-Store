@@ -1,5 +1,5 @@
-{{ 'hot-this-week.css' | asset_url | stylesheet_tag }}
-<script src="{{ 'hot-this-week.js' | asset_url }}" defer="defer"></script>
+{{ 'hot-week-picks.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'hot-week-picks.js' | asset_url }}" defer="defer"></script>
 
 {%- liquid
   assign first_tab_active = true
@@ -58,17 +58,17 @@
   }
 {%- endstyle -%}
 
-<hot-this-week class="hot-this-week">
-  <div class="hot-this-week__inner">
-    <div class="hot-this-week__header">
+<hot-week-picks class="hot-week-picks">
+  <div class="hot-week-picks__inner">
+    <div class="hot-week-picks__header">
       {%- if section.settings.show_heading and section.settings.heading != blank -%}
-        <h2 class="hot-this-week__heading">{{ section.settings.heading | escape }}</h2>
+        <h2 class="hot-week-picks__heading">{{ section.settings.heading | escape }}</h2>
       {%- endif -%}
 
       {%- if section.settings.show_tabs -%}
-        <div class="hot-this-week__tabs" role="tablist" aria-label="{{ section.settings.tabs_accessibility_label | escape }}">
+        <div class="hot-week-picks__tabs" role="tablist" aria-label="{{ section.settings.tabs_accessibility_label | escape }}">
           <button
-            class="hot-this-week__tab"
+            class="hot-week-picks__tab"
             id="HotTab-{{ section.id }}-best"
             type="button"
             role="tab"
@@ -79,7 +79,7 @@
             {{ section.settings.best_sellers_label | escape }}
           </button>
           <button
-            class="hot-this-week__tab"
+            class="hot-week-picks__tab"
             id="HotTab-{{ section.id }}-new"
             type="button"
             role="tab"
@@ -109,7 +109,7 @@
         endif
       -%}
       <div
-        class="hot-this-week__panel"
+        class="hot-week-picks__panel"
         id="HotPanel-{{ section.id }}-{{ tab_key }}"
         role="tabpanel"
         aria-labelledby="HotTab-{{ section.id }}-{{ tab_key }}"
@@ -117,10 +117,10 @@
         {% unless panel_is_active or section.settings.show_tabs == false %}hidden{% endunless %}
       >
         {%- if tab_collection != blank and tab_collection.products_count > 0 -%}
-          <ul class="hot-this-week__products" role="list">
+          <ul class="hot-week-picks__products" role="list">
             {%- for product in tab_collection.products limit: section.settings.products_to_show -%}
-              <li class="hot-this-week__product">
-                {% render 'hot-this-week-card',
+              <li class="hot-week-picks__product">
+                {% render 'hot-week-picks-card',
                   product: product,
                   section: section,
                   lazy_load: 'lazy'
@@ -129,7 +129,7 @@
             {%- endfor -%}
           </ul>
         {%- else -%}
-          <div class="hot-this-week__empty">
+          <div class="hot-week-picks__empty">
             {%- if request.design_mode -%}
               Select a collection for this tab in the Theme Editor.
             {%- else -%}
@@ -140,11 +140,11 @@
       </div>
     {%- endfor -%}
   </div>
-</hot-this-week>
+</hot-week-picks>
 
 {% schema %}
 {
-  "name": "Hot this week",
+  "name": "Hot week picks",
   "tag": "section",
   "class": "section",
   "disabled_on": { "groups": ["header", "footer"] },
@@ -255,7 +255,7 @@
     { "type": "range", "id": "mobile_padding_inline", "label": "Mobile side padding", "min": 8, "max": 40, "step": 2, "unit": "px", "default": 16 }
   ],
   "presets": [
-    { "name": "Hot this week" }
+    { "name": "Hot week picks" }
   ]
 }
 {% endschema %}

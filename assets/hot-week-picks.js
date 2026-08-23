@@ -1,4 +1,4 @@
-if (!customElements.get('hot-this-week')) {
+if (!customElements.get('hot-week-picks')) {
   class HotThisWeek extends HTMLElement {
     connectedCallback() {
       this.tabs = Array.from(this.querySelectorAll('[role="tab"]'));
@@ -41,5 +41,5 @@ if (!customElements.get('hot-this-week')) {
     }
   }
 
-  customElements.define('hot-this-week', HotThisWeek);
+  customElements.define('hot-week-picks', HotThisWeek);
 }

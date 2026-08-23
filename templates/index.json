@@ -140,8 +140,8 @@
         "pagination_item_label": "Go to promotion"
       }
     },
-    "hot_this_week": {
-      "type": "hot-this-week",
+    "hot_week_picks": {
+      "type": "hot-week-picks",
       "settings": {
         "show_heading": true,
         "heading": "Hot This Week",
@@ -606,7 +606,7 @@
   },
   "order": [
     "furflaps_hero",
-    "hot_this_week",
+    "hot_week_picks",
     "dress_up_steps_L8FhwL",
     "before_after_comparison_H4KUmY",
     "product_feature_tabs_EpMe6d",
