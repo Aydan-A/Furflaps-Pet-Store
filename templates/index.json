@@ -396,9 +396,10 @@
           "type": "testimonial",
           "settings": {
             "quote": "<p>“The personalization is what sold me. Toby’s collar fits comfortably, feels well made, and we get compliments on it every time we go for a walk.</p>",
-            "customer_name": "Anna Williams",
+            "avatar": "shopify://shop_images/mystery-date.jpg",
+            "customer_name": "Jessica R.",
             "show_verified": true,
-            "verified_label": "Verified customer",
+            "verified_label": "Dog parent",
             "product": "",
             "product_title": "",
             "button_label": "Shop",
