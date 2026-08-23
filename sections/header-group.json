@@ -47,6 +47,7 @@
         "nav_link_gap": 32,
         "nav_font_size": 13,
         "nav_alignment": "center",
+        "nav_accent_color": "#CC2B2B",
         "search_bg_color": "#ffffff",
         "search_max_width": 580,
         "search_border_radius": 24,

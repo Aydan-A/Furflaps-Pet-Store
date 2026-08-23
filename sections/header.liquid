@@ -85,6 +85,7 @@
     --header-nav-gap: {{ section.settings.nav_link_gap | default: 24 }}px;
     --header-nav-font-size: {{ section.settings.nav_font_size | default: 13 }}px;
     --header-nav-justify: {% case section.settings.nav_alignment %}{% when 'left' %}flex-start{% when 'right' %}flex-end{% else %}center{% endcase %};
+    --header-nav-accent: {{ section.settings.nav_accent_color | default: '#CC2B2B' }};
     --header-search-bg: {{ section.settings.search_bg_color | default: '#FFFFFF' }};
     --header-search-max-width: {{ section.settings.search_max_width | default: 520 }}px;
     --header-search-radius: {{ section.settings.search_border_radius | default: 0 }}px;
@@ -607,6 +608,13 @@
       ],
       "default": "center",
       "label": "Menu alignment"
+    },
+    {
+      "type": "color",
+      "id": "nav_accent_color",
+      "default": "#CC2B2B",
+      "label": "\"Sale\" link color",
+      "info": "Applied to any top-level menu item titled \"Sale\""
     },
     {
       "type": "header",

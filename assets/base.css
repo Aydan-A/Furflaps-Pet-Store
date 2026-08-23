@@ -2417,10 +2417,22 @@ input[type='checkbox'] {
     margin: 0 auto;
   }
 
-  .header__search-inline .field__input,
-  .header__search-inline .field:before {
+  .header__search-inline .field:before,
+  .header__search-inline .field:after {
+    content: none;
+  }
+
+  .header__search-inline .field {
+    margin: 0;
+  }
+
+  .header__search-inline .field__input {
     background-color: var(--header-search-bg, rgb(var(--color-background)));
     border-radius: var(--header-search-radius, var(--inputs-radius));
+    border: var(--header-search-border-width, var(--inputs-border-width)) solid
+      rgba(var(--color-foreground), var(--inputs-border-opacity));
+    border-left: none;
+    margin: 0;
   }
 
   .header--middle-left .header__icons {
@@ -2437,12 +2449,6 @@ input[type='checkbox'] {
      sizing alone leaves the cart looking noticeably thinner/smaller. */
   .header--middle-left .header__icon--cart .icon {
     transform: scale(1.35);
-  }
-
-  .header__search-inline .field:after {
-    border-radius: var(--header-search-radius, var(--inputs-radius));
-    box-shadow: 0 0 0 var(--header-search-border-width, var(--inputs-border-width))
-      rgba(var(--color-foreground), var(--inputs-border-opacity));
   }
 
   .header--middle-center:not(.drawer-menu) {
@@ -2874,6 +2880,11 @@ details[open] > .header__submenu {
     padding-bottom: 0.4rem;
     padding-left: calc(var(--header-nav-gap, 2.4rem) / 2);
     padding-right: calc(var(--header-nav-gap, 2.4rem) / 2);
+  }
+
+  .header--middle-left .header__menu-item--accent,
+  .header--middle-left .header__menu-item--accent .header__active-menu-item {
+    color: var(--header-nav-accent, #cc2b2b);
   }
 }
 
