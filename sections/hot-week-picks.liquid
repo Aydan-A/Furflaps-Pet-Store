@@ -56,6 +56,10 @@
     --hot-tab-padding: {{ section.settings.tab_padding }}px;
     --hot-tab-radius: {{ section.settings.tab_radius }}px;
     --hot-tab-gap: {{ section.settings.tab_gap }}px;
+    --hot-arrow-size: {{ section.settings.arrow_size }}px;
+    --hot-arrow-background: {{ section.settings.arrow_background }};
+    --hot-arrow-icon: {{ section.settings.arrow_icon_color }};
+    --hot-arrow-border: {{ section.settings.arrow_border_color }};
   }
 {%- endstyle -%}
 
@@ -66,32 +70,59 @@
         <h2 class="hot-week-picks__heading">{{ section.settings.heading | escape }}</h2>
       {%- endif -%}
 
-      {%- if section.settings.show_tabs -%}
-        <div class="hot-week-picks__tabs" role="tablist" aria-label="{{ section.settings.tabs_accessibility_label | escape }}">
-          <button
-            class="hot-week-picks__tab"
-            id="HotTab-{{ section.id }}-best"
-            type="button"
-            role="tab"
-            aria-selected="{% if first_tab_active %}true{% else %}false{% endif %}"
-            aria-controls="HotPanel-{{ section.id }}-best"
-            tabindex="{% if first_tab_active %}0{% else %}-1{% endif %}"
-          >
-            {{ section.settings.best_sellers_label | escape }}
-          </button>
-          <button
-            class="hot-week-picks__tab"
-            id="HotTab-{{ section.id }}-new"
-            type="button"
-            role="tab"
-            aria-selected="{% unless first_tab_active %}true{% else %}false{% endunless %}"
-            aria-controls="HotPanel-{{ section.id }}-new"
-            tabindex="{% unless first_tab_active %}0{% else %}-1{% endunless %}"
-          >
-            {{ section.settings.new_arrivals_label | escape }}
-          </button>
-        </div>
-      {%- endif -%}
+      <div class="hot-week-picks__controls">
+        {%- if section.settings.show_tabs -%}
+          <div class="hot-week-picks__tabs" role="tablist" aria-label="{{ section.settings.tabs_accessibility_label | escape }}">
+            <button
+              class="hot-week-picks__tab"
+              id="HotTab-{{ section.id }}-best"
+              type="button"
+              role="tab"
+              aria-selected="{% if first_tab_active %}true{% else %}false{% endif %}"
+              aria-controls="HotPanel-{{ section.id }}-best"
+              tabindex="{% if first_tab_active %}0{% else %}-1{% endif %}"
+            >
+              {{ section.settings.best_sellers_label | escape }}
+            </button>
+            <button
+              class="hot-week-picks__tab"
+              id="HotTab-{{ section.id }}-new"
+              type="button"
+              role="tab"
+              aria-selected="{% unless first_tab_active %}true{% else %}false{% endunless %}"
+              aria-controls="HotPanel-{{ section.id }}-new"
+              tabindex="{% unless first_tab_active %}0{% else %}-1{% endunless %}"
+            >
+              {{ section.settings.new_arrivals_label | escape }}
+            </button>
+          </div>
+        {%- endif -%}
+
+        {%- if section.settings.show_arrows -%}
+          <div class="hot-week-picks__nav" data-nav>
+            <button
+              class="hot-week-picks__arrow"
+              type="button"
+              data-direction="prev"
+              aria-label="{{ 'general.slider.previous_slide' | t }}"
+            >
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false">
+                <path d="M15 5l-7 7 7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </button>
+            <button
+              class="hot-week-picks__arrow"
+              type="button"
+              data-direction="next"
+              aria-label="{{ 'general.slider.next_slide' | t }}"
+            >
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false">
+                <path d="M9 5l7 7-7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </button>
+          </div>
+        {%- endif -%}
+      </div>
     </div>
 
     {%- for tab_index in (1..2) -%}
@@ -231,6 +262,13 @@
     },
     { "type": "range", "id": "heading_letter_spacing", "label": "Heading letter spacing", "min": -10, "max": 10, "step": 1, "unit": "px", "default": -3 },
     { "type": "range", "id": "tab_font_size", "label": "Tab font size", "min": 11, "max": 20, "step": 1, "unit": "px", "default": 13 },
+
+    { "type": "header", "content": "Arrows" },
+    { "type": "checkbox", "id": "show_arrows", "label": "Show scroll arrows", "default": true, "info": "Arrows appear when there are more products than fit in one row." },
+    { "type": "range", "id": "arrow_size", "label": "Arrow size", "min": 28, "max": 56, "step": 4, "unit": "px", "default": 36 },
+    { "type": "color", "id": "arrow_background", "label": "Arrow background", "default": "#FFFFFF" },
+    { "type": "color", "id": "arrow_icon_color", "label": "Arrow icon", "default": "#111111" },
+    { "type": "color", "id": "arrow_border_color", "label": "Arrow border", "default": "#DDDDDD" },
 
     { "type": "header", "content": "Tabs" },
     { "type": "range", "id": "tab_height", "label": "Tab height", "min": 28, "max": 56, "step": 2, "unit": "px", "default": 36 },
