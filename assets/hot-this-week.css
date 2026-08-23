@@ -168,6 +168,14 @@
 .hot-card .price { font-size: var(--hot-price-size); }
 .hot-card .price-item--sale { color: var(--hot-sale-price-color); }
 
+.hot-card__description {
+  margin: 0 0 0.5rem;
+  color: inherit;
+  font-size: calc(var(--hot-product-title-size) * 0.86);
+  line-height: 1.35;
+  opacity: 0.7;
+}
+
 .hot-card__swatch {
   display: block;
   width: var(--hot-swatch-size);

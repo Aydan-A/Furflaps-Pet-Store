@@ -141,14 +141,46 @@
     },
     "hot_this_week": {
       "type": "hot-this-week",
+      "blocks": {
+        "card_charm_bundle": {
+          "type": "product_card",
+          "settings": {
+            "custom_title": "Charm Bundle",
+            "description": "Pick any four charms and save — mix letters, numbers and shapes in.",
+            "tab": "best_sellers"
+          }
+        },
+        "card_leash_collar": {
+          "type": "product_card",
+          "settings": {
+            "custom_title": "Waterproof Dog Leash + Collar Set",
+            "description": "5ft leash + waterproof collar + charm add-ons.",
+            "tab": "best_sellers"
+          }
+        },
+        "card_letter_charm": {
+          "type": "product_card",
+          "settings": {
+            "custom_title": "Letter Charm — Personalised Collar Add-on",
+            "tab": "new_arrivals"
+          }
+        },
+        "card_number_charm": {
+          "type": "product_card",
+          "settings": {
+            "custom_title": "Number Charm",
+            "tab": "new_arrivals"
+          }
+        }
+      },
+      "block_order": ["card_charm_bundle", "card_leash_collar", "card_letter_charm", "card_number_charm"],
       "settings": {
+        "show_heading": true,
         "heading": "Hot This Week",
-        "best_sellers_collection": "all",
+        "show_tabs": true,
         "best_sellers_label": "Best Sellers",
-        "new_arrivals_collection": "{{ section.settings.best_sellers_collection }}",
         "new_arrivals_label": "New Arrivals",
         "default_tab": "best_sellers",
-        "products_to_show": 8,
         "tabs_accessibility_label": "Product collections",
         "columns_desktop": 4,
         "columns_tablet": 2.5,
@@ -164,9 +196,6 @@
         "show_color_swatch": true,
         "color_option_name": "Color",
         "swatch_size": 12,
-        "show_metafield_badge": false,
-        "badge_metafield_namespace": "custom",
-        "badge_metafield_key": "badge",
         "badge_offset": 10,
         "heading_font": "assistant_n7",
         "heading_size": 32,
