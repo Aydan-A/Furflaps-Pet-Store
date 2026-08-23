@@ -178,7 +178,7 @@
         "badge_text_color": "#ffffff",
         "show_discount": true,
         "compare_price_color": "#8a93a0",
-        "discount_pill_background": "#FF0000",
+        "discount_pill_background": "#ff0000",
         "discount_pill_text": "#ffffff",
         "heading_font": "assistant_n7",
         "heading_size": 32,
@@ -199,7 +199,7 @@
         "text_color": "#111111",
         "image_background": "#f0f3f5",
         "tab_text": "#111111",
-        "tab_active_background": "#E5E7EB",
+        "tab_active_background": "#e5e7eb",
         "tab_active_text": "#111111",
         "header_spacing": 28,
         "padding_top": 40,
@@ -346,7 +346,7 @@
           "type": "tab",
           "settings": {
             "label": "",
-            "collection": "dress-up"
+            "collection": "collars"
           }
         },
         "tab_Yf6YBD": {
