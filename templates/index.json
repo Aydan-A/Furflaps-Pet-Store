@@ -114,7 +114,7 @@
         "button_icon_gap": 8,
         "button_icon_size": 16,
         "show_pagination": true,
-        "autoplay": false,
+        "autoplay": true,
         "autoplay_delay": 5,
         "pagination_alignment": "center",
         "pagination_offset_vertical": 44,
