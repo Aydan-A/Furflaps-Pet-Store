@@ -81,9 +81,7 @@
     padding: {{ section.settings.padding_top | times: 0.5 | round: 0 }}px 3rem {{ section.settings.padding_bottom | times: 0.5 | round: 0 }}px 3rem;
   }
 
-  .section-header {
-    position: sticky; /* This is for fixing a Safari z-index issue. PR #2147 */
-    margin-bottom: {{ section.settings.margin_bottom | times: 0.75 | round: 0 }}px;
+  :root {
     --header-nav-gap: {{ section.settings.nav_link_gap | default: 24 }}px;
     --header-nav-font-size: {{ section.settings.nav_font_size | default: 13 }}px;
     --header-nav-justify: {% case section.settings.nav_alignment %}{% when 'left' %}flex-start{% when 'right' %}flex-end{% else %}center{% endcase %};
@@ -91,6 +89,15 @@
     --header-search-max-width: {{ section.settings.search_max_width | default: 520 }}px;
     --header-search-radius: {{ section.settings.search_border_radius | default: 0 }}px;
     --header-search-border-width: {{ section.settings.search_border_thickness | default: 1 }}px;
+    --header-side-padding: {{ section.settings.header_side_padding | default: 24 }}px;
+    --header-row-gap: {{ section.settings.header_row_gap | default: 12 }}px;
+    --header-icon-size: {{ section.settings.icon_size | default: 20 }}px;
+    --header-icon-gap: {{ section.settings.icon_gap | default: 4 }}px;
+  }
+
+  .section-header {
+    position: sticky; /* This is for fixing a Safari z-index issue. PR #2147 */
+    margin-bottom: {{ section.settings.margin_bottom | times: 0.75 | round: 0 }}px;
   }
 
   @media screen and (min-width: 750px) {
@@ -268,7 +275,7 @@
         {% render 'header-search', input_id: 'Search-In-Modal' %}
       </div>
 
-      {%- if shop.customer_accounts_enabled -%}
+      {%- if shop.customer_accounts_enabled and section.settings.show_account_icon -%}
         <a
           href="{%- if customer -%}{{ routes.account_url }}{%- else -%}{{ routes.account_login_url }}{%- endif -%}"
           class="header__icon header__icon--account link focus-inset{% if section.settings.menu != blank %} small-hide{% endif %}"
@@ -297,6 +304,16 @@
         </a>
       {%- endif -%}
 
+      {%- if section.settings.show_wishlist_icon -%}
+        <a
+          href="{{ section.settings.wishlist_url | default: '#' }}"
+          class="header__icon header__icon--wishlist link focus-inset{% if section.settings.menu != blank %} small-hide{% endif %}"
+        >
+          <span class="svg-wrapper">{{ 'icon-heart.svg' | inline_asset_content }}</span>
+          <span class="visually-hidden">Wishlist</span>
+        </a>
+      {%- endif -%}
+
       {%- for block in section.blocks -%}
         {%- case block.type -%}
           {%- when '@app' -%}
@@ -304,22 +321,24 @@
         {%- endcase -%}
       {%- endfor -%}
 
-      <a href="{{ routes.cart_url }}" class="header__icon header__icon--cart link focus-inset" id="cart-icon-bubble">
-        {% if cart == empty %}
-          <span class="svg-wrapper">{{ 'icon-cart-empty.svg' | inline_asset_content }}</span>
-        {% else %}
-          <span class="svg-wrapper">{{ 'icon-cart.svg' | inline_asset_content }}</span>
-        {% endif %}
-        <span class="visually-hidden">{{ 'templates.cart.cart' | t }}</span>
-        {%- if cart != empty -%}
-          <div class="cart-count-bubble">
-            {%- if cart.item_count < 100 -%}
-              <span aria-hidden="true">{{ cart.item_count }}</span>
-            {%- endif -%}
-            <span class="visually-hidden">{{ 'sections.header.cart_count' | t: count: cart.item_count }}</span>
-          </div>
-        {%- endif -%}
-      </a>
+      {%- if section.settings.show_cart_icon -%}
+        <a href="{{ routes.cart_url }}" class="header__icon header__icon--cart link focus-inset" id="cart-icon-bubble">
+          {% if cart == empty %}
+            <span class="svg-wrapper">{{ 'icon-cart-empty.svg' | inline_asset_content }}</span>
+          {% else %}
+            <span class="svg-wrapper">{{ 'icon-cart.svg' | inline_asset_content }}</span>
+          {% endif %}
+          <span class="visually-hidden">{{ 'templates.cart.cart' | t }}</span>
+          {%- if cart != empty -%}
+            <div class="cart-count-bubble">
+              {%- if cart.item_count < 100 -%}
+                <span aria-hidden="true">{{ cart.item_count }}</span>
+              {%- endif -%}
+              <span class="visually-hidden">{{ 'sections.header.cart_count' | t: count: cart.item_count }}</span>
+            </div>
+          {%- endif -%}
+        </a>
+      {%- endif -%}
     </div>
   </header>
 </{{ header_tag }}>
@@ -550,7 +569,7 @@
       "step": 2,
       "unit": "px",
       "label": "Link spacing",
-      "default": 24
+      "default": 32
     },
     {
       "type": "range",
@@ -600,7 +619,7 @@
       "step": 20,
       "unit": "px",
       "label": "Width",
-      "default": 520
+      "default": 580
     },
     {
       "type": "range",
@@ -621,6 +640,78 @@
       "unit": "px",
       "label": "Border thickness",
       "default": 1
+    },
+    {
+      "type": "header",
+      "content": "Header spacing"
+    },
+    {
+      "type": "range",
+      "id": "header_side_padding",
+      "min": 12,
+      "max": 48,
+      "step": 2,
+      "unit": "px",
+      "label": "Side padding",
+      "default": 24
+    },
+    {
+      "type": "range",
+      "id": "header_row_gap",
+      "min": 4,
+      "max": 32,
+      "step": 2,
+      "unit": "px",
+      "label": "Gap between rows",
+      "default": 12
+    },
+    {
+      "type": "header",
+      "content": "Icons"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_account_icon",
+      "default": true,
+      "label": "Show account icon"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_wishlist_icon",
+      "default": true,
+      "label": "Show wishlist icon"
+    },
+    {
+      "type": "url",
+      "id": "wishlist_url",
+      "label": "Wishlist link",
+      "info": "Leave blank until a wishlist app/page is set up"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_cart_icon",
+      "default": true,
+      "label": "Show cart icon"
+    },
+    {
+      "type": "range",
+      "id": "icon_size",
+      "min": 16,
+      "max": 28,
+      "step": 1,
+      "unit": "px",
+      "label": "Icon size",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "icon_gap",
+      "min": 0,
+      "max": 24,
+      "step": 2,
+      "unit": "px",
+      "label": "Icon spacing",
+      "default": 4
     },
     {
       "type": "link_list",
