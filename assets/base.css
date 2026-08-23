@@ -2413,8 +2413,20 @@ input[type='checkbox'] {
     justify-self: stretch;
     align-self: center;
     width: 100%;
-    max-width: 52rem;
+    max-width: var(--header-search-max-width, 52rem);
     margin: 0 auto;
+  }
+
+  .header__search-inline .field__input,
+  .header__search-inline .field:before {
+    background-color: var(--header-search-bg, rgb(var(--color-background)));
+    border-radius: var(--header-search-radius, var(--inputs-radius));
+  }
+
+  .header__search-inline .field:after {
+    border-radius: var(--header-search-radius, var(--inputs-radius));
+    box-shadow: 0 0 0 var(--header-search-border-width, var(--inputs-border-width))
+      rgba(var(--color-foreground), var(--inputs-border-opacity));
   }
 
   .header--middle-center:not(.drawer-menu) {
@@ -2463,10 +2475,22 @@ input[type='checkbox'] {
 }
 
 .header__heading-link {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.8rem;
   padding: 0.75rem;
   text-decoration: none;
   word-break: break-word;
+}
+
+.header__brand-name {
+  font-family: var(--font-heading-family);
+  font-style: var(--font-heading-style);
+  font-weight: var(--font-heading-weight);
+  font-size: 1.8rem;
+  line-height: 1;
+  color: rgb(var(--color-foreground));
+  white-space: nowrap;
 }
 
 .header__heading-link:hover .h2 {
@@ -2818,16 +2842,18 @@ details[open] > .header__submenu {
   }
 
   .header--middle-left .header__inline-menu > .list-menu--inline {
-    justify-content: center;
+    justify-content: var(--header-nav-justify, center);
   }
 
   .header--middle-left .header__menu-item {
     text-transform: uppercase;
     letter-spacing: 0.08rem;
-    font-size: 1.3rem;
+    font-size: var(--header-nav-font-size, 1.3rem);
     font-weight: 600;
     padding-top: 0.4rem;
     padding-bottom: 0.4rem;
+    padding-left: calc(var(--header-nav-gap, 2.4rem) / 2);
+    padding-right: calc(var(--header-nav-gap, 2.4rem) / 2);
   }
 }
 

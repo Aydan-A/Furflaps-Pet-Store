@@ -84,6 +84,13 @@
   .section-header {
     position: sticky; /* This is for fixing a Safari z-index issue. PR #2147 */
     margin-bottom: {{ section.settings.margin_bottom | times: 0.75 | round: 0 }}px;
+    --header-nav-gap: {{ section.settings.nav_link_gap | default: 24 }}px;
+    --header-nav-font-size: {{ section.settings.nav_font_size | default: 13 }}px;
+    --header-nav-justify: {% case section.settings.nav_alignment %}{% when 'left' %}flex-start{% when 'right' %}flex-end{% else %}center{% endcase %};
+    --header-search-bg: {{ section.settings.search_bg_color | default: '#FFFFFF' }};
+    --header-search-max-width: {{ section.settings.search_max_width | default: 520 }}px;
+    --header-search-radius: {{ section.settings.search_border_radius | default: 0 }}px;
+    --header-search-border-width: {{ section.settings.search_border_thickness | default: 1 }}px;
   }
 
   @media screen and (min-width: 750px) {
@@ -171,6 +178,9 @@
                 preload: true
             }}
           </div>
+          {%- if section.settings.show_brand_name -%}
+            <span class="header__brand-name">{{ shop.name }}</span>
+          {%- endif -%}
         {%- else -%}
           <span class="h2">{{ shop.name }}</span>
         {%- endif -%}
@@ -218,6 +228,9 @@
                 preload: true
             }}
           </div>
+          {%- if section.settings.show_brand_name -%}
+            <span class="header__brand-name">{{ shop.name }}</span>
+          {%- endif -%}
         {%- else -%}
           <span class="h2">{{ shop.name }}</span>
         {%- endif -%}
@@ -518,6 +531,96 @@
       ],
       "default": "center",
       "label": "t:sections.header.settings.mobile_logo_position.label"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_brand_name",
+      "default": true,
+      "label": "Show brand name next to logo"
+    },
+    {
+      "type": "header",
+      "content": "Navbar"
+    },
+    {
+      "type": "range",
+      "id": "nav_link_gap",
+      "min": 8,
+      "max": 48,
+      "step": 2,
+      "unit": "px",
+      "label": "Link spacing",
+      "default": 24
+    },
+    {
+      "type": "range",
+      "id": "nav_font_size",
+      "min": 10,
+      "max": 18,
+      "step": 1,
+      "unit": "px",
+      "label": "Link font size",
+      "default": 13
+    },
+    {
+      "type": "select",
+      "id": "nav_alignment",
+      "options": [
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "right",
+          "label": "Right"
+        }
+      ],
+      "default": "center",
+      "label": "Menu alignment"
+    },
+    {
+      "type": "header",
+      "content": "Search bar"
+    },
+    {
+      "type": "color",
+      "id": "search_bg_color",
+      "default": "#FFFFFF",
+      "label": "Background color"
+    },
+    {
+      "type": "range",
+      "id": "search_max_width",
+      "min": 280,
+      "max": 800,
+      "step": 20,
+      "unit": "px",
+      "label": "Width",
+      "default": 520
+    },
+    {
+      "type": "range",
+      "id": "search_border_radius",
+      "min": 0,
+      "max": 30,
+      "step": 2,
+      "unit": "px",
+      "label": "Corner radius",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "search_border_thickness",
+      "min": 0,
+      "max": 4,
+      "step": 1,
+      "unit": "px",
+      "label": "Border thickness",
+      "default": 1
     },
     {
       "type": "link_list",
