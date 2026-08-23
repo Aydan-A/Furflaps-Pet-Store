@@ -44,25 +44,79 @@
 -%}
 
 <div class="hot-week-picks__card">
-  <a class="hot-card__media" href="{{ product.url }}" aria-label="{{ product.title | escape }}">
-    {%- if custom_badge != blank -%}
-      <span class="hot-card__badge">{{ custom_badge | escape }}</span>
-    {%- endif -%}
+  <div class="hot-card__media-wrap">
+    <a class="hot-card__media" href="{{ product.url }}" aria-label="{{ product.title | escape }}">
+      {%- if custom_badge != blank -%}
+        <span class="hot-card__badge">{{ custom_badge | escape }}</span>
+      {%- endif -%}
 
-    {%- if product.featured_media -%}
-      {{
-        product.featured_media
-        | image_url: width: 900
-        | image_tag:
-          class: 'hot-card__image',
-          widths: '240, 360, 480, 640, 750, 900',
-          sizes: '(min-width: 990px) 25vw, (min-width: 750px) 38vw, 72vw',
-          loading: lazy_load
-      }}
-    {%- else -%}
-      {{ 'product-apparel-1' | placeholder_svg_tag: 'hot-card__placeholder' }}
+      {%- if product.featured_media -%}
+        {{
+          product.featured_media
+          | image_url: width: 900
+          | image_tag:
+            class: 'hot-card__image',
+            widths: '240, 360, 480, 640, 750, 900',
+            sizes: '(min-width: 990px) 25vw, (min-width: 750px) 38vw, 72vw',
+            loading: lazy_load
+        }}
+      {%- else -%}
+        {{ 'product-apparel-1' | placeholder_svg_tag: 'hot-card__placeholder' }}
+      {%- endif -%}
+    </a>
+
+    {%- if section.settings.show_add_to_cart and product != blank -%}
+      {%- if product.available == false -%}
+        <span class="hot-card__cart hot-card__cart--disabled" aria-hidden="true" title="{{ 'products.product.sold_out' | t }}">
+          {{- 'icon-cart.svg' | inline_asset_content -}}
+        </span>
+      {%- elsif product.variants.size > 1 -%}
+        {%- comment -%}
+          Multiple variants need an option choice, so send shoppers to the product page
+          instead of guessing a variant.
+        {%- endcomment -%}
+        <a
+          class="hot-card__cart"
+          href="{{ product.url }}"
+          aria-label="{{ 'products.product.choose_options' | t }} — {{ product.title | escape }}"
+        >
+          {{- 'icon-cart.svg' | inline_asset_content -}}
+        </a>
+      {%- else -%}
+        {%- assign hot_form_id = 'HotAtc-' | append: section.id | append: '-' | append: product.id -%}
+        <product-form class="hot-card__cart-form" data-section-id="{{ section.id }}">
+          {%- form 'product', product, id: hot_form_id, class: 'form', novalidate: 'novalidate', data-type: 'add-to-cart-form' -%}
+            <input
+              type="hidden"
+              name="id"
+              value="{{ product.selected_or_first_available_variant.id }}"
+              class="product-variant-id"
+            >
+            <button
+              id="{{ hot_form_id }}-submit"
+              class="hot-card__cart"
+              type="submit"
+              name="add"
+              aria-haspopup="dialog"
+              aria-label="{{ 'products.product.add_to_cart' | t }} — {{ product.title | escape }}"
+              data-sold-out-message="true"
+            >
+              <span class="hot-card__cart-icon">
+                {{- 'icon-cart.svg' | inline_asset_content -}}
+              </span>
+              <span class="sold-out-message hidden">
+                {{ 'products.product.sold_out' | t }}
+              </span>
+              {%- render 'loading-spinner' -%}
+            </button>
+            <div class="product-form__error-message-wrapper" role="alert" hidden>
+              <span class="product-form__error-message"></span>
+            </div>
+          {%- endform -%}
+        </product-form>
+      {%- endif -%}
     {%- endif -%}
-  </a>
+  </div>
 
   <div class="hot-card__info">
     <h3 class="hot-card__title">

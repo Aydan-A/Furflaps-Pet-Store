@@ -152,6 +152,69 @@
   text-decoration: none;
 }
 
+.hot-card__media-wrap {
+  position: relative;
+}
+
+.hot-card__cart-form,
+.hot-card__cart-form .form {
+  display: block;
+}
+
+.hot-card__cart {
+  position: absolute;
+  z-index: 3;
+  right: var(--hot-badge-offset);
+  bottom: var(--hot-badge-offset);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--hot-cart-size);
+  height: var(--hot-cart-size);
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: var(--hot-cart-background);
+  color: var(--hot-cart-icon);
+  box-shadow: 0 0.1rem 0.6rem rgba(0, 0, 0, 0.15);
+  cursor: pointer;
+  transition: transform 150ms ease;
+}
+
+.hot-card__cart svg {
+  width: 60%;
+  height: 60%;
+}
+
+.hot-card__cart:hover {
+  transform: scale(1.06);
+}
+
+.hot-card__cart:focus-visible {
+  outline: 0.2rem solid currentColor;
+  outline-offset: 0.2rem;
+}
+
+.hot-card__cart--disabled {
+  opacity: 0.4;
+  cursor: default;
+  box-shadow: none;
+}
+
+.hot-card__cart .sold-out-message {
+  display: none;
+}
+
+.hot-card__cart.loading .hot-card__cart-icon {
+  visibility: hidden;
+}
+
+.hot-card__cart .loading__spinner {
+  position: absolute;
+  width: 60%;
+  height: 60%;
+}
+
 .hot-card__media {
   position: relative;
   display: block;
