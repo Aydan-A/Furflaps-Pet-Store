@@ -180,6 +180,10 @@
       {%- endif -%}
     {%- endif -%}
 
+    {%- if section.settings.logo_position == 'middle-left' -%}
+      {%- render 'header-search-inline', input_id: 'Header-Search-Inline' -%}
+    {%- endif -%}
+
     {%- liquid
       if section.settings.menu != blank
         if section.settings.menu_type_desktop == 'dropdown'
@@ -247,7 +251,9 @@
           </localization-form>
         {%- endif -%}
       </div>
-      {% render 'header-search', input_id: 'Search-In-Modal' %}
+      <div class="{% if section.settings.logo_position == 'middle-left' %}large-up-hide{% endif %}">
+        {% render 'header-search', input_id: 'Search-In-Modal' %}
+      </div>
 
       {%- if shop.customer_accounts_enabled -%}
         <a
