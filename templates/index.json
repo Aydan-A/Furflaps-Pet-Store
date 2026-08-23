@@ -32,7 +32,7 @@
           "settings": {
             "heading": "Accessories as unique as they are.",
             "description": "<p>Discover thoughtful accessories and everyday essentials selected for happier, healthier pets.</p>",
-            "button_label": "Explore all",
+            "button_label": "Explore products",
             "button_link": "shopify://collections/all",
             "background_color": "#e8e0d5",
             "heading_color": "#111111",
@@ -142,104 +142,7 @@
     },
     "hot_this_week": {
       "type": "hot-this-week",
-      "blocks": {
-        "card_charm_bundle": {
-          "type": "product_card",
-          "settings": {
-            "custom_title": "Charm Bundle",
-            "description": "Pick any four charms and save — mix letters, numbers and shapes in whichever colours you like.",
-            "show_badge": true,
-            "badge_text": "New",
-            "custom_price": "$9.99",
-            "custom_compare_price": "$11.75",
-            "show_discount": true,
-            "discount_text": "15% off",
-            "tab": "best_sellers"
-          }
-        },
-        "card_leash_collar": {
-          "type": "product_card",
-          "settings": {
-            "custom_title": "Waterproof Dog Leash + Collar Set",
-            "description": "5ft leash + waterproof collar + charm add-ons.",
-            "custom_price": "$60.00",
-            "custom_compare_price": "$63.00",
-            "show_discount": true,
-            "discount_text": "4% off",
-            "tab": "best_sellers"
-          }
-        },
-        "card_letter_charm": {
-          "type": "product_card",
-          "settings": {
-            "custom_title": "Letter Charm — Personalised Collar Add-on",
-            "description": "Three colours, fits 5/8\" and 1\" collar widths.",
-            "custom_price": "$2.99",
-            "tab": "new_arrivals"
-          }
-        },
-        "card_number_charm": {
-          "type": "product_card",
-          "settings": {
-            "custom_title": "Number Charm",
-            "description": "Add a house number or birth year — same three colours as the letters.",
-            "custom_price": "From $2.99",
-            "tab": "new_arrivals"
-          }
-        }
-      },
-      "block_order": ["card_charm_bundle", "card_leash_collar", "card_letter_charm", "card_number_charm"],
-      "settings": {
-        "show_heading": true,
-        "heading": "Hot This Week",
-        "show_tabs": true,
-        "best_sellers_label": "Best Sellers",
-        "new_arrivals_label": "New Arrivals",
-        "default_tab": "best_sellers",
-        "tabs_accessibility_label": "Product collections",
-        "columns_desktop": 4,
-        "columns_tablet": 2,
-        "columns_mobile": 1,
-        "card_gap": 12,
-        "card_radius": 16,
-        "card_content_spacing": 12,
-        "image_ratio": "3 / 4",
-        "image_fit": "contain",
-        "product_title_size": 18,
-        "price_size": 18,
-        "description_color": "#6e7787",
-        "description_size": 14,
-        "description_lines": 2,
-        "badge_offset": 10,
-        "badge_background": "#7961d7",
-        "badge_text_color": "#ffffff",
-        "compare_price_color": "#8a93a0",
-        "discount_pill_background": "#00b878",
-        "discount_pill_text": "#ffffff",
-        "heading_font": "assistant_n7",
-        "heading_size": 32,
-        "mobile_heading_size": 28,
-        "heading_weight": "700",
-        "heading_letter_spacing": -3,
-        "tab_font_size": 13,
-        "tab_height": 36,
-        "tab_padding": 16,
-        "tab_radius": 18,
-        "tab_gap": 4,
-        "background_color": "#ffffff",
-        "text_color": "#111111",
-        "image_background": "#f0f3f5",
-        "tab_text": "#111111",
-        "tab_active_background": "#eeeeec",
-        "tab_active_text": "#111111",
-        "header_spacing": 28,
-        "padding_top": 40,
-        "padding_bottom": 48,
-        "padding_inline": 40,
-        "mobile_padding_top": 32,
-        "mobile_padding_bottom": 36,
-        "mobile_padding_inline": 16
-      }
+      "settings": {}
     },
     "dress_up_steps_L8FhwL": {
       "type": "dress-up-steps",
@@ -354,8 +257,8 @@
         "mobile_media_height": 360,
         "heading_size": 46,
         "mobile_heading_size": 32,
-        "section_background": "#2A2525",
-        "content_background": "#D83A32",
+        "section_background": "#2a2525",
+        "content_background": "#d83a32",
         "heading_color": "#ffffff",
         "text_color": "#ffffff",
         "button_background": "#ffffff",
