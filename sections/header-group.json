@@ -43,7 +43,6 @@
         "logo_position": "middle-left",
         "mobile_logo_position": "left",
         "show_brand_name": true,
-        "brand_name_uppercase": true,
         "nav_link_gap": 32,
         "nav_font_size": 13,
         "nav_alignment": "center",
