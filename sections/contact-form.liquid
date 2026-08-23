@@ -1,48 +1,123 @@
-{{ 'section-contact-form.css' | asset_url | stylesheet_tag }}
+{% comment %}
+  Contact form — "Submit a Request" layout.
+  Uses Shopify's built-in 'contact' form tag so submissions keep going to the
+  store's contact email. Every label, placeholder and style is editable in the
+  Theme Editor.
+{% endcomment %}
+
+{{ 'contact-request-form.css' | asset_url | stylesheet_tag }}
+
+{%- liquid
+  assign first_name_label = section.settings.first_name_label | default: 'First Name'
+  assign last_name_label = section.settings.last_name_label | default: 'Last Name'
+  assign email_label = section.settings.email_label | default: 'Email Address'
+  assign request_type_label = section.settings.request_type_label | default: 'Request Type'
+  assign details_label = section.settings.details_label | default: 'Additional Details'
+  assign attachment_label = section.settings.attachment_label | default: 'Attachments'
+
+  assign first_name_key = first_name_label | strip | escape
+  assign last_name_key = last_name_label | strip | escape
+  assign request_type_key = request_type_label | strip | escape
+  assign attachment_key = attachment_label | strip | escape
+
+  assign request_type_options = section.settings.request_type_options | newline_to_br | split: '<br />'
+-%}
 
 {%- style -%}
-  .section-{{ section.id }}-padding {
-    padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
-    padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
-  }
+  {{ section.settings.heading_font | font_face: font_display: 'swap' }}
 
-  @media screen and (min-width: 750px) {
-    .section-{{ section.id }}-padding {
-      padding-top: {{ section.settings.padding_top }}px;
-      padding-bottom: {{ section.settings.padding_bottom }}px;
-    }
+  #shopify-section-{{ section.id }} {
+    --rf-background: {{ section.settings.background_color }};
+    --rf-content-width: {{ section.settings.content_width }}px;
+    --rf-alignment: {{ section.settings.content_alignment }};
+
+    --rf-heading-color: {{ section.settings.heading_color }};
+    --rf-heading-font-family: {{ section.settings.heading_font.family }}, {{ section.settings.heading_font.fallback_families }};
+    --rf-heading-font-style: {{ section.settings.heading_font.style }};
+    --rf-heading-weight: {{ section.settings.heading_weight }};
+    --rf-heading-size: {{ section.settings.heading_size }}px;
+    --rf-mobile-heading-size: {{ section.settings.mobile_heading_size }}px;
+    --rf-heading-letter-spacing: {{ section.settings.heading_letter_spacing | divided_by: 100.0 }}em;
+    --rf-heading-spacing: {{ section.settings.heading_spacing }}px;
+    --rf-form-spacing: {{ section.settings.form_spacing }}px;
+
+    --rf-description-color: {{ section.settings.description_color }};
+    --rf-description-size: {{ section.settings.description_size }}px;
+
+    --rf-label-color: {{ section.settings.label_color }};
+    --rf-label-size: {{ section.settings.label_size }}px;
+    --rf-label-weight: {{ section.settings.label_weight }};
+    --rf-label-spacing: {{ section.settings.label_spacing }}px;
+
+    --rf-input-background: {{ section.settings.input_background }};
+    --rf-input-text-color: {{ section.settings.input_text_color }};
+    --rf-placeholder-color: {{ section.settings.placeholder_color }};
+    --rf-input-size: {{ section.settings.input_size }}px;
+    --rf-input-height: {{ section.settings.input_height }}px;
+    --rf-input-padding-inline: {{ section.settings.input_padding_inline }}px;
+    --rf-textarea-height: {{ section.settings.textarea_height }}px;
+
+    --rf-border-color: {{ section.settings.border_color }};
+    --rf-border-color-focus: {{ section.settings.border_color_focus }};
+    --rf-border-width: {{ section.settings.border_width }}px;
+    --rf-border-radius: {{ section.settings.border_radius }}px;
+
+    --rf-field-gap: {{ section.settings.field_gap }}px;
+    --rf-column-gap: {{ section.settings.column_gap }}px;
+
+    --rf-attachment-background: {{ section.settings.attachment_background }};
+    --rf-attachment-text-color: {{ section.settings.attachment_text_color }};
+
+    --rf-button-background: {{ section.settings.button_background }};
+    --rf-button-text-color: {{ section.settings.button_text_color }};
+    --rf-button-background-hover: {{ section.settings.button_background_hover }};
+    --rf-button-text-color-hover: {{ section.settings.button_text_color_hover }};
+    --rf-button-size: {{ section.settings.button_size }}px;
+    --rf-button-weight: {{ section.settings.button_weight }};
+    --rf-button-letter-spacing: {{ section.settings.button_letter_spacing | divided_by: 100.0 }}em;
+    --rf-button-height: {{ section.settings.button_height }}px;
+    --rf-button-radius: {{ section.settings.button_radius }}px;
+    --rf-button-spacing: {{ section.settings.button_spacing }}px;
+    --rf-button-width: {% if section.settings.button_full_width %}100%{% else %}auto{% endif %};
+    --rf-mobile-button-width: {% if section.settings.mobile_button_full_width %}100%{% else %}auto{% endif %};
+
+    --rf-padding-top: {{ section.settings.padding_top }}px;
+    --rf-padding-bottom: {{ section.settings.padding_bottom }}px;
+    --rf-padding-inline: {{ section.settings.padding_inline }}px;
+    --rf-mobile-padding-top: {{ section.settings.mobile_padding_top }}px;
+    --rf-mobile-padding-bottom: {{ section.settings.mobile_padding_bottom }}px;
+    --rf-mobile-padding-inline: {{ section.settings.mobile_padding_inline }}px;
   }
 {%- endstyle -%}
 
-<div class="color-{{ section.settings.color_scheme }} gradient">
-  <div class="contact page-width page-width--narrow section-{{ section.id }}-padding">
+<div class="request-form">
+  <div class="request-form__inner">
     {%- if section.settings.heading != blank -%}
-      <h2 class="title title-wrapper--no-top-margin inline-richtext {{ section.settings.heading_size }}{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}">
-        {{ section.settings.heading }}
-      </h2>
+      <h1 class="request-form__heading">{{ section.settings.heading }}</h1>
     {%- else -%}
-      <h2 class="visually-hidden">{{ 'templates.contact.form.title' | t }}</h2>
+      <h1 class="visually-hidden">{{ 'templates.contact.form.title' | t }}</h1>
     {%- endif -%}
-    {%- liquid
-      assign contact_form_class = 'isolate'
-      if settings.animations_reveal_on_scroll
-        assign contact_form_class = 'isolate scroll-trigger animate--slide-in'
-      endif
-    -%}
-    {%- form 'contact', id: 'ContactForm', class: contact_form_class -%}
+
+    {%- if section.settings.description != blank -%}
+      <div class="request-form__description">{{ section.settings.description }}</div>
+    {%- endif -%}
+
+    {%- form 'contact', id: 'ContactForm', class: 'request-form__form' -%}
       {%- if form.posted_successfully? -%}
-        <h2 class="form-status form-status-list form__message" tabindex="-1" autofocus>
+        <p class="request-form__message" tabindex="-1" autofocus>
           {{- 'icon-success.svg' | inline_asset_content -}}
-          {{ 'templates.contact.form.post_success' | t }}
-        </h2>
+          {%- if section.settings.success_message != blank -%}
+            {{ section.settings.success_message }}
+          {%- else -%}
+            {{ 'templates.contact.form.post_success' | t }}
+          {%- endif -%}
+        </p>
       {%- elsif form.errors -%}
-        <div class="form__message">
-          <h2 class="form-status caption-large text-body" role="alert" tabindex="-1" autofocus>
-            {{- 'icon-error.svg' | inline_asset_content -}}
-            {{ 'templates.contact.form.error_heading' | t }}
-          </h2>
-        </div>
-        <ul class="form-status-list caption-large" role="list">
+        <p class="request-form__message" role="alert" tabindex="-1" autofocus>
+          {{- 'icon-error.svg' | inline_asset_content -}}
+          {{ 'templates.contact.form.error_heading' | t }}
+        </p>
+        <ul class="request-form__error-list" role="list">
           <li>
             <a href="#ContactForm-email" class="link">
               {{ form.errors.translated_fields.email | capitalize }}
@@ -51,89 +126,203 @@
           </li>
         </ul>
       {%- endif -%}
-      <div class="contact__fields">
-        <div class="field">
-          <input
-            class="field__input"
-            autocomplete="name"
-            type="text"
-            id="ContactForm-name"
-            name="contact[{{ 'templates.contact.form.name' | t }}]"
-            value="{% if form.name %}{{ form.name }}{% elsif customer %}{{ customer.name }}{% endif %}"
-            placeholder="{{ 'templates.contact.form.name' | t }}"
-          >
-          <label class="field__label" for="ContactForm-name">{{ 'templates.contact.form.name' | t }}</label>
+
+      <div class="request-form__fields">
+        <div class="request-form__row request-form__row--two">
+          <div class="request-form__field">
+            <label class="request-form__label" for="ContactForm-first-name">{{ first_name_label }}</label>
+            <input
+              class="request-form__input"
+              type="text"
+              id="ContactForm-first-name"
+              name="contact[{{ first_name_key }}]"
+              autocomplete="given-name"
+              value="{% if customer %}{{ customer.first_name }}{% endif %}"
+              placeholder="{{ section.settings.first_name_placeholder | escape }}"
+              {% if section.settings.require_names %}required{% endif %}
+            >
+          </div>
+
+          <div class="request-form__field">
+            <label class="request-form__label" for="ContactForm-last-name">{{ last_name_label }}</label>
+            <input
+              class="request-form__input"
+              type="text"
+              id="ContactForm-last-name"
+              name="contact[{{ last_name_key }}]"
+              autocomplete="family-name"
+              value="{% if customer %}{{ customer.last_name }}{% endif %}"
+              placeholder="{{ section.settings.last_name_placeholder | escape }}"
+              {% if section.settings.require_names %}required{% endif %}
+            >
+          </div>
         </div>
-        <div class="field field--with-error">
+
+        <div class="request-form__field">
+          <label class="request-form__label" for="ContactForm-email">
+            {{- email_label -}}
+            <span class="request-form__required" aria-hidden="true"> *</span>
+          </label>
           <input
-            autocomplete="email"
+            class="request-form__input"
             type="email"
             id="ContactForm-email"
-            class="field__input"
             name="contact[email]"
+            autocomplete="email"
             spellcheck="false"
             autocapitalize="off"
             value="{% if form.email %}{{ form.email }}{% elsif customer %}{{ customer.email }}{% endif %}"
+            placeholder="{{ section.settings.email_placeholder | escape }}"
             aria-required="true"
+            required
             {% if form.errors contains 'email' %}
               aria-invalid="true"
               aria-describedby="ContactForm-email-error"
             {% endif %}
-            placeholder="{{ 'templates.contact.form.email' | t }}"
-          >
-          <label class="field__label" for="ContactForm-email">
-            {{- 'templates.contact.form.email' | t }}
-            <span aria-hidden="true">*</span></label
           >
           {%- if form.errors contains 'email' -%}
-            <small class="contact__field-error" id="ContactForm-email-error">
+            <small class="request-form__field-error" id="ContactForm-email-error">
               <span class="visually-hidden">{{ 'accessibility.error' | t }}</span>
-              <span class="form__message">
-                <span class="svg-wrapper">
-                  {{- 'icon-error.svg' | inline_asset_content -}}
-                </span>
-                {{- form.errors.translated_fields.email | capitalize }}
-                {{ form.errors.messages.email -}}
-              </span>
+              {{ form.errors.translated_fields.email | capitalize }}
+              {{ form.errors.messages.email }}
             </small>
           {%- endif -%}
         </div>
+
+        {%- if section.settings.show_request_type -%}
+          <div class="request-form__field">
+            <label class="request-form__label" for="ContactForm-request-type">{{ request_type_label }}</label>
+            <div class="request-form__select-wrapper">
+              <select
+                class="request-form__select request-form__select--placeholder"
+                id="ContactForm-request-type"
+                name="contact[{{ request_type_key }}]"
+                {% if section.settings.require_request_type %}required{% endif %}
+              >
+                <option value="" disabled selected>
+                  {{- section.settings.request_type_placeholder | default: 'Select a request type' -}}
+                </option>
+                {%- for option in request_type_options -%}
+                  {%- assign option_value = option | strip_newlines | strip -%}
+                  {%- if option_value != blank -%}
+                    <option value="{{ option_value | escape }}">{{ option_value }}</option>
+                  {%- endif -%}
+                {%- endfor -%}
+              </select>
+              <span class="request-form__select-icon">
+                <svg viewBox="0 0 10 6" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+                  <path d="M1 1L5 5L9 1" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </span>
+            </div>
+          </div>
+        {%- endif -%}
+
+        <div class="request-form__field">
+          <label class="request-form__label" for="ContactForm-body">
+            {{- details_label -}}
+            {%- if section.settings.require_details -%}
+              <span class="request-form__required" aria-hidden="true"> *</span>
+            {%- endif -%}
+          </label>
+          <textarea
+            class="request-form__textarea"
+            id="ContactForm-body"
+            name="contact[body]"
+            rows="8"
+            placeholder="{{ section.settings.details_placeholder | escape }}"
+            {% if section.settings.require_details %}required aria-required="true"{% endif %}
+          >{{ form.body | escape }}</textarea>
+        </div>
+
+        {%- if section.settings.attachment_mode != 'none' -%}
+          <div class="request-form__field" id="ContactForm-attachments-{{ section.id }}">
+            <span class="request-form__label">{{ attachment_label }}</span>
+
+            {%- if section.settings.attachment_mode == 'link' -%}
+              <input
+                class="request-form__input"
+                type="url"
+                id="ContactForm-attachment-link"
+                name="contact[{{ attachment_key }}]"
+                inputmode="url"
+                placeholder="{{ section.settings.attachment_link_placeholder | escape }}"
+              >
+            {%- else -%}
+              <input
+                class="request-form__attachment-input"
+                type="file"
+                id="ContactForm-attachment-files-{{ section.id }}"
+                multiple
+                data-attachment-picker
+              >
+              <label
+                class="request-form__attachment-button"
+                for="ContactForm-attachment-files-{{ section.id }}"
+              >
+                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+                  <path d="M21 11.5l-8.8 8.8a5 5 0 01-7.1-7.1l8.8-8.8a3.4 3.4 0 014.8 4.8l-8.8 8.8a1.7 1.7 0 01-2.4-2.4l8.1-8.1" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                {{ section.settings.attachment_button_text | default: 'Add Attachments' }}
+              </label>
+              <input type="hidden" name="contact[{{ attachment_key }}]" data-attachment-value>
+              <ul class="request-form__attachment-list" data-attachment-list role="list"></ul>
+            {%- endif -%}
+
+            {%- if section.settings.attachment_help_text != blank -%}
+              <p class="request-form__attachment-help">{{ section.settings.attachment_help_text }}</p>
+            {%- endif -%}
+          </div>
+        {%- endif -%}
       </div>
-      <div class="field">
-        <input
-          type="tel"
-          id="ContactForm-phone"
-          class="field__input"
-          autocomplete="tel"
-          name="contact[{{ 'templates.contact.form.phone' | t }}]"
-          pattern="[0-9\-]*"
-          value="{% if form.phone %}{{ form.phone }}{% elsif customer %}{{ customer.phone }}{% endif %}"
-          placeholder="{{ 'templates.contact.form.phone' | t }}"
-        >
-        <label class="field__label" for="ContactForm-phone">{{ 'templates.contact.form.phone' | t }}</label>
-      </div>
-      <div class="field">
-        <textarea
-          rows="10"
-          id="ContactForm-body"
-          class="text-area field__input"
-          name="contact[{{ 'templates.contact.form.comment' | t }}]"
-          placeholder="{{ 'templates.contact.form.comment' | t }}"
-        >
-          {{- form.body -}}
-        </textarea>
-        <label class="form__label field__label" for="ContactForm-body">
-          {{- 'templates.contact.form.comment' | t -}}
-        </label>
-      </div>
-      <div class="contact__button">
-        <button type="submit" class="button">
-          {{ 'templates.contact.form.send' | t }}
-        </button>
-      </div>
+
+      <button type="submit" class="request-form__submit">
+        {{ section.settings.button_text | default: 'Submit Request' }}
+      </button>
     {%- endform -%}
   </div>
 </div>
+
+<script>
+  (function () {
+    var section = document.getElementById('shopify-section-{{ section.id }}');
+    if (!section) return;
+
+    var select = section.querySelector('.request-form__select');
+    if (select) {
+      var syncPlaceholder = function () {
+        select.classList.toggle('request-form__select--placeholder', select.value === '');
+      };
+      select.addEventListener('change', syncPlaceholder);
+      syncPlaceholder();
+    }
+
+    (function () {
+      var container = document.getElementById('ContactForm-attachments-{{ section.id }}');
+      if (!container) return;
+
+      var picker = container.querySelector('[data-attachment-picker]');
+      var list = container.querySelector('[data-attachment-list]');
+      var value = container.querySelector('[data-attachment-value]');
+      if (!picker || !list || !value) return;
+
+      picker.addEventListener('change', function () {
+        var names = Array.prototype.map.call(picker.files, function (file) {
+          return file.name;
+        });
+
+        list.textContent = '';
+        names.forEach(function (name) {
+          var item = document.createElement('li');
+          item.textContent = name;
+          list.appendChild(item);
+        });
+
+        value.value = names.join(', ');
+      });
+    })();
+  })();
+</script>
 
 {% schema %}
 {
@@ -144,70 +333,163 @@
     "groups": ["header", "footer"]
   },
   "settings": [
+    { "type": "header", "content": "Content" },
+    { "type": "inline_richtext", "id": "heading", "label": "Heading", "default": "Submit a Request" },
     {
-      "type": "inline_richtext",
-      "id": "heading",
-      "default": "t:sections.contact-form.settings.title.default",
-      "label": "t:sections.contact-form.settings.title.label"
+      "type": "richtext",
+      "id": "description",
+      "label": "Intro text",
+      "default": "<p>Need a hand? Fill in the form below and our support team will get back to you within 1–2 business days.</p>"
     },
+    { "type": "text", "id": "button_text", "label": "Button text", "default": "Submit Request" },
+    { "type": "text", "id": "success_message", "label": "Success message", "default": "Thanks for contacting us. We'll get back to you as soon as possible." },
+
+    { "type": "header", "content": "Fields" },
+    { "type": "text", "id": "first_name_label", "label": "First name label", "default": "First Name" },
+    { "type": "text", "id": "first_name_placeholder", "label": "First name placeholder", "default": "" },
+    { "type": "text", "id": "last_name_label", "label": "Last name label", "default": "Last Name" },
+    { "type": "text", "id": "last_name_placeholder", "label": "Last name placeholder", "default": "" },
+    { "type": "checkbox", "id": "require_names", "label": "Require name fields", "default": true },
+    { "type": "text", "id": "email_label", "label": "Email label", "default": "Email Address" },
+    { "type": "text", "id": "email_placeholder", "label": "Email placeholder", "default": "" },
+    { "type": "text", "id": "details_label", "label": "Details label", "default": "Additional Details" },
+    { "type": "text", "id": "details_placeholder", "label": "Details placeholder", "default": "Tell us a little more about your request" },
+    { "type": "checkbox", "id": "require_details", "label": "Require details", "default": true },
+
+    { "type": "header", "content": "Request type" },
+    { "type": "checkbox", "id": "show_request_type", "label": "Show request type dropdown", "default": true },
+    { "type": "text", "id": "request_type_label", "label": "Request type label", "default": "Request Type" },
+    { "type": "text", "id": "request_type_placeholder", "label": "Placeholder option", "default": "Select a request type" },
+    {
+      "type": "textarea",
+      "id": "request_type_options",
+      "label": "Options",
+      "info": "One option per line.",
+      "default": "Order status\nReturns & exchanges\nProduct question\nDamaged or faulty item\nWholesale enquiry\nSomething else"
+    },
+    { "type": "checkbox", "id": "require_request_type", "label": "Require a selection", "default": true },
+
+    { "type": "header", "content": "Attachments" },
     {
       "type": "select",
-      "id": "heading_size",
+      "id": "attachment_mode",
+      "label": "Attachment field",
+      "default": "picker",
+      "info": "Shopify's contact form cannot upload files. \"Add Attachments button\" lets a customer pick files and sends the file names with the request so support can ask for them in the reply. \"Link field\" collects a link to files hosted elsewhere.",
       "options": [
-        {
-          "value": "h2",
-          "label": "t:sections.all.heading_size.options__1.label"
-        },
-        {
-          "value": "h1",
-          "label": "t:sections.all.heading_size.options__2.label"
-        },
-        {
-          "value": "h0",
-          "label": "t:sections.all.heading_size.options__3.label"
-        },
-        {
-          "value": "hxl",
-          "label": "t:sections.all.heading_size.options__4.label"
-        },
-        {
-          "value": "hxxl",
-          "label": "t:sections.all.heading_size.options__5.label"
-        }
-      ],
-      "default": "h1",
-      "label": "t:sections.all.heading_size.label"
+        { "value": "picker", "label": "Add Attachments button (file names)" },
+        { "value": "link", "label": "Link field" },
+        { "value": "none", "label": "Hidden" }
+      ]
     },
+    { "type": "text", "id": "attachment_label", "label": "Attachment label", "default": "Attachments" },
+    { "type": "text", "id": "attachment_button_text", "label": "Attachment button text", "default": "Add Attachments" },
+    { "type": "text", "id": "attachment_link_placeholder", "label": "Link placeholder", "default": "https://" },
+    { "type": "text", "id": "attachment_help_text", "label": "Help text", "default": "Add photos or documents and we'll ask for them in our reply." },
+
+    { "type": "header", "content": "Layout" },
+    { "type": "range", "id": "content_width", "label": "Content width", "min": 400, "max": 1200, "step": 20, "unit": "px", "default": 680 },
     {
-      "type": "color_scheme",
-      "id": "color_scheme",
-      "label": "t:sections.all.colors.label",
-      "default": "scheme-1"
+      "type": "select",
+      "id": "content_alignment",
+      "label": "Heading alignment",
+      "default": "left",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "center", "label": "Center" }
+      ]
     },
+    { "type": "range", "id": "heading_spacing", "label": "Space below heading", "min": 0, "max": 60, "step": 2, "unit": "px", "default": 16 },
+    { "type": "range", "id": "form_spacing", "label": "Space above form", "min": 0, "max": 80, "step": 2, "unit": "px", "default": 40 },
+    { "type": "range", "id": "field_gap", "label": "Space between fields", "min": 8, "max": 48, "step": 2, "unit": "px", "default": 24 },
+    { "type": "range", "id": "column_gap", "label": "Space between side-by-side fields", "min": 8, "max": 48, "step": 2, "unit": "px", "default": 20 },
+    { "type": "range", "id": "label_spacing", "label": "Space below labels", "min": 0, "max": 20, "step": 1, "unit": "px", "default": 8 },
+    { "type": "range", "id": "button_spacing", "label": "Space above button", "min": 0, "max": 80, "step": 2, "unit": "px", "default": 32 },
+
+    { "type": "header", "content": "Typography" },
+    { "type": "font_picker", "id": "heading_font", "label": "Heading font", "default": "assistant_n4" },
+    { "type": "range", "id": "heading_size", "label": "Heading size", "min": 20, "max": 72, "step": 1, "unit": "px", "default": 40 },
+    { "type": "range", "id": "mobile_heading_size", "label": "Mobile heading size", "min": 18, "max": 48, "step": 1, "unit": "px", "default": 30 },
     {
-      "type": "header",
-      "content": "t:sections.all.padding.section_padding_heading"
+      "type": "select",
+      "id": "heading_weight",
+      "label": "Heading weight",
+      "default": "600",
+      "options": [
+        { "value": "400", "label": "Regular" },
+        { "value": "500", "label": "Medium" },
+        { "value": "600", "label": "Semibold" },
+        { "value": "700", "label": "Bold" }
+      ]
     },
+    { "type": "range", "id": "heading_letter_spacing", "label": "Heading letter spacing", "min": -5, "max": 10, "step": 1, "unit": "%", "default": 0 },
+    { "type": "range", "id": "description_size", "label": "Intro text size", "min": 12, "max": 24, "step": 1, "unit": "px", "default": 16 },
+    { "type": "range", "id": "label_size", "label": "Label size", "min": 11, "max": 20, "step": 1, "unit": "px", "default": 14 },
     {
-      "type": "range",
-      "id": "padding_top",
-      "min": 0,
-      "max": 100,
-      "step": 4,
-      "unit": "px",
-      "label": "t:sections.all.padding.padding_top",
-      "default": 36
+      "type": "select",
+      "id": "label_weight",
+      "label": "Label weight",
+      "default": "500",
+      "options": [
+        { "value": "400", "label": "Regular" },
+        { "value": "500", "label": "Medium" },
+        { "value": "600", "label": "Semibold" },
+        { "value": "700", "label": "Bold" }
+      ]
     },
+    { "type": "range", "id": "input_size", "label": "Input text size", "min": 12, "max": 22, "step": 1, "unit": "px", "default": 16 },
+    { "type": "range", "id": "button_size", "label": "Button text size", "min": 12, "max": 24, "step": 1, "unit": "px", "default": 16 },
     {
-      "type": "range",
-      "id": "padding_bottom",
-      "min": 0,
-      "max": 100,
-      "step": 4,
-      "unit": "px",
-      "label": "t:sections.all.padding.padding_bottom",
-      "default": 36
-    }
+      "type": "select",
+      "id": "button_weight",
+      "label": "Button weight",
+      "default": "600",
+      "options": [
+        { "value": "400", "label": "Regular" },
+        { "value": "500", "label": "Medium" },
+        { "value": "600", "label": "Semibold" },
+        { "value": "700", "label": "Bold" }
+      ]
+    },
+    { "type": "range", "id": "button_letter_spacing", "label": "Button letter spacing", "min": -2, "max": 15, "step": 1, "unit": "%", "default": 0 },
+
+    { "type": "header", "content": "Fields — size & borders" },
+    { "type": "range", "id": "input_height", "label": "Field height", "min": 36, "max": 72, "step": 1, "unit": "px", "default": 48 },
+    { "type": "range", "id": "input_padding_inline", "label": "Field horizontal padding", "min": 6, "max": 32, "step": 1, "unit": "px", "default": 14 },
+    { "type": "range", "id": "textarea_height", "label": "Textarea height", "min": 80, "max": 400, "step": 10, "unit": "px", "default": 180 },
+    { "type": "range", "id": "border_width", "label": "Border width", "min": 0, "max": 4, "step": 1, "unit": "px", "default": 1 },
+    { "type": "range", "id": "border_radius", "label": "Border radius", "min": 0, "max": 30, "step": 1, "unit": "px", "default": 4 },
+
+    { "type": "header", "content": "Button size" },
+    { "type": "range", "id": "button_height", "label": "Button height", "min": 36, "max": 80, "step": 1, "unit": "px", "default": 54 },
+    { "type": "range", "id": "button_radius", "label": "Button radius", "min": 0, "max": 40, "step": 1, "unit": "px", "default": 4 },
+    { "type": "checkbox", "id": "button_full_width", "label": "Full width on desktop", "default": true },
+    { "type": "checkbox", "id": "mobile_button_full_width", "label": "Full width on mobile", "default": true },
+
+    { "type": "header", "content": "Colors" },
+    { "type": "color", "id": "background_color", "label": "Section background", "default": "#FFFFFF" },
+    { "type": "color", "id": "heading_color", "label": "Heading", "default": "#1A1A1A" },
+    { "type": "color", "id": "description_color", "label": "Intro & help text", "default": "#5C5C5C" },
+    { "type": "color", "id": "label_color", "label": "Labels", "default": "#1A1A1A" },
+    { "type": "color", "id": "input_background", "label": "Field background", "default": "#FFFFFF" },
+    { "type": "color", "id": "input_text_color", "label": "Field text", "default": "#1A1A1A" },
+    { "type": "color", "id": "placeholder_color", "label": "Placeholder text", "default": "#8C8C8C" },
+    { "type": "color", "id": "border_color", "label": "Field border", "default": "#D6D6D6" },
+    { "type": "color", "id": "border_color_focus", "label": "Field border (focus/hover)", "default": "#1A1A1A" },
+    { "type": "color", "id": "attachment_background", "label": "Attachment button background", "default": "#FFFFFF" },
+    { "type": "color", "id": "attachment_text_color", "label": "Attachment button text", "default": "#1A1A1A" },
+    { "type": "color", "id": "button_background", "label": "Submit button background", "default": "#1A1A1A" },
+    { "type": "color", "id": "button_text_color", "label": "Submit button text", "default": "#FFFFFF" },
+    { "type": "color", "id": "button_background_hover", "label": "Submit button background (hover)", "default": "#3D3D3D" },
+    { "type": "color", "id": "button_text_color_hover", "label": "Submit button text (hover)", "default": "#FFFFFF" },
+
+    { "type": "header", "content": "Section padding" },
+    { "type": "range", "id": "padding_top", "label": "Padding top", "min": 0, "max": 160, "step": 4, "unit": "px", "default": 72 },
+    { "type": "range", "id": "padding_bottom", "label": "Padding bottom", "min": 0, "max": 160, "step": 4, "unit": "px", "default": 88 },
+    { "type": "range", "id": "padding_inline", "label": "Horizontal padding", "min": 0, "max": 100, "step": 2, "unit": "px", "default": 24 },
+    { "type": "range", "id": "mobile_padding_top", "label": "Mobile padding top", "min": 0, "max": 160, "step": 4, "unit": "px", "default": 40 },
+    { "type": "range", "id": "mobile_padding_bottom", "label": "Mobile padding bottom", "min": 0, "max": 160, "step": 4, "unit": "px", "default": 56 },
+    { "type": "range", "id": "mobile_padding_inline", "label": "Mobile horizontal padding", "min": 0, "max": 60, "step": 2, "unit": "px", "default": 20 }
   ],
   "presets": [
     {
