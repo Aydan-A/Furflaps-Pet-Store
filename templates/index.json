@@ -32,7 +32,7 @@
           "settings": {
             "heading": "Accessories as unique as they are.",
             "description": "<p>Discover thoughtful accessories and everyday essentials selected for happier, healthier pets.</p>",
-            "button_label": "Explore all",
+            "button_label": "Explore products",
             "button_link": "shopify://collections/all",
             "background_color": "#e8e0d5",
             "heading_color": "#111111",
@@ -354,8 +354,8 @@
         "mobile_media_height": 360,
         "heading_size": 46,
         "mobile_heading_size": 32,
-        "section_background": "#2A2525",
-        "content_background": "#D83A32",
+        "section_background": "#2a2525",
+        "content_background": "#d83a32",
         "heading_color": "#ffffff",
         "text_color": "#ffffff",
         "button_background": "#ffffff",
@@ -377,7 +377,7 @@
           "type": "tab",
           "settings": {
             "label": "",
-            "collection": "collars"
+            "collection": "dress-up"
           }
         },
         "tab_Yf6YBD": {
