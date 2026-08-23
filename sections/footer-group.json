@@ -42,6 +42,7 @@
           "type": "social_image",
           "settings": {
             "show_item": true,
+            "image": "shopify://shop_images/ChatGPT_Image_Jul_18_2026_at_06_07_11_PM.png",
             "link": "",
             "link_label": ""
           }
