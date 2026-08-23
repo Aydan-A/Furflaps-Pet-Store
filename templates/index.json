@@ -19,7 +19,7 @@
             "description": "<p>Personalized collars made for cats and dogs, with playful colours, custom names, and a style that's uniquely theirs.</p>",
             "button_label": "Shop now",
             "button_link": "shopify://collections/all",
-            "background_color": "#CC302A",
+            "background_color": "#cc302a",
             "heading_color": "#ffffff",
             "text_color": "#ffffff",
             "button_background": "#ffffff",
@@ -257,7 +257,7 @@
         "mobile_media_height": 360,
         "heading_size": 46,
         "mobile_heading_size": 32,
-        "section_background": "#CC302A",
+        "section_background": "#cc302a",
         "content_background": "#933632",
         "heading_color": "#ffffff",
         "text_color": "#ffffff",
@@ -462,7 +462,7 @@
           "settings": {
             "show_item": true,
             "title": "Soft & Comfortable",
-            "text": "<p>Lightweight fabric made for all-day wear.</p>",
+            "text": "<p>Personalized for Your Pet</p>",
             "button_label": "",
             "button_link": "",
             "button_style_secondary": false
