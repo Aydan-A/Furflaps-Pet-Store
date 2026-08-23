@@ -142,53 +142,6 @@
     },
     "hot_this_week": {
       "type": "hot-this-week",
-      "blocks": {
-        "card_charm_bundle": {
-          "type": "product_card",
-          "settings": {
-            "custom_title": "Charm Bundle",
-            "description": "Pick any four charms and save — mix letters, numbers and shapes in whichever colours you like.",
-            "show_badge": true,
-            "badge_text": "New",
-            "custom_price": "$9.99",
-            "custom_compare_price": "$11.75",
-            "show_discount": true,
-            "discount_text": "15% off",
-            "tab": "best_sellers"
-          }
-        },
-        "card_leash_collar": {
-          "type": "product_card",
-          "settings": {
-            "custom_title": "Waterproof Dog Leash + Collar Set",
-            "description": "5ft leash + waterproof collar + charm add-ons.",
-            "custom_price": "$60.00",
-            "custom_compare_price": "$63.00",
-            "show_discount": true,
-            "discount_text": "4% off",
-            "tab": "best_sellers"
-          }
-        },
-        "card_letter_charm": {
-          "type": "product_card",
-          "settings": {
-            "custom_title": "Letter Charm — Personalised Collar Add-on",
-            "description": "Three colours, fits 5/8\" and 1\" collar widths.",
-            "custom_price": "$2.99",
-            "tab": "new_arrivals"
-          }
-        },
-        "card_number_charm": {
-          "type": "product_card",
-          "settings": {
-            "custom_title": "Number Charm",
-            "description": "Add a house number or birth year — same three colours as the letters.",
-            "custom_price": "From $2.99",
-            "tab": "new_arrivals"
-          }
-        }
-      },
-      "block_order": ["card_charm_bundle", "card_leash_collar", "card_letter_charm", "card_number_charm"],
       "settings": {
         "show_heading": true,
         "heading": "Hot This Week",
