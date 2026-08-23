@@ -149,7 +149,7 @@
         "show_tabs": true,
         "best_sellers_collection": "frontpage",
         "best_sellers_label": "Best Sellers",
-        "new_arrivals_collection": "",
+        "new_arrivals_collection": "new-arrivals",
         "new_arrivals_label": "New Arrivals",
         "default_tab": "best_sellers",
         "products_to_show": 10,
