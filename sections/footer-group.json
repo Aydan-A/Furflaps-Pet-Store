@@ -51,6 +51,7 @@
           "type": "social_image",
           "settings": {
             "show_item": true,
+            "image": "shopify://shop_images/59572af2-d031-4706-a2af-f2591b986d9d.png",
             "link": "",
             "link_label": ""
           }
@@ -59,6 +60,7 @@
           "type": "social_image",
           "settings": {
             "show_item": true,
+            "image": "shopify://shop_images/c818a6fa-2d1e-4f77-b521-89ca5df7a5c1.png",
             "link": "",
             "link_label": ""
           }
