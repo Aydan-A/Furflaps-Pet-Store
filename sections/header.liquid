@@ -186,7 +186,7 @@
             }}
           </div>
           {%- if section.settings.show_brand_name -%}
-            <span class="header__brand-name">{{ shop.name }}</span>
+            <span class="header__brand-name{% if section.settings.brand_name_uppercase %} header__brand-name--uppercase{% endif %}">{{ shop.name }}</span>
           {%- endif -%}
         {%- else -%}
           <span class="h2">{{ shop.name }}</span>
@@ -236,7 +236,7 @@
             }}
           </div>
           {%- if section.settings.show_brand_name -%}
-            <span class="header__brand-name">{{ shop.name }}</span>
+            <span class="header__brand-name{% if section.settings.brand_name_uppercase %} header__brand-name--uppercase{% endif %}">{{ shop.name }}</span>
           {%- endif -%}
         {%- else -%}
           <span class="h2">{{ shop.name }}</span>
@@ -558,6 +558,13 @@
       "label": "Show brand name next to logo"
     },
     {
+      "type": "checkbox",
+      "id": "brand_name_uppercase",
+      "default": true,
+      "label": "Uppercase brand name",
+      "info": "Font comes from Theme settings > Typography > Heading font"
+    },
+    {
       "type": "header",
       "content": "Navbar"
     },
@@ -678,7 +685,7 @@
     {
       "type": "checkbox",
       "id": "show_wishlist_icon",
-      "default": true,
+      "default": false,
       "label": "Show wishlist icon"
     },
     {

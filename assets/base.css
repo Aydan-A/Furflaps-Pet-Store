@@ -2432,6 +2432,13 @@ input[type='checkbox'] {
     height: var(--header-icon-size, 2rem);
   }
 
+  /* icon-cart-empty.svg and icon-cart.svg draw a much smaller glyph inside
+     their viewBox than icon-account.svg/icon-heart.svg do, so equal box
+     sizing alone leaves the cart looking noticeably thinner/smaller. */
+  .header--middle-left .header__icon--cart .icon {
+    transform: scale(1.35);
+  }
+
   .header__search-inline .field:after {
     border-radius: var(--header-search-radius, var(--inputs-radius));
     box-shadow: 0 0 0 var(--header-search-border-width, var(--inputs-border-width))
@@ -2495,11 +2502,17 @@ input[type='checkbox'] {
 .header__brand-name {
   font-family: var(--font-heading-family);
   font-style: var(--font-heading-style);
-  font-weight: var(--font-heading-weight);
-  font-size: 1.8rem;
+  font-weight: 700;
+  font-size: 2rem;
+  letter-spacing: 0.06rem;
   line-height: 1;
   color: rgb(var(--color-foreground));
   white-space: nowrap;
+}
+
+.header__brand-name--uppercase {
+  text-transform: uppercase;
+  letter-spacing: 0.1rem;
 }
 
 .header__heading-link:hover .h2 {
@@ -2848,9 +2861,7 @@ details[open] > .header__submenu {
     justify-self: stretch;
     padding-top: 1.2rem;
     border-top: 0.1rem solid rgba(var(--color-foreground), 0.08);
-  }
-
-  .header--middle-left .header__inline-menu > .list-menu--inline {
+    display: flex;
     justify-content: var(--header-nav-justify, center);
   }
 
