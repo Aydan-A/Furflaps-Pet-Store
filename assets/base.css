@@ -2428,11 +2428,20 @@ input[type='checkbox'] {
 
   .header__search-inline .field__input {
     background-color: var(--header-search-bg, rgb(var(--color-background)));
-    border-radius: var(--header-search-radius, var(--inputs-radius));
+    border-radius: 0 var(--header-search-radius, var(--inputs-radius)) var(--header-search-radius, var(--inputs-radius)) 0;
     border: var(--header-search-border-width, var(--inputs-border-width)) solid
       rgba(var(--color-foreground), var(--inputs-border-opacity));
     border-left: none;
     margin: 0;
+    box-shadow: none;
+    outline: none;
+  }
+
+  .header__search-inline .field__input:focus,
+  .header__search-inline .field__input:focus-visible {
+    box-shadow: none;
+    outline: none;
+    border-radius: 0 var(--header-search-radius, var(--inputs-radius)) var(--header-search-radius, var(--inputs-radius)) 0;
   }
 
   .header--middle-left .header__icons {
