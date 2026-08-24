@@ -14,8 +14,22 @@
   endif
 
   assign card_description = blank
-  if section.settings.show_description and section.settings.description_metafield_namespace != blank and section.settings.description_metafield_key != blank
-    assign card_description = product.metafields[section.settings.description_metafield_namespace][section.settings.description_metafield_key].value
+  if section.settings.show_description
+    assign description_source = section.settings.description_source
+
+    if description_source == 'metafield' or description_source == 'metafield_then_description'
+      if section.settings.description_metafield_namespace != blank and section.settings.description_metafield_key != blank
+        assign card_description = product.metafields[section.settings.description_metafield_namespace][section.settings.description_metafield_key].value
+      endif
+    endif
+
+    if card_description == blank and description_source != 'metafield'
+      assign card_description = product.description
+    endif
+
+    if card_description != blank
+      assign card_description = card_description | strip_html | strip | truncatewords: section.settings.description_words
+    endif
   endif
 
   assign discount_final = blank

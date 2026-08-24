@@ -236,9 +236,18 @@
 
     { "type": "header", "content": "Description" },
     { "type": "checkbox", "id": "show_description", "label": "Show description", "default": true },
+    {
+      "type": "select", "id": "description_source", "label": "Description source", "default": "metafield_then_description",
+      "options": [
+        { "value": "metafield_then_description", "label": "Metafield, fall back to product description" },
+        { "value": "description", "label": "Product description excerpt" },
+        { "value": "metafield", "label": "Metafield only" }
+      ]
+    },
+    { "type": "range", "id": "description_words", "label": "Excerpt length", "min": 5, "max": 50, "step": 5, "unit": "wd", "default": 20 },
     { "type": "text", "id": "description_metafield_namespace", "label": "Description metafield namespace", "default": "custom" },
     { "type": "text", "id": "description_metafield_key", "label": "Description metafield key", "default": "card_description" },
-    { "type": "paragraph", "content": "Use a single-line text product metafield. Falls back to nothing if not set — the full product description is never pulled in automatically." },
+    { "type": "paragraph", "content": "Excerpts strip formatting and trim to the word count above. Use a metafield when you want per-product wording that differs from the full description." },
     { "type": "color", "id": "description_color", "label": "Description text", "default": "#6E7787" },
     { "type": "range", "id": "description_size", "label": "Description size", "min": 10, "max": 18, "step": 1, "unit": "px", "default": 14 },
     { "type": "range", "id": "description_lines", "label": "Description max lines", "min": 1, "max": 4, "step": 1, "default": 2 },
