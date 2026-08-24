@@ -280,8 +280,10 @@
   color: var(--hot-description-color);
   display: -webkit-box;
   -webkit-line-clamp: var(--hot-description-lines);
+  line-clamp: var(--hot-description-lines);
   -webkit-box-orient: vertical;
   overflow: hidden;
+  overflow-wrap: anywhere;
 }
 
 .hot-card__prices {

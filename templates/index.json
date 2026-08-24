@@ -169,7 +169,7 @@
         "description_metafield_key": "card_description",
         "description_color": "#6e7787",
         "description_size": 14,
-        "description_lines": 2,
+        "description_lines": 1,
         "show_metafield_badge": false,
         "badge_metafield_namespace": "custom",
         "badge_metafield_key": "badge",
