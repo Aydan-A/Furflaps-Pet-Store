@@ -3,8 +3,6 @@
   Uses Shopify's built-in 'contact' form tag so submissions keep going to the
   store's contact email. Every label, placeholder and style is editable in the
   Theme Editor.
-
-  Layout revision: submit-a-request.
 {% endcomment %}
 
 {{ 'contact-request-form.css' | asset_url | stylesheet_tag }}
@@ -348,12 +346,12 @@
 
     { "type": "header", "content": "Fields" },
     { "type": "text", "id": "first_name_label", "label": "First name label", "default": "First Name" },
-    { "type": "text", "id": "first_name_placeholder", "label": "First name placeholder", "default": "" },
+    { "type": "text", "id": "first_name_placeholder", "label": "First name placeholder" },
     { "type": "text", "id": "last_name_label", "label": "Last name label", "default": "Last Name" },
-    { "type": "text", "id": "last_name_placeholder", "label": "Last name placeholder", "default": "" },
+    { "type": "text", "id": "last_name_placeholder", "label": "Last name placeholder" },
     { "type": "checkbox", "id": "require_names", "label": "Require name fields", "default": true },
     { "type": "text", "id": "email_label", "label": "Email label", "default": "Email Address" },
-    { "type": "text", "id": "email_placeholder", "label": "Email placeholder", "default": "" },
+    { "type": "text", "id": "email_placeholder", "label": "Email placeholder" },
     { "type": "text", "id": "details_label", "label": "Details label", "default": "Additional Details" },
     { "type": "text", "id": "details_placeholder", "label": "Details placeholder", "default": "Tell us a little more about your request" },
     { "type": "checkbox", "id": "require_details", "label": "Require details", "default": true },
