@@ -65,7 +65,7 @@
         "family"
       ],
       "settings": {
-        "image": "shopify://shop_images/08e25e0f6fb56c07d54a8ed0e0d4d1a3.jpg",
+        "image": "shopify://shop_images/29_04a09287-3f2a-490b-aaba-d924697fffeb_png.webp",
         "media_background": "#ffffff",
         "image_fit": "cover",
         "image_position": "center center",
@@ -169,7 +169,7 @@
         "description_words": 20,
         "description_metafield_namespace": "custom",
         "description_metafield_key": "card_description",
-        "description_color": "#A2A9B7",
+        "description_color": "#a2a9b7",
         "description_size": 14,
         "description_lines": 1,
         "show_metafield_badge": false,
