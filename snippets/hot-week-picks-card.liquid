@@ -32,6 +32,27 @@
     endif
   endif
 
+  assign color_option = null
+  if section.settings.show_swatches
+    assign target_option_name = section.settings.color_option_name | downcase
+    for option in product.options_with_values
+      assign option_name = option.name | downcase
+      if option_name == target_option_name
+        assign color_option = option
+        break
+      endif
+    endfor
+  endif
+
+  assign swatch_total = 0
+  if color_option
+    for value in color_option.values
+      if value.swatch != blank
+        assign swatch_total = swatch_total | plus: 1
+      endif
+    endfor
+  endif
+
   assign discount_final = blank
   if section.settings.show_discount and product.compare_at_price > product.price
     assign discount_pct = product.compare_at_price | minus: product.price | times: 100 | divided_by: product.compare_at_price
@@ -133,6 +154,25 @@
   </div>
 
   <div class="hot-card__info">
+    {%- if swatch_total > 0 -%}
+      {%- assign swatches_shown = 0 -%}
+      <ul class="hot-card__swatches" role="list" aria-label="{{ color_option.name | escape }}">
+        {%- for value in color_option.values -%}
+          {%- if value.swatch != blank and swatches_shown < section.settings.swatches_to_show -%}
+            <li class="hot-card__swatch" title="{{ value | escape }}">
+              <span class="visually-hidden">{{ value }}</span>
+              {% render 'swatch', swatch: value.swatch %}
+            </li>
+            {%- assign swatches_shown = swatches_shown | plus: 1 -%}
+          {%- endif -%}
+        {%- endfor -%}
+        {%- assign swatches_remaining = swatch_total | minus: swatches_shown -%}
+        {%- if swatches_remaining > 0 -%}
+          <li class="hot-card__swatch-more">+{{ swatches_remaining }}</li>
+        {%- endif -%}
+      </ul>
+    {%- endif -%}
+
     <h3 class="hot-card__title">
       <a class="hot-card__link" href="{{ product.url }}">{{ product.title | escape }}</a>
     </h3>

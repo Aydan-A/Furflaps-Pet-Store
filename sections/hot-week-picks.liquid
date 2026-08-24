@@ -1,4 +1,7 @@
 {% comment %}Hot week picks section{% endcomment %}
+{%- if section.settings.show_swatches -%}
+  {{ 'component-swatch.css' | asset_url | stylesheet_tag }}
+{%- endif -%}
 {{ 'hot-week-picks.css' | asset_url | stylesheet_tag }}
 <script src="{{ 'hot-week-picks.js' | asset_url }}" defer="defer"></script>
 {%- if section.settings.show_add_to_cart -%}
@@ -67,6 +70,7 @@
     --hot-arrow-background: {{ section.settings.arrow_background }};
     --hot-arrow-icon: {{ section.settings.arrow_icon_color }};
     --hot-arrow-border: {{ section.settings.arrow_border_color }};
+    --hot-swatch-size: {{ section.settings.swatch_size }}px;
     --hot-cart-size: {{ section.settings.cart_button_size }}px;
     --hot-cart-background: {{ section.settings.cart_button_background }};
     --hot-cart-icon: {{ section.settings.cart_button_icon_color }};
@@ -281,6 +285,12 @@
     },
     { "type": "range", "id": "heading_letter_spacing", "label": "Heading letter spacing", "min": -10, "max": 10, "step": 1, "unit": "px", "default": -3 },
     { "type": "range", "id": "tab_font_size", "label": "Tab font size", "min": 11, "max": 20, "step": 1, "unit": "px", "default": 13 },
+
+    { "type": "header", "content": "Colour swatches" },
+    { "type": "checkbox", "id": "show_swatches", "label": "Show colour swatches", "default": true },
+    { "type": "text", "id": "color_option_name", "label": "Colour option name", "default": "Color", "info": "Must match the product option name exactly. Only values set up as swatches in Shopify are shown." },
+    { "type": "range", "id": "swatches_to_show", "label": "Swatches to show", "min": 2, "max": 8, "step": 1, "default": 4 },
+    { "type": "range", "id": "swatch_size", "label": "Swatch size", "min": 10, "max": 24, "step": 2, "unit": "px", "default": 14 },
 
     { "type": "header", "content": "Add to cart" },
     { "type": "checkbox", "id": "show_add_to_cart", "label": "Show add to cart button", "default": true },
