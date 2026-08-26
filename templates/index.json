@@ -681,11 +681,11 @@
           "type": "icon",
           "settings": {
             "icon_type": "icon",
-            "icon": "lock",
+            "icon": "star",
             "font_awesome": "",
             "icon_image_corner_radius": 0,
-            "icon_title": "Key Benefit",
-            "icon_description": "Describe how the benefit brings value"
+            "icon_title": "Made Just for Your Pet",
+            "icon_description": "Personalize their collar with their name, colors, letters, and charms."
           }
         },
         "icon_dPL3cQ": {
