@@ -2452,11 +2452,12 @@ input[type='checkbox'] {
     height: var(--header-icon-size, 2rem);
   }
 
-  /* icon-cart-empty.svg and icon-cart.svg draw a much smaller glyph inside
-     their viewBox than icon-account.svg/icon-heart.svg do, so equal box
-     sizing alone leaves the cart looking noticeably thinner/smaller. */
+  /* The cart artwork occupies about 44% of its 40x40 SVG viewBox, while
+     the other header icons fill theirs. Keep its SVG canvas proportionally
+     larger so the visible artwork follows the same icon-size setting. */
   .header--middle-left .header__icon--cart .icon {
-    transform: scale(1.35);
+    width: calc(var(--header-icon-size, 2rem) * 2.2);
+    height: calc(var(--header-icon-size, 2rem) * 2.2);
   }
 
   .header--middle-center:not(.drawer-menu) {
