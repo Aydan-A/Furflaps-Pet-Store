@@ -188,6 +188,10 @@
         "heading_weight": "700",
         "heading_letter_spacing": -3,
         "tab_font_size": 13,
+        "show_swatches": true,
+        "color_option_name": "Color",
+        "swatches_to_show": 4,
+        "swatch_size": 14,
         "show_add_to_cart": true,
         "cart_button_size": 40,
         "cart_button_background": "#ffffff",
@@ -227,21 +231,30 @@
           "type": "step",
           "settings": {
             "title": "Pick a collar you love",
+            "products": [],
             "collection": "collars",
+            "selection_required": true,
+            "enable_quantity": false,
             "benefit_1": "Eco-Friendly",
             "benefit_2": "",
-            "selection_required": true
+            "enable_personalization": false,
+            "personalization_label": "Name",
+            "personalization_placeholder": "Enter a name",
+            "personalization_max_chars": 12,
+            "personalization_required": true,
+            "swatch_label": "Color"
           }
         },
         "step_G9XGPD": {
           "type": "step",
           "settings": {
             "title": "Match it with cool letters",
+            "products": [],
             "collection": "letters",
-            "benefit_1": "100% Cotton",
-            "benefit_2": "Water Proof",
             "selection_required": true,
             "enable_quantity": true,
+            "benefit_1": "100% Cotton",
+            "benefit_2": "Water Proof",
             "enable_personalization": true,
             "personalization_label": "Name",
             "personalization_placeholder": "Enter a name",
@@ -250,21 +263,11 @@
             "swatch_label": "Color"
           }
         },
-        "step_33GmAx": {
-          "type": "step",
-          "settings": {
-            "title": "Add fun extras",
-            "collection": "icons",
-            "benefit_1": "100% Cotton",
-            "benefit_2": "Colorful",
-            "selection_required": false
-          }
-        },
         "swatch_blue": {
           "type": "swatch",
           "settings": {
             "label": "Blue",
-            "color": "#2E6BE6",
+            "color": "#2e6be6",
             "value": "Blue"
           }
         },
@@ -272,7 +275,7 @@
           "type": "swatch",
           "settings": {
             "label": "Green",
-            "color": "#3BC46A",
+            "color": "#3bc46a",
             "value": "Green"
           }
         },
@@ -280,7 +283,7 @@
           "type": "swatch",
           "settings": {
             "label": "Yellow",
-            "color": "#F2CB2E",
+            "color": "#f2cb2e",
             "value": "Yellow"
           }
         },
@@ -288,8 +291,26 @@
           "type": "swatch",
           "settings": {
             "label": "Red",
-            "color": "#EF3B3B",
+            "color": "#ef3b3b",
             "value": "Red"
+          }
+        },
+        "step_33GmAx": {
+          "type": "step",
+          "settings": {
+            "title": "Add fun extras",
+            "products": [],
+            "collection": "icons",
+            "selection_required": false,
+            "enable_quantity": false,
+            "benefit_1": "100% Cotton",
+            "benefit_2": "Colorful",
+            "enable_personalization": false,
+            "personalization_label": "Name",
+            "personalization_placeholder": "Enter a name",
+            "personalization_max_chars": 12,
+            "personalization_required": true,
+            "swatch_label": "Color"
           }
         }
       },
@@ -306,10 +327,15 @@
       "settings": {
         "eyebrow": "How you style it",
         "heading": "Pick - Pair - Play!",
+        "button_label": "Save and continue",
+        "cta_label": "Go to cart",
+        "error_message": "Please complete this step to continue.",
+        "locked_message": "Please finish the previous step first.",
         "products_to_show": 4,
         "columns_desktop": 4,
         "image_ratio": "4 / 5",
         "image_fit": "contain",
+        "card_height": 300,
         "eyebrow_size": 11,
         "heading_size": 34,
         "mobile_heading_size": 28,
@@ -321,6 +347,8 @@
         "text_color": "#111111",
         "panel_background": "#f4f4f4",
         "image_background": "#e9eef1",
+        "accent": "#f96d4b",
+        "accent_text": "#ffffff",
         "number_background": "#050505",
         "number_text": "#ffffff",
         "pill_background": "#ffffff",
@@ -332,11 +360,7 @@
         "padding_inline": 48,
         "mobile_padding_top": 28,
         "mobile_padding_bottom": 32,
-        "mobile_padding_inline": 16,
-        "button_label": "Save and continue",
-        "cta_label": "Go to cart",
-        "error_message": "Please complete this step to continue.",
-        "locked_message": "Please finish the previous step first."
+        "mobile_padding_inline": 16
       }
     },
     "before_after_comparison_H4KUmY": {
@@ -649,6 +673,97 @@
         "show_on_desktop": true,
         "show_on_mobile": true
       }
+    },
+    "tsapb_ce7789ea_DTmRqH": {
+      "type": "tsapb-ce7789ea",
+      "blocks": {
+        "icon_L7cUHk": {
+          "type": "icon",
+          "settings": {
+            "icon_type": "icon",
+            "icon": "lock",
+            "font_awesome": "",
+            "icon_image_corner_radius": 0,
+            "icon_title": "Key Benefit",
+            "icon_description": "Describe how the benefit brings value"
+          }
+        },
+        "icon_dPL3cQ": {
+          "type": "icon",
+          "settings": {
+            "icon_type": "icon",
+            "icon": "map_marked_alt",
+            "font_awesome": "",
+            "icon_image_corner_radius": 0,
+            "icon_title": "Key Benefit",
+            "icon_description": "Describe how the benefit brings value"
+          }
+        },
+        "icon_zqC3i3": {
+          "type": "icon",
+          "settings": {
+            "icon_type": "icon",
+            "icon": "pencil_ruler",
+            "font_awesome": "",
+            "icon_image_corner_radius": 0,
+            "icon_title": "Key Benefit",
+            "icon_description": "Describe how the benefit brings value"
+          }
+        },
+        "icon_6paUJ3": {
+          "type": "icon",
+          "settings": {
+            "icon_type": "icon",
+            "icon": "box",
+            "font_awesome": "",
+            "icon_image_corner_radius": 0,
+            "icon_title": "Key Benefit",
+            "icon_description": "Describe how the benefit brings value"
+          }
+        }
+      },
+      "block_order": [
+        "icon_L7cUHk",
+        "icon_dPL3cQ",
+        "icon_zqC3i3",
+        "icon_6paUJ3"
+      ],
+      "name": "❤️ Square: Value Icons",
+      "settings": {
+        "icon_color": "#222222",
+        "icon_size": 48,
+        "icon_title_size": "20",
+        "icon_title_color": "#222222",
+        "icon_description_size": "14",
+        "icon_description_color": "#222222",
+        "icons_per_row_desktop": 4,
+        "icons_mobile_layout": "2",
+        "space_between_icons": 24,
+        "space_between_rows": 64,
+        "space_between_rows_mobile": 40,
+        "heading": "",
+        "heading_size": "32",
+        "heading_style": "regular",
+        "heading_alignment": "center",
+        "heading_color": "#222222",
+        "section_background_style": "color",
+        "section_background": "#FDE6DE",
+        "section_background_gradient": "linear-gradient(to right, #fed951, #ff46c7)",
+        "section_background_animation": false,
+        "overlay_color": "#222222",
+        "overlay_opacity": 0,
+        "section_width": 70,
+        "section_max_width": "",
+        "spacing_type": "desktop",
+        "padding_top": 40,
+        "padding_bottom": 40,
+        "margin_top": 0,
+        "margin_bottom": 0,
+        "padding_top_mobile": 20,
+        "padding_bottom_mobile": 20,
+        "margin_top_mobile": 0,
+        "margin_bottom_mobile": 0
+      }
     }
   },
   "order": [
@@ -658,6 +773,7 @@
     "before_after_comparison_H4KUmY",
     "product_feature_tabs_EpMe6d",
     "featured_testimonials_GdmtJw",
-    "feature_highlights_iY7VnD"
+    "feature_highlights_iY7VnD",
+    "tsapb_ce7789ea_DTmRqH"
   ]
 }
