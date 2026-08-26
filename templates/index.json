@@ -228,9 +228,9 @@
           "settings": {
             "title": "Pick a collar you love",
             "collection": "collars",
-            "benefit_1": "",
+            "benefit_1": "Eco-Friendly",
             "benefit_2": "",
-            "open_by_default": true
+            "selection_required": true
           }
         },
         "step_G9XGPD": {
@@ -238,9 +238,16 @@
           "settings": {
             "title": "Match it with cool letters",
             "collection": "letters",
-            "benefit_1": "",
-            "benefit_2": "",
-            "open_by_default": false
+            "benefit_1": "100% Cotton",
+            "benefit_2": "Water Proof",
+            "selection_required": true,
+            "enable_quantity": true,
+            "enable_personalization": true,
+            "personalization_label": "Name",
+            "personalization_placeholder": "Enter a name",
+            "personalization_max_chars": 12,
+            "personalization_required": true,
+            "swatch_label": "Color"
           }
         },
         "step_33GmAx": {
@@ -248,15 +255,51 @@
           "settings": {
             "title": "Add fun extras",
             "collection": "icons",
-            "benefit_1": "",
-            "benefit_2": "",
-            "open_by_default": false
+            "benefit_1": "100% Cotton",
+            "benefit_2": "Colorful",
+            "selection_required": false
+          }
+        },
+        "swatch_blue": {
+          "type": "swatch",
+          "settings": {
+            "label": "Blue",
+            "color": "#2E6BE6",
+            "value": "Blue"
+          }
+        },
+        "swatch_green": {
+          "type": "swatch",
+          "settings": {
+            "label": "Green",
+            "color": "#3BC46A",
+            "value": "Green"
+          }
+        },
+        "swatch_yellow": {
+          "type": "swatch",
+          "settings": {
+            "label": "Yellow",
+            "color": "#F2CB2E",
+            "value": "Yellow"
+          }
+        },
+        "swatch_red": {
+          "type": "swatch",
+          "settings": {
+            "label": "Red",
+            "color": "#EF3B3B",
+            "value": "Red"
           }
         }
       },
       "block_order": [
         "step_zWNjhr",
         "step_G9XGPD",
+        "swatch_blue",
+        "swatch_green",
+        "swatch_yellow",
+        "swatch_red",
         "step_33GmAx"
       ],
       "name": "Dress up in steps",
@@ -267,19 +310,12 @@
         "columns_desktop": 4,
         "image_ratio": "4 / 5",
         "image_fit": "contain",
-        "show_swatches": true,
-        "color_option_name": "Color",
-        "swatches_to_show": 4,
-        "show_custom_badge": false,
-        "badge_namespace": "custom",
-        "badge_key": "badge",
         "eyebrow_size": 11,
         "heading_size": 34,
         "mobile_heading_size": 28,
         "heading_weight": "700",
         "step_title_size": 20,
         "mobile_step_title_size": 17,
-        "card_title_size": 18,
         "price_size": 16,
         "background": "#ffffff",
         "text_color": "#111111",
@@ -289,23 +325,18 @@
         "number_text": "#ffffff",
         "pill_background": "#ffffff",
         "pill_border": "#d6d6d6",
-        "sale_color": "#d93a2f",
-        "sold_out_color": "#555555",
-        "custom_badge_color": "#7a59d1",
-        "badge_text": "#ffffff",
         "max_width": 1320,
-        "panel_radius": 12,
-        "card_radius": 12,
-        "summary_height": 72,
         "heading_gap": 38,
-        "step_gap": 8,
-        "card_gap": 10,
         "padding_top": 32,
         "padding_bottom": 40,
         "padding_inline": 48,
         "mobile_padding_top": 28,
         "mobile_padding_bottom": 32,
-        "mobile_padding_inline": 16
+        "mobile_padding_inline": 16,
+        "button_label": "Save and continue",
+        "cta_label": "Go to cart",
+        "error_message": "Please complete this step to continue.",
+        "locked_message": "Please finish the previous step first."
       }
     },
     "before_after_comparison_H4KUmY": {

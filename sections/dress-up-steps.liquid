@@ -21,12 +21,7 @@
     --ds-mobile-padding-bottom: {{ section.settings.mobile_padding_bottom }}px;
     --ds-mobile-padding-inline: {{ section.settings.mobile_padding_inline }}px;
     --ds-heading-gap: {{ section.settings.heading_gap }}px;
-    --ds-step-gap: {{ section.settings.step_gap }}px;
-    --ds-card-gap: {{ section.settings.card_gap }}px;
-    --ds-radius: {{ section.settings.panel_radius }}px;
-    --ds-card-radius: {{ section.settings.card_radius }}px;
     --ds-card-height: {{ section.settings.card_height }}px;
-    --ds-summary-height: {{ section.settings.summary_height }}px;
     --ds-columns: {{ section.settings.columns_desktop }};
     --ds-image-ratio: {{ section.settings.image_ratio }};
     --ds-image-fit: {{ section.settings.image_fit }};
@@ -40,7 +35,24 @@
   }
 {%- endstyle -%}
 
-<dress-up-steps class="dress-up-steps">
+{%- liquid
+  assign step_count = 0
+  for block in section.blocks
+    if block.type == 'step'
+      assign step_count = step_count | plus: 1
+    endif
+  endfor
+  assign step_number = 0
+-%}
+
+<dress-up-steps
+  class="dress-up-steps"
+  data-cart-add-url="{{ routes.cart_add_url }}"
+  data-cart-url="{{ routes.cart_url }}"
+  data-money-zero="{{ 0 | money }}"
+  data-error-message="{{ section.settings.error_message | escape }}"
+  data-locked-message="{{ section.settings.locked_message | escape }}"
+>
   <div class="dress-up-steps__inner">
     <header class="dress-up-steps__header">
       {%- if section.settings.eyebrow != blank -%}<p class="dress-up-steps__eyebrow">{{ section.settings.eyebrow | escape }}</p>{%- endif -%}
@@ -49,46 +61,146 @@
 
     <div class="dress-up-steps__list">
       {%- for block in section.blocks -%}
+        {%- if block.type != 'step' -%}{%- continue -%}{%- endif -%}
+
         {%- liquid
-          # Merchant-picked products win; fall back to the step collection.
+          assign step_number = step_number | plus: 1
+          assign swatch_offset = forloop.index
+          assign panel_id = 'DressPanel-' | append: section.id | append: '-' | append: block.id
+
+          # Merchant-picked products win; the collection is a fallback.
           assign step_products = block.settings.products
           if step_products == blank and block.settings.collection != blank
             assign step_products = block.settings.collection.products
           endif
-          assign first_product = step_products.first
+          assign has_products = false
+          if step_products.first != blank
+            assign has_products = true
+          endif
+
+          assign is_final = false
+          if step_number == step_count
+            assign is_final = true
+          endif
+
+          assign property_label = block.settings.personalization_label
+          if property_label == blank
+            assign property_label = 'Personalization'
+          endif
         -%}
-        <details class="dress-up-steps__step" data-dress-step {% if block.settings.open_by_default %}open{% endif %} {{ block.shopify_attributes }}>
-          <summary class="dress-up-steps__summary">
-            <span class="dress-up-steps__number" aria-hidden="true">{{ forloop.index }}</span>
-            <h3 class="dress-up-steps__step-title">{{ block.settings.title | escape }}</h3>
+
+        {%- capture swatches -%}
+          {%- for swatch in section.blocks offset: swatch_offset -%}
+            {%- if swatch.type == 'step' -%}{%- break -%}{%- endif -%}
+            {%- liquid
+              assign swatch_value = swatch.settings.value
+              if swatch_value == blank
+                assign swatch_value = swatch.settings.label
+              endif
+              assign swatch_id = 'DressSwatch-' | append: section.id | append: '-' | append: swatch.id
+            -%}
+            <div class="dress-up-steps__swatch" {{ swatch.shopify_attributes }}>
+              <input
+                class="dress-up-steps__swatch-input visually-hidden"
+                type="radio"
+                id="{{ swatch_id }}"
+                name="dress-swatch-{{ section.id }}-{{ block.id }}"
+                value="{{ swatch_value | escape }}"
+                data-dress-swatch
+                data-label="{{ swatch.settings.label | escape }}"
+                {% if forloop.first %}checked{% endif %}
+              >
+              <label class="dress-up-steps__swatch-label" for="{{ swatch_id }}" style="--ds-swatch: {{ swatch.settings.color }};">
+                <span class="visually-hidden">{{ swatch.settings.label | escape }}</span>
+              </label>
+            </div>
+          {%- endfor -%}
+        {%- endcapture -%}
+
+        <div
+          class="dress-up-steps__step"
+          data-dress-step
+          data-step-index="{{ step_number }}"
+          {% if block.settings.selection_required %}data-required{% endif %}
+          {% if is_final %}data-final{% endif %}
+          {{ block.shopify_attributes }}
+        >
+          <div class="dress-up-steps__row">
+            <button
+              class="dress-up-steps__toggle"
+              type="button"
+              aria-expanded="{% if step_number == 1 %}true{% else %}false{% endif %}"
+              aria-controls="{{ panel_id }}"
+              data-dress-toggle
+            >
+              <span class="dress-up-steps__number" aria-hidden="true">{{ step_number }}</span>
+              <span class="dress-up-steps__step-title">{{ block.settings.title | escape }}</span>
+            </button>
+
+            <p class="dress-up-steps__summary-pill" data-dress-pill hidden>
+              <img class="dress-up-steps__summary-image" alt="" width="20" height="20" data-dress-pill-image hidden>
+              <span data-dress-pill-text></span>
+              <button class="dress-up-steps__summary-remove" type="button" data-dress-edit>
+                <span class="visually-hidden">{{ 'customer.addresses.edit' | t }}: {{ block.settings.title | escape }}</span>
+                <svg viewBox="0 0 10 10" aria-hidden="true" focusable="false">
+                  <path d="M1 1l8 8M9 1l-8 8" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+                </svg>
+              </button>
+            </p>
+
+            {%- if swatches contains 'data-dress-swatch' -%}
+              <div class="dress-up-steps__swatches" role="radiogroup" aria-label="{{ block.settings.swatch_label | escape }}" data-dress-swatches data-property="{{ block.settings.swatch_label | escape }}">
+                {{ swatches }}
+              </div>
+            {%- endif -%}
+
+            {%- if block.settings.enable_personalization -%}
+              <div class="dress-up-steps__field">
+                <label class="visually-hidden" for="DressText-{{ section.id }}-{{ block.id }}">{{ property_label | escape }}</label>
+                <input
+                  class="dress-up-steps__input"
+                  type="text"
+                  id="DressText-{{ section.id }}-{{ block.id }}"
+                  placeholder="{{ block.settings.personalization_placeholder | escape }}"
+                  maxlength="{{ block.settings.personalization_max_chars }}"
+                  autocomplete="off"
+                  data-dress-text
+                  data-property="{{ property_label | escape }}"
+                  {% if block.settings.personalization_required %}data-text-required{% endif %}
+                >
+                <span class="dress-up-steps__input-icon" aria-hidden="true">
+                  <svg viewBox="0 0 14 14" focusable="false">
+                    <path d="M2 7h9M7.5 3.5 11 7l-3.5 3.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </span>
+              </div>
+            {%- endif -%}
 
             {%- if block.settings.benefit_1 != blank or block.settings.benefit_2 != blank -%}
-              <ul class="dress-up-steps__benefits" role="list">
+              <ul class="dress-up-steps__benefits" role="list" data-dress-benefits>
                 {%- if block.settings.benefit_1 != blank -%}<li class="dress-up-steps__benefit"><svg viewBox="0 0 12 12" aria-hidden="true"><path d="m2 6 2.5 2.5L10 3" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>{{ block.settings.benefit_1 | escape }}</li>{%- endif -%}
                 {%- if block.settings.benefit_2 != blank -%}<li class="dress-up-steps__benefit"><svg viewBox="0 0 12 12" aria-hidden="true"><path d="m2 6 2.5 2.5L10 3" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>{{ block.settings.benefit_2 | escape }}</li>{%- endif -%}
               </ul>
             {%- endif -%}
 
-            {%- if first_product != blank -%}
-              <div class="dress-up-steps__actions">
-                <a
-                  class="dress-up-steps__price"
-                  href="{{ first_product.url }}"
-                  data-dress-price
-                  data-view-label="{{ 'products.product.view_full_details' | t }}"
-                  aria-label="{{ 'products.product.view_full_details' | t }}: {{ first_product.title | escape }}"
-                >{{ first_product.price | money }}</a>
-                {%- if section.settings.button_label != blank -%}
-                  <button class="dress-up-steps__button" type="button" data-dress-continue>
-                    {{- section.settings.button_label | escape -}}
-                  </button>
-                {%- endif -%}
-              </div>
-            {%- endif -%}
-          </summary>
+            <div class="dress-up-steps__actions" data-dress-actions>
+              <p class="dress-up-steps__price" data-dress-price aria-live="polite">{{ 0 | money }}</p>
+              {%- if is_final -%}
+                <button class="dress-up-steps__button dress-up-steps__button--cart" type="button" data-dress-checkout disabled>
+                  <span class="dress-up-steps__button-icon svg-wrapper" aria-hidden="true">{{ 'icon-cart.svg' | inline_asset_content }}</span>
+                  <span data-dress-button-label>{{ section.settings.cta_label | escape }}</span>
+                  <span class="dress-up-steps__spinner" data-dress-spinner hidden></span>
+                </button>
+              {%- else -%}
+                <button class="dress-up-steps__button" type="button" data-dress-save disabled>
+                  {{- section.settings.button_label | escape -}}
+                </button>
+              {%- endif -%}
+            </div>
+          </div>
 
-          <div class="dress-up-steps__content">
-            {%- if first_product != blank -%}
+          <div class="dress-up-steps__panel" id="{{ panel_id }}" data-dress-panel {% unless step_number == 1 %}hidden{% endunless %}>
+            {%- if has_products -%}
               <div class="dress-up-steps__products" role="radiogroup" aria-label="{{ block.settings.title | escape }}">
                 {%- for product in step_products limit: section.settings.products_to_show -%}
                   {% render 'dress-up-product-card',
@@ -96,7 +208,7 @@
                     section: section,
                     block: block,
                     index: forloop.index,
-                    checked: forloop.first,
+                    show_quantity: block.settings.enable_quantity,
                     loading: 'lazy'
                   %}
                 {%- endfor -%}
@@ -105,7 +217,9 @@
               <div class="dress-up-steps__empty">Choose products for this step in the Theme Editor.</div>
             {%- endif -%}
           </div>
-        </details>
+
+          <p class="dress-up-steps__error" data-dress-error role="alert" hidden></p>
+        </div>
       {%- endfor -%}
     </div>
   </div>
@@ -117,12 +231,15 @@
   "tag": "section",
   "class": "section",
   "disabled_on": { "groups": ["header", "footer"] },
-  "max_blocks": 6,
+  "max_blocks": 24,
   "settings": [
     { "type": "header", "content": "Content" },
     { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "How you style it" },
     { "type": "textarea", "id": "heading", "label": "Heading", "default": "Dress up in 3 steps.\nPick - Pair - Play!" },
     { "type": "text", "id": "button_label", "label": "Step button label", "default": "Save and continue" },
+    { "type": "text", "id": "cta_label", "label": "Final button label", "default": "Go to cart" },
+    { "type": "text", "id": "error_message", "label": "Incomplete step message", "default": "Please complete this step to continue." },
+    { "type": "text", "id": "locked_message", "label": "Locked step message", "default": "Please finish the previous step first." },
     { "type": "range", "id": "products_to_show", "label": "Products per step", "min": 2, "max": 8, "step": 1, "default": 4 },
     { "type": "range", "id": "columns_desktop", "label": "Desktop columns", "min": 2, "max": 5, "step": 1, "default": 4 },
 
@@ -154,12 +271,7 @@
 
     { "type": "header", "content": "Layout and spacing" },
     { "type": "range", "id": "max_width", "label": "Content max width", "min": 900, "max": 1600, "step": 20, "unit": "px", "default": 1320 },
-    { "type": "range", "id": "panel_radius", "label": "Step corner radius", "min": 0, "max": 30, "step": 1, "unit": "px", "default": 12 },
-    { "type": "range", "id": "card_radius", "label": "Card corner radius", "min": 0, "max": 30, "step": 1, "unit": "px", "default": 12 },
-    { "type": "range", "id": "summary_height", "label": "Collapsed step height", "min": 56, "max": 100, "step": 2, "unit": "px", "default": 72 },
     { "type": "range", "id": "heading_gap", "label": "Space below heading", "min": 20, "max": 70, "step": 2, "unit": "px", "default": 38 },
-    { "type": "range", "id": "step_gap", "label": "Space between steps", "min": 4, "max": 24, "step": 1, "unit": "px", "default": 8 },
-    { "type": "range", "id": "card_gap", "label": "Product card gap", "min": 6, "max": 30, "step": 1, "unit": "px", "default": 14 },
     { "type": "range", "id": "padding_top", "label": "Desktop top padding", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 32 },
     { "type": "range", "id": "padding_bottom", "label": "Desktop bottom padding", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 40 },
     { "type": "range", "id": "padding_inline", "label": "Desktop side padding", "min": 12, "max": 80, "step": 2, "unit": "px", "default": 48 },
@@ -173,11 +285,31 @@
       "name": "Step",
       "settings": [
         { "type": "text", "id": "title", "label": "Title", "default": "Pick a top you love" },
-        { "type": "product_list", "id": "products", "label": "Products", "limit": 4, "info": "Pick, reorder or remove the cards shown in this step. Leave empty to fall back to the collection below." },
+        { "type": "product_list", "id": "products", "label": "Products", "limit": 8, "info": "Pick, reorder or remove the cards shown in this step. Leave empty to fall back to the collection below." },
         { "type": "collection", "id": "collection", "label": "Fallback collection" },
-        { "type": "text", "id": "benefit_1", "label": "Benefit 1 (collapsed step)", "default": "4-Way Stretch" },
-        { "type": "text", "id": "benefit_2", "label": "Benefit 2 (collapsed step)", "default": "Eco-Friendly" },
-        { "type": "checkbox", "id": "open_by_default", "label": "Open by default", "default": false }
+        { "type": "checkbox", "id": "selection_required", "label": "Selection required to continue", "default": true, "info": "Turn off for optional extras." },
+        { "type": "checkbox", "id": "enable_quantity", "label": "Show quantity control on the selected card", "default": false },
+        { "type": "header", "content": "Badges (shown when the step is closed)" },
+        { "type": "text", "id": "benefit_1", "label": "Badge 1" },
+        { "type": "text", "id": "benefit_2", "label": "Badge 2" },
+        { "type": "header", "content": "Personalization" },
+        { "type": "checkbox", "id": "enable_personalization", "label": "Show text field", "default": false },
+        { "type": "text", "id": "personalization_label", "label": "Field label", "default": "Name", "info": "Also used as the line item property name shown in the cart and on orders." },
+        { "type": "text", "id": "personalization_placeholder", "label": "Field placeholder", "default": "Enter a name" },
+        { "type": "range", "id": "personalization_max_chars", "label": "Maximum characters", "min": 3, "max": 40, "step": 1, "default": 12 },
+        { "type": "checkbox", "id": "personalization_required", "label": "Required to continue", "default": true },
+        { "type": "header", "content": "Colors" },
+        { "type": "text", "id": "swatch_label", "label": "Color group label", "default": "Color", "info": "Add \"Color swatch\" blocks below this step to show color choices." }
+      ]
+    },
+    {
+      "type": "swatch",
+      "name": "Color swatch",
+      "settings": [
+        { "type": "paragraph", "content": "Applies to the step block above it. Drag to reorder." },
+        { "type": "text", "id": "label", "label": "Label", "default": "Color" },
+        { "type": "color", "id": "color", "label": "Swatch color", "default": "#2E6BE6" },
+        { "type": "text", "id": "value", "label": "Value sent to the cart", "info": "Leave empty to send the label." }
       ]
     }
   ],
@@ -185,9 +317,13 @@
     {
       "name": "Dress up in steps",
       "blocks": [
-        { "type": "step", "settings": { "title": "Pick a top you love", "benefit_1": "4-Way Stretch", "benefit_2": "Eco-Friendly", "open_by_default": true } },
-        { "type": "step", "settings": { "title": "Match it with cool bottoms", "benefit_1": "100% Cotton", "benefit_2": "Water Proof" } },
-        { "type": "step", "settings": { "title": "Add fun extras", "benefit_1": "100% Cotton", "benefit_2": "Colorful" } }
+        { "type": "step", "settings": { "title": "Pick a top you love", "benefit_1": "Eco-Friendly" } },
+        { "type": "step", "settings": { "title": "Match it with cool bottoms", "benefit_1": "100% Cotton", "benefit_2": "Water Proof", "enable_personalization": true, "enable_quantity": true } },
+        { "type": "swatch", "settings": { "label": "Blue", "color": "#2E6BE6" } },
+        { "type": "swatch", "settings": { "label": "Green", "color": "#3BC46A" } },
+        { "type": "swatch", "settings": { "label": "Yellow", "color": "#F2CB2E" } },
+        { "type": "swatch", "settings": { "label": "Red", "color": "#EF3B3B" } },
+        { "type": "step", "settings": { "title": "Add fun extras", "benefit_1": "100% Cotton", "benefit_2": "Colorful", "selection_required": false } }
       ]
     }
   ]

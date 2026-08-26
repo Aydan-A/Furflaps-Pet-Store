@@ -1,87 +1,377 @@
+/*
+ * "Pick - Pair - Play!" builder.
+ *
+ * State model: one entry per step, derived from the DOM on every change.
+ *   - selection: the checked product radio (variant id, unit price, quantity)
+ *   - valid:     required selection present, plus required personalization text
+ *   - completed: the customer pressed "Save and continue" while valid
+ * Changing a step clears `completed` for every later step but keeps their
+ * selections, so nothing can stay falsely completed.
+ */
 if (!customElements.get('dress-up-steps')) {
   customElements.define(
     'dress-up-steps',
     class DressUpSteps extends HTMLElement {
       connectedCallback() {
-        this.steps = Array.from(this.querySelectorAll('[data-dress-step]'));
-        this.steps.forEach((step) => step.addEventListener('toggle', this.handleToggle));
+        this.steps = Array.from(this.querySelectorAll('[data-dress-step]')).map((el, index) => ({
+          el,
+          index,
+          panel: el.querySelector('[data-dress-panel]'),
+          toggle: el.querySelector('[data-dress-toggle]'),
+          saveButton: el.querySelector('[data-dress-save]'),
+          checkoutButton: el.querySelector('[data-dress-checkout]'),
+          priceEl: el.querySelector('[data-dress-price]'),
+          pill: el.querySelector('[data-dress-pill]'),
+          pillText: el.querySelector('[data-dress-pill-text]'),
+          pillImage: el.querySelector('[data-dress-pill-image]'),
+          errorEl: el.querySelector('[data-dress-error]'),
+          textInput: el.querySelector('[data-dress-text]'),
+          swatches: el.querySelector('[data-dress-swatches]'),
+          required: el.hasAttribute('data-required'),
+          isFinal: el.hasAttribute('data-final'),
+          completed: false,
+        }));
 
-        let foundOpenStep = false;
-        this.steps.forEach((step) => {
-          if (step.open && foundOpenStep) step.open = false;
-          if (step.open) foundOpenStep = true;
-        });
-
-        this.addEventListener('change', this.handleSelect);
         this.addEventListener('click', this.handleClick);
+        this.addEventListener('change', this.handleChange);
+        this.addEventListener('input', this.handleInput);
 
         if (window.Shopify?.designMode) {
           this.addEventListener('shopify:block:select', this.handleBlockSelect);
         }
+
+        this.open(0);
+        this.render();
       }
 
       disconnectedCallback() {
-        this.steps?.forEach((step) => step.removeEventListener('toggle', this.handleToggle));
-        this.removeEventListener('change', this.handleSelect);
         this.removeEventListener('click', this.handleClick);
+        this.removeEventListener('change', this.handleChange);
+        this.removeEventListener('input', this.handleInput);
         this.removeEventListener('shopify:block:select', this.handleBlockSelect);
       }
 
-      handleToggle = (event) => {
-        if (!event.target.open) return;
+      /* ----- reading state ----- */
+
+      stepFor(element) {
+        const el = element.closest('[data-dress-step]');
+        return this.steps.find((step) => step.el === el);
+      }
+
+      selectionFor(step) {
+        const input = step.el.querySelector('[data-dress-product]:checked:not(:disabled)');
+        if (!input) return null;
+
+        return {
+          input,
+          variantId: input.value,
+          price: Number(input.dataset.price) || 0,
+          quantity: Number(input.dataset.quantity) || 1,
+          title: input.dataset.title,
+          image: input.dataset.image,
+        };
+      }
+
+      swatchFor(step) {
+        const input = step.swatches?.querySelector('[data-dress-swatch]:checked');
+        if (!input) return null;
+        return { label: input.dataset.label, value: input.value, property: step.swatches.dataset.property };
+      }
+
+      textFor(step) {
+        return step.textInput ? step.textInput.value.trim() : '';
+      }
+
+      isValid(step) {
+        const selection = this.selectionFor(step);
+        if (!selection) return !step.required;
+        if (step.textInput?.hasAttribute('data-text-required') && !this.textFor(step)) return false;
+        return true;
+      }
+
+      canOpen(index) {
+        return this.steps.slice(0, index).every((step) => !step.required || this.isValid(step));
+      }
+
+      /* ----- rendering ----- */
+
+      render() {
+        let total = 0;
         this.steps.forEach((step) => {
-          if (step !== event.target) step.open = false;
+          const selection = this.selectionFor(step);
+          if (selection) total += selection.price * selection.quantity;
         });
-      };
 
-      // Mirror the selected product's price and link into the step header.
-      handleSelect = (event) => {
-        const input = event.target.closest('.dress-steps-card__input');
-        if (!input) return;
+        const money = this.formatMoney(total);
+        const allValid = this.steps.every((step) => !step.required || this.isValid(step));
 
-        const step = input.closest('[data-dress-step]');
-        const price = step?.querySelector('[data-dress-price]');
-        if (!price) return;
+        this.steps.forEach((step) => {
+          if (step.priceEl) step.priceEl.textContent = money;
+          if (step.saveButton) step.saveButton.disabled = !this.isValid(step);
+          if (step.checkoutButton) step.checkoutButton.disabled = !allValid;
+          if (step.toggle) {
+            const openable = this.canOpen(step.index);
+            step.toggle.setAttribute('aria-disabled', String(!openable));
+          }
 
-        price.textContent = input.dataset.price;
-        price.href = input.dataset.url;
-        price.setAttribute('aria-label', `${price.dataset.viewLabel} ${input.dataset.title}`);
-      };
+          // Minimum quantity is 1.
+          step.el.querySelectorAll('[data-dress-quantity]').forEach((control) => {
+            const input = control.parentElement.querySelector('[data-dress-product]');
+            const quantity = Number(input?.dataset.quantity) || 1;
+            control.querySelector('[data-dress-quantity-value]').textContent = quantity;
+            control.querySelector('[data-dress-quantity-change="-1"]').disabled = quantity <= 1;
+          });
+        });
+      }
 
-      // The price link and continue button sit inside <summary>, which would
-      // otherwise open or close the step when they are activated.
+      formatMoney(cents) {
+        const currency = window.Shopify?.currency?.active;
+        if (!currency) return this.dataset.moneyZero;
+
+        try {
+          return new Intl.NumberFormat(document.documentElement.lang || undefined, {
+            style: 'currency',
+            currency,
+          }).format(cents / 100);
+        } catch (error) {
+          return this.dataset.moneyZero;
+        }
+      }
+
+      /* ----- step transitions ----- */
+
+      open(index) {
+        this.steps.forEach((step) => {
+          const isOpen = step.index === index;
+          step.panel.hidden = !isOpen;
+          step.toggle.setAttribute('aria-expanded', String(isOpen));
+          step.el.classList.toggle('dress-up-steps__step--open', isOpen);
+          step.el.classList.toggle('dress-up-steps__step--closed', !isOpen);
+          if (isOpen) this.clearError(step);
+        });
+      }
+
+      // A change in one step can never leave a later step "completed".
+      invalidateAfter(index) {
+        this.steps.forEach((step) => {
+          if (step.index >= index) this.uncomplete(step);
+        });
+      }
+
+      uncomplete(step) {
+        step.completed = false;
+        step.pill.hidden = true;
+      }
+
+      complete(step) {
+        step.completed = true;
+        this.showPill(step);
+
+        const next = this.steps[step.index + 1];
+        if (next) {
+          this.open(next.index);
+          next.toggle.focus();
+        } else {
+          this.open(-1);
+        }
+      }
+
+      showPill(step) {
+        const selection = this.selectionFor(step);
+        const swatch = this.swatchFor(step);
+        const text = this.textFor(step);
+        const parts = [text, selection?.title, swatch?.label].filter(Boolean);
+
+        if (!parts.length) {
+          step.pill.hidden = true;
+          return;
+        }
+
+        step.pillText.textContent = parts.join(' / ');
+        if (selection?.image) {
+          step.pillImage.src = selection.image;
+          step.pillImage.hidden = false;
+        } else {
+          step.pillImage.hidden = true;
+        }
+        step.pill.hidden = false;
+      }
+
+      showError(step, message) {
+        if (!step.errorEl) return;
+        step.errorEl.textContent = message;
+        step.errorEl.hidden = false;
+      }
+
+      clearError(step) {
+        if (!step.errorEl) return;
+        step.errorEl.hidden = true;
+        step.errorEl.textContent = '';
+        step.textInput?.removeAttribute('aria-invalid');
+      }
+
+      /* ----- events ----- */
+
       handleClick = (event) => {
-        const button = event.target.closest('[data-dress-continue]');
-        if (button) {
-          event.preventDefault();
-          this.continueFrom(button.closest('[data-dress-step]'));
-          return;
+        const toggle = event.target.closest('[data-dress-toggle]');
+        if (toggle) return this.onToggle(this.stepFor(toggle));
+
+        const edit = event.target.closest('[data-dress-edit]');
+        if (edit) {
+          const step = this.stepFor(edit);
+          this.uncomplete(step);
+          this.open(step.index);
+          step.toggle.focus();
+          return this.render();
         }
 
-        const price = event.target.closest('[data-dress-price]');
-        if (!price || event.metaKey || event.ctrlKey || event.shiftKey) return;
+        const quantityButton = event.target.closest('[data-dress-quantity-change]');
+        if (quantityButton) return this.onQuantity(quantityButton);
 
-        event.preventDefault();
-        window.location.href = price.href;
+        const save = event.target.closest('[data-dress-save]');
+        if (save) return this.onSave(this.stepFor(save));
+
+        const checkout = event.target.closest('[data-dress-checkout]');
+        if (checkout) return this.onCheckout(checkout);
       };
 
-      continueFrom(step) {
-        const next = this.steps[this.steps.indexOf(step) + 1];
+      handleChange = (event) => {
+        if (!event.target.matches('[data-dress-product], [data-dress-swatch]')) return;
+        const step = this.stepFor(event.target);
+        this.invalidateAfter(step.index);
+        this.clearError(step);
+        this.render();
+      };
 
-        // Last step: send the visitor to the product they selected.
-        if (!next) {
-          const selected = step.querySelector('.dress-steps-card__input:checked');
-          if (selected) window.location.href = selected.dataset.url;
-          return;
+      handleInput = (event) => {
+        if (!event.target.matches('[data-dress-text]')) return;
+        const step = this.stepFor(event.target);
+        this.invalidateAfter(step.index);
+        this.clearError(step);
+        this.render();
+      };
+
+      onToggle(step) {
+        const isOpen = step.toggle.getAttribute('aria-expanded') === 'true';
+        if (isOpen) return this.open(-1);
+
+        if (!this.canOpen(step.index)) {
+          return this.showError(step, this.dataset.lockedMessage);
         }
 
-        next.open = true;
-        next.querySelector('.dress-up-steps__summary')?.focus();
+        this.uncomplete(step);
+        this.open(step.index);
+        this.render();
+      }
+
+      onQuantity(button) {
+        const card = button.closest('.dress-steps-card');
+        const input = card.querySelector('[data-dress-product]');
+        const quantity = Number(input.dataset.quantity) || 1;
+
+        input.dataset.quantity = Math.max(1, quantity + Number(button.dataset.dressQuantityChange));
+        if (!input.checked) input.checked = true;
+
+        this.invalidateAfter(this.stepFor(button).index);
+        this.render();
+      }
+
+      onSave(step) {
+        if (!this.isValid(step)) {
+          if (step.textInput && !this.textFor(step)) step.textInput.setAttribute('aria-invalid', 'true');
+          return this.showError(step, this.dataset.errorMessage);
+        }
+
+        this.clearError(step);
+        this.complete(step);
+        this.render();
+      }
+
+      /* ----- add to cart ----- */
+
+      buildItems() {
+        return this.steps.reduce((items, step) => {
+          const selection = this.selectionFor(step);
+          if (!selection) return items;
+
+          const properties = {};
+          const text = this.textFor(step);
+          if (text && step.textInput.dataset.property) properties[step.textInput.dataset.property] = text;
+
+          const swatch = this.swatchFor(step);
+          if (swatch?.value && swatch.property) properties[swatch.property] = swatch.value;
+
+          items.push({
+            id: selection.variantId,
+            quantity: selection.quantity,
+            ...(Object.keys(properties).length ? { properties } : {}),
+          });
+          return items;
+        }, []);
+      }
+
+      async onCheckout(button) {
+        const step = this.stepFor(button);
+        const incomplete = this.steps.find((item) => item.required && !this.isValid(item));
+        if (incomplete) {
+          this.open(incomplete.index);
+          return this.showError(incomplete, this.dataset.errorMessage);
+        }
+
+        const items = this.buildItems();
+        if (!items.length) return this.showError(step, this.dataset.errorMessage);
+
+        // The cart notification renders a single added line, so a multi-item
+        // add falls back to the cart page instead.
+        const cart = document.querySelector('cart-drawer');
+        const body = { items };
+        if (cart) {
+          body.sections = cart.getSectionsToRender().map((section) => section.id);
+          body.sections_url = window.location.pathname;
+          cart.setActiveElement?.(document.activeElement);
+        }
+
+        this.setLoading(button, true);
+        this.clearError(step);
+
+        try {
+          const config =
+            typeof fetchConfig === 'function'
+              ? fetchConfig('javascript')
+              : { method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/javascript' } };
+
+          const response = await fetch(this.dataset.cartAddUrl, { ...config, body: JSON.stringify(body) });
+          const data = await response.json();
+
+          if (data.status) throw new Error(data.description || data.message);
+
+          if (typeof publish === 'function' && typeof PUB_SUB_EVENTS !== 'undefined') {
+            publish(PUB_SUB_EVENTS.cartUpdate, { source: 'dress-up-steps', cartData: data });
+          }
+
+          // Fall back to the cart page when the theme has no drawer or notification.
+          if (cart && data.sections) {
+            cart.renderContents(data);
+          } else {
+            window.location.href = this.dataset.cartUrl;
+          }
+        } catch (error) {
+          this.showError(step, error.message || this.dataset.errorMessage);
+        } finally {
+          this.setLoading(button, false);
+          this.render();
+        }
+      }
+
+      setLoading(button, isLoading) {
+        button.classList.toggle('is-loading', isLoading);
+        button.disabled = isLoading;
+        button.querySelector('[data-dress-spinner]').hidden = !isLoading;
       }
 
       handleBlockSelect = (event) => {
-        const step = event.target.closest('[data-dress-step]');
-        if (step) step.open = true;
+        const step = this.stepFor(event.target);
+        if (step) this.open(step.index);
       };
     },
   );
