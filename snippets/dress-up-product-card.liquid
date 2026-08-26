@@ -10,6 +10,7 @@
   - block: parent step block object
   - index: forloop index within the step
   - show_quantity: boolean, render the quantity stepper on the selected card
+  - allow_multiple: boolean, let the customer pick several products in this step
   - loading: image loading strategy
 {% endcomment %}
 
@@ -21,7 +22,7 @@
 <div class="dress-steps-card{% unless product.available %} dress-steps-card--unavailable{% endunless %}">
   <input
     class="dress-steps-card__input visually-hidden"
-    type="radio"
+    type="{% if allow_multiple %}checkbox{% else %}radio{% endif %}"
     id="{{ input_id }}"
     name="dress-step-{{ section.id }}-{{ block.id }}"
     value="{{ variant.id }}"

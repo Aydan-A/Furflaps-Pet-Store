@@ -241,12 +241,25 @@
 /* Panel and cards */
 .dress-up-steps__panel { padding: 0 2rem 2rem; }
 .dress-up-steps__panel[hidden] { display: none; }
+/* One track for every step: cards keep their column width, so a step with
+   more products than columns scrolls instead of shrinking. */
 .dress-up-steps__products {
-  display: grid;
-  grid-template-columns: repeat(var(--ds-columns), minmax(0, 1fr));
-  gap: 1.4rem;
+  --ds-card-gap: 1.4rem;
+  display: flex;
+  padding: .4rem .4rem 1rem;
+  margin: -.4rem -.4rem 0;
+  gap: var(--ds-card-gap);
+  overflow-x: auto;
+  overscroll-behavior-inline: contain;
+  scroll-snap-type: inline proximity;
+  scrollbar-width: thin;
 }
-.dress-steps-card { position: relative; min-width: 0; }
+.dress-steps-card {
+  position: relative;
+  flex: 0 0 calc((100% - (var(--ds-columns) - 1) * var(--ds-card-gap)) / var(--ds-columns));
+  min-width: 0;
+  scroll-snap-align: start;
+}
 .dress-steps-card__label {
   position: relative;
   display: block;
@@ -343,6 +356,9 @@
   .dress-up-steps__input { width: 16rem; }
 }
 
+/* Checkbox steps read as multi-select: square check stays, ring is the same. */
+.dress-steps-card__input[type='checkbox'] + .dress-steps-card__label { cursor: pointer; }
+
 @media screen and (max-width: 749px) {
   .dress-up-steps { padding: var(--ds-mobile-padding-top) var(--ds-mobile-padding-inline) var(--ds-mobile-padding-bottom); }
   .dress-up-steps__heading { font-size: var(--ds-mobile-heading-size); }
@@ -358,18 +374,9 @@
   .dress-up-steps__panel { padding: 0 0 1.6rem 1.6rem; }
   .dress-up-steps__error { padding: 0 1.6rem 1.4rem; }
 
-  /* Horizontal scroller keeps cards a comfortable size on small screens. */
-  .dress-up-steps__products {
-    grid-auto-flow: column;
-    grid-auto-columns: min(60vw, 22rem);
-    grid-template-columns: none;
-    padding-right: 1.6rem;
-    overflow-x: auto;
-    overscroll-behavior-inline: contain;
-    scroll-snap-type: inline mandatory;
-    scrollbar-width: thin;
-  }
-  .dress-steps-card { scroll-snap-align: start; }
+  /* Cards keep a comfortable tap size instead of shrinking to fit. */
+  .dress-up-steps__products { padding-right: 1.6rem; scroll-snap-type: inline mandatory; }
+  .dress-steps-card { flex-basis: min(60vw, 22rem); }
 }
 
 @media (prefers-reduced-motion: reduce) {

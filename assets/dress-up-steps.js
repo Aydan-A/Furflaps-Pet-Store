@@ -2,7 +2,8 @@
  * "Pick - Pair - Play!" builder.
  *
  * State model: one entry per step, derived from the DOM on every change.
- *   - selection: the checked product radio (variant id, unit price, quantity)
+ *   - selections: the checked product inputs, in the order the customer picked
+ *     them (a step can allow several, e.g. the letters of a name)
  *   - valid:     required selection present, plus required personalization text
  *   - completed: the customer pressed "Save and continue" while valid
  * Changing a step clears `completed` for every later step but keeps their
@@ -62,18 +63,18 @@ if (!customElements.get('dress-up-steps')) {
         return this.steps.find((step) => step.el === el);
       }
 
-      selectionFor(step) {
-        const input = step.el.querySelector('[data-dress-product]:checked:not(:disabled)');
-        if (!input) return null;
-
-        return {
-          input,
-          variantId: input.value,
-          price: Number(input.dataset.price) || 0,
-          quantity: Number(input.dataset.quantity) || 1,
-          title: input.dataset.title,
-          image: input.dataset.image,
-        };
+      selectionsFor(step) {
+        return Array.from(step.el.querySelectorAll('[data-dress-product]:checked:not(:disabled)'))
+          .map((input) => ({
+            input,
+            order: Number(input.dataset.order) || 0,
+            variantId: input.value,
+            price: Number(input.dataset.price) || 0,
+            quantity: Number(input.dataset.quantity) || 1,
+            title: input.dataset.title,
+            image: input.dataset.image,
+          }))
+          .sort((a, b) => a.order - b.order);
       }
 
       swatchFor(step) {
@@ -87,8 +88,7 @@ if (!customElements.get('dress-up-steps')) {
       }
 
       isValid(step) {
-        const selection = this.selectionFor(step);
-        if (!selection) return !step.required;
+        if (!this.selectionsFor(step).length) return !step.required;
         if (step.textInput?.hasAttribute('data-text-required') && !this.textFor(step)) return false;
         return true;
       }
@@ -108,8 +108,9 @@ if (!customElements.get('dress-up-steps')) {
       render() {
         let total = 0;
         this.steps.forEach((step) => {
-          const selection = this.selectionFor(step);
-          if (selection) total += selection.price * selection.quantity;
+          this.selectionsFor(step).forEach((selection) => {
+            total += selection.price * selection.quantity;
+          });
         });
 
         const money = this.formatMoney(total);
@@ -199,10 +200,10 @@ if (!customElements.get('dress-up-steps')) {
       }
 
       showPill(step) {
-        const selection = this.selectionFor(step);
+        const selections = this.selectionsFor(step);
         const swatch = this.swatchFor(step);
         const text = this.textFor(step);
-        const parts = [text, selection?.title, swatch?.label].filter(Boolean);
+        const parts = [text, ...selections.map((selection) => selection.title), swatch?.label].filter(Boolean);
 
         if (!parts.length) {
           step.pill.hidden = true;
@@ -210,8 +211,8 @@ if (!customElements.get('dress-up-steps')) {
         }
 
         step.pillText.textContent = parts.join(' / ');
-        if (selection?.image) {
-          step.pillImage.src = selection.image;
+        if (selections[0]?.image) {
+          step.pillImage.src = selections[0].image;
           step.pillImage.hidden = false;
         } else {
           step.pillImage.hidden = true;
@@ -264,7 +265,7 @@ if (!customElements.get('dress-up-steps')) {
       onCardClick(label) {
         const input = label.parentElement.querySelector('[data-dress-product]');
         const step = this.stepFor(label);
-        if (step.required || input.dataset.wasChecked !== 'true') return;
+        if (input.type === 'checkbox' || step.required || input.dataset.wasChecked !== 'true') return;
 
         input.checked = false;
         this.invalidateAfter(step.index);
@@ -281,7 +282,7 @@ if (!customElements.get('dress-up-steps')) {
       handleKeyDown = (event) => {
         if (event.key !== ' ' && event.key !== 'Spacebar') return;
         const input = event.target.closest('[data-dress-product]');
-        if (!input?.checked) return;
+        if (!input?.checked || input.type === 'checkbox') return;
 
         const step = this.stepFor(input);
         if (step.required) return;
@@ -294,6 +295,12 @@ if (!customElements.get('dress-up-steps')) {
 
       handleChange = (event) => {
         if (!event.target.matches('[data-dress-product], [data-dress-swatch]')) return;
+
+        if (event.target.matches('[data-dress-product]') && event.target.checked) {
+          this.pickOrder = (this.pickOrder || 0) + 1;
+          event.target.dataset.order = String(this.pickOrder);
+        }
+
         const step = this.stepFor(event.target);
         this.invalidateAfter(step.index);
         this.clearError(step);
@@ -348,8 +355,7 @@ if (!customElements.get('dress-up-steps')) {
 
       buildItems() {
         return this.steps.reduce((items, step) => {
-          const selection = this.selectionFor(step);
-          if (!selection || !this.isConfirmed(step)) return items;
+          if (!this.isConfirmed(step)) return items;
 
           const properties = {};
           const text = this.textFor(step);
@@ -358,10 +364,13 @@ if (!customElements.get('dress-up-steps')) {
           const swatch = this.swatchFor(step);
           if (swatch?.value && swatch.property) properties[swatch.property] = swatch.value;
 
-          items.push({
-            id: selection.variantId,
-            quantity: selection.quantity,
-            ...(Object.keys(properties).length ? { properties } : {}),
+          // A step that allows several products adds one cart line per product.
+          this.selectionsFor(step).forEach((selection) => {
+            items.push({
+              id: selection.variantId,
+              quantity: selection.quantity,
+              ...(Object.keys(properties).length ? { properties } : {}),
+            });
           });
           return items;
         }, []);

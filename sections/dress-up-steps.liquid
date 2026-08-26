@@ -201,14 +201,19 @@
 
           <div class="dress-up-steps__panel" id="{{ panel_id }}" data-dress-panel {% unless step_number == 1 %}hidden{% endunless %}>
             {%- if has_products -%}
-              <div class="dress-up-steps__products" role="radiogroup" aria-label="{{ block.settings.title | escape }}">
-                {%- for product in step_products limit: section.settings.products_to_show -%}
+              <div
+                class="dress-up-steps__products"
+                role="{% if block.settings.allow_multiple %}group{% else %}radiogroup{% endif %}"
+                aria-label="{{ block.settings.title | escape }}"
+              >
+                {%- for product in step_products limit: block.settings.products_to_show -%}
                   {% render 'dress-up-product-card',
                     product: product,
                     section: section,
                     block: block,
                     index: forloop.index,
                     show_quantity: block.settings.enable_quantity,
+                    allow_multiple: block.settings.allow_multiple,
                     loading: 'lazy'
                   %}
                 {%- endfor -%}
@@ -240,7 +245,6 @@
     { "type": "text", "id": "cta_label", "label": "Final button label", "default": "Go to cart" },
     { "type": "text", "id": "error_message", "label": "Incomplete step message", "default": "Please complete this step to continue." },
     { "type": "text", "id": "locked_message", "label": "Locked step message", "default": "Please finish the previous step first." },
-    { "type": "range", "id": "products_to_show", "label": "Products per step", "min": 2, "max": 8, "step": 1, "default": 4 },
     { "type": "range", "id": "columns_desktop", "label": "Desktop columns", "min": 2, "max": 5, "step": 1, "default": 4 },
 
     { "type": "header", "content": "Product cards" },
@@ -285,8 +289,10 @@
       "name": "Step",
       "settings": [
         { "type": "text", "id": "title", "label": "Title", "default": "Pick a top you love" },
-        { "type": "product_list", "id": "products", "label": "Products", "limit": 8, "info": "Pick, reorder or remove the cards shown in this step. Leave empty to fall back to the collection below." },
+        { "type": "product_list", "id": "products", "label": "Products", "limit": 40, "info": "Pick, reorder or remove the cards shown in this step. Leave empty to fall back to the collection below." },
         { "type": "collection", "id": "collection", "label": "Fallback collection" },
+        { "type": "range", "id": "products_to_show", "label": "Products to show", "min": 2, "max": 40, "step": 1, "default": 4, "info": "Cards past the desktop column count scroll horizontally." },
+        { "type": "checkbox", "id": "allow_multiple", "label": "Allow several products", "default": false, "info": "Each chosen product becomes its own cart line. Use for letters or add-ons." },
         { "type": "checkbox", "id": "selection_required", "label": "Selection required to continue", "default": true, "info": "Turn off for optional extras." },
         { "type": "checkbox", "id": "enable_quantity", "label": "Show quantity control on the selected card", "default": false },
         { "type": "header", "content": "Badges (shown when the step is closed)" },
@@ -318,7 +324,7 @@
       "name": "Dress up in steps",
       "blocks": [
         { "type": "step", "settings": { "title": "Pick a top you love", "benefit_1": "Eco-Friendly" } },
-        { "type": "step", "settings": { "title": "Match it with cool bottoms", "benefit_1": "100% Cotton", "benefit_2": "Water Proof", "enable_personalization": true, "enable_quantity": true } },
+        { "type": "step", "settings": { "title": "Match it with cool bottoms", "benefit_1": "100% Cotton", "benefit_2": "Water Proof", "enable_personalization": true, "enable_quantity": true, "allow_multiple": true, "products_to_show": 40 } },
         { "type": "swatch", "settings": { "label": "Blue", "color": "#2E6BE6" } },
         { "type": "swatch", "settings": { "label": "Green", "color": "#3BC46A" } },
         { "type": "swatch", "settings": { "label": "Yellow", "color": "#F2CB2E" } },

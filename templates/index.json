@@ -242,7 +242,9 @@
             "personalization_placeholder": "Enter a name",
             "personalization_max_chars": 12,
             "personalization_required": true,
-            "swatch_label": "Color"
+            "swatch_label": "Color",
+            "products_to_show": 5,
+            "allow_multiple": false
           }
         },
         "step_G9XGPD": {
@@ -260,7 +262,9 @@
             "personalization_placeholder": "Enter a name",
             "personalization_max_chars": 12,
             "personalization_required": true,
-            "swatch_label": "Color"
+            "swatch_label": "Color",
+            "products_to_show": 40,
+            "allow_multiple": true
           }
         },
         "swatch_blue": {
@@ -310,7 +314,9 @@
             "personalization_placeholder": "Enter a name",
             "personalization_max_chars": 12,
             "personalization_required": true,
-            "swatch_label": "Color"
+            "swatch_label": "Color",
+            "products_to_show": 8,
+            "allow_multiple": false
           }
         }
       },
@@ -331,7 +337,6 @@
         "cta_label": "Go to cart",
         "error_message": "Please complete this step to continue.",
         "locked_message": "Please finish the previous step first.",
-        "products_to_show": 4,
         "columns_desktop": 4,
         "image_ratio": "4 / 5",
         "image_fit": "contain",
