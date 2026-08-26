@@ -35,6 +35,8 @@ if (!customElements.get('dress-up-steps')) {
         this.addEventListener('click', this.handleClick);
         this.addEventListener('change', this.handleChange);
         this.addEventListener('input', this.handleInput);
+        this.addEventListener('pointerdown', this.handlePointerDown);
+        this.addEventListener('keydown', this.handleKeyDown);
 
         if (window.Shopify?.designMode) {
           this.addEventListener('shopify:block:select', this.handleBlockSelect);
@@ -48,6 +50,8 @@ if (!customElements.get('dress-up-steps')) {
         this.removeEventListener('click', this.handleClick);
         this.removeEventListener('change', this.handleChange);
         this.removeEventListener('input', this.handleInput);
+        this.removeEventListener('pointerdown', this.handlePointerDown);
+        this.removeEventListener('keydown', this.handleKeyDown);
         this.removeEventListener('shopify:block:select', this.handleBlockSelect);
       }
 
@@ -89,6 +93,12 @@ if (!customElements.get('dress-up-steps')) {
         return true;
       }
 
+      // A step counts towards the cart once it is saved. The final step has no
+      // save button of its own, so pressing the CTA confirms its selection.
+      isConfirmed(step) {
+        return step.isFinal ? this.isValid(step) : step.completed;
+      }
+
       canOpen(index) {
         return this.steps.slice(0, index).every((step) => !step.required || this.isValid(step));
       }
@@ -103,12 +113,12 @@ if (!customElements.get('dress-up-steps')) {
         });
 
         const money = this.formatMoney(total);
-        const allValid = this.steps.every((step) => !step.required || this.isValid(step));
+        const ready = this.steps.every((step) => !step.required || this.isConfirmed(step));
 
         this.steps.forEach((step) => {
           if (step.priceEl) step.priceEl.textContent = money;
           if (step.saveButton) step.saveButton.disabled = !this.isValid(step);
-          if (step.checkoutButton) step.checkoutButton.disabled = !allValid;
+          if (step.checkoutButton) step.checkoutButton.disabled = !ready;
           if (step.toggle) {
             const openable = this.canOpen(step.index);
             step.toggle.setAttribute('aria-disabled', String(!openable));
@@ -124,18 +134,30 @@ if (!customElements.get('dress-up-steps')) {
         });
       }
 
+      // Mirrors Shopify's own money formatting so the builder total reads
+      // exactly like every other price on the storefront and in the cart.
       formatMoney(cents) {
-        const currency = window.Shopify?.currency?.active;
-        if (!currency) return this.dataset.moneyZero;
+        const format = this.dataset.moneyFormat || '${{amount}}';
+        const placeholder = /\{\{\s*(\w+)\s*\}\}/;
+        const token = format.match(placeholder);
+        if (!token) return format;
 
-        try {
-          return new Intl.NumberFormat(document.documentElement.lang || undefined, {
-            style: 'currency',
-            currency,
-          }).format(cents / 100);
-        } catch (error) {
-          return this.dataset.moneyZero;
-        }
+        const withDelimiters = (precision, thousands = ',', decimal = '.') => {
+          const [whole, fraction] = (cents / 100).toFixed(precision).split('.');
+          return whole.replace(/(\d)(?=(\d\d\d)+(?!\d))/g, `$1${thousands}`) + (fraction ? decimal + fraction : '');
+        };
+
+        const amounts = {
+          amount: () => withDelimiters(2),
+          amount_no_decimals: () => withDelimiters(0),
+          amount_with_comma_separator: () => withDelimiters(2, '.', ','),
+          amount_no_decimals_with_comma_separator: () => withDelimiters(0, '.', ','),
+          amount_with_space_separator: () => withDelimiters(2, ' ', ','),
+          amount_no_decimals_with_space_separator: () => withDelimiters(0, ' ', ','),
+          amount_with_apostrophe_separator: () => withDelimiters(2, "'"),
+        };
+
+        return format.replace(placeholder, (amounts[token[1]] || amounts.amount)());
       }
 
       /* ----- step transitions ----- */
@@ -225,6 +247,9 @@ if (!customElements.get('dress-up-steps')) {
           return this.render();
         }
 
+        const label = event.target.closest('.dress-steps-card__label');
+        if (label) return this.onCardClick(label);
+
         const quantityButton = event.target.closest('[data-dress-quantity-change]');
         if (quantityButton) return this.onQuantity(quantityButton);
 
@@ -233,6 +258,38 @@ if (!customElements.get('dress-up-steps')) {
 
         const checkout = event.target.closest('[data-dress-checkout]');
         if (checkout) return this.onCheckout(checkout);
+      };
+
+      // Clicking the selected card in an optional step clears it.
+      onCardClick(label) {
+        const input = label.parentElement.querySelector('[data-dress-product]');
+        const step = this.stepFor(label);
+        if (step.required || input.dataset.wasChecked !== 'true') return;
+
+        input.checked = false;
+        this.invalidateAfter(step.index);
+        this.render();
+      }
+
+      handlePointerDown = (event) => {
+        const label = event.target.closest('.dress-steps-card__label');
+        if (!label) return;
+        const input = label.parentElement.querySelector('[data-dress-product]');
+        input.dataset.wasChecked = String(input.checked);
+      };
+
+      handleKeyDown = (event) => {
+        if (event.key !== ' ' && event.key !== 'Spacebar') return;
+        const input = event.target.closest('[data-dress-product]');
+        if (!input?.checked) return;
+
+        const step = this.stepFor(input);
+        if (step.required) return;
+
+        event.preventDefault();
+        input.checked = false;
+        this.invalidateAfter(step.index);
+        this.render();
       };
 
       handleChange = (event) => {
@@ -292,7 +349,7 @@ if (!customElements.get('dress-up-steps')) {
       buildItems() {
         return this.steps.reduce((items, step) => {
           const selection = this.selectionFor(step);
-          if (!selection) return items;
+          if (!selection || !this.isConfirmed(step)) return items;
 
           const properties = {};
           const text = this.textFor(step);
@@ -312,7 +369,7 @@ if (!customElements.get('dress-up-steps')) {
 
       async onCheckout(button) {
         const step = this.stepFor(button);
-        const incomplete = this.steps.find((item) => item.required && !this.isValid(item));
+        const incomplete = this.steps.find((item) => item.required && !this.isConfirmed(item));
         if (incomplete) {
           this.open(incomplete.index);
           return this.showError(incomplete, this.dataset.errorMessage);

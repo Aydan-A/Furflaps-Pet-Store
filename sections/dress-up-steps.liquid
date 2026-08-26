@@ -49,7 +49,7 @@
   class="dress-up-steps"
   data-cart-add-url="{{ routes.cart_add_url }}"
   data-cart-url="{{ routes.cart_url }}"
-  data-money-zero="{{ 0 | money }}"
+  data-money-format="{{ shop.money_format | strip_html | escape }}"
   data-error-message="{{ section.settings.error_message | escape }}"
   data-locked-message="{{ section.settings.locked_message | escape }}"
 >
