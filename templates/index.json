@@ -602,6 +602,17 @@
             "button_style_secondary": false
           }
         },
+        "highlight_RmBCeP": {
+          "type": "highlight",
+          "settings": {
+            "show_item": true,
+            "title": "Soft for Everyday Wear",
+            "text": "<p>Comfortable and lightweight for walks, naps, playtime.</p>",
+            "button_label": "",
+            "button_link": "",
+            "button_style_secondary": false
+          }
+        },
         "highlight_ALCEyj": {
           "type": "highlight",
           "settings": {
@@ -612,23 +623,12 @@
             "button_link": "",
             "button_style_secondary": false
           }
-        },
-        "highlight_RmBCeP": {
-          "type": "highlight",
-          "settings": {
-            "show_item": true,
-            "title": "Collectable Designs",
-            "text": "<p>New patch drops to keep the style fresh.</p>",
-            "button_label": "",
-            "button_link": "",
-            "button_style_secondary": false
-          }
         }
       },
       "block_order": [
         "highlight_zYFQcM",
-        "highlight_ALCEyj",
-        "highlight_RmBCeP"
+        "highlight_RmBCeP",
+        "highlight_ALCEyj"
       ],
       "name": "Feature highlights",
       "settings": {
