@@ -19,7 +19,7 @@
           "settings": {
             "show_item": true,
             "heading": "Company",
-            "menu": ""
+            "menu": "company"
           }
         },
         "menu_zGNdPK": {
@@ -27,7 +27,7 @@
           "settings": {
             "show_item": true,
             "heading": "Collection",
-            "menu": ""
+            "menu": "shop"
           }
         },
         "menu_gqEmXi": {
@@ -35,7 +35,7 @@
           "settings": {
             "show_item": true,
             "heading": "Get help",
-            "menu": ""
+            "menu": "get-help"
           }
         },
         "social_image_MmHyfL": {
@@ -117,7 +117,7 @@
         "text_color": "#ffffff",
         "muted_text_color": "#c8c8c8",
         "border_color": "#3a3a3a",
-        "accent_color": "#FF4B22",
+        "accent_color": "#ff4b22",
         "input_background": "#ffffff",
         "input_text_color": "#151515"
       }
