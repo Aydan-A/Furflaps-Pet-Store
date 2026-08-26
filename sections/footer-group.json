@@ -113,11 +113,11 @@
         "padding_top": 40,
         "padding_bottom": 40,
         "background_color": "#050505",
-        "panel_color": "#CC302A",
+        "panel_color": "#cc302a",
         "text_color": "#ffffff",
         "muted_text_color": "#c8c8c8",
         "border_color": "#3a3a3a",
-        "accent_color": "#050505",
+        "accent_color": "#FF4B22",
         "input_background": "#ffffff",
         "input_text_color": "#151515"
       }
