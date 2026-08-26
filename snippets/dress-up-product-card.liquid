@@ -1,32 +1,36 @@
 {% comment %}
-  Product card for the Dress up in 3 steps section.
+  Selectable product card for the "Pick - Pair - Play!" section.
+
+  Renders a radio input + label so selection is single-choice, keyboard
+  accessible (arrow keys) and stateful without any custom JavaScript.
 
   Accepts:
   - product: Shopify product object
   - section: parent section object
+  - block: parent step block object
+  - index: forloop index within the step
+  - checked: boolean, whether this card starts selected
   - loading: image loading strategy
 {% endcomment %}
 
 {%- liquid
-  assign custom_badge = blank
-  if section.settings.show_custom_badge
-    assign custom_badge = product.metafields[section.settings.badge_namespace][section.settings.badge_key].value
-  endif
-  assign color_option_name = section.settings.color_option_name | downcase
+  assign input_id = 'DressStep-' | append: section.id | append: '-' | append: block.id | append: '-' | append: index
 -%}
 
-<article class="dress-steps-card">
-  <a class="dress-steps-card__media" href="{{ product.url }}" aria-label="{{ product.title | escape }}">
-    <span class="dress-steps-card__badges">
-      {%- if custom_badge != blank -%}
-        <span class="dress-steps-card__badge dress-steps-card__badge--custom">{{ custom_badge | escape }}</span>
-      {%- endif -%}
-      {%- unless product.available -%}
-        <span class="dress-steps-card__badge dress-steps-card__badge--sold-out">{{ 'products.product.sold_out' | t }}</span>
-      {%- elsif product.compare_at_price > product.price -%}
-        <span class="dress-steps-card__badge dress-steps-card__badge--sale">{{ 'products.product.on_sale' | t }}</span>
-      {%- endunless -%}
-    </span>
+<div class="dress-steps-card">
+  <input
+    class="dress-steps-card__input visually-hidden"
+    type="radio"
+    id="{{ input_id }}"
+    name="dress-step-{{ section.id }}-{{ block.id }}"
+    value="{{ product.id }}"
+    data-price="{{ product.price | money }}"
+    data-url="{{ product.url }}"
+    data-title="{{ product.title | escape }}"
+    {% if checked %}checked{% endif %}
+  >
+  <label class="dress-steps-card__label" for="{{ input_id }}">
+    <span class="visually-hidden">{{ product.title | escape }} — {{ product.price | money }}</span>
 
     {%- if product.featured_media != blank -%}
       {{
@@ -41,29 +45,11 @@
     {%- else -%}
       {{ 'product-apparel-1' | placeholder_svg_tag: 'dress-steps-card__image dress-steps-card__placeholder' }}
     {%- endif -%}
-  </a>
 
-  <div class="dress-steps-card__content">
-    <h3 class="dress-steps-card__title"><a href="{{ product.url }}">{{ product.title | escape }}</a></h3>
-    {% render 'price', product: product, price_class: 'dress-steps-card__price', show_compare_at_price: true %}
-
-    {%- if section.settings.show_swatches -%}
-      {%- for option in product.options_with_values -%}
-        {%- assign option_name = option.name | downcase -%}
-        {%- if option_name == color_option_name -%}
-          <ul class="dress-steps-card__swatches" role="list" aria-label="{{ option.name | escape }}">
-            {%- for value in option.values limit: section.settings.swatches_to_show -%}
-              {%- if value.swatch != blank -%}
-                <li title="{{ value | escape }}">
-                  <span class="visually-hidden">{{ value }}</span>
-                  {% render 'swatch', swatch: value.swatch, shape: 'square' %}
-                </li>
-              {%- endif -%}
-            {%- endfor -%}
-          </ul>
-          {%- break -%}
-        {%- endif -%}
-      {%- endfor -%}
-    {%- endif -%}
-  </div>
-</article>
+    <span class="dress-steps-card__check" aria-hidden="true">
+      <svg viewBox="0 0 12 12" focusable="false">
+        <path d="m2 6 2.5 2.5L10 3" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </span>
+  </label>
+</div>
