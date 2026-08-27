@@ -233,6 +233,8 @@
             "title": "Pick a collar you love",
             "products": [],
             "collection": "collars",
+            "products_to_show": 5,
+            "allow_multiple": false,
             "selection_required": true,
             "enable_quantity": false,
             "benefit_1": "Eco-Friendly",
@@ -242,9 +244,7 @@
             "personalization_placeholder": "Enter a name",
             "personalization_max_chars": 12,
             "personalization_required": true,
-            "swatch_label": "Color",
-            "products_to_show": 5,
-            "allow_multiple": false
+            "swatch_label": "Color"
           }
         },
         "step_G9XGPD": {
@@ -253,6 +253,8 @@
             "title": "Match it with cool letters",
             "products": [],
             "collection": "letters",
+            "products_to_show": 40,
+            "allow_multiple": true,
             "selection_required": true,
             "enable_quantity": true,
             "benefit_1": "100% Cotton",
@@ -262,9 +264,7 @@
             "personalization_placeholder": "Enter a name",
             "personalization_max_chars": 12,
             "personalization_required": true,
-            "swatch_label": "Color",
-            "products_to_show": 40,
-            "allow_multiple": true
+            "swatch_label": "Color"
           }
         },
         "swatch_blue": {
@@ -305,6 +305,8 @@
             "title": "Add fun extras",
             "products": [],
             "collection": "icons",
+            "products_to_show": 8,
+            "allow_multiple": false,
             "selection_required": false,
             "enable_quantity": false,
             "benefit_1": "100% Cotton",
@@ -314,9 +316,7 @@
             "personalization_placeholder": "Enter a name",
             "personalization_max_chars": 12,
             "personalization_required": true,
-            "swatch_label": "Color",
-            "products_to_show": 8,
-            "allow_multiple": false
+            "swatch_label": "Color"
           }
         }
       },
@@ -739,9 +739,9 @@
         "icon_color": "#222222",
         "icon_size": 48,
         "icon_title_size": "20",
-        "icon_title_color": "#FF4B22",
+        "icon_title_color": "#ff4b22",
         "icon_description_size": "14",
-        "icon_description_color": "#FF4B22",
+        "icon_description_color": "#ff4b22",
         "icons_per_row_desktop": 4,
         "icons_mobile_layout": "2",
         "space_between_icons": 24,
@@ -751,9 +751,9 @@
         "heading_size": "32",
         "heading_style": "regular",
         "heading_alignment": "center",
-        "heading_color": "#FF4B22",
+        "heading_color": "#ff4b22",
         "section_background_style": "color",
-        "section_background": "#FDE6DE",
+        "section_background": "#fde6de",
         "section_background_gradient": "linear-gradient(to right, #fed951, #ff46c7)",
         "section_background_animation": false,
         "overlay_color": "#222222",
