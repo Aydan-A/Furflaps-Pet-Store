@@ -77,6 +77,8 @@
 </style>
 
 {%- style -%}
+  {{ section.settings.brand_name_font | font_face: font_display: 'swap' }}
+
   .header {
     padding: {{ section.settings.padding_top | times: 0.5 | round: 0 }}px 3rem {{ section.settings.padding_bottom | times: 0.5 | round: 0 }}px 3rem;
   }
@@ -94,6 +96,10 @@
     --header-row-gap: {{ section.settings.header_row_gap | default: 12 }}px;
     --header-icon-size: {{ section.settings.icon_size | default: 20 }}px;
     --header-icon-gap: {{ section.settings.icon_gap | default: 4 }}px;
+    --header-brand-font-family: {{ section.settings.brand_name_font.family }}, {{ section.settings.brand_name_font.fallback_families }};
+    --header-brand-font-style: {{ section.settings.brand_name_font.style }};
+    --header-brand-font-weight: {{ section.settings.brand_name_font.weight }};
+    --header-brand-font-size: {{ section.settings.brand_name_font_size | divided_by: 10.0 }}rem;
   }
 
   .section-header {
@@ -559,11 +565,30 @@
       "label": "Show brand name next to logo"
     },
     {
+      "type": "header",
+      "content": "Brand name typography"
+    },
+    {
+      "type": "font_picker",
+      "id": "brand_name_font",
+      "default": "assistant_n7",
+      "label": "Font"
+    },
+    {
+      "type": "range",
+      "id": "brand_name_font_size",
+      "min": 12,
+      "max": 32,
+      "step": 1,
+      "unit": "px",
+      "default": 20,
+      "label": "Font size"
+    },
+    {
       "type": "checkbox",
       "id": "brand_name_uppercase",
       "default": true,
-      "label": "Uppercase brand name",
-      "info": "Font comes from Theme settings > Typography > Heading font"
+      "label": "Uppercase brand name"
     },
     {
       "type": "header",
