@@ -15,7 +15,7 @@
         "vendor": {
           "type": "text",
           "settings": {
-            "text": "{{ product.vendor }}",
+            "text": "<strong>{{ product.vendor }}</strong>",
             "text_style": "uppercase"
           }
         },
@@ -96,7 +96,7 @@
     "related-products": {
       "type": "related-products",
       "settings": {
-        "heading": "You may also like",
+        "heading": "<strong>You may also like</strong>",
         "heading_size": "h2",
         "products_to_show": 4,
         "columns_desktop": 4,
