@@ -469,7 +469,7 @@
         "columns_desktop": 4,
         "columns_tablet": 2.5,
         "columns_mobile": 1.2,
-        "image_ratio": "1 / 1",
+        "image_ratio": "3 / 4",
         "image_fit": "contain",
         "show_product_info": false,
         "show_sale_badge": true,
