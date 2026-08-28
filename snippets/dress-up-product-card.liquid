@@ -76,9 +76,9 @@
       <button
         class="dress-steps-card__quantity-button"
         type="button"
-        data-dress-quantity-change="1"
-        aria-label="{{ 'products.product.quantity.increase' | t: product: product.title | escape }}"
-      >+</button>
+        data-dress-quantity-change="-1"
+        aria-label="{{ 'products.product.quantity.decrease' | t: product: product.title | escape }}"
+      >&minus;</button>
       <output
         class="dress-steps-card__quantity-value"
         data-dress-quantity-value
@@ -88,9 +88,9 @@
       <button
         class="dress-steps-card__quantity-button"
         type="button"
-        data-dress-quantity-change="-1"
-        aria-label="{{ 'products.product.quantity.decrease' | t: product: product.title | escape }}"
-      >&minus;</button>
+        data-dress-quantity-change="1"
+        aria-label="{{ 'products.product.quantity.increase' | t: product: product.title | escape }}"
+      >+</button>
     </div>
   {%- endif -%}
 

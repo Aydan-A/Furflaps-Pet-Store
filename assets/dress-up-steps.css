@@ -245,7 +245,8 @@
    more products than columns scrolls instead of shrinking. */
 .dress-up-steps__products {
   display: flex;
-  padding: .4rem var(--ds-step-card-side-padding, var(--ds-card-side-padding)) 1rem;
+  --ds-track-inset: var(--ds-step-card-side-padding, var(--ds-card-side-padding));
+  padding: .4rem 0 1rem;
   margin: -.4rem 0 0;
   gap: var(--ds-step-card-gap, var(--ds-card-gap));
   justify-content: var(--ds-step-card-alignment, var(--ds-card-alignment));
@@ -253,6 +254,12 @@
   overscroll-behavior-inline: contain;
   scroll-snap-type: inline proximity;
   scrollbar-width: thin;
+}
+.dress-up-steps__products > .dress-steps-card:first-child {
+  margin-inline-start: var(--ds-track-inset);
+}
+.dress-up-steps__products > .dress-steps-card:last-child {
+  margin-inline-end: var(--ds-track-inset);
 }
 .dress-steps-card {
   position: relative;
@@ -406,8 +413,7 @@
 
   /* Cards keep a comfortable tap size instead of shrinking to fit. */
   .dress-up-steps__products {
-    padding-right: var(--ds-mobile-card-side-padding);
-    padding-left: var(--ds-mobile-card-side-padding);
+    --ds-track-inset: var(--ds-mobile-card-side-padding);
     gap: var(--ds-mobile-card-gap);
     scroll-snap-type: inline mandatory;
   }
