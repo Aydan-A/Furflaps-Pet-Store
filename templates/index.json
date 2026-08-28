@@ -231,7 +231,7 @@
             "title": "Pick a collar you love",
             "products": [],
             "collection": "collars",
-            "products_to_show": 5,
+            "products_to_show": 4,
             "allow_multiple": false,
             "selection_required": true,
             "enable_quantity": false,
