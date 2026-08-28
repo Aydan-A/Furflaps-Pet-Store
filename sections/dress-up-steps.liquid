@@ -213,6 +213,9 @@
                 class="dress-up-steps__products"
                 role="{% if block.settings.allow_multiple %}group{% else %}radiogroup{% endif %}"
                 aria-label="{{ block.settings.title | escape }}"
+                {% if block.settings.custom_card_layout %}
+                  style="--ds-step-card-width: {{ block.settings.card_width }}px; --ds-step-card-gap: {{ block.settings.card_gap }}px; --ds-step-card-side-padding: {{ block.settings.card_side_padding }}px; --ds-step-card-alignment: {{ block.settings.card_alignment }};"
+                {% endif %}
               >
                 {%- for product in step_products limit: block.settings.products_to_show -%}
                   {% render 'dress-up-product-card',
@@ -259,11 +262,11 @@
     { "type": "paragraph", "content": "Card width controls each card. Space between cards controls only the internal gaps. Horizontal inset controls the matching left and right edge space. Center alignment divides any unused row space equally between both sides." },
     { "type": "select", "id": "image_ratio", "label": "Image ratio", "default": "4 / 5", "options": [{ "value": "1 / 1", "label": "Square" }, { "value": "4 / 5", "label": "Portrait" }, { "value": "3 / 4", "label": "Tall portrait" }] },
     { "type": "select", "id": "image_fit", "label": "Image fit", "default": "contain", "options": [{ "value": "contain", "label": "Contain" }, { "value": "cover", "label": "Cover" }] },
-    { "type": "select", "id": "card_alignment", "label": "Row alignment", "default": "safe center", "options": [{ "value": "flex-start", "label": "Left" }, { "value": "safe center", "label": "Center (equal outer gaps)" }, { "value": "flex-end", "label": "Right" }] },
+    { "type": "select", "id": "card_alignment", "label": "Row alignment", "default": "space-between", "options": [{ "value": "space-between", "label": "Space between (exact outer inset)" }, { "value": "flex-start", "label": "Packed left" }, { "value": "safe center", "label": "Packed center" }, { "value": "flex-end", "label": "Packed right" }], "info": "Space between pins the first and last cards to the horizontal inset. Packed layouts keep the selected card gap exact." },
     { "type": "range", "id": "card_width", "label": "Desktop card width", "min": 140, "max": 400, "step": 10, "unit": "px", "default": 240, "info": "Maximum width of each card. Cards can shrink to fit the selected desktop column count." },
     { "type": "range", "id": "card_height", "label": "Maximum card height", "min": 180, "max": 460, "step": 10, "unit": "px", "default": 300 },
     { "type": "range", "id": "card_gap", "label": "Space between cards", "min": 0, "max": 60, "step": 2, "unit": "px", "default": 8, "info": "Changes only the space between neighboring cards." },
-    { "type": "range", "id": "card_side_padding", "label": "Desktop horizontal inset", "min": 0, "max": 80, "step": 2, "unit": "px", "default": 16, "info": "Minimum matching space at the left and right edges of the card row." },
+    { "type": "range", "id": "card_side_padding", "label": "Desktop horizontal inset", "min": 0, "max": 80, "step": 2, "unit": "px", "default": 16, "info": "Exact edge space with Space between alignment; minimum edge space with packed alignment." },
     { "type": "range", "id": "card_radius", "label": "Card corner radius", "min": 0, "max": 30, "step": 2, "unit": "px", "default": 12 },
     { "type": "header", "content": "Product cards — mobile" },
     { "type": "range", "id": "mobile_card_width", "label": "Mobile card width", "min": 140, "max": 320, "step": 10, "unit": "px", "default": 220 },
@@ -310,6 +313,12 @@
         { "type": "product_list", "id": "products", "label": "Products", "limit": 40, "info": "Pick, reorder or remove the cards shown in this step. Leave empty to fall back to the collection below." },
         { "type": "collection", "id": "collection", "label": "Fallback collection" },
         { "type": "range", "id": "products_to_show", "label": "Products to show", "min": 2, "max": 40, "step": 1, "default": 4, "info": "Cards past the desktop column count scroll horizontally." },
+        { "type": "header", "content": "Card layout for this step" },
+        { "type": "checkbox", "id": "custom_card_layout", "label": "Override section card layout", "default": false, "info": "Enable to arrange this step independently from the section-level Product cards settings." },
+        { "type": "select", "id": "card_alignment", "label": "Desktop row alignment", "default": "space-between", "options": [{ "value": "space-between", "label": "Space between (exact outer inset)" }, { "value": "flex-start", "label": "Packed left" }, { "value": "safe center", "label": "Packed center" }, { "value": "flex-end", "label": "Packed right" }] },
+        { "type": "range", "id": "card_width", "label": "Desktop card width", "min": 140, "max": 400, "step": 10, "unit": "px", "default": 240 },
+        { "type": "range", "id": "card_gap", "label": "Minimum space between cards", "min": 0, "max": 60, "step": 2, "unit": "px", "default": 8 },
+        { "type": "range", "id": "card_side_padding", "label": "Left and right inset", "min": 0, "max": 80, "step": 2, "unit": "px", "default": 16 },
         { "type": "checkbox", "id": "allow_multiple", "label": "Allow several products", "default": false, "info": "Each chosen product becomes its own cart line. Use for letters or add-ons." },
         { "type": "checkbox", "id": "selection_required", "label": "Selection required to continue", "default": true, "info": "Turn off for optional extras." },
         { "type": "checkbox", "id": "enable_quantity", "label": "Show quantity control on selected add-ons", "default": false, "info": "Only applies when Allow several products is enabled. Single-choice steps always add one item." },

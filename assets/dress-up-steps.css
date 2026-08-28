@@ -245,10 +245,10 @@
    more products than columns scrolls instead of shrinking. */
 .dress-up-steps__products {
   display: flex;
-  padding: .4rem var(--ds-card-side-padding) 1rem;
+  padding: .4rem var(--ds-step-card-side-padding, var(--ds-card-side-padding)) 1rem;
   margin: -.4rem 0 0;
-  gap: var(--ds-card-gap);
-  justify-content: var(--ds-card-alignment);
+  gap: var(--ds-step-card-gap, var(--ds-card-gap));
+  justify-content: var(--ds-step-card-alignment, var(--ds-card-alignment));
   overflow-x: auto;
   overscroll-behavior-inline: contain;
   scroll-snap-type: inline proximity;
@@ -257,8 +257,8 @@
 .dress-steps-card {
   position: relative;
   flex: 0 0 min(
-    var(--ds-card-width),
-    calc((100% - (var(--ds-columns) - 1) * var(--ds-card-gap)) / var(--ds-columns))
+    var(--ds-step-card-width, var(--ds-card-width)),
+    calc((100% - (var(--ds-columns) - 1) * var(--ds-step-card-gap, var(--ds-card-gap))) / var(--ds-columns))
   );
   min-width: 0;
   scroll-snap-align: start;
