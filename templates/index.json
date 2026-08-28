@@ -340,7 +340,7 @@
         "image_fit": "contain",
         "card_width": 240,
         "card_height": 300,
-        "card_gap": 0,
+        "card_gap": 40,
         "card_radius": 12,
         "eyebrow_size": 11,
         "heading_size": 34,
