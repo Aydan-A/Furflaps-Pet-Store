@@ -9,8 +9,8 @@
 
 {%- liquid
   assign custom_badge = blank
-  if section.settings.show_metafield_badge and section.settings.badge_metafield_namespace != blank and section.settings.badge_metafield_key != blank
-    assign custom_badge = product.metafields[section.settings.badge_metafield_namespace][section.settings.badge_metafield_key].value
+  if section.settings.show_metafield_badge
+    assign custom_badge = product.metafields.custom.card_badge.value
   endif
 
   assign card_description = blank
