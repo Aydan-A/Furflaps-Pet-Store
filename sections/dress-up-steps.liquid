@@ -24,6 +24,11 @@
     --ds-card-height: {{ section.settings.card_height }}px;
     --ds-card-width: {{ section.settings.card_width }}px;
     --ds-card-gap: {{ section.settings.card_gap }}px;
+    --ds-card-side-padding: {{ section.settings.card_side_padding }}px;
+    --ds-card-alignment: {{ section.settings.card_alignment }};
+    --ds-mobile-card-width: {{ section.settings.mobile_card_width }}px;
+    --ds-mobile-card-gap: {{ section.settings.mobile_card_gap }}px;
+    --ds-mobile-card-side-padding: {{ section.settings.mobile_card_side_padding }}px;
     --ds-card-radius: {{ section.settings.card_radius }}px;
     --ds-columns: {{ section.settings.columns_desktop }};
     --ds-image-ratio: {{ section.settings.image_ratio }};
@@ -251,12 +256,19 @@
     { "type": "range", "id": "columns_desktop", "label": "Desktop columns", "min": 2, "max": 5, "step": 1, "default": 4 },
 
     { "type": "header", "content": "Product cards" },
+    { "type": "paragraph", "content": "Card width controls each card. Space between cards controls only the internal gaps. Horizontal inset controls the matching left and right edge space. Center alignment divides any unused row space equally between both sides." },
     { "type": "select", "id": "image_ratio", "label": "Image ratio", "default": "4 / 5", "options": [{ "value": "1 / 1", "label": "Square" }, { "value": "4 / 5", "label": "Portrait" }, { "value": "3 / 4", "label": "Tall portrait" }] },
     { "type": "select", "id": "image_fit", "label": "Image fit", "default": "contain", "options": [{ "value": "contain", "label": "Contain" }, { "value": "cover", "label": "Cover" }] },
-    { "type": "range", "id": "card_width", "label": "Desktop card width", "min": 140, "max": 400, "step": 10, "unit": "px", "default": 240 },
-    { "type": "range", "id": "card_height", "label": "Max card height", "min": 180, "max": 460, "step": 10, "unit": "px", "default": 300 },
-    { "type": "range", "id": "card_gap", "label": "Space between cards", "min": 0, "max": 40, "step": 2, "unit": "px", "default": 8 },
+    { "type": "select", "id": "card_alignment", "label": "Row alignment", "default": "safe center", "options": [{ "value": "flex-start", "label": "Left" }, { "value": "safe center", "label": "Center (equal outer gaps)" }, { "value": "flex-end", "label": "Right" }] },
+    { "type": "range", "id": "card_width", "label": "Desktop card width", "min": 140, "max": 400, "step": 10, "unit": "px", "default": 240, "info": "Maximum width of each card. Cards can shrink to fit the selected desktop column count." },
+    { "type": "range", "id": "card_height", "label": "Maximum card height", "min": 180, "max": 460, "step": 10, "unit": "px", "default": 300 },
+    { "type": "range", "id": "card_gap", "label": "Space between cards", "min": 0, "max": 60, "step": 2, "unit": "px", "default": 8, "info": "Changes only the space between neighboring cards." },
+    { "type": "range", "id": "card_side_padding", "label": "Desktop horizontal inset", "min": 0, "max": 80, "step": 2, "unit": "px", "default": 16, "info": "Minimum matching space at the left and right edges of the card row." },
     { "type": "range", "id": "card_radius", "label": "Card corner radius", "min": 0, "max": 30, "step": 2, "unit": "px", "default": 12 },
+    { "type": "header", "content": "Product cards — mobile" },
+    { "type": "range", "id": "mobile_card_width", "label": "Mobile card width", "min": 140, "max": 320, "step": 10, "unit": "px", "default": 220 },
+    { "type": "range", "id": "mobile_card_gap", "label": "Mobile space between cards", "min": 0, "max": 40, "step": 2, "unit": "px", "default": 12 },
+    { "type": "range", "id": "mobile_card_side_padding", "label": "Mobile horizontal inset", "min": 0, "max": 40, "step": 2, "unit": "px", "default": 16, "info": "Matching left and right edge space on mobile." },
 
     { "type": "header", "content": "Typography" },
     { "type": "range", "id": "eyebrow_size", "label": "Eyebrow size", "min": 9, "max": 18, "step": 1, "unit": "px", "default": 11 },

@@ -239,15 +239,16 @@
 .dress-up-steps__error[hidden] { display: none; }
 
 /* Panel and cards */
-.dress-up-steps__panel { padding: 0 2rem 2rem; }
+.dress-up-steps__panel { padding: 0 0 2rem; }
 .dress-up-steps__panel[hidden] { display: none; }
 /* One track for every step: cards keep their column width, so a step with
    more products than columns scrolls instead of shrinking. */
 .dress-up-steps__products {
   display: flex;
-  padding: .4rem .4rem 1rem;
-  margin: -.4rem -.4rem 0;
+  padding: .4rem var(--ds-card-side-padding) 1rem;
+  margin: -.4rem 0 0;
   gap: var(--ds-card-gap);
+  justify-content: var(--ds-card-alignment);
   overflow-x: auto;
   overscroll-behavior-inline: contain;
   scroll-snap-type: inline proximity;
@@ -373,12 +374,17 @@
   .dress-up-steps__field { margin-left: 3.6rem; }
   .dress-up-steps__input { width: 100%; }
   .dress-up-steps__actions { width: 100%; margin-left: 3.6rem; justify-content: space-between; }
-  .dress-up-steps__panel { padding: 0 0 1.6rem 1.6rem; }
+  .dress-up-steps__panel { padding: 0 0 1.6rem; }
   .dress-up-steps__error { padding: 0 1.6rem 1.4rem; }
 
   /* Cards keep a comfortable tap size instead of shrinking to fit. */
-  .dress-up-steps__products { padding-right: 1.6rem; scroll-snap-type: inline mandatory; }
-  .dress-steps-card { flex-basis: min(60vw, 22rem); }
+  .dress-up-steps__products {
+    padding-right: var(--ds-mobile-card-side-padding);
+    padding-left: var(--ds-mobile-card-side-padding);
+    gap: var(--ds-mobile-card-gap);
+    scroll-snap-type: inline mandatory;
+  }
+  .dress-steps-card { flex-basis: min(60vw, var(--ds-mobile-card-width)); }
 }
 
 @media (prefers-reduced-motion: reduce) {
