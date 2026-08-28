@@ -173,8 +173,6 @@
         "description_size": 14,
         "description_lines": 1,
         "show_metafield_badge": false,
-        "badge_metafield_namespace": "custom",
-        "badge_metafield_key": "badge",
         "badge_offset": 10,
         "badge_background": "#7961d7",
         "badge_text_color": "#ffffff",
@@ -331,7 +329,7 @@
       ],
       "name": "Dress up in steps",
       "settings": {
-        "eyebrow": "How you style it",
+        "eyebrow": "Design Yourself",
         "heading": "Pick - Pair - Play!",
         "button_label": "Save and continue",
         "cta_label": "Go to cart",
