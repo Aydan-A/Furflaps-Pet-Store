@@ -255,7 +255,10 @@
 }
 .dress-steps-card {
   position: relative;
-  flex: 0 0 calc((100% - (var(--ds-columns) - 1) * var(--ds-card-gap)) / var(--ds-columns));
+  flex: 0 0 min(
+    var(--ds-card-width),
+    calc((100% - (var(--ds-columns) - 1) * var(--ds-card-gap)) / var(--ds-columns))
+  );
   min-width: 0;
   scroll-snap-align: start;
 }

@@ -22,6 +22,7 @@
     --ds-mobile-padding-inline: {{ section.settings.mobile_padding_inline }}px;
     --ds-heading-gap: {{ section.settings.heading_gap }}px;
     --ds-card-height: {{ section.settings.card_height }}px;
+    --ds-card-width: {{ section.settings.card_width }}px;
     --ds-card-gap: {{ section.settings.card_gap }}px;
     --ds-card-radius: {{ section.settings.card_radius }}px;
     --ds-columns: {{ section.settings.columns_desktop }};
@@ -252,6 +253,7 @@
     { "type": "header", "content": "Product cards" },
     { "type": "select", "id": "image_ratio", "label": "Image ratio", "default": "4 / 5", "options": [{ "value": "1 / 1", "label": "Square" }, { "value": "4 / 5", "label": "Portrait" }, { "value": "3 / 4", "label": "Tall portrait" }] },
     { "type": "select", "id": "image_fit", "label": "Image fit", "default": "contain", "options": [{ "value": "contain", "label": "Contain" }, { "value": "cover", "label": "Cover" }] },
+    { "type": "range", "id": "card_width", "label": "Desktop card width", "min": 140, "max": 400, "step": 10, "unit": "px", "default": 240 },
     { "type": "range", "id": "card_height", "label": "Max card height", "min": 180, "max": 460, "step": 10, "unit": "px", "default": 300 },
     { "type": "range", "id": "card_gap", "label": "Space between cards", "min": 0, "max": 40, "step": 2, "unit": "px", "default": 8 },
     { "type": "range", "id": "card_radius", "label": "Card corner radius", "min": 0, "max": 30, "step": 2, "unit": "px", "default": 12 },
