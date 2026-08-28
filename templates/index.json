@@ -234,7 +234,7 @@
             "products_to_show": 4,
             "allow_multiple": false,
             "selection_required": true,
-            "enable_quantity": false,
+            "enable_quantity": true,
             "benefit_1": "Eco-Friendly",
             "benefit_2": "",
             "enable_personalization": false,
