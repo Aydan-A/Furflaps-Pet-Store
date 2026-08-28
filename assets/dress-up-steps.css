@@ -244,7 +244,6 @@
 /* One track for every step: cards keep their column width, so a step with
    more products than columns scrolls instead of shrinking. */
 .dress-up-steps__products {
-  --ds-card-gap: 1.4rem;
   display: flex;
   padding: .4rem .4rem 1rem;
   margin: -.4rem -.4rem 0;
@@ -266,7 +265,7 @@
   overflow: hidden;
   aspect-ratio: var(--ds-image-ratio);
   max-height: var(--ds-card-height);
-  border-radius: 1.2rem;
+  border-radius: var(--ds-card-radius);
   background: var(--ds-image-background);
   cursor: pointer;
   transition: box-shadow 150ms ease;

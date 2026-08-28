@@ -22,6 +22,8 @@
     --ds-mobile-padding-inline: {{ section.settings.mobile_padding_inline }}px;
     --ds-heading-gap: {{ section.settings.heading_gap }}px;
     --ds-card-height: {{ section.settings.card_height }}px;
+    --ds-card-gap: {{ section.settings.card_gap }}px;
+    --ds-card-radius: {{ section.settings.card_radius }}px;
     --ds-columns: {{ section.settings.columns_desktop }};
     --ds-image-ratio: {{ section.settings.image_ratio }};
     --ds-image-fit: {{ section.settings.image_fit }};
@@ -251,6 +253,8 @@
     { "type": "select", "id": "image_ratio", "label": "Image ratio", "default": "4 / 5", "options": [{ "value": "1 / 1", "label": "Square" }, { "value": "4 / 5", "label": "Portrait" }, { "value": "3 / 4", "label": "Tall portrait" }] },
     { "type": "select", "id": "image_fit", "label": "Image fit", "default": "contain", "options": [{ "value": "contain", "label": "Contain" }, { "value": "cover", "label": "Cover" }] },
     { "type": "range", "id": "card_height", "label": "Max card height", "min": 180, "max": 460, "step": 10, "unit": "px", "default": 300 },
+    { "type": "range", "id": "card_gap", "label": "Space between cards", "min": 0, "max": 40, "step": 2, "unit": "px", "default": 8 },
+    { "type": "range", "id": "card_radius", "label": "Card corner radius", "min": 0, "max": 30, "step": 2, "unit": "px", "default": 12 },
 
     { "type": "header", "content": "Typography" },
     { "type": "range", "id": "eyebrow_size", "label": "Eyebrow size", "min": 9, "max": 18, "step": 1, "unit": "px", "default": 11 },
@@ -294,7 +298,7 @@
         { "type": "range", "id": "products_to_show", "label": "Products to show", "min": 2, "max": 40, "step": 1, "default": 4, "info": "Cards past the desktop column count scroll horizontally." },
         { "type": "checkbox", "id": "allow_multiple", "label": "Allow several products", "default": false, "info": "Each chosen product becomes its own cart line. Use for letters or add-ons." },
         { "type": "checkbox", "id": "selection_required", "label": "Selection required to continue", "default": true, "info": "Turn off for optional extras." },
-        { "type": "checkbox", "id": "enable_quantity", "label": "Show quantity control on the selected card", "default": false },
+        { "type": "checkbox", "id": "enable_quantity", "label": "Show quantity control on selected add-ons", "default": false, "info": "Only applies when Allow several products is enabled. Single-choice steps always add one item." },
         { "type": "header", "content": "Badges (shown when the step is closed)" },
         { "type": "text", "id": "benefit_1", "label": "Badge 1" },
         { "type": "text", "id": "benefit_2", "label": "Badge 2" },

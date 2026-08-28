@@ -63,7 +63,7 @@
     {%- endunless -%}
   </label>
 
-  {%- if show_quantity and product.available -%}
+  {%- if show_quantity and allow_multiple and product.available -%}
     <div class="dress-steps-card__quantity" data-dress-quantity>
       <button
         class="dress-steps-card__quantity-button"
