@@ -339,7 +339,7 @@
         "image_ratio": "4 / 5",
         "image_fit": "contain",
         "card_height": 300,
-        "card_gap": 8,
+        "card_gap": 0,
         "card_radius": 12,
         "eyebrow_size": 11,
         "heading_size": 34,
