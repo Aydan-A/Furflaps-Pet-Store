@@ -258,7 +258,7 @@
             "collection": "letters",
             "products_to_show": 40,
             "custom_card_layout": false,
-            "card_alignment": "space-between",
+            "card_alignment": "safe center",
             "card_width": 240,
             "card_gap": 8,
             "card_side_padding": 16,
