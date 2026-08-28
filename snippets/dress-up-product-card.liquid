@@ -17,6 +17,14 @@
 {%- liquid
   assign variant = product.selected_or_first_available_variant
   assign input_id = 'DressStep-' | append: section.id | append: '-' | append: block.id | append: '-' | append: index
+  assign color_option = blank
+  for option in product.options_with_values
+    assign normalized_option_name = option.name | downcase
+    if normalized_option_name == 'color' or normalized_option_name == 'colour'
+      assign color_option = option
+      break
+    endif
+  endfor
 -%}
 
 <div class="dress-steps-card{% unless product.available %} dress-steps-card--unavailable{% endunless %}">
@@ -83,6 +91,46 @@
         data-dress-quantity-change="-1"
         aria-label="{{ 'products.product.quantity.decrease' | t: product: product.title | escape }}"
       >&minus;</button>
+    </div>
+  {%- endif -%}
+
+  {%- if allow_multiple and color_option != blank and color_option.values.size > 1 -%}
+    <div class="dress-steps-card__variant-field">
+      <label class="dress-steps-card__variant-label" for="{{ input_id }}-color">{{ color_option.name | escape }}</label>
+      <select
+        class="dress-steps-card__variant-select"
+        id="{{ input_id }}-color"
+        data-dress-variant
+        aria-label="{{ product.title | escape }} — {{ color_option.name | escape }}"
+      >
+        {%- for color_value in color_option.values -%}
+          {%- liquid
+            assign color_variant = blank
+            for product_variant in product.variants
+              case color_option.position
+                when 1
+                  assign candidate_value = product_variant.option1
+                when 2
+                  assign candidate_value = product_variant.option2
+                else
+                  assign candidate_value = product_variant.option3
+              endcase
+              if candidate_value == color_value and product_variant.available
+                assign color_variant = product_variant
+                break
+              endif
+            endfor
+          -%}
+          {%- if color_variant != blank -%}
+            <option
+              value="{{ color_variant.id }}"
+              data-price="{{ color_variant.price }}"
+              data-image="{{ color_variant.featured_media | default: product.featured_media | image_url: width: 80 }}"
+              {% if color_variant.id == variant.id %}selected{% endif %}
+            >{{ color_value | escape }}</option>
+          {%- endif -%}
+        {%- endfor -%}
+      </select>
     </div>
   {%- endif -%}
 </div>

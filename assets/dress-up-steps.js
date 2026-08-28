@@ -65,15 +65,19 @@ if (!customElements.get('dress-up-steps')) {
 
       selectionsFor(step) {
         return Array.from(step.el.querySelectorAll('[data-dress-product]:checked:not(:disabled)'))
-          .map((input) => ({
-            input,
-            order: Number(input.dataset.order) || 0,
-            variantId: input.value,
-            price: Number(input.dataset.price) || 0,
-            quantity: Number(input.dataset.quantity) || 1,
-            title: input.dataset.title,
-            image: input.dataset.image,
-          }))
+          .map((input) => {
+            const variant = input.parentElement.querySelector('[data-dress-variant]');
+            const selectedVariant = variant?.selectedOptions[0];
+            return {
+              input,
+              order: Number(input.dataset.order) || 0,
+              variantId: selectedVariant?.value || input.value,
+              price: Number(selectedVariant?.dataset.price || input.dataset.price) || 0,
+              quantity: Number(input.dataset.quantity) || 1,
+              title: [input.dataset.title, selectedVariant?.textContent.trim()].filter(Boolean).join(' — '),
+              image: selectedVariant?.dataset.image || input.dataset.image,
+            };
+          })
           .sort((a, b) => a.order - b.order);
       }
 
@@ -295,7 +299,7 @@ if (!customElements.get('dress-up-steps')) {
       };
 
       handleChange = (event) => {
-        if (!event.target.matches('[data-dress-product], [data-dress-swatch]')) return;
+        if (!event.target.matches('[data-dress-product], [data-dress-swatch], [data-dress-variant]')) return;
 
         if (event.target.matches('[data-dress-product]') && event.target.checked) {
           this.pickOrder = (this.pickOrder || 0) + 1;

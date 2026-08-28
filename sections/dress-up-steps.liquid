@@ -156,7 +156,8 @@
               </button>
             </p>
 
-            {%- if swatches contains 'data-dress-swatch' -%}
+            {%- comment -%}Multi-select letter products choose their own native Color/Colour variant per card.{%- endcomment -%}
+            {%- if block.settings.allow_multiple == false and swatches contains 'data-dress-swatch' -%}
               <div class="dress-up-steps__swatches" role="radiogroup" aria-label="{{ block.settings.swatch_label | escape }}" data-dress-swatches data-property="{{ block.settings.swatch_label | escape }}">
                 {{ swatches }}
               </div>
