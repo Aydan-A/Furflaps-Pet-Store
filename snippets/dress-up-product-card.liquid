@@ -71,7 +71,7 @@
     {%- endunless -%}
   </label>
 
-  {%- if show_quantity and allow_multiple and product.available -%}
+  {%- if show_quantity and product.available -%}
     <div class="dress-steps-card__quantity" data-dress-quantity>
       <button
         class="dress-steps-card__quantity-button"
@@ -94,43 +94,70 @@
     </div>
   {%- endif -%}
 
-  {%- if allow_multiple and color_option != blank and color_option.values.size > 1 -%}
-    <div class="dress-steps-card__variant-field">
-      <label class="dress-steps-card__variant-label" for="{{ input_id }}-color">{{ color_option.name | escape }}</label>
-      <select
-        class="dress-steps-card__variant-select"
-        id="{{ input_id }}-color"
-        data-dress-variant
-        aria-label="{{ product.title | escape }} — {{ color_option.name | escape }}"
-      >
-        {%- for color_value in color_option.values -%}
-          {%- liquid
-            assign color_variant = blank
-            for product_variant in product.variants
-              case color_option.position
-                when 1
-                  assign candidate_value = product_variant.option1
-                when 2
-                  assign candidate_value = product_variant.option2
-                else
-                  assign candidate_value = product_variant.option3
-              endcase
-              if candidate_value == color_value and product_variant.available
-                assign color_variant = product_variant
-                break
-              endif
-            endfor
-          -%}
-          {%- if color_variant != blank -%}
-            <option
+  {%- if color_option != blank and color_option.values.size > 1 -%}
+    {%- comment -%}
+      Colours come from the product's own option values, so the swatch, the
+      price, the image and availability all stay in step with Shopify.
+    {%- endcomment -%}
+    <fieldset class="dress-steps-card__variants" data-dress-variants>
+      <legend class="visually-hidden">{{ product.title | escape }} — {{ color_option.name | escape }}</legend>
+      {%- for color_value in color_option.values -%}
+        {%- liquid
+          assign color_variant = blank
+          for product_variant in product.variants
+            case color_option.position
+              when 1
+                assign candidate_value = product_variant.option1
+              when 2
+                assign candidate_value = product_variant.option2
+              else
+                assign candidate_value = product_variant.option3
+            endcase
+            if candidate_value == color_value
+              assign color_variant = product_variant
+              break
+            endif
+          endfor
+
+          assign swatch_style = ''
+          if color_value.swatch.image
+            assign swatch_image = color_value.swatch.image | image_url: width: 50
+            assign swatch_style = 'background-image: url(' | append: swatch_image | append: ');'
+          elsif color_value.swatch.color
+            assign swatch_style = 'background-color: rgb(' | append: color_value.swatch.color.rgb | append: ');'
+          endif
+
+          assign variant_media = color_variant.featured_media | default: product.featured_media
+        -%}
+        {%- if color_variant != blank -%}
+          <div class="dress-steps-card__variant">
+            <input
+              class="dress-steps-card__variant-input visually-hidden"
+              type="radio"
+              id="{{ input_id }}-color-{{ forloop.index }}"
+              name="{{ input_id }}-color"
               value="{{ color_variant.id }}"
+              data-dress-variant
               data-price="{{ color_variant.price }}"
-              data-image="{{ color_variant.featured_media | default: product.featured_media | image_url: width: 80 }}"
-              {% if color_variant.id == variant.id %}selected{% endif %}
-            >{{ color_value | escape }}</option>
-          {%- endif -%}
-        {%- endfor -%}
-      </select>
-    </div>
+              data-label="{{ color_value | escape }}"
+              data-image="{{ variant_media | image_url: width: 80 }}"
+              data-image-large="{{ variant_media | image_url: width: 900 }}"
+              {% if color_variant.id == variant.id %}checked{% endif %}
+              {% unless color_value.available %}disabled{% endunless %}
+            >
+            <label
+              class="dress-steps-card__variant-label{% if swatch_style == blank %} dress-steps-card__variant-label--text{% endif %}"
+              for="{{ input_id }}-color-{{ forloop.index }}"
+              style="{{ swatch_style }}"
+            >
+              <span {% if swatch_style != blank %}class="visually-hidden"{% endif %}>
+                {{- color_value -}}
+                {%- unless color_value.available %} ({{ 'products.product.sold_out' | t }}){% endunless -%}
+              </span>
+            </label>
+          </div>
+        {%- endif -%}
+      {%- endfor -%}
+    </fieldset>
   {%- endif -%}
 </div>

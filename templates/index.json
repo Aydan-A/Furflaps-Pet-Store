@@ -275,38 +275,6 @@
             "swatch_label": "Color"
           }
         },
-        "swatch_blue": {
-          "type": "swatch",
-          "settings": {
-            "label": "Blue",
-            "color": "#2e6be6",
-            "value": "Blue"
-          }
-        },
-        "swatch_green": {
-          "type": "swatch",
-          "settings": {
-            "label": "Green",
-            "color": "#3bc46a",
-            "value": "Green"
-          }
-        },
-        "swatch_yellow": {
-          "type": "swatch",
-          "settings": {
-            "label": "Yellow",
-            "color": "#f2cb2e",
-            "value": "Yellow"
-          }
-        },
-        "swatch_red": {
-          "type": "swatch",
-          "settings": {
-            "label": "Red",
-            "color": "#ef3b3b",
-            "value": "Red"
-          }
-        },
         "step_33GmAx": {
           "type": "step",
           "settings": {
@@ -336,10 +304,6 @@
       "block_order": [
         "step_zWNjhr",
         "step_G9XGPD",
-        "swatch_blue",
-        "swatch_green",
-        "swatch_yellow",
-        "swatch_red",
         "step_33GmAx"
       ],
       "name": "Dress up in steps",

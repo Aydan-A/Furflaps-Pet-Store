@@ -66,15 +66,14 @@ if (!customElements.get('dress-up-steps')) {
       selectionsFor(step) {
         return Array.from(step.el.querySelectorAll('[data-dress-product]:checked:not(:disabled)'))
           .map((input) => {
-            const variant = input.parentElement.querySelector('[data-dress-variant]');
-            const selectedVariant = variant?.selectedOptions[0];
+            const selectedVariant = input.parentElement.querySelector('[data-dress-variant]:checked');
             return {
               input,
               order: Number(input.dataset.order) || 0,
               variantId: selectedVariant?.value || input.value,
               price: Number(selectedVariant?.dataset.price || input.dataset.price) || 0,
               quantity: Number(input.dataset.quantity) || 1,
-              title: [input.dataset.title, selectedVariant?.textContent.trim()].filter(Boolean).join(' — '),
+              title: [input.dataset.title, selectedVariant?.dataset.label].filter(Boolean).join(' — '),
               image: selectedVariant?.dataset.image || input.dataset.image,
             };
           })
@@ -132,7 +131,6 @@ if (!customElements.get('dress-up-steps')) {
           // Minimum quantity is 1.
           step.el.querySelectorAll('[data-dress-quantity]').forEach((control) => {
             const input = control.parentElement.querySelector('[data-dress-product]');
-            if (input?.type === 'radio') input.dataset.quantity = '1';
             const quantity = Number(input?.dataset.quantity) || 1;
             control.querySelector('[data-dress-quantity-value]').textContent = quantity;
             control.querySelector('[data-dress-quantity-change="-1"]').disabled = quantity <= 1;
@@ -301,6 +299,8 @@ if (!customElements.get('dress-up-steps')) {
       handleChange = (event) => {
         if (!event.target.matches('[data-dress-product], [data-dress-swatch], [data-dress-variant]')) return;
 
+        if (event.target.matches('[data-dress-variant]')) this.showVariantImage(event.target);
+
         if (event.target.matches('[data-dress-product]') && event.target.checked) {
           this.pickOrder = (this.pickOrder || 0) + 1;
           event.target.dataset.order = String(this.pickOrder);
@@ -320,6 +320,14 @@ if (!customElements.get('dress-up-steps')) {
         this.render();
       };
 
+      showVariantImage(variantInput) {
+        const image = variantInput.closest('.dress-steps-card')?.querySelector('.dress-steps-card__image');
+        if (!image || !variantInput.dataset.imageLarge) return;
+
+        image.srcset = '';
+        image.src = variantInput.dataset.imageLarge;
+      }
+
       onToggle(step) {
         const isOpen = step.toggle.getAttribute('aria-expanded') === 'true';
         if (isOpen) return this.open(-1);
@@ -336,7 +344,6 @@ if (!customElements.get('dress-up-steps')) {
       onQuantity(button) {
         const card = button.closest('.dress-steps-card');
         const input = card.querySelector('[data-dress-product]');
-        if (input.type !== 'checkbox') return;
         const quantity = Number(input.dataset.quantity) || 1;
 
         input.dataset.quantity = Math.max(1, quantity + Number(button.dataset.dressQuantityChange));
