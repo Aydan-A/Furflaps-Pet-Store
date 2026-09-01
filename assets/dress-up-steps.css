@@ -302,12 +302,14 @@
 .dress-steps-card__variant { flex: 0 0 auto; }
 .dress-steps-card__variant-label {
   display: block;
-  width: 1.8rem;
-  height: 1.8rem;
-  border: .1rem solid var(--ds-pill-border);
+  width: 2.2rem;
+  height: 2.2rem;
+  border: .2rem solid transparent;
   border-radius: 50%;
+  background-clip: padding-box;
   background-position: center;
   background-size: cover;
+  box-shadow: inset 0 0 0 .1rem var(--ds-pill-border);
   cursor: pointer;
 }
 .dress-steps-card__variant-label--text {
@@ -322,11 +324,11 @@
   text-align: center;
 }
 .dress-steps-card__variant-input:checked + .dress-steps-card__variant-label {
-  box-shadow: 0 0 0 .2rem var(--ds-panel-background), 0 0 0 .35rem var(--ds-accent);
+  border-color: var(--ds-accent);
 }
 .dress-steps-card__variant-input:focus-visible + .dress-steps-card__variant-label {
   outline: .2rem solid var(--ds-text);
-  outline-offset: .4rem;
+  outline-offset: -.4rem;
 }
 /* Sold-out colours stay visible so the choice on offer is never a surprise. */
 .dress-steps-card__variant-input:disabled + .dress-steps-card__variant-label {

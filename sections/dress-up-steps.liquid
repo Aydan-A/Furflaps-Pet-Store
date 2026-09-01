@@ -86,6 +86,11 @@
             assign has_products = true
           endif
 
+          assign product_limit = block.settings.products_to_show
+          if product_limit == 0
+            assign product_limit = 50
+          endif
+
           assign is_final = false
           if step_number == step_count
             assign is_final = true
@@ -218,7 +223,7 @@
                   style="--ds-step-card-width: {{ block.settings.card_width }}px; --ds-step-card-gap: {{ block.settings.card_gap }}px; --ds-step-card-side-padding: {{ block.settings.card_side_padding }}px; --ds-step-card-alignment: {{ block.settings.card_alignment }};"
                 {% endif %}
               >
-                {%- for product in step_products limit: block.settings.products_to_show -%}
+                {%- for product in step_products limit: product_limit -%}
                   {% render 'dress-up-product-card',
                     product: product,
                     section: section,
@@ -313,7 +318,7 @@
         { "type": "text", "id": "title", "label": "Title", "default": "Pick a top you love" },
         { "type": "product_list", "id": "products", "label": "Products", "limit": 40, "info": "Pick, reorder or remove the cards shown in this step. Leave empty to fall back to the collection below." },
         { "type": "collection", "id": "collection", "label": "Fallback collection" },
-        { "type": "range", "id": "products_to_show", "label": "Products to show", "min": 2, "max": 40, "step": 1, "default": 4, "info": "Cards past the desktop column count scroll horizontally." },
+        { "type": "range", "id": "products_to_show", "label": "Products to show", "min": 0, "max": 50, "step": 1, "default": 0, "info": "0 shows every product in the collection, up to the 50 Shopify returns to a section. Cards past the desktop column count scroll horizontally." },
         { "type": "header", "content": "Card layout for this step" },
         { "type": "checkbox", "id": "custom_card_layout", "label": "Override section card layout", "default": false, "info": "Enable to arrange this step independently from the section-level Product cards settings." },
         { "type": "select", "id": "card_alignment", "label": "Desktop row alignment", "default": "space-between", "options": [{ "value": "space-between", "label": "Space between (exact outer inset)" }, { "value": "flex-start", "label": "Packed left" }, { "value": "safe center", "label": "Packed center" }, { "value": "flex-end", "label": "Packed right" }] },
@@ -322,7 +327,7 @@
         { "type": "range", "id": "card_side_padding", "label": "Left and right inset", "min": 0, "max": 80, "step": 2, "unit": "px", "default": 16 },
         { "type": "checkbox", "id": "allow_multiple", "label": "Allow several products", "default": false, "info": "Each chosen product becomes its own cart line. Use for letters or add-ons." },
         { "type": "checkbox", "id": "selection_required", "label": "Selection required to continue", "default": true, "info": "Turn off for optional extras." },
-        { "type": "checkbox", "id": "enable_quantity", "label": "Show quantity control on selected add-ons", "default": false, "info": "Only applies when Allow several products is enabled. Single-choice steps always add one item." },
+        { "type": "checkbox", "id": "enable_quantity", "label": "Show quantity control on selected products", "default": false, "info": "Displays a minus, quantity and plus control after a product is selected." },
         { "type": "header", "content": "Badges (shown when the step is closed)" },
         { "type": "text", "id": "benefit_1", "label": "Badge 1" },
         { "type": "text", "id": "benefit_2", "label": "Badge 2" },
