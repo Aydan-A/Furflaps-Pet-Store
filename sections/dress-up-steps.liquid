@@ -200,13 +200,13 @@
             <div class="dress-up-steps__actions" data-dress-actions>
               <p class="dress-up-steps__price" data-dress-price aria-live="polite">{{ 0 | money }}</p>
               {%- if is_final -%}
-                <button class="dress-up-steps__button dress-up-steps__button--cart" type="button" data-dress-checkout disabled>
+                <button class="dress-up-steps__button dress-up-steps__button--cart" type="button" data-dress-checkout aria-disabled="true">
                   <span class="dress-up-steps__button-icon svg-wrapper" aria-hidden="true">{{ 'icon-cart.svg' | inline_asset_content }}</span>
                   <span data-dress-button-label>{{ section.settings.cta_label | escape }}</span>
                   <span class="dress-up-steps__spinner" data-dress-spinner hidden></span>
                 </button>
               {%- else -%}
-                <button class="dress-up-steps__button" type="button" data-dress-save disabled>
+                <button class="dress-up-steps__button" type="button" data-dress-save aria-disabled="true">
                   {{- section.settings.button_label | escape -}}
                 </button>
               {%- endif -%}

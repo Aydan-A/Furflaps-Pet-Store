@@ -212,8 +212,9 @@
   white-space: nowrap;
   transition: opacity 150ms ease;
 }
-.dress-up-steps__button:hover:not(:disabled) { opacity: .88; }
-.dress-up-steps__button:disabled {
+.dress-up-steps__button:hover:not(:disabled):not([aria-disabled='true']) { opacity: .88; }
+.dress-up-steps__button:disabled,
+.dress-up-steps__button[aria-disabled='true'] {
   border: .1rem solid var(--ds-pill-border);
   background: var(--ds-pill-background);
   color: var(--ds-text);

@@ -121,8 +121,8 @@ if (!customElements.get('dress-up-steps')) {
 
         this.steps.forEach((step) => {
           if (step.priceEl) step.priceEl.textContent = money;
-          if (step.saveButton) step.saveButton.disabled = !this.isValid(step);
-          if (step.checkoutButton) step.checkoutButton.disabled = !ready;
+          if (step.saveButton) step.saveButton.setAttribute('aria-disabled', String(!this.isValid(step)));
+          if (step.checkoutButton) step.checkoutButton.setAttribute('aria-disabled', String(!ready));
           if (step.toggle) {
             const openable = this.canOpen(step.index);
             step.toggle.setAttribute('aria-disabled', String(!openable));
@@ -130,7 +130,7 @@ if (!customElements.get('dress-up-steps')) {
 
           // Minimum quantity is 1.
           step.el.querySelectorAll('[data-dress-quantity]').forEach((control) => {
-            const input = control.parentElement.querySelector('[data-dress-product]');
+            const input = control.closest('.dress-steps-card')?.querySelector('[data-dress-product]');
             const quantity = Number(input?.dataset.quantity) || 1;
             control.querySelector('[data-dress-quantity-value]').textContent = quantity;
             control.querySelector('[data-dress-quantity-change="-1"]').disabled = quantity <= 1;
@@ -355,7 +355,13 @@ if (!customElements.get('dress-up-steps')) {
 
       onSave(step) {
         if (!this.isValid(step)) {
-          if (step.textInput && !this.textFor(step)) step.textInput.setAttribute('aria-invalid', 'true');
+          // Point at whatever is actually missing rather than just refusing.
+          if (!this.selectionsFor(step).length) {
+            step.el.querySelector('[data-dress-product]:not(:disabled)')?.focus();
+          } else if (step.textInput && !this.textFor(step)) {
+            step.textInput.setAttribute('aria-invalid', 'true');
+            step.textInput.focus();
+          }
           return this.showError(step, this.dataset.errorMessage);
         }
 
