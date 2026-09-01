@@ -239,13 +239,15 @@
 .dress-up-steps__error[hidden] { display: none; }
 
 /* Panel and cards */
-.dress-up-steps__panel { padding: 0 0 1.2rem; }
+.dress-up-steps__panel { max-width: 100%; padding: 0 0 1.2rem; }
 .dress-up-steps__panel[hidden] { display: none; }
 /* One track for every step: cards keep their column width, so a step with
    more products than columns scrolls instead of shrinking. */
 .dress-up-steps__products {
   display: flex;
   --ds-track-inset: var(--ds-step-card-side-padding, var(--ds-card-side-padding));
+  max-width: 100%;
+  min-width: 0;
   /* The inset is container padding, not a margin on the first card, so
      scrollLeft 0 shows the first card whole, selection ring included. */
   padding: .4rem var(--ds-track-inset) .5rem;
@@ -278,7 +280,7 @@
 }
 .dress-steps-card__controls {
   display: flex;
-  min-height: 3.6rem;
+  height: 3.6rem;
   margin-top: .8rem;
   padding-inline: .6rem;
   align-items: center;
@@ -288,12 +290,16 @@
 .dress-steps-card__controls > :only-child { margin-inline: auto; }
 .dress-steps-card__variants {
   display: flex;
+  min-width: 0;
   margin: 0;
-  padding: 0;
+  padding: .4rem 0;
   gap: .6rem;
-  flex-wrap: wrap;
   border: 0;
+  overflow-x: auto;
+  scrollbar-width: none;
 }
+.dress-steps-card__variants::-webkit-scrollbar { display: none; }
+.dress-steps-card__variant { flex: 0 0 auto; }
 .dress-steps-card__variant-label {
   display: block;
   width: 1.8rem;
