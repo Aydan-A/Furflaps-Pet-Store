@@ -71,29 +71,8 @@
     {%- endunless -%}
   </label>
 
-  {%- if show_quantity and product.available -%}
-    <div class="dress-steps-card__quantity" data-dress-quantity>
-      <button
-        class="dress-steps-card__quantity-button"
-        type="button"
-        data-dress-quantity-change="-1"
-        aria-label="{{ 'products.product.quantity.decrease' | t: product: product.title | escape }}"
-      >&minus;</button>
-      <output
-        class="dress-steps-card__quantity-value"
-        data-dress-quantity-value
-        aria-live="polite"
-        aria-label="{{ 'products.product.quantity.label' | t | escape }}"
-      >1</output>
-      <button
-        class="dress-steps-card__quantity-button"
-        type="button"
-        data-dress-quantity-change="1"
-        aria-label="{{ 'products.product.quantity.increase' | t: product: product.title | escape }}"
-      >+</button>
-    </div>
-  {%- endif -%}
 
+  <div class="dress-steps-card__controls">
   {%- if color_option != blank and color_option.values.size > 1 -%}
     {%- comment -%}
       Colours come from the product's own option values, so the swatch, the
@@ -119,15 +98,18 @@
             endif
           endfor
 
-          assign swatch_style = ''
-          if color_value.swatch.image
-            assign swatch_image = color_value.swatch.image | image_url: width: 50
-            assign swatch_style = 'background-image: url(' | append: swatch_image | append: ');'
-          elsif color_value.swatch.color
-            assign swatch_style = 'background-color: rgb(' | append: color_value.swatch.color.rgb | append: ');'
-          endif
-
           assign variant_media = color_variant.featured_media | default: product.featured_media
+
+          assign swatch_style = ''
+          if color_value.swatch.color
+            assign swatch_style = 'background-color: rgb(' | append: color_value.swatch.color.rgb | append: ');'
+          elsif color_value.swatch.image
+            assign swatch_image = color_value.swatch.image | image_url: width: 60
+            assign swatch_style = 'background-image: url(' | append: swatch_image | append: ');'
+          elsif color_variant.featured_media != blank
+            assign swatch_image = color_variant.featured_media | image_url: width: 60
+            assign swatch_style = 'background-image: url(' | append: swatch_image | append: ');'
+          endif
         -%}
         {%- if color_variant != blank -%}
           <div class="dress-steps-card__variant">
@@ -160,4 +142,27 @@
       {%- endfor -%}
     </fieldset>
   {%- endif -%}
+  {%- if show_quantity and product.available -%}
+    <div class="dress-steps-card__quantity" data-dress-quantity>
+      <button
+        class="dress-steps-card__quantity-button"
+        type="button"
+        data-dress-quantity-change="-1"
+        aria-label="{{ 'products.product.quantity.decrease' | t: product: product.title | escape }}"
+      >&minus;</button>
+      <output
+        class="dress-steps-card__quantity-value"
+        data-dress-quantity-value
+        aria-live="polite"
+        aria-label="{{ 'products.product.quantity.label' | t | escape }}"
+      >1</output>
+      <button
+        class="dress-steps-card__quantity-button"
+        type="button"
+        data-dress-quantity-change="1"
+        aria-label="{{ 'products.product.quantity.increase' | t: product: product.title | escape }}"
+      >+</button>
+    </div>
+  {%- endif -%}
+  </div>
 </div>
