@@ -246,20 +246,17 @@
 .dress-up-steps__products {
   display: flex;
   --ds-track-inset: var(--ds-step-card-side-padding, var(--ds-card-side-padding));
-  padding: .4rem 0 1rem;
-  margin: -.4rem 0 0;
+  /* The inset is container padding, not a margin on the first card, so
+     scrollLeft 0 shows the first card whole, selection ring included. */
+  padding: .4rem var(--ds-track-inset) .5rem;
+  margin-top: -.4rem;
   gap: var(--ds-step-card-gap, var(--ds-card-gap));
   justify-content: var(--ds-step-card-alignment, var(--ds-card-alignment));
+  align-items: flex-start;
   overflow-x: auto;
   overscroll-behavior-inline: contain;
-  scroll-snap-type: inline proximity;
+  scroll-padding-inline: var(--ds-track-inset);
   scrollbar-width: thin;
-}
-.dress-up-steps__products > .dress-steps-card:first-child {
-  margin-inline-start: var(--ds-track-inset);
-}
-.dress-up-steps__products > .dress-steps-card:last-child {
-  margin-inline-end: var(--ds-track-inset);
 }
 .dress-steps-card {
   position: relative;
@@ -268,12 +265,12 @@
     calc((100% - (var(--ds-columns) - 1) * var(--ds-step-card-gap, var(--ds-card-gap))) / var(--ds-columns))
   );
   min-width: 0;
-  scroll-snap-align: start;
 }
 .dress-steps-card__controls {
   display: flex;
   min-height: 3.6rem;
-  margin-top: 1rem;
+  margin-top: .8rem;
+  padding-inline: .6rem;
   align-items: center;
   justify-content: space-between;
   gap: .8rem;
@@ -437,7 +434,6 @@
   .dress-up-steps__products {
     --ds-track-inset: var(--ds-mobile-card-side-padding);
     gap: var(--ds-mobile-card-gap);
-    scroll-snap-type: inline mandatory;
   }
   .dress-steps-card { flex-basis: min(60vw, var(--ds-mobile-card-width)); }
 }
