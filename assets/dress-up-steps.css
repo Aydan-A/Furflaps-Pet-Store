@@ -239,7 +239,7 @@
 .dress-up-steps__error[hidden] { display: none; }
 
 /* Panel and cards */
-.dress-up-steps__panel { padding: 0 0 2rem; }
+.dress-up-steps__panel { padding: 0 0 1.2rem; }
 .dress-up-steps__panel[hidden] { display: none; }
 /* One track for every step: cards keep their column width, so a step with
    more products than columns scrolls instead of shrinking. */
@@ -257,7 +257,17 @@
   overscroll-behavior-inline: contain;
   scroll-padding-inline: var(--ds-track-inset);
   scrollbar-width: thin;
+  scrollbar-color: var(--ds-pill-border) transparent;
 }
+/* A slim rounded indicator instead of the raw OS bar, matching the other
+   scrollers in this theme. */
+.dress-up-steps__products::-webkit-scrollbar { height: .6rem; }
+.dress-up-steps__products::-webkit-scrollbar-track { background: transparent; }
+.dress-up-steps__products::-webkit-scrollbar-thumb {
+  border-radius: 99rem;
+  background: var(--ds-pill-border);
+}
+.dress-up-steps__products::-webkit-scrollbar-thumb:hover { background: var(--ds-text); }
 .dress-steps-card {
   position: relative;
   flex: 0 0 min(
@@ -427,7 +437,7 @@
   .dress-up-steps__field { margin-left: 3.6rem; }
   .dress-up-steps__input { width: 100%; }
   .dress-up-steps__actions { width: 100%; margin-left: 3.6rem; justify-content: space-between; }
-  .dress-up-steps__panel { padding: 0 0 1.6rem; }
+  .dress-up-steps__panel { padding: 0 0 1rem; }
   .dress-up-steps__error { padding: 0 1.6rem 1.4rem; }
 
   /* Cards keep a comfortable tap size instead of shrinking to fit. */
