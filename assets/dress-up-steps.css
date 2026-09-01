@@ -177,15 +177,22 @@
 }
 .dress-up-steps__benefit svg { width: 1rem; height: 1rem; }
 
-/* Price and step button. Header controls belong to the open step only; they
-   start hidden so the closed rows never flash before the script runs. */
-.dress-up-steps__actions,
+/* The price and step button stay on every row, open or closed. The editing
+   controls belong to the open step only, and start hidden so the closed rows
+   never flash them before the script runs. */
+.dress-up-steps__actions {
+  display: flex;
+  margin-left: auto;
+  align-items: center;
+  gap: 1.6rem;
+}
 .dress-up-steps__swatches,
 .dress-up-steps__field { display: none; }
-.dress-up-steps__step--open .dress-up-steps__actions { display: flex; margin-left: auto; align-items: center; gap: 1.6rem; }
 .dress-up-steps__step--open .dress-up-steps__swatches { display: flex; }
 .dress-up-steps__step--open .dress-up-steps__field { display: flex; }
 .dress-up-steps__step--open .dress-up-steps__benefits { display: none; }
+/* Badges keep the right edge on a closed row; the actions sit beside them. */
+.dress-up-steps__step--closed .dress-up-steps__actions { margin-left: 1.6rem; }
 .dress-up-steps__price { margin: 0; font-size: var(--ds-price-size); font-weight: 700; white-space: nowrap; }
 .dress-up-steps__button {
   display: inline-flex;
@@ -207,10 +214,11 @@
 }
 .dress-up-steps__button:hover:not(:disabled) { opacity: .88; }
 .dress-up-steps__button:disabled {
-  background: var(--ds-pill-border);
+  border: .1rem solid var(--ds-pill-border);
+  background: var(--ds-pill-background);
   color: var(--ds-text);
   cursor: not-allowed;
-  opacity: .6;
+  opacity: .75;
 }
 .dress-up-steps__button-icon svg { width: 1.6rem; height: 1.6rem; }
 .dress-up-steps__button.is-loading { pointer-events: none; }
