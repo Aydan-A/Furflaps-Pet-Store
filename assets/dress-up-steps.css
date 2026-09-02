@@ -40,6 +40,8 @@
 }
 .dress-up-steps__toggle {
   display: inline-flex;
+  flex: 0 1 auto;
+  min-width: 0;
   padding: 0;
   align-items: center;
   gap: 1.2rem;
@@ -128,10 +130,9 @@
 }
 
 /* Personalization field */
-.dress-up-steps__field { position: relative; display: flex; min-width: 0; align-items: center; }
+.dress-up-steps__field { position: relative; display: flex; flex: 0 1 19rem; min-width: 9rem; align-items: center; }
 .dress-up-steps__input {
-  width: 19rem;
-  max-width: 100%;
+  width: 100%;
   min-height: 4rem;
   padding: 0 4.6rem 0 1.6rem;
   border: .1rem solid transparent;
@@ -186,11 +187,12 @@
 .dress-up-steps__field { display: none; }
 .dress-up-steps__step--open .dress-up-steps__actions {
   display: flex;
+  flex: 0 0 auto;
   margin-left: auto;
   align-items: center;
   gap: 1.6rem;
 }
-.dress-up-steps__step--open .dress-up-steps__swatches { display: flex; }
+.dress-up-steps__step--open .dress-up-steps__swatches { display: flex; flex: 0 1 auto; }
 .dress-up-steps__step--open .dress-up-steps__field { display: flex; }
 .dress-up-steps__step--open .dress-up-steps__benefits { display: none; }
 .dress-up-steps__price { margin: 0; font-size: var(--ds-price-size); font-weight: 700; white-space: nowrap; }
@@ -436,7 +438,7 @@
 
 @media screen and (max-width: 989px) {
   .dress-up-steps__products { --ds-columns: 3; }
-  .dress-up-steps__input { width: 16rem; }
+  .dress-up-steps__field { flex-basis: 16rem; }
 }
 
 /* Checkbox steps read as multi-select: square check stays, ring is the same. */
@@ -452,7 +454,7 @@
   .dress-up-steps__benefits { margin-left: 3.6rem; }
   .dress-up-steps__swatches,
   .dress-up-steps__field { margin-left: 3.6rem; }
-  .dress-up-steps__input { width: 100%; }
+  .dress-up-steps__field { flex-basis: auto; }
   .dress-up-steps__actions { width: 100%; margin-left: 3.6rem; justify-content: space-between; }
   .dress-up-steps__panel { padding: 0 0 1rem; }
   .dress-up-steps__error { padding: 0 1.6rem 1.4rem; }
