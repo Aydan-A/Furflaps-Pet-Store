@@ -430,14 +430,20 @@ if (!customElements.get('dress-up-steps')) {
         this.render();
       }
 
-      // Page by whole cards, so the track never rests on a half-visible card.
+      // Move to the next page boundary rather than by a fixed distance. The
+      // last page is short whenever the cards do not divide evenly, so a plain
+      // scrollBy would step back from it by a full page and skip one.
       onScrollButton(step, direction) {
         const card = step.track?.querySelector('[data-dress-card]');
         if (!card) return;
+
         const gap = parseFloat(getComputedStyle(step.track).columnGap) || 0;
         const stride = card.offsetWidth + gap;
-        const perPage = Math.max(1, Math.round(step.track.clientWidth / stride));
-        step.track.scrollBy({ left: direction * stride * perPage, behavior: 'smooth' });
+        const page = stride * Math.max(1, Math.round(step.track.clientWidth / stride));
+        const from = step.track.scrollLeft;
+        const target = direction > 0 ? Math.ceil((from + 1) / page) : Math.floor((from - 1) / page);
+
+        step.track.scrollTo({ left: Math.max(0, target) * page, behavior: 'smooth' });
       }
 
       onSave(step) {
