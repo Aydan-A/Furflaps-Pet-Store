@@ -239,7 +239,11 @@
             "enable_quantity": true,
             "layout": "grid",
             "cards_per_row": 4,
-            "enable_personalization": false
+            "enable_personalization": false,
+            "personalization_label": "Name",
+            "personalization_placeholder": "Enter a name",
+            "personalization_max_chars": 12,
+            "personalization_required": true
           }
         },
         "step_G9XGPD": {
@@ -277,7 +281,11 @@
             "enable_quantity": true,
             "layout": "grid",
             "cards_per_row": 4,
-            "enable_personalization": false
+            "enable_personalization": false,
+            "personalization_label": "Name",
+            "personalization_placeholder": "Enter a name",
+            "personalization_max_chars": 12,
+            "personalization_required": true
           }
         }
       },
