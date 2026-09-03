@@ -41,6 +41,9 @@ if (!customElements.get('dress-up-steps')) {
           return step;
         });
 
+        this.removeEventListener('click', this.handleClick);
+        this.removeEventListener('input', this.handleInput);
+        window.removeEventListener('resize', this.handleResize);
         this.addEventListener('click', this.handleClick);
         this.addEventListener('input', this.handleInput);
         window.addEventListener('resize', this.handleResize);
@@ -124,6 +127,7 @@ if (!customElements.get('dress-up-steps')) {
 
       isValid(step) {
         if (!this.selectionsFor(step).length) return !step.required;
+
         if (step.textInput?.hasAttribute('data-text-required') && !this.textFor(step)) return false;
         return true;
       }
@@ -166,7 +170,7 @@ if (!customElements.get('dress-up-steps')) {
           step.el.classList.toggle('ds-step--open', isOpen);
 
           if (step.priceEl) step.priceEl.textContent = money;
-          step.toggle.setAttribute('aria-disabled', String(!this.canOpen(step.index)));
+          step.toggle?.setAttribute('aria-disabled', String(!this.canOpen(step.index)));
           if (step.saveButton) step.saveButton.setAttribute('aria-disabled', String(!this.isValid(step)));
           if (step.checkoutButton) step.checkoutButton.setAttribute('aria-disabled', String(!ready));
 
@@ -182,7 +186,7 @@ if (!customElements.get('dress-up-steps')) {
       renderCard(card, atLimit) {
         card.el.classList.toggle('ds-card--selected', card.selected);
         card.el.classList.toggle('ds-card--blocked', Boolean(atLimit) && !card.selected);
-        card.pickButton.setAttribute('aria-pressed', String(card.selected));
+        card.pickButton?.setAttribute('aria-pressed', String(card.selected));
         if (card.quantityValue) card.quantityValue.textContent = card.quantity;
 
         card.optionButtons.forEach((button) => {
@@ -203,6 +207,8 @@ if (!customElements.get('dress-up-steps')) {
       }
 
       renderPill(step, isOpen, selections) {
+        if (!step.pill || !step.pillText) return;
+
         const text = this.textFor(step);
         const parts = selections.map((card) => {
           const variant = this.variantFor(card);
@@ -219,8 +225,10 @@ if (!customElements.get('dress-up-steps')) {
         // A step can be summarised by its text alone, with nothing picked yet.
         const first = selections[0];
         const image = first?.image;
-        step.pillImage.hidden = !image;
-        if (image) step.pillImage.src = image;
+        if (step.pillImage) {
+          step.pillImage.hidden = !image;
+          if (image) step.pillImage.src = image;
+        }
       }
 
       renderArrows(step) {
@@ -264,8 +272,8 @@ if (!customElements.get('dress-up-steps')) {
       open(index) {
         this.steps.forEach((step) => {
           const isOpen = step.index === index;
-          step.panel.hidden = !isOpen;
-          step.toggle.setAttribute('aria-expanded', String(isOpen));
+          if (step.panel) step.panel.hidden = !isOpen;
+          step.toggle?.setAttribute('aria-expanded', String(isOpen));
           if (isOpen) this.clearError(step);
         });
       }
@@ -375,7 +383,7 @@ if (!customElements.get('dress-up-steps')) {
           if (step.max === 1) {
             selected.forEach((other) => (other.selected = false));
           } else if (selected.length >= step.max) {
-            return this.showError(step, this.dataset.limitMessage);
+            return this.showError(step, (this.dataset.limitMessage || '').replace('{max}', step.max));
           }
           card.selected = true;
           card.order = ++this.pickCounter;

@@ -278,7 +278,7 @@
     { "type": "text", "id": "cta_label", "label": "Final button", "default": "Go to cart" },
     { "type": "text", "id": "error_message", "label": "Incomplete step message", "default": "Almost there! Make a pick here and we'll keep going." },
     { "type": "text", "id": "locked_message", "label": "Locked step message", "default": "Let's finish the step above first, then this one opens up." },
-    { "type": "text", "id": "limit_message", "label": "Selection limit message", "default": "That's the maximum here. Remove one to swap it out.", "info": "Shown when a customer picks more than a step allows." },
+    { "type": "text", "id": "limit_message", "label": "Selection limit message", "default": "You can pick up to {max} here. Remove one to swap it out.", "info": "Shown when a customer picks more than a step allows. {max} is replaced with that step's own limit." },
 
     { "type": "header", "content": "Product cards" },
     { "type": "range", "id": "cards_per_row", "label": "Cards in view", "min": 2, "max": 8, "step": 1, "default": 4, "info": "Default for every step. Each step can override it. Cards always fit whole — a step never shows a half card." },
@@ -332,7 +332,7 @@
         { "type": "range", "id": "products_to_show", "label": "Products to show", "min": 0, "max": 50, "step": 1, "default": 0, "info": "0 shows every product, up to the 50 Shopify returns to a section." },
 
         { "type": "header", "content": "Choices" },
-        { "type": "range", "id": "max_selections", "label": "Products a customer can pick", "min": 1, "max": 12, "step": 1, "default": 1, "info": "1 keeps this step single choice. Each pick keeps its own options and quantity, and becomes its own cart line." },
+        { "type": "range", "id": "max_selections", "label": "Products a customer can pick", "min": 1, "max": 12, "step": 1, "default": 1, "info": "How many products this step accepts at once. 1 keeps it single choice, and picking another swaps it. Above 1, a customer must remove one before picking past the limit. Each pick keeps its own options and quantity, and becomes its own cart line." },
         { "type": "checkbox", "id": "selection_required", "label": "Selection required to continue", "default": true, "info": "Turn off for optional extras." },
         { "type": "checkbox", "id": "show_options", "label": "Show product options (size, color, ...)", "default": true, "info": "Option values and prices come straight from each product's variants." },
         { "type": "text", "id": "option_names", "label": "Options to show", "info": "Comma separated, for example: Size. Leave empty to show every option a product has." },
