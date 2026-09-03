@@ -23,7 +23,7 @@
     --ff-mobile-section-padding-top: {{ section.settings.mobile_padding_top }}px;
     --ff-mobile-section-padding-inline: {{ section.settings.mobile_padding_inline }}px;
     --ff-mobile-section-padding-bottom: {{ section.settings.mobile_padding_bottom }}px;
-    --ff-desktop-media-ratio: {{ section.settings.desktop_media_ratio }};
+    --ff-desktop-section-ratio: {{ section.settings.desktop_section_ratio }};
     --ff-mobile-media-ratio: {{ section.settings.mobile_media_ratio }};
     --ff-content-ratio: {{ section.settings.content_width }}fr;
     --ff-media-ratio: {{ 100 | minus: section.settings.content_width }}fr;
@@ -232,11 +232,11 @@
     },
     { "type": "header", "content": "Desktop layout" },
     {
-      "type": "select", "id": "desktop_media_ratio", "label": "Media ratio", "default": "3 / 2",
+      "type": "select", "id": "desktop_section_ratio", "label": "Section ratio", "default": "11 / 4",
       "options": [
-        { "value": "16 / 9", "label": "Wide" },
-        { "value": "3 / 2", "label": "Landscape" },
-        { "value": "4 / 3", "label": "Classic" }
+        { "value": "3 / 1", "label": "Compact" },
+        { "value": "11 / 4", "label": "Standard" },
+        { "value": "5 / 2", "label": "Tall" }
       ]
     },
     { "type": "range", "id": "content_width", "label": "Content panel width", "min": 30, "max": 70, "step": 1, "unit": "%", "default": 50 },

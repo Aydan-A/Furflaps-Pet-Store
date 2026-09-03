@@ -8,6 +8,7 @@
   grid-template-columns: minmax(0, var(--ff-content-ratio)) minmax(0, var(--ff-media-ratio));
   gap: var(--ff-panel-gap);
   align-items: stretch;
+  aspect-ratio: var(--ff-desktop-section-ratio);
 }
 
 .furflaps-hero__content,
@@ -205,7 +206,6 @@
 
 .furflaps-hero__media {
   position: relative;
-  aspect-ratio: var(--ff-desktop-media-ratio);
   background: var(--ff-media-background);
 }
 
@@ -240,6 +240,7 @@
   .furflaps-hero__grid {
     grid-template-columns: minmax(0, 1fr);
     gap: var(--ff-mobile-panel-gap);
+    aspect-ratio: auto;
   }
 
   .furflaps-hero__content,
