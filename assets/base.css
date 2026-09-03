@@ -2404,7 +2404,7 @@ input[type='checkbox'] {
       'heading search icons'
       'navigation navigation navigation';
     grid-template-columns: auto 1fr auto;
-    column-gap: 2rem;
+    column-gap: clamp(1.2rem, 2vw, 2.4rem);
     row-gap: var(--header-row-gap, 1.2rem);
   }
 
@@ -2414,7 +2414,7 @@ input[type='checkbox'] {
     align-self: center;
     width: 100%;
     max-width: var(--header-search-max-width, 52rem);
-    margin: 0 auto;
+    margin: 0;
   }
 
   .header__search-inline .field:before,
@@ -2434,6 +2434,14 @@ input[type='checkbox'] {
     margin: 0;
     box-shadow: none;
     outline: none;
+    height: 4rem;
+    min-height: 4rem;
+    padding-top: 0.8rem;
+    padding-bottom: 0.8rem;
+  }
+
+  .header__search-inline .field__label {
+    top: 1rem;
   }
 
   .header__search-inline .field__input:focus,

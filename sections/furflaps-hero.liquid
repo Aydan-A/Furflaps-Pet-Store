@@ -23,9 +23,8 @@
     --ff-mobile-section-padding-top: {{ section.settings.mobile_padding_top }}px;
     --ff-mobile-section-padding-inline: {{ section.settings.mobile_padding_inline }}px;
     --ff-mobile-section-padding-bottom: {{ section.settings.mobile_padding_bottom }}px;
-    --ff-desktop-height: {{ section.settings.desktop_height }}px;
-    --ff-mobile-content-height: {{ section.settings.mobile_content_height }}px;
-    --ff-mobile-media-height: {{ section.settings.mobile_media_height }}px;
+    --ff-desktop-media-ratio: {{ section.settings.desktop_media_ratio }};
+    --ff-mobile-media-ratio: {{ section.settings.mobile_media_ratio }};
     --ff-content-ratio: {{ section.settings.content_width }}fr;
     --ff-media-ratio: {{ 100 | minus: section.settings.content_width }}fr;
     --ff-panel-gap: {{ section.settings.panel_gap }}px;
@@ -81,6 +80,7 @@
     --ff-media-background: {{ section.settings.media_background }};
     --ff-image-fit: {{ section.settings.image_fit }};
     --ff-image-position: {{ section.settings.image_position }};
+    --ff-mobile-image-position: {{ section.settings.mobile_image_position }};
   }
 {%- endstyle -%}
 
@@ -231,7 +231,14 @@
       ]
     },
     { "type": "header", "content": "Desktop layout" },
-    { "type": "range", "id": "desktop_height", "label": "Height", "min": 360, "max": 900, "step": 10, "unit": "px", "default": 600 },
+    {
+      "type": "select", "id": "desktop_media_ratio", "label": "Media ratio", "default": "3 / 2",
+      "options": [
+        { "value": "16 / 9", "label": "Wide" },
+        { "value": "3 / 2", "label": "Landscape" },
+        { "value": "4 / 3", "label": "Classic" }
+      ]
+    },
     { "type": "range", "id": "content_width", "label": "Content panel width", "min": 30, "max": 70, "step": 1, "unit": "%", "default": 50 },
     { "type": "range", "id": "panel_gap", "label": "Panel gap", "min": 0, "max": 40, "step": 1, "unit": "px", "default": 16 },
     { "type": "range", "id": "panel_radius", "label": "Panel corner radius", "min": 0, "max": 60, "step": 1, "unit": "px", "default": 16 },
@@ -255,8 +262,24 @@
       ]
     },
     { "type": "header", "content": "Mobile layout" },
-    { "type": "range", "id": "mobile_content_height", "label": "Content panel height", "min": 280, "max": 700, "step": 10, "unit": "px", "default": 340 },
-    { "type": "range", "id": "mobile_media_height", "label": "Media panel height", "min": 240, "max": 700, "step": 10, "unit": "px", "default": 320 },
+    {
+      "type": "select", "id": "mobile_media_ratio", "label": "Media ratio", "default": "4 / 3",
+      "options": [
+        { "value": "3 / 2", "label": "Landscape" },
+        { "value": "4 / 3", "label": "Classic" },
+        { "value": "1 / 1", "label": "Square" }
+      ]
+    },
+    {
+      "type": "select", "id": "mobile_image_position", "label": "Image focal point", "default": "center center",
+      "options": [
+        { "value": "left center", "label": "Left" },
+        { "value": "center center", "label": "Center" },
+        { "value": "right center", "label": "Right" },
+        { "value": "center top", "label": "Top" },
+        { "value": "center bottom", "label": "Bottom" }
+      ]
+    },
     { "type": "range", "id": "mobile_panel_gap", "label": "Panel gap", "min": 0, "max": 30, "step": 1, "unit": "px", "default": 12 },
     { "type": "range", "id": "mobile_panel_radius", "label": "Panel corner radius", "min": 0, "max": 40, "step": 1, "unit": "px", "default": 14 },
     { "type": "range", "id": "mobile_content_padding_vertical", "label": "Content vertical padding", "min": 16, "max": 100, "step": 2, "unit": "px", "default": 38 },
@@ -335,9 +358,9 @@
         { "value": "right", "label": "Right" }
       ]
     },
-    { "type": "range", "id": "pagination_offset_vertical", "label": "Top offset", "min": 10, "max": 100, "step": 2, "unit": "px", "default": 44 },
+    { "type": "range", "id": "pagination_offset_vertical", "label": "Bottom offset", "min": 10, "max": 100, "step": 2, "unit": "px", "default": 28 },
     { "type": "range", "id": "pagination_offset_horizontal", "label": "Side offset", "min": 10, "max": 100, "step": 2, "unit": "px", "default": 44 },
-    { "type": "range", "id": "mobile_pagination_offset_vertical", "label": "Mobile top offset", "min": 10, "max": 80, "step": 2, "unit": "px", "default": 28 },
+    { "type": "range", "id": "mobile_pagination_offset_vertical", "label": "Mobile bottom offset", "min": 10, "max": 80, "step": 2, "unit": "px", "default": 22 },
     { "type": "range", "id": "mobile_pagination_offset_horizontal", "label": "Mobile side offset", "min": 10, "max": 80, "step": 2, "unit": "px", "default": 24 },
     { "type": "range", "id": "indicator_width", "label": "Indicator width", "min": 12, "max": 60, "step": 1, "unit": "px", "default": 30 },
     { "type": "range", "id": "indicator_height", "label": "Indicator height", "min": 3, "max": 16, "step": 1, "unit": "px", "default": 6 },
