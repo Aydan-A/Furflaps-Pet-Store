@@ -85,12 +85,24 @@
                   {%- liquid
                     assign selected_variant = product.selected_or_first_available_variant
                     assign color_value = blank
+                    assign color_swatch_style = blank
                     assign count_value = blank
 
                     for product_option in product.options_with_values
                       assign option_name = product_option.name | downcase
                       if option_name == 'color' or option_name == 'colour'
                         assign color_value = selected_variant.options[forloop.index0]
+                        for option_value in product_option.values
+                          if option_value == color_value
+                            if option_value.swatch.color
+                              assign color_swatch_style = 'background-color: rgb(' | append: option_value.swatch.color.rgb | append: ');'
+                            elsif option_value.swatch.image
+                              assign color_swatch_url = option_value.swatch.image | image_url: width: 60
+                              assign color_swatch_style = 'background-image: url(' | append: color_swatch_url | append: ');'
+                            endif
+                            break
+                          endif
+                        endfor
                       elsif option_name == 'count' or option_name == 'quantity' or option_name == 'qty'
                         assign count_value = selected_variant.options[forloop.index0]
                       endif
@@ -98,6 +110,11 @@
 
                     if color_value == blank
                       assign color_value = product.metafields.custom.color.value | default: product.metafields.custom.colour.value
+                    endif
+
+                    if color_swatch_style == blank and color_value != blank and selected_variant.featured_media != blank
+                      assign color_swatch_url = selected_variant.featured_media | image_url: width: 60
+                      assign color_swatch_style = 'background-image: url(' | append: color_swatch_url | append: ');'
                     endif
 
                     if count_value == blank
@@ -121,7 +138,12 @@
                         <dl class="product-feature-tabs__details">
                           <div class="product-feature-tabs__detail">
                             <dt>Color</dt>
-                            <dd>{{ color_value | default: '—' | escape }}</dd>
+                            <dd>
+                              {%- if color_swatch_style != blank -%}
+                                <span class="product-feature-tabs__swatch" style="{{ color_swatch_style }}" aria-hidden="true"></span>
+                              {%- endif -%}
+                              <span>{{ color_value | default: '—' | escape }}</span>
+                            </dd>
                           </div>
                           <div class="product-feature-tabs__detail">
                             <dt>Count</dt>
