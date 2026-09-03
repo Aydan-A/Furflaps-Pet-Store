@@ -229,7 +229,6 @@
           "type": "step",
           "settings": {
             "title": "Pick a collar",
-            "subtitle": "Choose up to 2 collars, then a size for each.",
             "products": [],
             "collection": "collars",
             "products_to_show": 8,
@@ -250,7 +249,6 @@
           "type": "step",
           "settings": {
             "title": "Match it with letters",
-            "subtitle": "Spell a name with letter charms.",
             "products": [],
             "collection": "letters",
             "products_to_show": 0,
@@ -271,7 +269,6 @@
           "type": "step",
           "settings": {
             "title": "Add fun extras",
-            "subtitle": "Optional finishing touches.",
             "products": [],
             "collection": "icons",
             "products_to_show": 8,
@@ -300,9 +297,6 @@
         "heading": "Pick - Pair - Play!",
         "button_label": "Save and continue",
         "cta_label": "Go to cart",
-        "edit_label": "Edit",
-        "total_label": "Total",
-        "empty_summary": "Nothing added",
         "error_message": "Almost there! Make a pick here and we'll keep going.",
         "locked_message": "Let's finish the step above first, then this one opens up.",
         "limit_message": "That's the maximum here. Remove one to swap it out.",

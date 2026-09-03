@@ -52,7 +52,6 @@
   data-error-message="{{ section.settings.error_message | escape }}"
   data-locked-message="{{ section.settings.locked_message | escape }}"
   data-limit-message="{{ section.settings.limit_message | escape }}"
-  data-empty-summary="{{ section.settings.empty_summary | escape }}"
 >
   <div class="dress-up-steps__inner">
     {%- if section.settings.eyebrow != blank or section.settings.heading != blank -%}
@@ -120,21 +119,26 @@
               data-dress-toggle
             >
               <span class="ds-step__number" aria-hidden="true">{{ step_number }}</span>
-              <span class="ds-step__titles">
-                <span class="ds-step__title">{{ block.settings.title | escape }}</span>
-                {%- if block.settings.subtitle != blank -%}
-                  <span class="ds-step__subtitle">{{ block.settings.subtitle | escape }}</span>
-                {%- endif -%}
-              </span>
+              <span class="ds-step__title">{{ block.settings.title | escape }}</span>
             </button>
 
-            <div class="ds-step__summary" data-dress-summary hidden></div>
+            {%- comment -%}
+              A saved step collapses to this pill. Its close button reopens the
+              step for editing, so a closed row carries one control, not two.
+            {%- endcomment -%}
+            <p class="ds-step__pill" data-dress-pill hidden>
+              <img class="ds-step__pill-image" alt="" width="20" height="20" data-dress-pill-image hidden>
+              <span class="ds-step__pill-text" data-dress-pill-text></span>
+              <button class="ds-step__pill-remove" type="button" data-dress-edit>
+                <span class="visually-hidden">{{ 'customer.addresses.edit' | t }}: {{ block.settings.title | escape }}</span>
+                <svg viewBox="0 0 10 10" aria-hidden="true" focusable="false">
+                  <path d="M1 1l8 8M9 1l-8 8" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+                </svg>
+              </button>
+            </p>
 
             <div class="ds-step__actions">
-              <p class="ds-step__price">
-                <span class="ds-step__price-label">{{ section.settings.total_label | escape }}</span>
-                <span class="ds-step__price-value" data-dress-price aria-live="polite">{{ 0 | money }}</span>
-              </p>
+              <p class="ds-step__price" data-dress-price aria-live="polite">{{ 0 | money }}</p>
 
               {%- if is_final -%}
                 <button class="ds-button ds-button--primary" type="button" data-dress-checkout aria-disabled="true">
@@ -147,10 +151,6 @@
                   {{- section.settings.button_label | escape -}}
                 </button>
               {%- endif -%}
-
-              <button class="ds-button ds-button--ghost" type="button" data-dress-edit hidden>
-                {{- section.settings.edit_label | escape -}}
-              </button>
             </div>
           </div>
 
@@ -236,9 +236,6 @@
     { "type": "header", "content": "Labels" },
     { "type": "text", "id": "button_label", "label": "Step button", "default": "Save and continue" },
     { "type": "text", "id": "cta_label", "label": "Final button", "default": "Go to cart" },
-    { "type": "text", "id": "edit_label", "label": "Edit button", "default": "Edit" },
-    { "type": "text", "id": "total_label", "label": "Price label", "default": "Total" },
-    { "type": "text", "id": "empty_summary", "label": "Empty step summary", "default": "Nothing added" },
     { "type": "text", "id": "error_message", "label": "Incomplete step message", "default": "Almost there! Make a pick here and we'll keep going." },
     { "type": "text", "id": "locked_message", "label": "Locked step message", "default": "Let's finish the step above first, then this one opens up." },
     { "type": "text", "id": "limit_message", "label": "Selection limit message", "default": "That's the maximum here. Remove one to swap it out.", "info": "Shown when a customer picks more than a step allows." },
@@ -287,7 +284,6 @@
       "name": "Step",
       "settings": [
         { "type": "text", "id": "title", "label": "Title", "default": "Pick a collar you love" },
-        { "type": "text", "id": "subtitle", "label": "Subtitle", "info": "Short helper line under the title." },
 
         { "type": "header", "content": "Products" },
         { "type": "product_list", "id": "products", "label": "Products", "limit": 50, "info": "Pick, reorder or remove the cards shown in this step. Leave empty to use the collection below." },
@@ -321,7 +317,6 @@
           "type": "step",
           "settings": {
             "title": "Pick a collar",
-            "subtitle": "Choose up to 2 collars and a size for each.",
             "max_selections": 2,
             "layout": "grid",
             "cards_per_row": 4
@@ -331,7 +326,6 @@
           "type": "step",
           "settings": {
             "title": "Match it with letters",
-            "subtitle": "Spell a name with letter charms.",
             "max_selections": 12,
             "layout": "carousel",
             "cards_per_row": 6,
@@ -343,7 +337,6 @@
           "type": "step",
           "settings": {
             "title": "Add fun extras",
-            "subtitle": "Optional finishing touches.",
             "max_selections": 6,
             "selection_required": false,
             "layout": "grid",

@@ -86,65 +86,66 @@
   font-size: 1.2rem;
   font-weight: 700;
 }
-.ds-step__titles { display: grid; gap: .2rem; min-width: 0; }
-.ds-step__title { font-size: var(--ds-step-title-size); font-weight: 700; line-height: 1.25; }
-.ds-step__subtitle { color: var(--ds-muted); font-size: 1.3rem; line-height: 1.3; }
-/* A saved step keeps its number, tinted, so progress is readable at a glance. */
-.ds-step--done .ds-step__number { background: var(--ds-accent); color: var(--ds-accent-text); }
-
-/* Collapsed summary */
-.ds-step__summary {
-  display: flex;
-  flex: 1 1 auto;
+.ds-step__title {
   min-width: 0;
+  font-size: var(--ds-step-title-size);
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+/* Collapsed summary pill */
+.ds-step__pill {
+  display: inline-flex;
+  max-width: 38rem;
+  min-width: 0;
+  margin: 0;
+  padding: .5rem .6rem .5rem 1rem;
   align-items: center;
   gap: .6rem;
-}
-.ds-step__summary[hidden] { display: none; }
-.ds-step__thumb {
-  width: 3.2rem;
-  height: 3.2rem;
-  flex: 0 0 auto;
-  border-radius: .8rem;
-  background: var(--ds-media);
-  object-fit: cover;
-}
-.ds-step__chip {
-  min-width: 0;
-  padding: .5rem 1.2rem;
   border-radius: var(--ds-radius-control);
   background: var(--ds-accent);
   color: var(--ds-accent-text);
   font-size: 1.3rem;
   font-weight: 600;
-  line-height: 1.3;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  line-height: 1.2;
 }
-.ds-step__chip--empty {
-  border: .1rem solid var(--ds-border);
-  background: transparent;
-  color: var(--ds-muted);
+.ds-step__pill[hidden] { display: none; }
+.ds-step__pill-text { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ds-step__pill-image {
+  width: 2rem;
+  height: 2rem;
+  flex: 0 0 auto;
+  border-radius: 50%;
+  background: var(--ds-media);
+  object-fit: cover;
 }
+.ds-step__pill-image[hidden] { display: none; }
+.ds-step__pill-remove {
+  display: grid;
+  width: 2rem;
+  height: 2rem;
+  flex: 0 0 auto;
+  place-items: center;
+  border: 0;
+  border-radius: 50%;
+  background: none;
+  color: inherit;
+  cursor: pointer;
+}
+.ds-step__pill-remove svg { width: 1rem; height: 1rem; }
+.ds-step__pill-remove:hover { background: rgba(0, 0, 0, .12); }
 
-/* Price and CTA */
-.ds-step__actions {
+/* The open step owns the price and the button. They start hidden so a closed
+   row never flashes its controls before the script runs. */
+.ds-step__actions { display: none; }
+.ds-step--open .ds-step__actions {
   display: flex;
   flex: 0 0 auto;
   margin-left: auto;
   align-items: center;
   gap: 1.6rem;
 }
-.ds-step__price { display: grid; margin: 0; gap: .1rem; text-align: right; }
-.ds-step__price-label {
-  color: var(--ds-muted);
-  font-size: 1.1rem;
-  font-weight: 600;
-  letter-spacing: .06em;
-  text-transform: uppercase;
-}
-.ds-step__price-value { font-size: var(--ds-price-size); font-weight: 700; white-space: nowrap; }
+.ds-step__price { margin: 0; font-size: var(--ds-price-size); font-weight: 700; white-space: nowrap; }
 
 .ds-button {
   display: inline-flex;
@@ -260,50 +261,43 @@
   align-items: stretch;
   flex-wrap: wrap;
 }
+/* The overflow is clipped, not scrollable: on desktop the arrows move the
+   track, so there is no scrollbar and nothing spills past the step. The
+   padding keeps focus rings off the clipped edge. */
 .ds-track[data-layout='carousel'] {
   flex-wrap: nowrap;
-  padding-bottom: 1rem;
-  overflow-x: auto;
+  padding: .4rem;
+  margin: -.4rem;
+  overflow: hidden;
   scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
   overscroll-behavior-inline: contain;
-  scrollbar-width: thin;
-  scrollbar-color: var(--ds-border) transparent;
 }
-.ds-track[data-layout='carousel']::-webkit-scrollbar { height: .6rem; }
-.ds-track[data-layout='carousel']::-webkit-scrollbar-track { background: transparent; }
-.ds-track[data-layout='carousel']::-webkit-scrollbar-thumb { border-radius: var(--ds-radius-control); background: var(--ds-border); }
 
 .ds-card {
   display: flex;
   flex: 0 0 calc((100% - (var(--ds-visible) - 1) * var(--ds-gap)) / var(--ds-visible) - .02rem);
   min-width: 0;
-  padding: .8rem;
   flex-direction: column;
   gap: .8rem;
-  border: .1rem solid var(--ds-border);
-  border-radius: var(--ds-radius-card);
-  background: var(--ds-surface);
   scroll-snap-align: start;
-  transition: border-color 150ms ease, box-shadow 150ms ease;
 }
-.ds-card--selected { border-color: var(--ds-accent); box-shadow: inset 0 0 0 .1rem var(--ds-accent); }
 
+/* The card is the image: picking it rings it in the accent colour. */
 .ds-card__pick {
   position: relative;
   display: block;
   width: 100%;
   padding: 0;
-  border: 0;
-  background: none;
-  cursor: pointer;
-}
-.ds-card__media {
-  display: block;
   overflow: hidden;
   aspect-ratio: var(--ds-image-ratio);
-  border-radius: calc(var(--ds-radius-card) - .6rem);
+  border: 0;
+  border-radius: var(--ds-radius-card);
   background: var(--ds-media);
+  cursor: pointer;
+  transition: box-shadow 150ms ease;
 }
+.ds-card--selected .ds-card__pick { box-shadow: 0 0 0 .2rem var(--ds-accent); }
 .ds-card__image {
   display: block;
   width: 100%;
@@ -314,8 +308,8 @@
 .ds-card__pick:hover .ds-card__image { transform: scale(1.02); }
 .ds-card__check {
   position: absolute;
-  top: .8rem;
-  right: .8rem;
+  top: 1rem;
+  right: 1rem;
   display: grid;
   width: 2.2rem;
   height: 2.2rem;
@@ -334,87 +328,82 @@
 }
 .ds-card__flag {
   position: absolute;
-  bottom: .8rem;
-  left: .8rem;
+  bottom: 1rem;
+  left: 1rem;
   padding: .4rem .8rem;
   border-radius: var(--ds-radius-control);
   background: var(--ds-surface);
   font-size: 1.1rem;
   font-weight: 600;
 }
-.ds-card--soldout .ds-card__media { opacity: .5; }
-.ds-card--soldout .ds-card__pick { cursor: not-allowed; }
+.ds-card--soldout .ds-card__pick { opacity: .5; cursor: not-allowed; }
 
-.ds-card__body { display: grid; gap: .6rem; padding: 0 .4rem; }
-.ds-card__title {
-  margin: 0;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-  font-size: 1.3rem;
-  font-weight: 600;
-  line-height: 1.25;
+/* Controls belong to the chosen card, but hold their space so a row never
+   jumps when a selection changes. */
+.ds-card__controls {
+  display: flex;
+  height: 3.6rem;
+  margin-top: auto;
+  padding-inline: .6rem;
+  align-items: center;
+  justify-content: space-between;
+  gap: .8rem;
+  visibility: hidden;
 }
-.ds-card__price { margin: 0; font-size: 1.3rem; font-weight: 700; }
+.ds-card--selected .ds-card__controls { visibility: visible; }
+.ds-card__controls > :only-child { margin-inline: auto; }
 
-.ds-card__option { display: grid; gap: .4rem; }
-.ds-card__option-name {
-  color: var(--ds-muted);
-  font-size: 1.1rem;
-  font-weight: 600;
-  letter-spacing: .04em;
-  text-transform: uppercase;
+.ds-card__options {
+  display: flex;
+  min-width: 0;
+  padding: .4rem 0;
+  align-items: center;
+  gap: .8rem;
+  overflow-x: auto;
+  scrollbar-width: none;
 }
-.ds-card__values { display: flex; flex-wrap: wrap; gap: .4rem; }
+.ds-card__options::-webkit-scrollbar { display: none; }
+.ds-card__values { display: flex; flex: 0 0 auto; align-items: center; gap: .4rem; }
 .ds-card__value {
   display: inline-grid;
-  min-width: 2.8rem;
-  height: 2.8rem;
+  min-width: 2.2rem;
+  height: 2.2rem;
   padding: 0 .8rem;
   place-items: center;
-  border: .1rem solid var(--ds-border);
-  border-radius: .8rem;
+  border: .2rem solid transparent;
+  border-radius: var(--ds-radius-control);
   background: var(--ds-surface);
+  box-shadow: inset 0 0 0 .1rem var(--ds-border);
   color: inherit;
   font-family: inherit;
-  font-size: 1.2rem;
+  font-size: 1.1rem;
   font-weight: 600;
   line-height: 1;
   cursor: pointer;
 }
-.ds-card__value--active { border-color: var(--ds-accent); color: var(--ds-accent); }
 .ds-card__value--swatch {
-  width: 2.6rem;
+  width: 2.2rem;
   min-width: 0;
-  height: 2.6rem;
   padding: 0;
   border-radius: 50%;
+  background-clip: padding-box;
   background-position: center;
   background-size: cover;
-  background-clip: padding-box;
 }
-.ds-card__value--swatch.ds-card__value--active {
-  border-width: .2rem;
-  box-shadow: 0 0 0 .1rem var(--ds-accent);
-}
-.ds-card__value--unavailable { opacity: .4; text-decoration: line-through; }
+.ds-card__value--active { border-color: var(--ds-accent); box-shadow: none; }
+/* Sold-out values stay visible, so what is on offer is never a surprise. */
+.ds-card__value--unavailable { opacity: .35; text-decoration: line-through; }
 .ds-card__value--swatch.ds-card__value--unavailable { text-decoration: none; }
 
-/* Quantity keeps its space on every card so a row never jumps when a card is
-   picked, and only reads as active on the picked card. */
 .ds-card__quantity {
   display: flex;
-  height: 3.2rem;
-  margin-top: auto;
+  flex: 0 0 auto;
+  padding: .2rem;
   align-items: center;
-  justify-content: center;
-  gap: .4rem;
+  gap: .2rem;
   border-radius: var(--ds-radius-control);
-  background: var(--ds-panel);
-  visibility: hidden;
+  background: var(--ds-surface);
 }
-.ds-card--selected .ds-card__quantity { visibility: visible; }
 .ds-card__quantity-button {
   display: grid;
   width: 2.8rem;
@@ -430,10 +419,11 @@
   cursor: pointer;
 }
 .ds-card__quantity-button:hover { background: rgba(0, 0, 0, .06); }
-.ds-card__quantity-value { min-width: 2rem; font-size: 1.4rem; font-weight: 700; text-align: center; }
+.ds-card__quantity-value { min-width: 1.8rem; font-size: 1.4rem; font-weight: 700; text-align: center; }
 
 /* Focus */
 .ds-step__toggle:focus-visible,
+.ds-step__pill-remove:focus-visible,
 .ds-button:focus-visible,
 .ds-arrow:focus-visible,
 .ds-card__value:focus-visible,
@@ -458,20 +448,24 @@
   .ds-step__head { flex-wrap: wrap; gap: 1.2rem; }
   .ds-step__title { font-size: var(--ds-mobile-step-title-size); }
   .ds-step__toggle { flex: 1 1 100%; }
-  .ds-step__summary,
-  .ds-step__actions { flex: 1 1 100%; margin-left: 3.8rem; }
-  .ds-step__actions { justify-content: space-between; }
-  .ds-step__price { text-align: left; }
+  .ds-step__pill { max-width: 100%; margin-left: 3.8rem; }
+  .ds-step--open .ds-step__actions { flex: 1 1 100%; margin-left: 3.8rem; justify-content: space-between; }
 
   .ds-step__toolbar { flex-wrap: wrap; }
   .ds-field { flex: 1 1 100%; }
-  /* Touch scrolling replaces the arrows on small screens. */
+  /* Touch scrolling replaces the arrows on small screens, so the track
+     becomes a real scroller again — still inside the step, never the page. */
   .ds-step__arrows { display: none; }
-  .ds-track[data-layout='carousel'] { scroll-snap-type: x proximity; }
+  .ds-track[data-layout='carousel'] {
+    overflow-x: auto;
+    scroll-snap-type: x proximity;
+    scrollbar-width: none;
+  }
+  .ds-track[data-layout='carousel']::-webkit-scrollbar { display: none; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .ds-card,
+  .ds-card__pick,
   .ds-card__image,
   .ds-card__check,
   .ds-button { transition: none; }

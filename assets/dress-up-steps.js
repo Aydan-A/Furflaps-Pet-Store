@@ -23,11 +23,12 @@ if (!customElements.get('dress-up-steps')) {
             panel: el.querySelector('[data-dress-panel]'),
             track: el.querySelector('[data-dress-track]'),
             toggle: el.querySelector('[data-dress-toggle]'),
-            summary: el.querySelector('[data-dress-summary]'),
+            pill: el.querySelector('[data-dress-pill]'),
+            pillText: el.querySelector('[data-dress-pill-text]'),
+            pillImage: el.querySelector('[data-dress-pill-image]'),
             priceEl: el.querySelector('[data-dress-price]'),
             saveButton: el.querySelector('[data-dress-save]'),
             checkoutButton: el.querySelector('[data-dress-checkout]'),
-            editButton: el.querySelector('[data-dress-edit]'),
             errorEl: el.querySelector('[data-dress-error]'),
             textInput: el.querySelector('[data-dress-text]'),
             arrows: Array.from(el.querySelectorAll('[data-dress-scroll]')),
@@ -42,6 +43,7 @@ if (!customElements.get('dress-up-steps')) {
 
         this.addEventListener('click', this.handleClick);
         this.addEventListener('input', this.handleInput);
+        window.addEventListener('resize', this.handleResize);
 
         if (window.Shopify?.designMode) {
           this.addEventListener('shopify:block:select', this.handleBlockSelect);
@@ -61,6 +63,7 @@ if (!customElements.get('dress-up-steps')) {
         this.removeEventListener('click', this.handleClick);
         this.removeEventListener('input', this.handleInput);
         this.removeEventListener('shopify:block:select', this.handleBlockSelect);
+        window.removeEventListener('resize', this.handleResize);
         this.steps.forEach((step) => step.track?.removeEventListener('scroll', step.onScroll));
       }
 
@@ -160,25 +163,17 @@ if (!customElements.get('dress-up-steps')) {
           const isOpen = !step.panel.hidden;
           const selections = this.selectionsFor(step);
 
+          // The open step owns the price and the button; a closed row shows
+          // its pill instead. CSS hides the actions, so they never flash
+          // before this runs.
           step.el.classList.toggle('ds-step--open', isOpen);
-          step.el.classList.toggle('ds-step--done', !isOpen && step.completed);
 
           if (step.priceEl) step.priceEl.textContent = money;
           step.toggle.setAttribute('aria-disabled', String(!this.canOpen(step.index)));
+          if (step.saveButton) step.saveButton.setAttribute('aria-disabled', String(!this.isValid(step)));
+          if (step.checkoutButton) step.checkoutButton.setAttribute('aria-disabled', String(!ready));
 
-          // One action per row, always in the same place: the open step owns
-          // its Save / Go to cart button, a collapsed step owns Edit.
-          if (step.saveButton) {
-            step.saveButton.hidden = !isOpen;
-            step.saveButton.setAttribute('aria-disabled', String(!this.isValid(step)));
-          }
-          if (step.checkoutButton) {
-            step.checkoutButton.hidden = !isOpen;
-            step.checkoutButton.setAttribute('aria-disabled', String(!ready));
-          }
-          if (step.editButton) step.editButton.hidden = isOpen || !selections.length;
-
-          this.renderSummary(step, isOpen, selections);
+          this.renderPill(step, isOpen, selections);
           step.cards.forEach((card) => this.renderCard(card));
           this.renderArrows(step);
         });
@@ -217,11 +212,7 @@ if (!customElements.get('dress-up-steps')) {
         });
       }
 
-      renderSummary(step, isOpen, selections) {
-        // An untouched step stays quiet: only a saved or filled step summarises.
-        step.summary.hidden = isOpen || (!selections.length && !step.completed);
-        if (step.summary.hidden) return;
-
+      renderPill(step, isOpen, selections) {
         const text = this.textFor(step);
         const parts = selections.map((card) => {
           const variant = this.variantFor(card);
@@ -231,35 +222,15 @@ if (!customElements.get('dress-up-steps')) {
         });
         if (text) parts.unshift(text);
 
-        step.summary.textContent = '';
-        if (!parts.length) {
-          step.summary.append(this.summaryChip(this.dataset.emptySummary, null));
-          return;
-        }
+        step.pill.hidden = isOpen || !parts.length;
+        if (step.pill.hidden) return;
 
-        selections.slice(0, 3).forEach((card) => {
-          const image = this.variantFor(card)?.image || card.defaultImage;
-          if (image) step.summary.append(this.summaryThumb(image));
-        });
-        step.summary.append(this.summaryChip(parts.join(' · '), true));
-      }
-
-      summaryThumb(src) {
-        const img = document.createElement('img');
-        img.className = 'ds-step__thumb';
-        img.src = src;
-        img.alt = '';
-        img.width = 32;
-        img.height = 32;
-        img.loading = 'lazy';
-        return img;
-      }
-
-      summaryChip(text, filled) {
-        const span = document.createElement('span');
-        span.className = filled ? 'ds-step__chip' : 'ds-step__chip ds-step__chip--empty';
-        span.textContent = text;
-        return span;
+        step.pillText.textContent = parts.join(' / ');
+        // A step can be summarised by its text alone, with nothing picked yet.
+        const first = selections[0];
+        const image = first ? this.variantFor(first)?.image || first.defaultImage : '';
+        step.pillImage.hidden = !image;
+        if (image) step.pillImage.src = image;
       }
 
       renderArrows(step) {
@@ -366,6 +337,10 @@ if (!customElements.get('dress-up-steps')) {
         this.clearError(step);
         this.render();
       };
+
+      // How many cards fit changes with the viewport, and with it whether the
+      // arrows have anywhere left to go.
+      handleResize = () => this.steps.forEach((step) => this.renderArrows(step));
 
       handleBlockSelect = (event) => {
         const step = this.stepFor(event.target);

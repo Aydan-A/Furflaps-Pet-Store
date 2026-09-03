@@ -1,18 +1,19 @@
 {% comment %}
   Selectable product card for the "Pick - Pair - Play!" builder.
 
-  Everything the card shows comes from Shopify: the title, the image, the
-  option values (size, colour, ...) and every variant price. The card ships its
-  full variant list as JSON so the builder can resolve the exact variant a
-  customer configured without a second request.
+  The card is the product image: picking it rings it in the accent colour and
+  reveals its own controls underneath. Those controls are built from the
+  product's real options, and the card ships its full variant list as JSON so
+  the builder can resolve the exact variant a customer configured without a
+  second request.
 
   Accepts:
   - product:       Shopify product object
   - section:       parent section object
   - block:         parent step block object
   - index:         forloop index within the step
-  - show_options:  boolean, render the option pickers (size, colour, ...)
-  - show_quantity: boolean, render the quantity stepper on a selected card
+  - show_options:  boolean, render the option controls (size, colour, ...)
+  - show_quantity: boolean, render the quantity stepper
   - loading:       image loading strategy
 {% endcomment %}
 
@@ -52,21 +53,24 @@
     data-dress-pick
     {% unless product.available %}disabled{% endunless %}
   >
-    <span class="ds-card__media">
-      {%- if product.featured_media != blank -%}
-        {{
-          product.featured_media
-          | image_url: width: 800
-          | image_tag:
-            class: 'ds-card__image',
-            widths: '160, 220, 300, 400, 560, 800',
-            sizes: '(min-width: 990px) 260px, (min-width: 750px) 30vw, 45vw',
-            loading: loading
-        }}
-      {%- else -%}
-        {{ 'product-apparel-1' | placeholder_svg_tag: 'ds-card__image ds-card__image--placeholder' }}
-      {%- endif -%}
+    <span class="visually-hidden">
+      {{- product.title }} — {{ variant.price | money }}
+      {%- unless product.available %} ({{ 'products.product.sold_out' | t }}){% endunless -%}
     </span>
+
+    {%- if product.featured_media != blank -%}
+      {{
+        product.featured_media
+        | image_url: width: 800
+        | image_tag:
+          class: 'ds-card__image',
+          widths: '160, 220, 300, 400, 560, 800',
+          sizes: '(min-width: 990px) 260px, (min-width: 750px) 30vw, 45vw',
+          loading: loading
+      }}
+    {%- else -%}
+      {{ 'product-apparel-1' | placeholder_svg_tag: 'ds-card__image ds-card__image--placeholder' }}
+    {%- endif -%}
 
     <span class="ds-card__check" aria-hidden="true">
       <svg viewBox="0 0 12 12" focusable="false">
@@ -77,31 +81,25 @@
     {%- unless product.available -%}
       <span class="ds-card__flag">{{ 'products.product.sold_out' | t }}</span>
     {%- endunless -%}
-
-    <span class="visually-hidden">{{ product.title }} — {{ variant.price | money }}</span>
   </button>
 
-  <div class="ds-card__body">
-    <p class="ds-card__title">{{ product.title | escape }}</p>
-    <p class="ds-card__price" data-dress-card-price>{{ variant.price | money }}</p>
-
-    {%- if show_options -%}
-      {%- for option in product.options_with_values -%}
-        {%- if option.values.size < 2 -%}{%- continue -%}{%- endif -%}
-        {%- liquid
-          assign option_name = option.name | downcase
-          assign is_swatch = false
-          if option_name contains 'color' or option_name contains 'colour'
-            assign is_swatch = true
-          endif
-        -%}
-        <div class="ds-card__option" data-option-index="{{ forloop.index0 }}">
-          <span class="ds-card__option-name">{{ option.name | escape }}</span>
-          <div
-            class="ds-card__values{% if is_swatch %} ds-card__values--swatch{% endif %}"
-            role="group"
-            aria-label="{{ product.title | escape }} — {{ option.name | escape }}"
-          >
+  {%- comment -%}
+    Controls belong to the chosen card, but keep their space so a row of cards
+    never jumps when a selection changes.
+  {%- endcomment -%}
+  <div class="ds-card__controls">
+    {%- capture option_controls -%}
+      {%- if show_options -%}
+        {%- for option in product.options_with_values -%}
+          {%- if option.values.size < 2 -%}{%- continue -%}{%- endif -%}
+          {%- liquid
+            assign option_name = option.name | downcase
+            assign is_swatch = false
+            if option_name contains 'color' or option_name contains 'colour'
+              assign is_swatch = true
+            endif
+          -%}
+          <div class="ds-card__values" role="group" aria-label="{{ product.title | escape }} — {{ option.name | escape }}">
             {%- for value in option.values -%}
               {%- liquid
                 assign swatch_style = ''
@@ -115,7 +113,7 @@
                 endif
               -%}
               <button
-                class="ds-card__value{% if is_swatch and swatch_style != blank %} ds-card__value--swatch{% endif %}"
+                class="ds-card__value{% if swatch_style != blank %} ds-card__value--swatch{% endif %}"
                 type="button"
                 aria-pressed="false"
                 data-dress-option
@@ -127,28 +125,36 @@
               </button>
             {%- endfor -%}
           </div>
-        </div>
-      {%- endfor -%}
+        {%- endfor -%}
+      {%- endif -%}
+    {%- endcapture -%}
+
+    {%- comment -%}
+      Only wrap real controls: an empty options box would take the place of the
+      quantity stepper as the row's only child, and stop it centring.
+    {%- endcomment -%}
+    {%- if option_controls contains 'data-dress-option' -%}
+      <div class="ds-card__options">{{ option_controls }}</div>
+    {%- endif -%}
+
+    {%- if show_quantity and product.available -%}
+      <div class="ds-card__quantity" data-dress-quantity>
+        <button
+          class="ds-card__quantity-button"
+          type="button"
+          data-dress-quantity-change="-1"
+          aria-label="{{ 'products.product.quantity.decrease' | t: product: product.title | escape }}"
+        >&minus;</button>
+        <output class="ds-card__quantity-value" data-dress-quantity-value aria-live="polite">1</output>
+        <button
+          class="ds-card__quantity-button"
+          type="button"
+          data-dress-quantity-change="1"
+          aria-label="{{ 'products.product.quantity.increase' | t: product: product.title | escape }}"
+        >+</button>
+      </div>
     {%- endif -%}
   </div>
-
-  {%- if show_quantity -%}
-    <div class="ds-card__quantity" data-dress-quantity>
-      <button
-        class="ds-card__quantity-button"
-        type="button"
-        data-dress-quantity-change="-1"
-        aria-label="{{ 'products.product.quantity.decrease' | t: product: product.title | escape }}"
-      >&minus;</button>
-      <output class="ds-card__quantity-value" data-dress-quantity-value aria-live="polite">1</output>
-      <button
-        class="ds-card__quantity-button"
-        type="button"
-        data-dress-quantity-change="1"
-        aria-label="{{ 'products.product.quantity.increase' | t: product: product.title | escape }}"
-      >+</button>
-    </div>
-  {%- endif -%}
 
   <script type="application/json" data-dress-variants>{{ variants_json }}</script>
 </article>
