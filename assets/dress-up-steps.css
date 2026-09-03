@@ -1,12 +1,22 @@
-/* "Pick - Pair - Play!" builder. Scoped to .dress-up-steps / .dress-steps-card. */
+/* "Pick - Pair - Play!" builder.
+   One spacing, radius, card, selection and button system for all three steps.
+   Scoped to .dress-up-steps / .ds-step / .ds-card / .ds-button. */
 
 .dress-up-steps {
+  --ds-gap: 1.2rem;
+  --ds-step-padding: 2rem;
+  --ds-radius-step: 1.6rem;
+  --ds-radius-control: 99rem;
+  --ds-control-height: 4.4rem;
+
   display: block;
   padding: var(--ds-padding-top) var(--ds-padding-inline) var(--ds-padding-bottom);
   background: var(--ds-background);
   color: var(--ds-text);
 }
 .dress-up-steps__inner { max-width: var(--ds-max-width); margin: 0 auto; }
+
+/* Section heading */
 .dress-up-steps__header { margin: 0 auto var(--ds-heading-gap); text-align: center; }
 .dress-up-steps__eyebrow {
   margin: 0 0 1rem;
@@ -26,19 +36,30 @@
   letter-spacing: -.025em;
 }
 
-.dress-up-steps__list { display: grid; gap: 1.6rem; }
-.dress-up-steps__step { border-radius: 1.2rem; background: var(--ds-panel-background); }
+.dress-up-steps__steps { display: grid; gap: 1.6rem; }
 
-/* Header row */
-.dress-up-steps__row {
+/* ---------- Step ---------- */
+
+.ds-step {
+  /* Declared here, not on the section, so each step's own "cards in view"
+     setting is the one that resolves. */
+  --ds-visible: var(--ds-per-row, 4);
+  border: .1rem solid transparent;
+  border-radius: var(--ds-radius-step);
+  background: var(--ds-panel);
+}
+.ds-step--open { border-color: var(--ds-border); }
+
+/* Header row: number and title on the left, price and button always at the
+   right end, in the same place on every step and in every state. */
+.ds-step__head {
   display: flex;
   min-height: 7.2rem;
-  padding: 1.4rem 2rem;
+  padding: 1.4rem var(--ds-step-padding);
   align-items: center;
-  flex-wrap: wrap;
-  gap: 1.2rem;
+  gap: 1.6rem;
 }
-.dress-up-steps__toggle {
+.ds-step__toggle {
   display: inline-flex;
   flex: 0 1 auto;
   min-width: 0;
@@ -49,14 +70,14 @@
   background: none;
   color: inherit;
   font-family: inherit;
-  cursor: pointer;
   text-align: left;
+  cursor: pointer;
 }
-.dress-up-steps__toggle[aria-disabled='true'] { cursor: not-allowed; opacity: .55; }
-.dress-up-steps__number {
+.ds-step__toggle[aria-disabled='true'] { cursor: not-allowed; opacity: .55; }
+.ds-step__number {
   display: inline-grid;
-  width: 2.4rem;
-  height: 2.4rem;
+  width: 2.6rem;
+  height: 2.6rem;
   flex: 0 0 auto;
   place-items: center;
   border-radius: 50%;
@@ -65,360 +86,339 @@
   font-size: 1.2rem;
   font-weight: 700;
 }
-.dress-up-steps__step-title { font-size: var(--ds-step-title-size); font-weight: 700; line-height: 1.25; }
+.ds-step__titles { display: grid; gap: .2rem; min-width: 0; }
+.ds-step__title { font-size: var(--ds-step-title-size); font-weight: 700; line-height: 1.25; }
+.ds-step__subtitle { color: var(--ds-muted); font-size: 1.3rem; line-height: 1.3; }
+/* A saved step keeps its number, tinted, so progress is readable at a glance. */
+.ds-step--done .ds-step__number { background: var(--ds-accent); color: var(--ds-accent-text); }
 
-/* Summary pill */
-.dress-up-steps__summary-pill {
-  display: inline-flex;
-  max-width: 32rem;
-  margin: 0;
-  padding: .5rem .6rem .5rem 1rem;
+/* Collapsed summary */
+.ds-step__summary {
+  display: flex;
+  flex: 1 1 auto;
+  min-width: 0;
   align-items: center;
   gap: .6rem;
-  border-radius: 99rem;
+}
+.ds-step__summary[hidden] { display: none; }
+.ds-step__thumb {
+  width: 3.2rem;
+  height: 3.2rem;
+  flex: 0 0 auto;
+  border-radius: .8rem;
+  background: var(--ds-media);
+  object-fit: cover;
+}
+.ds-step__chip {
+  min-width: 0;
+  padding: .5rem 1.2rem;
+  border-radius: var(--ds-radius-control);
   background: var(--ds-accent);
   color: var(--ds-accent-text);
   font-size: 1.3rem;
   font-weight: 600;
-  line-height: 1.2;
-}
-.dress-up-steps__summary-pill[hidden] { display: none; }
-.dress-up-steps__summary-pill > span {
+  line-height: 1.3;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-.dress-up-steps__summary-image {
-  width: 2rem;
-  height: 2rem;
-  flex: 0 0 auto;
-  border-radius: 50%;
-  background: var(--ds-image-background);
-  object-fit: cover;
-}
-.dress-up-steps__summary-remove {
-  display: grid;
-  width: 2rem;
-  height: 2rem;
-  flex: 0 0 auto;
-  place-items: center;
-  border: 0;
-  border-radius: 50%;
-  background: none;
-  color: inherit;
-  cursor: pointer;
-}
-.dress-up-steps__summary-remove svg { width: 1rem; height: 1rem; }
-.dress-up-steps__summary-remove:hover { background: rgba(0, 0, 0, .12); }
-
-/* Color swatches */
-.dress-up-steps__swatches { display: flex; align-items: center; gap: .8rem; }
-.dress-up-steps__swatch-label {
-  display: block;
-  width: 1.4rem;
-  height: 1.4rem;
-  border-radius: 50%;
-  background: var(--ds-swatch);
-  cursor: pointer;
-}
-.dress-up-steps__swatch-input:checked + .dress-up-steps__swatch-label {
-  box-shadow: 0 0 0 .2rem var(--ds-panel-background), 0 0 0 .35rem var(--ds-swatch);
-}
-.dress-up-steps__swatch-input:focus-visible + .dress-up-steps__swatch-label {
-  outline: .2rem solid var(--ds-text);
-  outline-offset: .4rem;
+.ds-step__chip--empty {
+  border: .1rem solid var(--ds-border);
+  background: transparent;
+  color: var(--ds-muted);
 }
 
-/* Personalization field */
-.dress-up-steps__field { position: relative; display: flex; flex: 0 1 19rem; min-width: 9rem; align-items: center; }
-.dress-up-steps__input {
-  width: 100%;
-  min-height: 4rem;
-  padding: 0 4.6rem 0 1.6rem;
-  border: .1rem solid transparent;
-  border-radius: 99rem;
-  background: var(--ds-pill-background);
-  color: inherit;
-  font-family: inherit;
-  font-size: 1.4rem;
-  font-weight: 600;
-}
-.dress-up-steps__input::placeholder { color: inherit; opacity: .55; font-weight: 500; }
-.dress-up-steps__input:focus-visible { outline: .2rem solid var(--ds-text); outline-offset: .2rem; }
-.dress-up-steps__input[aria-invalid='true'] { border-color: var(--ds-accent); }
-.dress-up-steps__input-icon {
-  position: absolute;
-  right: .5rem;
-  display: grid;
-  width: 3rem;
-  height: 3rem;
-  place-items: center;
-  border-radius: 50%;
-  background: var(--ds-accent);
-  color: var(--ds-accent-text);
-  pointer-events: none;
-}
-.dress-up-steps__input-icon svg { width: 1.4rem; height: 1.4rem; }
-
-/* Badges */
-.dress-up-steps__benefits { display: flex; margin: 0 0 0 auto; padding: 0; gap: .8rem; list-style: none; }
-.dress-up-steps__benefit {
-  display: inline-flex;
-  min-height: 2.8rem;
-  padding: .5rem 1rem;
-  align-items: center;
-  gap: .5rem;
-  border: .1rem solid var(--ds-pill-border);
-  border-radius: 99rem;
-  background: var(--ds-pill-background);
-  font-size: 1.1rem;
-  font-weight: 600;
-  line-height: 1;
-  white-space: nowrap;
-}
-.dress-up-steps__benefit svg { width: 1rem; height: 1rem; }
-
-/* The open step owns the header controls: its price, its Save and continue
-   or Go to cart, its swatches and its name field. A closed row shows its
-   summary pill and badges instead. They start hidden so a closed row never
-   flashes its controls before the script runs. */
-.dress-up-steps__actions,
-.dress-up-steps__swatches,
-.dress-up-steps__field { display: none; }
-.dress-up-steps__step--open .dress-up-steps__actions {
+/* Price and CTA */
+.ds-step__actions {
   display: flex;
   flex: 0 0 auto;
   margin-left: auto;
   align-items: center;
   gap: 1.6rem;
 }
-.dress-up-steps__step--open .dress-up-steps__swatches { display: flex; flex: 0 1 auto; }
-.dress-up-steps__step--open .dress-up-steps__field { display: flex; }
-.dress-up-steps__step--open .dress-up-steps__benefits { display: none; }
-.dress-up-steps__price { margin: 0; font-size: var(--ds-price-size); font-weight: 700; white-space: nowrap; }
-.dress-up-steps__button {
+.ds-step__price { display: grid; margin: 0; gap: .1rem; text-align: right; }
+.ds-step__price-label {
+  color: var(--ds-muted);
+  font-size: 1.1rem;
+  font-weight: 600;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+.ds-step__price-value { font-size: var(--ds-price-size); font-weight: 700; white-space: nowrap; }
+
+.ds-button {
   display: inline-flex;
-  min-height: 4rem;
-  padding: 0 1.8rem;
+  min-height: var(--ds-control-height);
+  padding: 0 2.2rem;
   align-items: center;
   gap: .8rem;
-  border: 0;
-  border-radius: 99rem;
-  background: var(--ds-accent);
-  color: var(--ds-accent-text);
+  border: .1rem solid transparent;
+  border-radius: var(--ds-radius-control);
   font-family: inherit;
-  font-size: 1.3rem;
-  font-weight: 600;
+  font-size: 1.4rem;
+  font-weight: 700;
   line-height: 1;
-  cursor: pointer;
   white-space: nowrap;
-  transition: opacity 150ms ease;
+  cursor: pointer;
+  transition: opacity 150ms ease, background-color 150ms ease;
 }
-.dress-up-steps__button:hover:not(:disabled):not([aria-disabled='true']) { opacity: .88; }
-.dress-up-steps__button:disabled,
-.dress-up-steps__button[aria-disabled='true'] {
-  border: .1rem solid var(--ds-pill-border);
-  background: var(--ds-pill-background);
-  color: var(--ds-text);
+.ds-button[hidden] { display: none; }
+.ds-button--primary { background: var(--ds-accent); color: var(--ds-accent-text); }
+.ds-button--ghost { background: transparent; border-color: var(--ds-border); color: var(--ds-text); }
+.ds-button:hover:not(:disabled):not([aria-disabled='true']) { opacity: .88; }
+.ds-button--primary[aria-disabled='true'],
+.ds-button--primary:disabled {
+  border-color: var(--ds-border);
+  background: var(--ds-surface);
+  color: var(--ds-muted);
   cursor: not-allowed;
-  opacity: .75;
 }
-.dress-up-steps__button-icon svg { width: 1.6rem; height: 1.6rem; }
-.dress-up-steps__button.is-loading { pointer-events: none; }
-.dress-up-steps__spinner {
+.ds-button__icon svg { width: 1.8rem; height: 1.8rem; }
+.ds-button.is-loading { pointer-events: none; }
+.ds-button__spinner {
   width: 1.4rem;
   height: 1.4rem;
   border: .2rem solid currentColor;
   border-right-color: transparent;
   border-radius: 50%;
-  animation: dress-up-spin 700ms linear infinite;
+  animation: ds-spin 700ms linear infinite;
 }
-.dress-up-steps__spinner[hidden] { display: none; }
-@keyframes dress-up-spin { to { transform: rotate(360deg); } }
+.ds-button__spinner[hidden] { display: none; }
+@keyframes ds-spin { to { transform: rotate(360deg); } }
 
-.dress-up-steps__toggle:focus-visible,
-.dress-up-steps__button:focus-visible,
-.dress-up-steps__summary-remove:focus-visible { outline: .2rem solid var(--ds-text); outline-offset: .3rem; }
-
-.dress-up-steps__error {
+.ds-step__error {
   margin: 0;
-  padding: 0 2rem 1.6rem;
+  padding: 0 var(--ds-step-padding) 1.6rem;
   color: var(--ds-accent);
   font-size: 1.3rem;
   font-weight: 600;
 }
-.dress-up-steps__error[hidden] { display: none; }
+.ds-step__error[hidden] { display: none; }
 
-/* Panel and cards */
-.dress-up-steps__panel { max-width: 100%; padding: 0 0 1.2rem; }
-.dress-up-steps__panel[hidden] { display: none; }
-/* One track for every step: cards keep their column width, so a step with
-   more products than columns scrolls instead of shrinking. */
-.dress-up-steps__products {
-  display: flex;
-  --ds-track-inset: var(--ds-step-card-side-padding, var(--ds-card-side-padding));
-  max-width: 100%;
-  min-width: 0;
-  /* The inset is container padding, not a margin on the first card, so
-     scrollLeft 0 shows the first card whole, selection ring included. */
-  padding: .4rem var(--ds-track-inset) .5rem;
-  margin-top: -.4rem;
-  gap: var(--ds-step-card-gap, var(--ds-card-gap));
-  justify-content: var(--ds-step-card-alignment, var(--ds-card-alignment));
-  align-items: flex-start;
-  overflow-x: auto;
-  overscroll-behavior-inline: contain;
-  scroll-padding-inline: var(--ds-track-inset);
-  scrollbar-width: thin;
-  scrollbar-color: var(--ds-pill-border) transparent;
-}
-/* A slim rounded indicator instead of the raw OS bar, matching the other
-   scrollers in this theme. */
-.dress-up-steps__products::-webkit-scrollbar { height: .6rem; }
-.dress-up-steps__products::-webkit-scrollbar-track { background: transparent; }
-.dress-up-steps__products::-webkit-scrollbar-thumb {
-  border-radius: 99rem;
-  background: var(--ds-pill-border);
-}
-.dress-up-steps__products::-webkit-scrollbar-thumb:hover { background: var(--ds-text); }
-.dress-steps-card {
-  position: relative;
-  flex: 0 0 min(
-    var(--ds-step-card-width, var(--ds-card-width)),
-    calc((100% - (var(--ds-columns) - 1) * var(--ds-step-card-gap, var(--ds-card-gap))) / var(--ds-columns))
-  );
-  min-width: 0;
-}
-.dress-steps-card__controls {
-  display: flex;
-  height: 3.6rem;
-  margin-top: .8rem;
-  padding-inline: .6rem;
-  align-items: center;
-  justify-content: space-between;
-  gap: .8rem;
-}
-.dress-steps-card__controls > :only-child { margin-inline: auto; }
-.dress-steps-card__variants {
-  display: flex;
-  min-width: 0;
+/* ---------- Panel ---------- */
+
+.ds-step__panel { padding: 0 var(--ds-step-padding) var(--ds-step-padding); }
+.ds-step__panel[hidden] { display: none; }
+.ds-step__empty {
   margin: 0;
-  padding: .4rem 0;
-  gap: .6rem;
-  border: 0;
-  overflow-x: auto;
-  scrollbar-width: none;
-}
-.dress-steps-card__variants::-webkit-scrollbar { display: none; }
-.dress-steps-card__variant { flex: 0 0 auto; }
-.dress-steps-card__variant-label {
-  display: block;
-  width: 2.2rem;
-  height: 2.2rem;
-  border: .2rem solid transparent;
-  border-radius: 50%;
-  background-clip: padding-box;
-  background-position: center;
-  background-size: cover;
-  box-shadow: inset 0 0 0 .1rem var(--ds-pill-border);
-  cursor: pointer;
-}
-.dress-steps-card__variant-label--text {
-  width: auto;
-  min-width: 2.2rem;
-  height: auto;
-  padding: .3rem .8rem;
-  border-radius: 99rem;
-  background: var(--ds-pill-background);
-  font-size: 1.1rem;
-  font-weight: 600;
+  padding: 3rem;
+  border: .1rem dashed var(--ds-border);
+  border-radius: var(--ds-radius-card);
+  color: var(--ds-muted);
   text-align: center;
 }
-.dress-steps-card__variant-input:checked + .dress-steps-card__variant-label {
-  border-color: var(--ds-accent);
+
+/* Name field and carousel controls share one compact row above the cards. */
+.ds-step__toolbar {
+  display: flex;
+  margin-bottom: 1.4rem;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1.6rem;
 }
-.dress-steps-card__variant-input:focus-visible + .dress-steps-card__variant-label {
-  outline: .2rem solid var(--ds-text);
-  outline-offset: -.4rem;
+.ds-field { display: grid; flex: 0 1 26rem; gap: .5rem; }
+.ds-field__label { font-size: 1.2rem; font-weight: 700; }
+.ds-field__input {
+  width: 100%;
+  min-height: 4rem;
+  padding: 0 1.6rem;
+  border: .1rem solid var(--ds-border);
+  border-radius: var(--ds-radius-control);
+  background: var(--ds-surface);
+  color: inherit;
+  font-family: inherit;
+  font-size: 1.4rem;
+  font-weight: 600;
 }
-/* Sold-out colours stay visible so the choice on offer is never a surprise. */
-.dress-steps-card__variant-input:disabled + .dress-steps-card__variant-label {
-  cursor: not-allowed;
-  opacity: .35;
+.ds-field__input::placeholder { color: var(--ds-muted); font-weight: 500; }
+.ds-field__input[aria-invalid='true'] { border-color: var(--ds-accent); }
+
+.ds-step__arrows { display: flex; margin-left: auto; gap: .8rem; }
+.ds-arrow {
+  display: grid;
+  width: 3.6rem;
+  height: 3.6rem;
+  place-items: center;
+  border: .1rem solid var(--ds-border);
+  border-radius: 50%;
+  background: var(--ds-surface);
+  color: var(--ds-text);
+  cursor: pointer;
 }
-/* Controls belong to the chosen card, but keep their space so the row of
-   cards does not jump when a selection changes. */
-.dress-steps-card:not(:has(.dress-steps-card__input:checked)) .dress-steps-card__controls {
-  visibility: hidden;
+.ds-arrow svg { width: 1.4rem; height: 1.4rem; }
+.ds-arrow:disabled { opacity: .35; cursor: not-allowed; }
+
+/* ---------- Card track ----------
+   One sizing rule for both layouts: cards always fit the container a whole
+   number at a time, so a row never shows a clipped card and the page itself
+   never scrolls sideways. */
+.ds-track {
+  display: flex;
+  min-width: 0;
+  max-width: 100%;
+  gap: var(--ds-gap);
+  align-items: stretch;
+  flex-wrap: wrap;
 }
-.dress-steps-card__label {
+.ds-track[data-layout='carousel'] {
+  flex-wrap: nowrap;
+  padding-bottom: 1rem;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  overscroll-behavior-inline: contain;
+  scrollbar-width: thin;
+  scrollbar-color: var(--ds-border) transparent;
+}
+.ds-track[data-layout='carousel']::-webkit-scrollbar { height: .6rem; }
+.ds-track[data-layout='carousel']::-webkit-scrollbar-track { background: transparent; }
+.ds-track[data-layout='carousel']::-webkit-scrollbar-thumb { border-radius: var(--ds-radius-control); background: var(--ds-border); }
+
+.ds-card {
+  display: flex;
+  flex: 0 0 calc((100% - (var(--ds-visible) - 1) * var(--ds-gap)) / var(--ds-visible) - .02rem);
+  min-width: 0;
+  padding: .8rem;
+  flex-direction: column;
+  gap: .8rem;
+  border: .1rem solid var(--ds-border);
+  border-radius: var(--ds-radius-card);
+  background: var(--ds-surface);
+  scroll-snap-align: start;
+  transition: border-color 150ms ease, box-shadow 150ms ease;
+}
+.ds-card--selected { border-color: var(--ds-accent); box-shadow: inset 0 0 0 .1rem var(--ds-accent); }
+
+.ds-card__pick {
   position: relative;
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+}
+.ds-card__media {
   display: block;
   overflow: hidden;
   aspect-ratio: var(--ds-image-ratio);
-  max-height: var(--ds-card-height);
-  border-radius: var(--ds-card-radius);
-  background: var(--ds-image-background);
-  cursor: pointer;
-  transition: box-shadow 150ms ease;
+  border-radius: calc(var(--ds-radius-card) - .6rem);
+  background: var(--ds-media);
 }
-.dress-steps-card__image {
+.ds-card__image {
+  display: block;
   width: 100%;
   height: 100%;
   object-fit: var(--ds-image-fit);
   transition: transform 250ms ease;
 }
-.dress-steps-card__label:hover .dress-steps-card__image { transform: scale(1.02); }
-.dress-steps-card__check {
+.ds-card__pick:hover .ds-card__image { transform: scale(1.02); }
+.ds-card__check {
   position: absolute;
-  top: 1rem;
-  right: 1rem;
+  top: .8rem;
+  right: .8rem;
   display: grid;
   width: 2.2rem;
   height: 2.2rem;
   place-items: center;
-  border: .1rem solid var(--ds-pill-border);
+  border: .1rem solid var(--ds-border);
   border-radius: .6rem;
-  background: var(--ds-pill-background);
+  background: var(--ds-surface);
   color: transparent;
   transition: background-color 150ms ease, border-color 150ms ease, color 150ms ease;
 }
-.dress-steps-card__check svg { width: 1.3rem; height: 1.3rem; }
-.dress-steps-card__input:checked + .dress-steps-card__label { box-shadow: 0 0 0 .2rem var(--ds-accent); }
-.dress-steps-card__input:checked + .dress-steps-card__label .dress-steps-card__check {
+.ds-card__check svg { width: 1.3rem; height: 1.3rem; }
+.ds-card--selected .ds-card__check {
   border-color: var(--ds-accent);
   background: var(--ds-accent);
   color: var(--ds-accent-text);
 }
-.dress-steps-card__input:focus-visible + .dress-steps-card__label {
-  outline: .2rem solid var(--ds-text);
-  outline-offset: .3rem;
-}
-.dress-steps-card--unavailable .dress-steps-card__label { cursor: not-allowed; opacity: .5; }
-.dress-steps-card__sold-out {
+.ds-card__flag {
   position: absolute;
-  bottom: 1rem;
-  left: 1rem;
+  bottom: .8rem;
+  left: .8rem;
   padding: .4rem .8rem;
-  border-radius: 99rem;
-  background: var(--ds-pill-background);
+  border-radius: var(--ds-radius-control);
+  background: var(--ds-surface);
   font-size: 1.1rem;
   font-weight: 600;
 }
+.ds-card--soldout .ds-card__media { opacity: .5; }
+.ds-card--soldout .ds-card__pick { cursor: not-allowed; }
 
-/* Quantity control, only on the selected card */
-.dress-steps-card__quantity {
-  display: flex;
-  padding: .2rem;
-  align-items: center;
-  gap: .2rem;
-  border-radius: 99rem;
-  background: var(--ds-pill-background);
+.ds-card__body { display: grid; gap: .6rem; padding: 0 .4rem; }
+.ds-card__title {
+  margin: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  font-size: 1.3rem;
+  font-weight: 600;
+  line-height: 1.25;
 }
-.dress-steps-card__quantity-button {
-  display: grid;
-  width: 3.2rem;
+.ds-card__price { margin: 0; font-size: 1.3rem; font-weight: 700; }
+
+.ds-card__option { display: grid; gap: .4rem; }
+.ds-card__option-name {
+  color: var(--ds-muted);
+  font-size: 1.1rem;
+  font-weight: 600;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+}
+.ds-card__values { display: flex; flex-wrap: wrap; gap: .4rem; }
+.ds-card__value {
+  display: inline-grid;
+  min-width: 2.8rem;
+  height: 2.8rem;
+  padding: 0 .8rem;
+  place-items: center;
+  border: .1rem solid var(--ds-border);
+  border-radius: .8rem;
+  background: var(--ds-surface);
+  color: inherit;
+  font-family: inherit;
+  font-size: 1.2rem;
+  font-weight: 600;
+  line-height: 1;
+  cursor: pointer;
+}
+.ds-card__value--active { border-color: var(--ds-accent); color: var(--ds-accent); }
+.ds-card__value--swatch {
+  width: 2.6rem;
+  min-width: 0;
+  height: 2.6rem;
+  padding: 0;
+  border-radius: 50%;
+  background-position: center;
+  background-size: cover;
+  background-clip: padding-box;
+}
+.ds-card__value--swatch.ds-card__value--active {
+  border-width: .2rem;
+  box-shadow: 0 0 0 .1rem var(--ds-accent);
+}
+.ds-card__value--unavailable { opacity: .4; text-decoration: line-through; }
+.ds-card__value--swatch.ds-card__value--unavailable { text-decoration: none; }
+
+/* Quantity keeps its space on every card so a row never jumps when a card is
+   picked, and only reads as active on the picked card. */
+.ds-card__quantity {
+  display: flex;
   height: 3.2rem;
+  margin-top: auto;
+  align-items: center;
+  justify-content: center;
+  gap: .4rem;
+  border-radius: var(--ds-radius-control);
+  background: var(--ds-panel);
+  visibility: hidden;
+}
+.ds-card--selected .ds-card__quantity { visibility: visible; }
+.ds-card__quantity-button {
+  display: grid;
+  width: 2.8rem;
+  height: 2.8rem;
   place-items: center;
   border: 0;
   border-radius: 50%;
@@ -429,48 +429,52 @@
   line-height: 1;
   cursor: pointer;
 }
-.dress-steps-card__quantity-button:hover:not(:disabled) { background: rgba(0, 0, 0, .06); }
-.dress-steps-card__quantity-button:disabled { color: var(--ds-pill-border); cursor: not-allowed; }
-.dress-steps-card__quantity-button:focus-visible { outline: .2rem solid var(--ds-text); outline-offset: -.2rem; }
-.dress-steps-card__quantity-value { min-width: 2rem; font-size: 1.5rem; font-weight: 600; text-align: center; }
+.ds-card__quantity-button:hover { background: rgba(0, 0, 0, .06); }
+.ds-card__quantity-value { min-width: 2rem; font-size: 1.4rem; font-weight: 700; text-align: center; }
 
-.dress-up-steps__empty { padding: 3rem; text-align: center; }
+/* Focus */
+.ds-step__toggle:focus-visible,
+.ds-button:focus-visible,
+.ds-arrow:focus-visible,
+.ds-card__value:focus-visible,
+.ds-card__quantity-button:focus-visible,
+.ds-field__input:focus-visible { outline: .2rem solid var(--ds-text); outline-offset: .3rem; }
+.ds-card__pick:focus-visible { outline: .2rem solid var(--ds-text); outline-offset: .2rem; }
+
+/* ---------- Responsive ---------- */
 
 @media screen and (max-width: 989px) {
-  .dress-up-steps__products { --ds-columns: 3; }
-  .dress-up-steps__field { flex-basis: 16rem; }
+  .ds-step { --ds-visible: min(var(--ds-per-row, 4), 3); }
 }
 
-/* Checkbox steps read as multi-select: square check stays, ring is the same. */
-.dress-steps-card__input[type='checkbox'] + .dress-steps-card__label { cursor: pointer; }
-
 @media screen and (max-width: 749px) {
-  .dress-up-steps { padding: var(--ds-mobile-padding-top) var(--ds-mobile-padding-inline) var(--ds-mobile-padding-bottom); }
-  .dress-up-steps__heading { font-size: var(--ds-mobile-heading-size); }
-  .dress-up-steps__row { padding: 1.4rem 1.6rem; gap: 1rem; }
-  .dress-up-steps__toggle { width: 100%; }
-  .dress-up-steps__step-title { font-size: var(--ds-mobile-step-title-size); }
-  .dress-up-steps__summary-pill,
-  .dress-up-steps__benefits { margin-left: 3.6rem; }
-  .dress-up-steps__swatches,
-  .dress-up-steps__field { margin-left: 3.6rem; }
-  .dress-up-steps__field { flex-basis: auto; }
-  .dress-up-steps__actions { width: 100%; margin-left: 3.6rem; justify-content: space-between; }
-  .dress-up-steps__panel { padding: 0 0 1rem; }
-  .dress-up-steps__error { padding: 0 1.6rem 1.4rem; }
-
-  /* Cards keep a comfortable tap size instead of shrinking to fit. */
-  .dress-up-steps__products {
-    --ds-track-inset: var(--ds-mobile-card-side-padding);
-    gap: var(--ds-mobile-card-gap);
+  .ds-step { --ds-visible: min(var(--ds-per-row, 4), 2); }
+  .dress-up-steps {
+    --ds-step-padding: 1.4rem;
+    padding: var(--ds-mobile-padding-top) var(--ds-mobile-padding-inline) var(--ds-mobile-padding-bottom);
   }
-  .dress-steps-card { flex-basis: min(60vw, var(--ds-mobile-card-width)); }
+  .dress-up-steps__heading { font-size: var(--ds-mobile-heading-size); }
+
+  .ds-step__head { flex-wrap: wrap; gap: 1.2rem; }
+  .ds-step__title { font-size: var(--ds-mobile-step-title-size); }
+  .ds-step__toggle { flex: 1 1 100%; }
+  .ds-step__summary,
+  .ds-step__actions { flex: 1 1 100%; margin-left: 3.8rem; }
+  .ds-step__actions { justify-content: space-between; }
+  .ds-step__price { text-align: left; }
+
+  .ds-step__toolbar { flex-wrap: wrap; }
+  .ds-field { flex: 1 1 100%; }
+  /* Touch scrolling replaces the arrows on small screens. */
+  .ds-step__arrows { display: none; }
+  .ds-track[data-layout='carousel'] { scroll-snap-type: x proximity; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .dress-steps-card__image,
-  .dress-steps-card__label,
-  .dress-steps-card__check,
-  .dress-up-steps__button { transition: none; }
-  .dress-up-steps__spinner { animation: none; }
+  .ds-card,
+  .ds-card__image,
+  .ds-card__check,
+  .ds-button { transition: none; }
+  .ds-button__spinner { animation: none; }
+  .ds-track[data-layout='carousel'] { scroll-behavior: auto; }
 }

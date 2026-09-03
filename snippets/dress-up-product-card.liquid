@@ -1,168 +1,154 @@
 {% comment %}
   Selectable product card for the "Pick - Pair - Play!" builder.
 
-  A radio input + label keeps selection single-choice and keyboard accessible
-  without custom JavaScript. All product data is read from Shopify.
+  Everything the card shows comes from Shopify: the title, the image, the
+  option values (size, colour, ...) and every variant price. The card ships its
+  full variant list as JSON so the builder can resolve the exact variant a
+  customer configured without a second request.
 
   Accepts:
-  - product: Shopify product object
-  - section: parent section object
-  - block: parent step block object
-  - index: forloop index within the step
-  - show_quantity: boolean, render the quantity stepper on the selected card
-  - allow_multiple: boolean, let the customer pick several products in this step
-  - loading: image loading strategy
+  - product:       Shopify product object
+  - section:       parent section object
+  - block:         parent step block object
+  - index:         forloop index within the step
+  - show_options:  boolean, render the option pickers (size, colour, ...)
+  - show_quantity: boolean, render the quantity stepper on a selected card
+  - loading:       image loading strategy
 {% endcomment %}
 
 {%- liquid
   assign variant = product.selected_or_first_available_variant
-  assign input_id = 'DressStep-' | append: section.id | append: '-' | append: block.id | append: '-' | append: index
-  assign color_option = blank
-  for option in product.options_with_values
-    assign normalized_option_name = option.name | downcase
-    if normalized_option_name == 'color' or normalized_option_name == 'colour'
-      assign color_option = option
-      break
-    endif
-  endfor
+  assign card_id = 'DressCard-' | append: section.id | append: '-' | append: block.id | append: '-' | append: index
 -%}
 
-<div class="dress-steps-card{% unless product.available %} dress-steps-card--unavailable{% endunless %}">
-  <input
-    class="dress-steps-card__input visually-hidden"
-    type="{% if allow_multiple %}checkbox{% else %}radio{% endif %}"
-    id="{{ input_id }}"
-    name="dress-step-{{ section.id }}-{{ block.id }}"
-    value="{{ variant.id }}"
-    data-dress-product
-    data-price="{{ variant.price }}"
-    data-title="{{ product.title | escape }}"
-    data-image="{{ product.featured_media | image_url: width: 80 }}"
+{%- capture variants_json -%}
+  [
+  {%- for product_variant in product.variants -%}
+    {
+      "id": {{ product_variant.id }},
+      "price": {{ product_variant.price }},
+      "available": {{ product_variant.available }},
+      "options": {{ product_variant.options | json }},
+      "title": {{ product_variant.title | json }},
+      "image": {% if product_variant.featured_media %}{{ product_variant.featured_media | image_url: width: 800 | json }}{% else %}null{% endif %}
+    }{%- unless forloop.last -%},{%- endunless -%}
+  {%- endfor -%}
+  ]
+{%- endcapture -%}
+
+<article
+  class="ds-card{% unless product.available %} ds-card--soldout{% endunless %}"
+  data-dress-card
+  data-product-id="{{ product.id }}"
+  data-product-title="{{ product.title | escape }}"
+  data-selected-options="{{ variant.options | json | escape }}"
+  data-default-image="{{ product.featured_media | image_url: width: 800 | escape }}"
+>
+  <button
+    class="ds-card__pick"
+    type="button"
+    id="{{ card_id }}"
+    aria-pressed="false"
+    data-dress-pick
     {% unless product.available %}disabled{% endunless %}
   >
-  <label class="dress-steps-card__label" for="{{ input_id }}">
-    <span class="visually-hidden">
-      {{- product.title }} — {{ variant.price | money }}
-      {%- unless product.available %} ({{ 'products.product.sold_out' | t }}){% endunless -%}
+    <span class="ds-card__media">
+      {%- if product.featured_media != blank -%}
+        {{
+          product.featured_media
+          | image_url: width: 800
+          | image_tag:
+            class: 'ds-card__image',
+            widths: '160, 220, 300, 400, 560, 800',
+            sizes: '(min-width: 990px) 260px, (min-width: 750px) 30vw, 45vw',
+            loading: loading
+        }}
+      {%- else -%}
+        {{ 'product-apparel-1' | placeholder_svg_tag: 'ds-card__image ds-card__image--placeholder' }}
+      {%- endif -%}
     </span>
 
-    {%- if product.featured_media != blank -%}
-      {{
-        product.featured_media
-        | image_url: width: 900
-        | image_tag:
-          class: 'dress-steps-card__image',
-          widths: '180, 240, 320, 420, 560, 720, 900',
-          sizes: '(min-width: 1200px) 260px, (min-width: 750px) 23vw, 72vw',
-          loading: loading
-      }}
-    {%- else -%}
-      {{ 'product-apparel-1' | placeholder_svg_tag: 'dress-steps-card__image dress-steps-card__placeholder' }}
-    {%- endif -%}
-
-    <span class="dress-steps-card__check" aria-hidden="true">
+    <span class="ds-card__check" aria-hidden="true">
       <svg viewBox="0 0 12 12" focusable="false">
         <path d="m2 6 2.5 2.5L10 3" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
       </svg>
     </span>
 
     {%- unless product.available -%}
-      <span class="dress-steps-card__sold-out">{{ 'products.product.sold_out' | t }}</span>
+      <span class="ds-card__flag">{{ 'products.product.sold_out' | t }}</span>
     {%- endunless -%}
-  </label>
 
+    <span class="visually-hidden">{{ product.title }} — {{ variant.price | money }}</span>
+  </button>
 
-  <div class="dress-steps-card__controls">
-  {%- if color_option != blank and color_option.values.size > 1 -%}
-    {%- comment -%}
-      Colours come from the product's own option values, so the swatch, the
-      price, the image and availability all stay in step with Shopify.
-    {%- endcomment -%}
-    <fieldset class="dress-steps-card__variants" data-dress-variants>
-      <legend class="visually-hidden">{{ product.title | escape }} — {{ color_option.name | escape }}</legend>
-      {%- for color_value in color_option.values -%}
+  <div class="ds-card__body">
+    <p class="ds-card__title">{{ product.title | escape }}</p>
+    <p class="ds-card__price" data-dress-card-price>{{ variant.price | money }}</p>
+
+    {%- if show_options -%}
+      {%- for option in product.options_with_values -%}
+        {%- if option.values.size < 2 -%}{%- continue -%}{%- endif -%}
         {%- liquid
-          assign color_variant = blank
-          for product_variant in product.variants
-            case color_option.position
-              when 1
-                assign candidate_value = product_variant.option1
-              when 2
-                assign candidate_value = product_variant.option2
-              else
-                assign candidate_value = product_variant.option3
-            endcase
-            if candidate_value == color_value
-              assign color_variant = product_variant
-              break
-            endif
-          endfor
-
-          assign variant_media = color_variant.featured_media | default: product.featured_media
-
-          assign swatch_style = ''
-          if color_value.swatch.color
-            assign swatch_style = 'background-color: rgb(' | append: color_value.swatch.color.rgb | append: ');'
-          elsif color_value.swatch.image
-            assign swatch_image = color_value.swatch.image | image_url: width: 60
-            assign swatch_style = 'background-image: url(' | append: swatch_image | append: ');'
-          elsif color_variant.featured_media != blank
-            assign swatch_image = color_variant.featured_media | image_url: width: 60
-            assign swatch_style = 'background-image: url(' | append: swatch_image | append: ');'
+          assign option_name = option.name | downcase
+          assign is_swatch = false
+          if option_name contains 'color' or option_name contains 'colour'
+            assign is_swatch = true
           endif
         -%}
-        {%- if color_variant != blank -%}
-          <div class="dress-steps-card__variant">
-            <input
-              class="dress-steps-card__variant-input visually-hidden"
-              type="radio"
-              id="{{ input_id }}-color-{{ forloop.index }}"
-              name="{{ input_id }}-color"
-              value="{{ color_variant.id }}"
-              data-dress-variant
-              data-price="{{ color_variant.price }}"
-              data-label="{{ color_value | escape }}"
-              data-image="{{ variant_media | image_url: width: 80 }}"
-              data-image-large="{{ variant_media | image_url: width: 900 }}"
-              {% if color_variant.id == variant.id %}checked{% endif %}
-              {% unless color_value.available %}disabled{% endunless %}
-            >
-            <label
-              class="dress-steps-card__variant-label{% if swatch_style == blank %} dress-steps-card__variant-label--text{% endif %}"
-              for="{{ input_id }}-color-{{ forloop.index }}"
-              style="{{ swatch_style }}"
-            >
-              <span {% if swatch_style != blank %}class="visually-hidden"{% endif %}>
-                {{- color_value -}}
-                {%- unless color_value.available %} ({{ 'products.product.sold_out' | t }}){% endunless -%}
-              </span>
-            </label>
+        <div class="ds-card__option" data-option-index="{{ forloop.index0 }}">
+          <span class="ds-card__option-name">{{ option.name | escape }}</span>
+          <div
+            class="ds-card__values{% if is_swatch %} ds-card__values--swatch{% endif %}"
+            role="group"
+            aria-label="{{ product.title | escape }} — {{ option.name | escape }}"
+          >
+            {%- for value in option.values -%}
+              {%- liquid
+                assign swatch_style = ''
+                if is_swatch
+                  if value.swatch.color
+                    assign swatch_style = 'background-color: rgb(' | append: value.swatch.color.rgb | append: ');'
+                  elsif value.swatch.image
+                    assign swatch_url = value.swatch.image | image_url: width: 60
+                    assign swatch_style = 'background-image: url(' | append: swatch_url | append: ');'
+                  endif
+                endif
+              -%}
+              <button
+                class="ds-card__value{% if is_swatch and swatch_style != blank %} ds-card__value--swatch{% endif %}"
+                type="button"
+                aria-pressed="false"
+                data-dress-option
+                data-option-index="{{ forloop.parentloop.index0 }}"
+                data-value="{{ value | escape }}"
+                {% if swatch_style != blank %}style="{{ swatch_style }}"{% endif %}
+              >
+                <span {% if swatch_style != blank %}class="visually-hidden"{% endif %}>{{ value }}</span>
+              </button>
+            {%- endfor -%}
           </div>
-        {%- endif -%}
+        </div>
       {%- endfor -%}
-    </fieldset>
-  {%- endif -%}
-  {%- if show_quantity and product.available -%}
-    <div class="dress-steps-card__quantity" data-dress-quantity>
+    {%- endif -%}
+  </div>
+
+  {%- if show_quantity -%}
+    <div class="ds-card__quantity" data-dress-quantity>
       <button
-        class="dress-steps-card__quantity-button"
+        class="ds-card__quantity-button"
         type="button"
         data-dress-quantity-change="-1"
         aria-label="{{ 'products.product.quantity.decrease' | t: product: product.title | escape }}"
       >&minus;</button>
-      <output
-        class="dress-steps-card__quantity-value"
-        data-dress-quantity-value
-        aria-live="polite"
-        aria-label="{{ 'products.product.quantity.label' | t | escape }}"
-      >1</output>
+      <output class="ds-card__quantity-value" data-dress-quantity-value aria-live="polite">1</output>
       <button
-        class="dress-steps-card__quantity-button"
+        class="ds-card__quantity-button"
         type="button"
         data-dress-quantity-change="1"
         aria-label="{{ 'products.product.quantity.increase' | t: product: product.title | escape }}"
       >+</button>
     </div>
   {%- endif -%}
-  </div>
-</div>
+
+  <script type="application/json" data-dress-variants>{{ variants_json }}</script>
+</article>

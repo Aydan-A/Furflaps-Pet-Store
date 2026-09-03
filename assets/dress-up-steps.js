@@ -1,47 +1,57 @@
 /*
- * "Pick - Pair - Play!" builder.
+ * "Pick - Pair - Play!" product builder.
  *
- * State model: one entry per step, derived from the DOM on every change.
- *   - selections: the checked product inputs, in the order the customer picked
- *     them (a step can allow several, e.g. the letters of a name)
- *   - valid:     required selection present, plus required personalization text
- *   - completed: the customer pressed "Save and continue" while valid
- * Changing a step clears `completed` for every later step but keeps their
- * selections, so nothing can stay falsely completed.
+ * One custom element owns the whole flow. There is a single state tree:
+ *
+ *   steps[]  { index, required, max, completed, cards[], textInput, ... }
+ *   cards[]  { productId, variants[], selectedOptions[], quantity, selected }
+ *
+ * Every interaction mutates that state and then calls render(), which is the
+ * only place that touches the DOM. Nothing is read back out of the markup, so
+ * prices, summaries, the cart payload and the open step can never disagree.
  */
 if (!customElements.get('dress-up-steps')) {
   customElements.define(
     'dress-up-steps',
     class DressUpSteps extends HTMLElement {
       connectedCallback() {
-        this.steps = Array.from(this.querySelectorAll('[data-dress-step]')).map((el, index) => ({
-          el,
-          index,
-          panel: el.querySelector('[data-dress-panel]'),
-          toggle: el.querySelector('[data-dress-toggle]'),
-          saveButton: el.querySelector('[data-dress-save]'),
-          checkoutButton: el.querySelector('[data-dress-checkout]'),
-          priceEl: el.querySelector('[data-dress-price]'),
-          pill: el.querySelector('[data-dress-pill]'),
-          pillText: el.querySelector('[data-dress-pill-text]'),
-          pillImage: el.querySelector('[data-dress-pill-image]'),
-          errorEl: el.querySelector('[data-dress-error]'),
-          textInput: el.querySelector('[data-dress-text]'),
-          swatches: el.querySelector('[data-dress-swatches]'),
-          required: el.hasAttribute('data-required'),
-          isFinal: el.hasAttribute('data-final'),
-          completed: false,
-        }));
+        this.pickCounter = 0;
+        this.steps = Array.from(this.querySelectorAll('[data-dress-step]')).map((el, index) => {
+          const step = {
+            el,
+            index,
+            panel: el.querySelector('[data-dress-panel]'),
+            track: el.querySelector('[data-dress-track]'),
+            toggle: el.querySelector('[data-dress-toggle]'),
+            summary: el.querySelector('[data-dress-summary]'),
+            priceEl: el.querySelector('[data-dress-price]'),
+            saveButton: el.querySelector('[data-dress-save]'),
+            checkoutButton: el.querySelector('[data-dress-checkout]'),
+            editButton: el.querySelector('[data-dress-edit]'),
+            errorEl: el.querySelector('[data-dress-error]'),
+            textInput: el.querySelector('[data-dress-text]'),
+            arrows: Array.from(el.querySelectorAll('[data-dress-scroll]')),
+            required: el.hasAttribute('data-required'),
+            isFinal: el.hasAttribute('data-final'),
+            max: Math.max(1, Number(el.dataset.max) || 1),
+            completed: false,
+          };
+          step.cards = Array.from(el.querySelectorAll('[data-dress-card]')).map((cardEl) => this.buildCard(cardEl, step));
+          return step;
+        });
 
         this.addEventListener('click', this.handleClick);
-        this.addEventListener('change', this.handleChange);
         this.addEventListener('input', this.handleInput);
-        this.addEventListener('pointerdown', this.handlePointerDown);
-        this.addEventListener('keydown', this.handleKeyDown);
 
         if (window.Shopify?.designMode) {
           this.addEventListener('shopify:block:select', this.handleBlockSelect);
         }
+
+        this.steps.forEach((step) => {
+          if (!step.track) return;
+          step.onScroll = () => this.renderArrows(step);
+          step.track.addEventListener('scroll', step.onScroll, { passive: true });
+        });
 
         this.open(0);
         this.render();
@@ -49,41 +59,63 @@ if (!customElements.get('dress-up-steps')) {
 
       disconnectedCallback() {
         this.removeEventListener('click', this.handleClick);
-        this.removeEventListener('change', this.handleChange);
         this.removeEventListener('input', this.handleInput);
-        this.removeEventListener('pointerdown', this.handlePointerDown);
-        this.removeEventListener('keydown', this.handleKeyDown);
         this.removeEventListener('shopify:block:select', this.handleBlockSelect);
+        this.steps.forEach((step) => step.track?.removeEventListener('scroll', step.onScroll));
       }
 
-      /* ----- reading state ----- */
+      buildCard(el, step) {
+        let variants = [];
+        try {
+          variants = JSON.parse(el.querySelector('[data-dress-variants]')?.textContent || '[]');
+        } catch (error) {
+          variants = [];
+        }
 
-      stepFor(element) {
-        const el = element.closest('[data-dress-step]');
-        return this.steps.find((step) => step.el === el);
+        let selectedOptions = [];
+        try {
+          selectedOptions = JSON.parse(el.dataset.selectedOptions || '[]');
+        } catch (error) {
+          selectedOptions = variants[0]?.options?.slice() || [];
+        }
+
+        const card = {
+          el,
+          step,
+          variants,
+          selectedOptions,
+          productId: el.dataset.productId,
+          title: el.dataset.productTitle,
+          defaultImage: el.dataset.defaultImage || '',
+          pickButton: el.querySelector('[data-dress-pick]'),
+          imageEl: el.querySelector('.ds-card__image'),
+          priceEl: el.querySelector('[data-dress-card-price]'),
+          quantityValue: el.querySelector('[data-dress-quantity-value]'),
+          optionButtons: Array.from(el.querySelectorAll('[data-dress-option]')),
+          quantity: 1,
+          selected: false,
+          order: 0,
+        };
+
+        // Liquid already rendered the default image with a full srcset. Record
+        // it so the first render leaves that responsive image alone.
+        if (card.imageEl) card.imageEl.dataset.currentSrc = card.defaultImage;
+        return card;
+      }
+
+      /* ----- derived state ----- */
+
+      // The variant matching every option the customer has chosen on this card.
+      variantFor(card) {
+        if (!card.variants.length) return null;
+        const match = card.variants.find((variant) =>
+          card.selectedOptions.every((value, index) => variant.options[index] === value)
+        );
+        return match || card.variants[0];
       }
 
       selectionsFor(step) {
-        return Array.from(step.el.querySelectorAll('[data-dress-product]:checked:not(:disabled)'))
-          .map((input) => {
-            const selectedVariant = input.parentElement.querySelector('[data-dress-variant]:checked');
-            return {
-              input,
-              order: Number(input.dataset.order) || 0,
-              variantId: selectedVariant?.value || input.value,
-              price: Number(selectedVariant?.dataset.price || input.dataset.price) || 0,
-              quantity: Number(input.dataset.quantity) || 1,
-              title: [input.dataset.title, selectedVariant?.dataset.label].filter(Boolean).join(' — '),
-              image: selectedVariant?.dataset.image || input.dataset.image,
-            };
-          })
-          .sort((a, b) => a.order - b.order);
-      }
-
-      swatchFor(step) {
-        const input = step.swatches?.querySelector('[data-dress-swatch]:checked');
-        if (!input) return null;
-        return { label: input.dataset.label, value: input.value, property: step.swatches.dataset.property };
+        return step.cards.filter((card) => card.selected).sort((a, b) => a.order - b.order);
       }
 
       textFor(step) {
@@ -97,7 +129,7 @@ if (!customElements.get('dress-up-steps')) {
       }
 
       // A step counts towards the cart once it is saved. The final step has no
-      // save button of its own, so pressing the CTA confirms its selection.
+      // save button of its own, so pressing the CTA confirms it.
       isConfirmed(step) {
         return step.isFinal ? this.isValid(step) : step.completed;
       }
@@ -106,35 +138,137 @@ if (!customElements.get('dress-up-steps')) {
         return this.steps.slice(0, index).every((step) => !step.required || this.isValid(step));
       }
 
+      total() {
+        return this.steps.reduce(
+          (sum, step) =>
+            sum +
+            this.selectionsFor(step).reduce(
+              (stepSum, card) => stepSum + (this.variantFor(card)?.price || 0) * card.quantity,
+              0
+            ),
+          0
+        );
+      }
+
       /* ----- rendering ----- */
 
       render() {
-        let total = 0;
-        this.steps.forEach((step) => {
-          this.selectionsFor(step).forEach((selection) => {
-            total += selection.price * selection.quantity;
-          });
-        });
-
-        const money = this.formatMoney(total);
+        const money = this.formatMoney(this.total());
         const ready = this.steps.every((step) => !step.required || this.isConfirmed(step));
 
         this.steps.forEach((step) => {
-          if (step.priceEl) step.priceEl.textContent = money;
-          if (step.saveButton) step.saveButton.setAttribute('aria-disabled', String(!this.isValid(step)));
-          if (step.checkoutButton) step.checkoutButton.setAttribute('aria-disabled', String(!ready));
-          if (step.toggle) {
-            const openable = this.canOpen(step.index);
-            step.toggle.setAttribute('aria-disabled', String(!openable));
-          }
+          const isOpen = !step.panel.hidden;
+          const selections = this.selectionsFor(step);
 
-          // Minimum quantity is 1.
-          step.el.querySelectorAll('[data-dress-quantity]').forEach((control) => {
-            const input = control.closest('.dress-steps-card')?.querySelector('[data-dress-product]');
-            const quantity = Number(input?.dataset.quantity) || 1;
-            control.querySelector('[data-dress-quantity-value]').textContent = quantity;
-            control.querySelector('[data-dress-quantity-change="-1"]').disabled = quantity <= 1;
-          });
+          step.el.classList.toggle('ds-step--open', isOpen);
+          step.el.classList.toggle('ds-step--done', !isOpen && step.completed);
+
+          if (step.priceEl) step.priceEl.textContent = money;
+          step.toggle.setAttribute('aria-disabled', String(!this.canOpen(step.index)));
+
+          // One action per row, always in the same place: the open step owns
+          // its Save / Go to cart button, a collapsed step owns Edit.
+          if (step.saveButton) {
+            step.saveButton.hidden = !isOpen;
+            step.saveButton.setAttribute('aria-disabled', String(!this.isValid(step)));
+          }
+          if (step.checkoutButton) {
+            step.checkoutButton.hidden = !isOpen;
+            step.checkoutButton.setAttribute('aria-disabled', String(!ready));
+          }
+          if (step.editButton) step.editButton.hidden = isOpen || !selections.length;
+
+          this.renderSummary(step, isOpen, selections);
+          step.cards.forEach((card) => this.renderCard(card));
+          this.renderArrows(step);
+        });
+      }
+
+      renderCard(card) {
+        const variant = this.variantFor(card);
+
+        card.el.classList.toggle('ds-card--selected', card.selected);
+        card.pickButton.setAttribute('aria-pressed', String(card.selected));
+        if (card.priceEl && variant) card.priceEl.textContent = this.formatMoney(variant.price);
+        if (card.quantityValue) card.quantityValue.textContent = card.quantity;
+
+        // A colour swap shows that colour's own image, straight from Shopify.
+        const image = variant?.image || card.defaultImage;
+        if (card.imageEl && image && card.imageEl.dataset.currentSrc !== image) {
+          card.imageEl.dataset.currentSrc = image;
+          card.imageEl.removeAttribute('srcset');
+          card.imageEl.src = image;
+        }
+
+        card.optionButtons.forEach((button) => {
+          const index = Number(button.dataset.optionIndex);
+          const value = button.dataset.value;
+          const chosen = card.selectedOptions[index] === value;
+          const available = card.variants.some(
+            (item) =>
+              item.available &&
+              item.options[index] === value &&
+              card.selectedOptions.every((option, i) => i === index || item.options[i] === option)
+          );
+
+          button.setAttribute('aria-pressed', String(chosen));
+          button.classList.toggle('ds-card__value--active', chosen);
+          button.classList.toggle('ds-card__value--unavailable', !available);
+        });
+      }
+
+      renderSummary(step, isOpen, selections) {
+        // An untouched step stays quiet: only a saved or filled step summarises.
+        step.summary.hidden = isOpen || (!selections.length && !step.completed);
+        if (step.summary.hidden) return;
+
+        const text = this.textFor(step);
+        const parts = selections.map((card) => {
+          const variant = this.variantFor(card);
+          const options = (variant?.options || []).filter((value) => value && value !== 'Default Title');
+          const label = [card.title, options.join(' / ')].filter(Boolean).join(' — ');
+          return card.quantity > 1 ? `${label} × ${card.quantity}` : label;
+        });
+        if (text) parts.unshift(text);
+
+        step.summary.textContent = '';
+        if (!parts.length) {
+          step.summary.append(this.summaryChip(this.dataset.emptySummary, null));
+          return;
+        }
+
+        selections.slice(0, 3).forEach((card) => {
+          const image = this.variantFor(card)?.image || card.defaultImage;
+          if (image) step.summary.append(this.summaryThumb(image));
+        });
+        step.summary.append(this.summaryChip(parts.join(' · '), true));
+      }
+
+      summaryThumb(src) {
+        const img = document.createElement('img');
+        img.className = 'ds-step__thumb';
+        img.src = src;
+        img.alt = '';
+        img.width = 32;
+        img.height = 32;
+        img.loading = 'lazy';
+        return img;
+      }
+
+      summaryChip(text, filled) {
+        const span = document.createElement('span');
+        span.className = filled ? 'ds-step__chip' : 'ds-step__chip ds-step__chip--empty';
+        span.textContent = text;
+        return span;
+      }
+
+      renderArrows(step) {
+        if (!step.arrows.length || !step.track) return;
+        const maxScroll = step.track.scrollWidth - step.track.clientWidth - 1;
+        const scrollable = maxScroll > 0;
+        step.arrows.forEach((arrow) => {
+          const forward = Number(arrow.dataset.dressScroll) > 0;
+          arrow.disabled = !scrollable || (forward ? step.track.scrollLeft >= maxScroll : step.track.scrollLeft <= 0);
         });
       }
 
@@ -171,60 +305,19 @@ if (!customElements.get('dress-up-steps')) {
           const isOpen = step.index === index;
           step.panel.hidden = !isOpen;
           step.toggle.setAttribute('aria-expanded', String(isOpen));
-          step.el.classList.toggle('dress-up-steps__step--open', isOpen);
-          step.el.classList.toggle('dress-up-steps__step--closed', !isOpen);
           if (isOpen) this.clearError(step);
         });
       }
 
       // A change in one step can never leave a later step "completed".
-      invalidateAfter(index) {
+      invalidateFrom(index) {
         this.steps.forEach((step) => {
-          if (step.index >= index) this.uncomplete(step);
+          if (step.index >= index) step.completed = false;
         });
       }
 
-      uncomplete(step) {
-        step.completed = false;
-        step.pill.hidden = true;
-      }
-
-      complete(step) {
-        step.completed = true;
-        this.showPill(step);
-
-        const next = this.steps[step.index + 1];
-        if (next) {
-          this.open(next.index);
-          next.toggle.focus();
-        } else {
-          this.open(-1);
-        }
-      }
-
-      showPill(step) {
-        const selections = this.selectionsFor(step);
-        const swatch = this.swatchFor(step);
-        const text = this.textFor(step);
-        const parts = [text, ...selections.map((selection) => selection.title), swatch?.label].filter(Boolean);
-
-        if (!parts.length) {
-          step.pill.hidden = true;
-          return;
-        }
-
-        step.pillText.textContent = parts.join(' / ');
-        if (selections[0]?.image) {
-          step.pillImage.src = selections[0].image;
-          step.pillImage.hidden = false;
-        } else {
-          step.pillImage.hidden = true;
-        }
-        step.pill.hidden = false;
-      }
-
       showError(step, message) {
-        if (!step.errorEl) return;
+        if (!step.errorEl || !message) return;
         step.errorEl.textContent = message;
         step.errorEl.hidden = false;
       }
@@ -239,125 +332,140 @@ if (!customElements.get('dress-up-steps')) {
       /* ----- events ----- */
 
       handleClick = (event) => {
-        const toggle = event.target.closest('[data-dress-toggle]');
+        const target = (selector) => event.target.closest(selector);
+
+        const toggle = target('[data-dress-toggle]');
         if (toggle) return this.onToggle(this.stepFor(toggle));
 
-        const edit = event.target.closest('[data-dress-edit]');
-        if (edit) {
-          const step = this.stepFor(edit);
-          this.uncomplete(step);
-          this.open(step.index);
-          step.toggle.focus();
-          return this.render();
-        }
+        const edit = target('[data-dress-edit]');
+        if (edit) return this.onEdit(this.stepFor(edit));
 
-        const label = event.target.closest('.dress-steps-card__label');
-        if (label) return this.onCardClick(label);
+        const pick = target('[data-dress-pick]');
+        if (pick) return this.onPick(this.cardFor(pick));
 
-        const quantityButton = event.target.closest('[data-dress-quantity-change]');
-        if (quantityButton) return this.onQuantity(quantityButton);
+        const option = target('[data-dress-option]');
+        if (option) return this.onOption(this.cardFor(option), option);
 
-        const save = event.target.closest('[data-dress-save]');
+        const quantity = target('[data-dress-quantity-change]');
+        if (quantity) return this.onQuantity(this.cardFor(quantity), Number(quantity.dataset.dressQuantityChange));
+
+        const arrow = target('[data-dress-scroll]');
+        if (arrow) return this.onScrollButton(this.stepFor(arrow), Number(arrow.dataset.dressScroll));
+
+        const save = target('[data-dress-save]');
         if (save) return this.onSave(this.stepFor(save));
 
-        const checkout = event.target.closest('[data-dress-checkout]');
+        const checkout = target('[data-dress-checkout]');
         if (checkout) return this.onCheckout(checkout);
-      };
-
-      // Clicking the selected card in an optional step clears it.
-      onCardClick(label) {
-        const input = label.parentElement.querySelector('[data-dress-product]');
-        const step = this.stepFor(label);
-        if (input.type === 'checkbox' || step.required || input.dataset.wasChecked !== 'true') return;
-
-        input.checked = false;
-        this.invalidateAfter(step.index);
-        this.render();
-      }
-
-      handlePointerDown = (event) => {
-        const label = event.target.closest('.dress-steps-card__label');
-        if (!label) return;
-        const input = label.parentElement.querySelector('[data-dress-product]');
-        input.dataset.wasChecked = String(input.checked);
-      };
-
-      handleKeyDown = (event) => {
-        if (event.key !== ' ' && event.key !== 'Spacebar') return;
-        const input = event.target.closest('[data-dress-product]');
-        if (!input?.checked || input.type === 'checkbox') return;
-
-        const step = this.stepFor(input);
-        if (step.required) return;
-
-        event.preventDefault();
-        input.checked = false;
-        this.invalidateAfter(step.index);
-        this.render();
-      };
-
-      handleChange = (event) => {
-        if (!event.target.matches('[data-dress-product], [data-dress-swatch], [data-dress-variant]')) return;
-
-        if (event.target.matches('[data-dress-variant]')) this.showVariantImage(event.target);
-
-        if (event.target.matches('[data-dress-product]') && event.target.checked) {
-          this.pickOrder = (this.pickOrder || 0) + 1;
-          event.target.dataset.order = String(this.pickOrder);
-        }
-
-        const step = this.stepFor(event.target);
-        this.invalidateAfter(step.index);
-        this.clearError(step);
-        this.render();
       };
 
       handleInput = (event) => {
         if (!event.target.matches('[data-dress-text]')) return;
         const step = this.stepFor(event.target);
-        this.invalidateAfter(step.index);
+        this.invalidateFrom(step.index);
         this.clearError(step);
         this.render();
       };
 
-      showVariantImage(variantInput) {
-        const image = variantInput.closest('.dress-steps-card')?.querySelector('.dress-steps-card__image');
-        if (!image || !variantInput.dataset.imageLarge) return;
+      handleBlockSelect = (event) => {
+        const step = this.stepFor(event.target);
+        if (step) {
+          this.open(step.index);
+          this.render();
+        }
+      };
 
-        image.srcset = '';
-        image.src = variantInput.dataset.imageLarge;
+      stepFor(element) {
+        const el = element.closest('[data-dress-step]');
+        return this.steps.find((step) => step.el === el);
+      }
+
+      cardFor(element) {
+        const step = this.stepFor(element);
+        const el = element.closest('[data-dress-card]');
+        return step.cards.find((card) => card.el === el);
       }
 
       onToggle(step) {
-        const isOpen = step.toggle.getAttribute('aria-expanded') === 'true';
-        if (isOpen) return this.open(-1);
+        if (step.toggle.getAttribute('aria-expanded') === 'true') return;
+        if (!this.canOpen(step.index)) return this.showError(step, this.dataset.lockedMessage);
 
-        if (!this.canOpen(step.index)) {
-          return this.showError(step, this.dataset.lockedMessage);
-        }
-
-        this.uncomplete(step);
+        step.completed = false;
         this.open(step.index);
         this.render();
       }
 
-      onQuantity(button) {
-        const card = button.closest('.dress-steps-card');
-        const input = card.querySelector('[data-dress-product]');
-        const quantity = Number(input.dataset.quantity) || 1;
+      onEdit(step) {
+        this.onToggle(step);
+        step.toggle.focus();
+      }
 
-        input.dataset.quantity = Math.max(1, quantity + Number(button.dataset.dressQuantityChange));
-        if (!input.checked) input.checked = true;
+      onPick(card) {
+        const step = card.step;
 
-        this.invalidateAfter(this.stepFor(button).index);
+        if (card.selected) {
+          card.selected = false;
+        } else {
+          const selected = this.selectionsFor(step);
+          if (step.max === 1) {
+            selected.forEach((other) => (other.selected = false));
+          } else if (selected.length >= step.max) {
+            return this.showError(step, this.dataset.limitMessage);
+          }
+          card.selected = true;
+          card.order = ++this.pickCounter;
+          card.quantity = card.quantity || 1;
+        }
+
+        this.clearError(step);
+        this.invalidateFrom(step.index);
         this.render();
+      }
+
+      // Choosing an option keeps the card on a real variant: if the combination
+      // the customer built does not exist, the rest of the options move to the
+      // first variant that does carry the value they just picked.
+      onOption(card, button) {
+        const index = Number(button.dataset.optionIndex);
+        const value = button.dataset.value;
+        const next = card.selectedOptions.slice();
+        next[index] = value;
+
+        const exact = card.variants.find((variant) => next.every((option, i) => variant.options[i] === option));
+        if (!exact || !exact.available) {
+          const fallback =
+            card.variants.find((variant) => variant.available && variant.options[index] === value) ||
+            card.variants.find((variant) => variant.options[index] === value);
+          if (fallback) next.splice(0, next.length, ...fallback.options);
+        }
+
+        card.selectedOptions = next;
+        this.clearError(card.step);
+        this.invalidateFrom(card.step.index);
+        this.render();
+      }
+
+      onQuantity(card, change) {
+        card.quantity = Math.max(1, card.quantity + change);
+        this.invalidateFrom(card.step.index);
+        this.render();
+      }
+
+      // Page by whole cards, so the track never rests on a half-visible card.
+      onScrollButton(step, direction) {
+        const card = step.track?.querySelector('[data-dress-card]');
+        if (!card) return;
+        const gap = parseFloat(getComputedStyle(step.track).columnGap) || 0;
+        const stride = card.offsetWidth + gap;
+        const perPage = Math.max(1, Math.round(step.track.clientWidth / stride));
+        step.track.scrollBy({ left: direction * stride * perPage, behavior: 'smooth' });
       }
 
       onSave(step) {
         if (!this.isValid(step)) {
           // Point at whatever is actually missing rather than just refusing.
           if (!this.selectionsFor(step).length) {
-            step.el.querySelector('[data-dress-product]:not(:disabled)')?.focus();
+            step.el.querySelector('[data-dress-pick]:not(:disabled)')?.focus();
           } else if (step.textInput && !this.textFor(step)) {
             step.textInput.setAttribute('aria-invalid', 'true');
             step.textInput.focus();
@@ -366,7 +474,15 @@ if (!customElements.get('dress-up-steps')) {
         }
 
         this.clearError(step);
-        this.complete(step);
+        step.completed = true;
+
+        const next = this.steps[step.index + 1];
+        if (next) {
+          this.open(next.index);
+          next.toggle.focus();
+        } else {
+          this.open(-1);
+        }
         this.render();
       }
 
@@ -378,16 +494,15 @@ if (!customElements.get('dress-up-steps')) {
 
           const properties = {};
           const text = this.textFor(step);
-          if (text && step.textInput.dataset.property) properties[step.textInput.dataset.property] = text;
+          if (text && step.textInput?.dataset.property) properties[step.textInput.dataset.property] = text;
 
-          const swatch = this.swatchFor(step);
-          if (swatch?.value && swatch.property) properties[swatch.property] = swatch.value;
-
-          // A step that allows several products adds one cart line per product.
-          this.selectionsFor(step).forEach((selection) => {
+          // Every pick is its own cart line, with its own variant and quantity.
+          this.selectionsFor(step).forEach((card) => {
+            const variant = this.variantFor(card);
+            if (!variant) return;
             items.push({
-              id: selection.variantId,
-              quantity: selection.quantity,
+              id: variant.id,
+              quantity: card.quantity,
               ...(Object.keys(properties).length ? { properties } : {}),
             });
           });
@@ -400,14 +515,13 @@ if (!customElements.get('dress-up-steps')) {
         const incomplete = this.steps.find((item) => item.required && !this.isConfirmed(item));
         if (incomplete) {
           this.open(incomplete.index);
+          this.render();
           return this.showError(incomplete, this.dataset.errorMessage);
         }
 
         const items = this.buildItems();
         if (!items.length) return this.showError(step, this.dataset.errorMessage);
 
-        // The cart notification renders a single added line, so a multi-item
-        // add falls back to the cart page instead.
         const cart = document.querySelector('cart-drawer');
         const body = { items };
         if (cart) {
@@ -434,7 +548,7 @@ if (!customElements.get('dress-up-steps')) {
             publish(PUB_SUB_EVENTS.cartUpdate, { source: 'dress-up-steps', cartData: data });
           }
 
-          // Fall back to the cart page when the theme has no drawer or notification.
+          // Fall back to the cart page when the theme has no drawer.
           if (cart && data.sections) {
             cart.renderContents(data);
           } else {
@@ -453,11 +567,6 @@ if (!customElements.get('dress-up-steps')) {
         button.disabled = isLoading;
         button.querySelector('[data-dress-spinner]').hidden = !isLoading;
       }
-
-      handleBlockSelect = (event) => {
-        const step = this.stepFor(event.target);
-        if (step) this.open(step.index);
-      };
     },
   );
 }
