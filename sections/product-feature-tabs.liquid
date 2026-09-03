@@ -84,16 +84,19 @@
                 {%- for product in block.settings.collection.products limit: section.settings.products_to_show -%}
                   {%- liquid
                     assign selected_variant = product.selected_or_first_available_variant
+                    if product.featured_media != blank
+                      for product_variant in product.variants
+                        if product_variant.featured_media.id == product.featured_media.id
+                          assign selected_variant = product_variant
+                          break
+                        endif
+                      endfor
+                    endif
                     assign color_value = blank
                     assign color_swatch_style = blank
-                    assign count_value = blank
                     assign color_metafield = product.metafields.custom.color
                     if color_metafield == blank
                       assign color_metafield = product.metafields.custom.colour
-                    endif
-                    assign count_metafield = product.metafields.custom.count
-                    if count_metafield == blank
-                      assign count_metafield = product.metafields.custom.quantity
                     endif
 
                     for product_option in product.options_with_values
@@ -111,8 +114,6 @@
                             break
                           endif
                         endfor
-                      elsif option_name == 'count' or option_name == 'quantity' or option_name == 'qty'
-                        assign count_value = selected_variant.options[forloop.index0]
                       endif
                     endfor
 
@@ -142,23 +143,9 @@
                       assign color_swatch_style = 'background-image: url(' | append: color_swatch_url | append: ');'
                     endif
 
-                    if count_value == blank
-                      if count_metafield.type contains 'metaobject_reference'
-                        assign count_reference = count_metafield.value
-                        if count_metafield.type contains 'list.'
-                          assign count_reference = count_metafield.value | first
-                        endif
-                        assign count_value = count_reference.count.value | default: count_reference.quantity.value | default: count_reference.value.value | default: count_reference.label.value | default: count_reference.name.value
-                      elsif count_metafield.type == 'list.single_line_text_field' or count_metafield.type == 'list.number_integer'
-                        assign count_value = count_metafield.value | first
-                      elsif count_metafield.type == 'single_line_text_field' or count_metafield.type == 'number_integer' or count_metafield.type == 'number_decimal'
-                        assign count_value = count_metafield.value
-                      endif
-                    endif
-
-                    if count_value == blank
-                      assign count_value = selected_variant.quantity_rule.min | default: 1
-                    endif
+                    assign quantity_min = selected_variant.quantity_rule.min | default: 1
+                    assign quantity_step = selected_variant.quantity_rule.increment | default: 1
+                    assign quantity_max = selected_variant.quantity_rule.max
                   -%}
                   <li class="product-feature-tabs__item">
                     <article class="product-feature-tabs__card">
@@ -171,19 +158,23 @@
                           {%- endif -%}
                         </div>
                       </a>
-                      <dl class="product-feature-tabs__details">
-                        <div class="product-feature-tabs__detail product-feature-tabs__detail--color">
-                          <dt class="visually-hidden">Color</dt>
-                          <dd>
-                            <span class="product-feature-tabs__swatch"{% if color_swatch_style != blank %} style="{{ color_swatch_style }}"{% endif %} aria-hidden="true"></span>
-                            <span>{{ color_value | default: 'Not specified' | escape }}</span>
-                          </dd>
+                      <div class="product-feature-tabs__details">
+                        <div class="product-feature-tabs__color">
+                          <span class="product-feature-tabs__swatch"{% if color_swatch_style != blank %} style="{{ color_swatch_style }}"{% endif %} aria-hidden="true"></span>
+                          {%- if color_value != blank -%}<span>{{ color_value | escape }}</span>{%- endif -%}
                         </div>
-                        <div class="product-feature-tabs__detail product-feature-tabs__detail--count">
-                          <dt>Count</dt>
-                          <dd>{{ count_value | escape }}</dd>
+                        <div
+                          class="product-feature-tabs__quantity"
+                          data-pft-quantity
+                          data-min="{{ quantity_min }}"
+                          data-step="{{ quantity_step }}"
+                          {% if quantity_max != blank %}data-max="{{ quantity_max }}"{% endif %}
+                        >
+                          <button class="product-feature-tabs__quantity-button" type="button" data-pft-quantity-change="-1" aria-label="Decrease quantity for {{ product.title | escape }}">&minus;</button>
+                          <output class="product-feature-tabs__quantity-value" aria-live="polite">{{ quantity_min }}</output>
+                          <button class="product-feature-tabs__quantity-button" type="button" data-pft-quantity-change="1" aria-label="Increase quantity for {{ product.title | escape }}">+</button>
                         </div>
-                      </dl>
+                      </div>
                     </article>
                   </li>
                 {%- endfor -%}
@@ -215,7 +206,21 @@
         this.addEventListener('keydown', this.onKeydown);
       }
       disconnectedCallback() { this.removeEventListener('click', this.onClick); this.removeEventListener('keydown', this.onKeydown); }
-      onClick = (event) => { const tab = event.target.closest('[role="tab"]'); if (tab) this.select(tab); };
+      onClick = (event) => {
+        const quantityButton = event.target.closest('[data-pft-quantity-change]');
+        if (quantityButton) {
+          const quantity = quantityButton.closest('[data-pft-quantity]');
+          const output = quantity.querySelector('.product-feature-tabs__quantity-value');
+          const minimum = Number(quantity.dataset.min || 0);
+          const maximum = quantity.dataset.max ? Number(quantity.dataset.max) : Infinity;
+          const step = Number(quantity.dataset.step || 1);
+          const direction = Number(quantityButton.dataset.pftQuantityChange);
+          output.value = Math.min(maximum, Math.max(minimum, Number(output.value) + direction * step));
+          return;
+        }
+        const tab = event.target.closest('[role="tab"]');
+        if (tab) this.select(tab);
+      };
       onKeydown = (event) => {
         const tab = event.target.closest('[role="tab"]');
         if (!tab || !['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) return;

@@ -100,6 +100,7 @@ if (!customElements.get('dress-up-steps')) {
           pickButton: el.querySelector('[data-dress-pick]'),
           imageEl: el.querySelector('.ds-card__image'),
           quantityValue: el.querySelector('[data-dress-quantity-value]'),
+          quantityDown: el.querySelector('[data-dress-quantity-change="-1"]'),
           optionButtons: Array.from(el.querySelectorAll('[data-dress-option]')),
           optionSelects: Array.from(el.querySelectorAll('[data-dress-option-select]')),
           quantity: 1,
@@ -192,6 +193,7 @@ if (!customElements.get('dress-up-steps')) {
         card.el.classList.toggle('ds-card--blocked', Boolean(atLimit) && !card.selected);
         card.pickButton?.setAttribute('aria-pressed', String(card.selected));
         if (card.quantityValue) card.quantityValue.textContent = card.quantity;
+        if (card.quantityDown) card.quantityDown.disabled = card.quantity <= 1;
 
         card.optionButtons.forEach((button) => {
           const index = Number(button.dataset.optionIndex);
