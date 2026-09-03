@@ -448,7 +448,7 @@
         "tab_shell_background": "#f5f5f5",
         "tab_border": "#e4e4e4",
         "tab_text": "#222222",
-        "active_tab_background": "#1d1d1d",
+        "active_tab_background": "#E50B0B",
         "active_tab_text": "#ffffff",
         "card_gap": 18,
         "card_radius": 10,
