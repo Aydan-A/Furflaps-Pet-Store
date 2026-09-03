@@ -188,6 +188,18 @@
   line-height: 1;
   text-align: center;
 }
+
+.product-feature-tabs__product-form,
+.product-feature-tabs__form { display: block; width: 100%; }
+
+.product-feature-tabs__add {
+  min-height: 4rem;
+  border-radius: var(--pft-card-radius);
+  font-size: 1.3rem;
+}
+
+.product-feature-tabs__add .loading__spinner { width: 1.6rem; }
+.product-feature-tabs__form .product-form__error-message-wrapper { margin-top: 0.6rem; font-size: 1.1rem; }
 .product-feature-tabs__empty { padding: 4rem 2rem; text-align: center; background: var(--pft-card-background); border-radius: var(--pft-card-radius); }
 .product-feature-tabs__footer { margin-top: 2.4rem; text-align: var(--pft-alignment); }
 
