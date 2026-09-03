@@ -92,6 +92,7 @@
     --header-search-max-width: {{ section.settings.search_max_width | default: 520 }}px;
     --header-search-radius: {{ section.settings.search_border_radius | default: 0 }}px;
     --header-search-border-width: {{ section.settings.search_border_thickness | default: 1 }}px;
+    --header-content-max-width: {% if section.settings.content_width == 'full' %}none{% else %}var(--page-width){% endif %};
     --header-side-padding: {{ section.settings.header_side_padding | default: 24 }}px;
     --header-row-gap: {{ section.settings.header_row_gap | default: 12 }}px;
     --header-group-gap: {{ section.settings.header_group_gap | default: 24 }}px;
@@ -691,6 +692,22 @@
     {
       "type": "header",
       "content": "Header spacing"
+    },
+    {
+      "type": "select",
+      "id": "content_width",
+      "options": [
+        {
+          "value": "page",
+          "label": "Theme page width"
+        },
+        {
+          "value": "full",
+          "label": "Full width"
+        }
+      ],
+      "default": "full",
+      "label": "Desktop content width"
     },
     {
       "type": "range",

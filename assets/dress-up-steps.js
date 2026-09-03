@@ -90,9 +90,9 @@ if (!customElements.get('dress-up-steps')) {
           productId: el.dataset.productId,
           title: el.dataset.productTitle,
           defaultImage: el.dataset.defaultImage || '',
+          image: el.dataset.defaultImage || '',
           pickButton: el.querySelector('[data-dress-pick]'),
           imageEl: el.querySelector('.ds-card__image'),
-          priceEl: el.querySelector('[data-dress-card-price]'),
           quantityValue: el.querySelector('[data-dress-quantity-value]'),
           optionButtons: Array.from(el.querySelectorAll('[data-dress-option]')),
           quantity: 1,
@@ -100,9 +100,6 @@ if (!customElements.get('dress-up-steps')) {
           order: 0,
         };
 
-        // Liquid already rendered the default image with a full srcset. Record
-        // it so the first render leaves that responsive image alone.
-        if (card.imageEl) card.imageEl.dataset.currentSrc = card.defaultImage;
         return card;
       }
 
@@ -180,20 +177,9 @@ if (!customElements.get('dress-up-steps')) {
       }
 
       renderCard(card) {
-        const variant = this.variantFor(card);
-
         card.el.classList.toggle('ds-card--selected', card.selected);
         card.pickButton.setAttribute('aria-pressed', String(card.selected));
-        if (card.priceEl && variant) card.priceEl.textContent = this.formatMoney(variant.price);
         if (card.quantityValue) card.quantityValue.textContent = card.quantity;
-
-        // A colour swap shows that colour's own image, straight from Shopify.
-        const image = variant?.image || card.defaultImage;
-        if (card.imageEl && image && card.imageEl.dataset.currentSrc !== image) {
-          card.imageEl.dataset.currentSrc = image;
-          card.imageEl.removeAttribute('srcset');
-          card.imageEl.src = image;
-        }
 
         card.optionButtons.forEach((button) => {
           const index = Number(button.dataset.optionIndex);
@@ -228,7 +214,7 @@ if (!customElements.get('dress-up-steps')) {
         step.pillText.textContent = parts.join(' / ');
         // A step can be summarised by its text alone, with nothing picked yet.
         const first = selections[0];
-        const image = first ? this.variantFor(first)?.image || first.defaultImage : '';
+        const image = first?.image;
         step.pillImage.hidden = !image;
         if (image) step.pillImage.src = image;
       }
@@ -415,9 +401,23 @@ if (!customElements.get('dress-up-steps')) {
         }
 
         card.selectedOptions = next;
+        this.showVariantImage(card);
         this.clearError(card.step);
         this.invalidateFrom(card.step.index);
         this.render();
+      }
+
+      // Only an option change can move a card onto another variant, so the
+      // image swap lives here. Until a customer picks something, the card keeps
+      // the product's own featured image, with the responsive srcset Liquid
+      // rendered for it.
+      showVariantImage(card) {
+        const image = this.variantFor(card)?.image || card.defaultImage;
+        if (!card.imageEl || !image || image === card.image) return;
+
+        card.image = image;
+        card.imageEl.removeAttribute('srcset');
+        card.imageEl.src = image;
       }
 
       onQuantity(card, change) {
