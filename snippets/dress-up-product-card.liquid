@@ -13,6 +13,7 @@
   - block:         parent step block object
   - index:         forloop index within the step
   - show_options:  boolean, render the option controls (size, colour, ...)
+  - option_names:  comma separated option names to show; blank shows them all
   - show_quantity: boolean, render the quantity stepper
   - loading:       image loading strategy
 {% endcomment %}
@@ -88,12 +89,24 @@
     never jumps when a selection changes.
   {%- endcomment -%}
   <div class="ds-card__controls">
+    {%- comment -%}
+      Spaces are stripped from both sides of the comparison, so "Collar Size"
+      matches and a merchant can write "Size, Colour" either way.
+    {%- endcomment -%}
+    {%- assign wanted_options = option_names | downcase | replace: ' ', '' | split: ',' -%}
+
     {%- capture option_controls -%}
       {%- if show_options -%}
         {%- for option in product.options_with_values -%}
           {%- if option.values.size < 2 -%}{%- continue -%}{%- endif -%}
           {%- liquid
             assign option_name = option.name | downcase
+            if wanted_options.size > 0
+              assign option_key = option.name | downcase | replace: ' ', ''
+              unless wanted_options contains option_key
+                continue
+              endunless
+            endif
             assign is_swatch = false
             if option_name contains 'color' or option_name contains 'colour'
               assign is_swatch = true

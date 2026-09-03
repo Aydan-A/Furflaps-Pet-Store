@@ -242,7 +242,8 @@
             "personalization_label": "Name",
             "personalization_placeholder": "Enter a name",
             "personalization_max_chars": 12,
-            "personalization_required": true
+            "personalization_required": true,
+            "option_names": "Size"
           }
         },
         "step_G9XGPD": {
@@ -262,7 +263,8 @@
             "personalization_label": "Name",
             "personalization_placeholder": "Enter a name",
             "personalization_max_chars": 12,
-            "personalization_required": false
+            "personalization_required": false,
+            "option_names": ""
           }
         },
         "step_33GmAx": {
@@ -282,7 +284,8 @@
             "personalization_label": "Name",
             "personalization_placeholder": "Enter a name",
             "personalization_max_chars": 12,
-            "personalization_required": true
+            "personalization_required": true,
+            "option_names": "Size"
           }
         }
       },
@@ -301,6 +304,7 @@
         "locked_message": "Let's finish the step above first, then this one opens up.",
         "limit_message": "That's the maximum here. Remove one to swap it out.",
         "cards_per_row": 4,
+        "card_gap": 24,
         "image_ratio": "4 / 5",
         "image_fit": "contain",
         "card_radius": 14,

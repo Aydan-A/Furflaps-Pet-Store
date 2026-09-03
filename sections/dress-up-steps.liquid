@@ -25,6 +25,7 @@
     --ds-heading-gap: {{ section.settings.heading_gap }}px;
 
     --ds-per-row: {{ section.settings.cards_per_row }};
+    --ds-gap: {{ section.settings.card_gap }}px;
     --ds-image-ratio: {{ section.settings.image_ratio }};
     --ds-image-fit: {{ section.settings.image_fit }};
     --ds-radius-card: {{ section.settings.card_radius }}px;
@@ -204,6 +205,7 @@
                     block: block,
                     index: forloop.index,
                     show_options: block.settings.show_options,
+                    option_names: block.settings.option_names,
                     show_quantity: block.settings.enable_quantity,
                     loading: 'lazy'
                   %}
@@ -242,6 +244,7 @@
 
     { "type": "header", "content": "Product cards" },
     { "type": "range", "id": "cards_per_row", "label": "Cards in view", "min": 2, "max": 8, "step": 1, "default": 4, "info": "Default for every step. Each step can override it. Cards always fit whole — a step never shows a half card." },
+    { "type": "range", "id": "card_gap", "label": "Space between cards", "min": 8, "max": 48, "step": 2, "unit": "px", "default": 24 },
     { "type": "select", "id": "image_ratio", "label": "Image ratio", "default": "4 / 5", "options": [{ "value": "1 / 1", "label": "Square" }, { "value": "4 / 5", "label": "Portrait" }, { "value": "3 / 4", "label": "Tall portrait" }] },
     { "type": "select", "id": "image_fit", "label": "Image fit", "default": "contain", "options": [{ "value": "contain", "label": "Contain" }, { "value": "cover", "label": "Cover" }] },
     { "type": "range", "id": "card_radius", "label": "Card corner radius", "min": 0, "max": 30, "step": 2, "unit": "px", "default": 14 },
@@ -294,6 +297,7 @@
         { "type": "range", "id": "max_selections", "label": "Products a customer can pick", "min": 1, "max": 12, "step": 1, "default": 1, "info": "1 keeps this step single choice. Each pick keeps its own options and quantity, and becomes its own cart line." },
         { "type": "checkbox", "id": "selection_required", "label": "Selection required to continue", "default": true, "info": "Turn off for optional extras." },
         { "type": "checkbox", "id": "show_options", "label": "Show product options (size, color, ...)", "default": true, "info": "Option values and prices come straight from each product's variants." },
+        { "type": "text", "id": "option_names", "label": "Options to show", "info": "Comma separated, for example: Size. Leave empty to show every option a product has." },
         { "type": "checkbox", "id": "enable_quantity", "label": "Show quantity control", "default": true },
 
         { "type": "header", "content": "Layout" },
@@ -319,7 +323,8 @@
             "title": "Pick a collar",
             "max_selections": 2,
             "layout": "grid",
-            "cards_per_row": 4
+            "cards_per_row": 4,
+            "option_names": "Size"
           }
         },
         {
@@ -340,7 +345,8 @@
             "max_selections": 6,
             "selection_required": false,
             "layout": "grid",
-            "cards_per_row": 4
+            "cards_per_row": 4,
+            "option_names": "Size"
           }
         }
       ]

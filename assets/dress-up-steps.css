@@ -3,7 +3,7 @@
    Scoped to .dress-up-steps / .ds-step / .ds-card / .ds-button. */
 
 .dress-up-steps {
-  --ds-gap: 1.2rem;
+  --ds-gap: 2.4rem;
   --ds-step-padding: 2rem;
   --ds-radius-step: 1.6rem;
   --ds-radius-control: 99rem;
