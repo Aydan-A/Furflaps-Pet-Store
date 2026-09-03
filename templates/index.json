@@ -69,7 +69,7 @@
         "media_background": "#ffffff",
         "image_fit": "cover",
         "image_position": "center center",
-        "desktop_section_ratio": "11 / 4",
+        "desktop_section_ratio": "5 / 2",
         "content_width": 52,
         "panel_gap": 16,
         "panel_radius": 12,
