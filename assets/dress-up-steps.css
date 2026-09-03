@@ -9,6 +9,12 @@
   --ds-radius-control: 99rem;
   --ds-control-height: 4.4rem;
   --ds-control-small: 3.2rem;
+  /* Two spacing steps carry the row: items inside a group sit at the small
+     one, groups are separated by the large one. That difference is what makes
+     the heading and the name field read as two groups rather than four loose
+     items at one flat gap. */
+  --ds-gap-field: .8rem;
+  --ds-gap-group: 2.8rem;
 
   display: block;
   padding: var(--ds-padding-top) var(--ds-padding-inline) var(--ds-padding-bottom);
@@ -54,14 +60,16 @@
 }
 .ds-step--open { border-color: var(--ds-border); }
 
-/* Header row: number and title on the left, price and button always at the
-   right end, in the same place on every step and in every state. */
+/* Header row: the heading group, then the field group, then flexible space,
+   then price and button pinned right - in the same place on every step and in
+   every state. Groups wrap onto a second line before anything compresses. */
 .ds-step__head {
   display: flex;
   min-height: 7.2rem;
   padding: 1.4rem var(--ds-step-padding);
+  flex-wrap: wrap;
   align-items: center;
-  gap: 1.6rem;
+  gap: 1.2rem var(--ds-gap-group);
 }
 .ds-step__toggle {
   display: inline-flex;
@@ -224,16 +232,23 @@
 .ds-field { display: none; }
 .ds-step--open .ds-field {
   display: flex;
-  flex: 0 1 30rem;
+  flex: 0 1 auto;
   min-width: 0;
   align-items: center;
-  gap: 1rem;
+  gap: var(--ds-gap-field);
 }
-.ds-field__label { flex: 0 0 auto; font-size: 1.2rem; font-weight: 700; }
+/* The label carries the input's own size, a step under the heading: it reads
+   as that field's label rather than as the smallest text on the row. */
+.ds-field__label { flex: 0 0 auto; font-size: 1.4rem; font-weight: 600; }
 .ds-field__input {
-  width: 100%;
-  min-height: 4rem;
-  padding: 0 1.6rem;
+  /* Sized for a name, not stretched to fill the row. Border-box so the height
+     token means the same thing here as it does on the button beside it,
+     whatever the surrounding theme sets. */
+  box-sizing: border-box;
+  width: 22rem;
+  max-width: 100%;
+  height: var(--ds-control-height);
+  padding: 0 1.8rem;
   border: .1rem solid var(--ds-border);
   border-radius: var(--ds-radius-control);
   background: var(--ds-surface);
@@ -513,6 +528,7 @@
   .ds-step__title { font-size: var(--ds-mobile-step-title-size); }
   .ds-step__toggle { flex: 1 1 100%; }
   .ds-step__pill { max-width: 100%; margin-left: 3.8rem; }
+  .ds-field__input { width: 100%; }
   .ds-step--open .ds-step__actions { flex: 1 1 100%; margin-left: 3.8rem; justify-content: space-between; }
 
   .ds-step__toolbar { flex-wrap: wrap; }
