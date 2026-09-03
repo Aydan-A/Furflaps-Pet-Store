@@ -119,6 +119,18 @@
             assign max_picks = 1
           endif
 
+          # With more than one row, the track needs to know how many columns it
+          # holds, so the cards fill left to right — A B C across the top row,
+          # not A C E with B D F hidden underneath.
+          assign shown_count = step_products.size
+          if shown_count > product_limit
+            assign shown_count = product_limit
+          endif
+          assign columns_total = shown_count | plus: card_rows | minus: 1 | divided_by: card_rows
+          if columns_total < 1
+            assign columns_total = 1
+          endif
+
           assign property_label = block.settings.personalization_label | default: 'Name'
           assign layout = block.settings.layout | default: 'grid'
           assign is_carousel = false
@@ -134,7 +146,7 @@
           data-max="{{ max_picks }}"
           {% if block.settings.selection_required %}data-required{% endif %}
           {% if is_final %}data-final{% endif %}
-          style="--ds-per-row: {{ per_row }}; --ds-rows: {{ card_rows }};"
+          style="--ds-per-row: {{ per_row }}; --ds-rows: {{ card_rows }}; --ds-columns-total: {{ columns_total }};{% if block.settings.image_ratio != blank %} --ds-image-ratio: {{ block.settings.image_ratio }};{% endif %}"
           {{ block.shopify_attributes }}
         >
           <div class="ds-step__head">
@@ -330,6 +342,7 @@
         { "type": "select", "id": "layout", "label": "Card layout", "default": "grid", "options": [{ "value": "grid", "label": "Grid (wraps onto new rows)" }, { "value": "carousel", "label": "Carousel (scrolls sideways)" }], "info": "Use the carousel for long lists such as letters." },
         { "type": "range", "id": "cards_per_row", "label": "Cards in view", "min": 0, "max": 8, "step": 1, "default": 0, "info": "Columns across. 0 uses the section setting." },
         { "type": "range", "id": "rows", "label": "Rows", "min": 1, "max": 4, "step": 1, "default": 1, "info": "Carousel only. Two or more rows keep a long list, such as letters, compact." },
+        { "type": "select", "id": "image_ratio", "label": "Card shape", "default": "", "options": [{ "value": "", "label": "Use section setting" }, { "value": "1 / 1", "label": "Square" }, { "value": "4 / 5", "label": "Portrait" }, { "value": "3 / 4", "label": "Tall portrait" }], "info": "Square suits small cards such as letters." },
 
         { "type": "header", "content": "Personalization" },
         { "type": "checkbox", "id": "enable_personalization", "label": "Show text field", "default": false },
@@ -362,6 +375,7 @@
             "layout": "carousel",
             "cards_per_row": 6,
             "rows": 2,
+            "image_ratio": "1 / 1",
             "enable_personalization": true,
             "personalization_required": false
           }

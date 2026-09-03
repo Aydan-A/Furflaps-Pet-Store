@@ -26,12 +26,19 @@
         "announcement-bar-0"
       ],
       "settings": {
+        "content_width": "full",
+        "side_padding": 32,
+        "show_navigation": true,
         "auto_rotate": false,
         "change_slides_speed": 5,
         "color_scheme": "scheme-1",
         "show_line_separator": true,
+        "font_source": "body",
         "message_font_size": 12,
+        "message_font_weight": "500",
         "message_vertical_padding": 7,
+        "content_gap": 8,
+        "show_link_arrow": true,
         "show_social": false,
         "enable_country_selector": false,
         "enable_language_selector": false

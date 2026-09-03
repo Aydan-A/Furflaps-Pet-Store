@@ -264,15 +264,13 @@
   align-items: stretch;
   flex-wrap: wrap;
 }
-/* The carousel is a grid that flows into columns, so a long list can sit in
-   two or more rows and still page sideways. The overflow is clipped, not
+/* The carousel is a grid of fixed-width columns, so a long list can sit in
+   two or more rows, fill left to right, and still page sideways. The overflow is clipped, not
    scrollable: the arrows move it, so there is no scrollbar and nothing spills
    past the step. The padding keeps focus rings off the clipped edge. */
 .ds-track[data-layout='carousel'] {
   display: grid;
-  grid-auto-flow: column;
-  grid-template-rows: repeat(var(--ds-rows, 1), auto);
-  grid-auto-columns: calc((100% - (var(--ds-visible) - 1) * var(--ds-gap)) / var(--ds-visible));
+  grid-template-columns: repeat(var(--ds-columns-total, 1), calc((100% - (var(--ds-visible) - 1) * var(--ds-gap)) / var(--ds-visible)));
   padding: .4rem;
   margin: -.4rem;
   overflow: hidden;
