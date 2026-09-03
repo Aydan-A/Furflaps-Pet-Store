@@ -172,9 +172,7 @@
 .ds-button:hover:not(:disabled):not([aria-disabled='true']) { opacity: .88; }
 .ds-button--primary[aria-disabled='true'],
 .ds-button--primary:disabled {
-  border-color: var(--ds-border);
-  background: var(--ds-surface);
-  color: var(--ds-muted);
+  opacity: .45;
   cursor: not-allowed;
 }
 .ds-button__icon svg { width: 1.8rem; height: 1.8rem; }
@@ -220,8 +218,8 @@
   justify-content: space-between;
   gap: 1.6rem;
 }
-.ds-field { display: grid; flex: 0 1 26rem; gap: .5rem; }
-.ds-field__label { font-size: 1.2rem; font-weight: 700; }
+.ds-field { display: flex; flex: 0 1 34rem; align-items: center; gap: 1rem; }
+.ds-field__label { flex: 0 0 auto; font-size: 1.2rem; font-weight: 700; }
 .ds-field__input {
   width: 100%;
   min-height: 4rem;
@@ -279,8 +277,12 @@
   overscroll-behavior-inline: contain;
 }
 
-/* A card never exceeds its track, whatever the flex basis resolves to. */
+/* A card never exceeds its track, whatever the flex basis resolves to. It is
+   also the containing block for its own absolutely positioned content: a
+   visually-hidden label with no positioned ancestor would otherwise escape the
+   carousel's clip and give the page a horizontal scrollbar. */
 .ds-card {
+  position: relative;
   display: flex;
   flex: 0 0 calc((100% - (var(--ds-visible) - 1) * var(--ds-gap)) / var(--ds-visible) - .02rem);
   min-width: 0;
@@ -347,32 +349,36 @@
 /* The step already holds as many as it allows. */
 .ds-card--blocked .ds-card__pick { opacity: .45; cursor: not-allowed; }
 
-/* Controls belong to the chosen card, but hold their space so a row never
-   jumps when a selection changes. */
+/* Controls belong to the chosen card, but every card carries them, hidden, so
+   a row never changes height when a selection changes. They wrap rather than
+   scroll: on a narrow card the options sit directly under it and the quantity
+   drops to its own line, so a swatch is never cut off. */
 .ds-card__controls {
   display: flex;
-  height: 3.6rem;
+  min-height: 3.6rem;
   margin-top: auto;
   padding-inline: .6rem;
+  flex-wrap: wrap;
   align-items: center;
-  justify-content: space-between;
-  gap: .8rem;
+  justify-content: center;
+  gap: .6rem .8rem;
   visibility: hidden;
 }
 .ds-card--selected .ds-card__controls { visibility: visible; }
-.ds-card__controls > :only-child { margin-inline: auto; }
 
+/* min-content, not 0: the options box refuses to shrink narrower than a single
+   swatch, so a card too narrow for options and quantity side by side drops the
+   quantity onto its own line instead of squeezing the swatches out of sight. */
 .ds-card__options {
   display: flex;
-  min-width: 0;
-  padding: .4rem 0;
+  flex: 1 1 auto;
+  min-width: min-content;
+  flex-wrap: wrap;
   align-items: center;
-  gap: .8rem;
-  overflow-x: auto;
-  scrollbar-width: none;
+  justify-content: center;
+  gap: .6rem;
 }
-.ds-card__options::-webkit-scrollbar { display: none; }
-.ds-card__values { display: flex; flex: 0 0 auto; align-items: center; gap: .4rem; }
+.ds-card__values { display: flex; flex-wrap: wrap; justify-content: center; gap: .4rem; }
 .ds-card__value {
   display: inline-grid;
   min-width: 2.2rem;
@@ -407,6 +413,7 @@
 .ds-card__quantity {
   display: flex;
   flex: 0 0 auto;
+  margin: 0 auto;
   padding: .2rem;
   align-items: center;
   gap: .2rem;
