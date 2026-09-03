@@ -235,6 +235,7 @@
             "max_selections": 2,
             "selection_required": true,
             "show_options": true,
+            "option_names": "Size",
             "enable_quantity": true,
             "layout": "grid",
             "cards_per_row": 4,
@@ -244,8 +245,7 @@
             "personalization_label": "Name",
             "personalization_placeholder": "Enter a name",
             "personalization_max_chars": 12,
-            "personalization_required": true,
-            "option_names": "Size"
+            "personalization_required": true
           }
         },
         "step_G9XGPD": {
@@ -258,17 +258,17 @@
             "max_selections": 12,
             "selection_required": true,
             "show_options": true,
+            "option_names": "",
             "enable_quantity": true,
             "layout": "carousel",
-            "cards_per_row": 6,
-            "rows": 2,
+            "cards_per_row": 8,
+            "rows": 3,
             "image_ratio": "1 / 1",
             "enable_personalization": true,
             "personalization_label": "Name",
             "personalization_placeholder": "Enter a name",
             "personalization_max_chars": 12,
-            "personalization_required": false,
-            "option_names": ""
+            "personalization_required": false
           }
         },
         "step_33GmAx": {
@@ -281,6 +281,7 @@
             "max_selections": 6,
             "selection_required": false,
             "show_options": true,
+            "option_names": "Size",
             "enable_quantity": true,
             "layout": "grid",
             "cards_per_row": 4,
@@ -290,8 +291,7 @@
             "personalization_label": "Name",
             "personalization_placeholder": "Enter a name",
             "personalization_max_chars": 12,
-            "personalization_required": true,
-            "option_names": "Size"
+            "personalization_required": true
           }
         }
       },
