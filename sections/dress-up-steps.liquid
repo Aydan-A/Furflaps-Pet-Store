@@ -176,6 +176,23 @@
               </button>
             </p>
 
+            {%- if block.settings.enable_personalization -%}
+              <div class="ds-field">
+                <label class="ds-field__label" for="{{ field_id }}">{{ property_label | escape }}</label>
+                <input
+                  class="ds-field__input"
+                  type="text"
+                  id="{{ field_id }}"
+                  placeholder="{{ block.settings.personalization_placeholder | escape }}"
+                  maxlength="{{ block.settings.personalization_max_chars }}"
+                  autocomplete="off"
+                  data-dress-text
+                  data-property="{{ property_label | escape }}"
+                  {% if block.settings.personalization_required %}data-text-required{% endif %}
+                >
+              </div>
+            {%- endif -%}
+
             <div class="ds-step__actions">
               <p class="ds-step__price" data-dress-price aria-live="polite">{{ 0 | money }}</p>
 
@@ -194,37 +211,18 @@
           </div>
 
           <div class="ds-step__panel" id="{{ panel_id }}" data-dress-panel {% unless step_number == 1 %}hidden{% endunless %}>
-            {%- if block.settings.enable_personalization or is_carousel -%}
+            {%- if is_carousel -%}
               <div class="ds-step__toolbar">
-                {%- if block.settings.enable_personalization -%}
-                  <div class="ds-field">
-                    <label class="ds-field__label" for="{{ field_id }}">{{ property_label | escape }}</label>
-                    <input
-                      class="ds-field__input"
-                      type="text"
-                      id="{{ field_id }}"
-                      placeholder="{{ block.settings.personalization_placeholder | escape }}"
-                      maxlength="{{ block.settings.personalization_max_chars }}"
-                      autocomplete="off"
-                      data-dress-text
-                      data-property="{{ property_label | escape }}"
-                      {% if block.settings.personalization_required %}data-text-required{% endif %}
-                    >
-                  </div>
-                {%- endif -%}
-
-                {%- if is_carousel -%}
-                  <div class="ds-step__arrows" data-dress-arrows>
-                    <button class="ds-arrow" type="button" data-dress-scroll="-1" aria-controls="{{ panel_id }}">
-                      <span class="visually-hidden">{{ 'general.slider.previous_slide' | t }}</span>
-                      <svg viewBox="0 0 12 12" aria-hidden="true" focusable="false"><path d="M7.5 1.5 3 6l4.5 4.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                    </button>
-                    <button class="ds-arrow" type="button" data-dress-scroll="1" aria-controls="{{ panel_id }}">
-                      <span class="visually-hidden">{{ 'general.slider.next_slide' | t }}</span>
-                      <svg viewBox="0 0 12 12" aria-hidden="true" focusable="false"><path d="M4.5 1.5 9 6l-4.5 4.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                    </button>
-                  </div>
-                {%- endif -%}
+                <div class="ds-step__arrows" data-dress-arrows>
+                  <button class="ds-arrow" type="button" data-dress-scroll="-1" aria-controls="{{ panel_id }}">
+                    <span class="visually-hidden">{{ 'general.slider.previous_slide' | t }}</span>
+                    <svg viewBox="0 0 12 12" aria-hidden="true" focusable="false"><path d="M7.5 1.5 3 6l4.5 4.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  </button>
+                  <button class="ds-arrow" type="button" data-dress-scroll="1" aria-controls="{{ panel_id }}">
+                    <span class="visually-hidden">{{ 'general.slider.next_slide' | t }}</span>
+                    <svg viewBox="0 0 12 12" aria-hidden="true" focusable="false"><path d="M4.5 1.5 9 6l-4.5 4.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  </button>
+                </div>
               </div>
             {%- endif -%}
 
@@ -344,7 +342,7 @@
         { "type": "select", "id": "layout", "label": "Card layout", "default": "grid", "options": [{ "value": "grid", "label": "Grid (wraps onto new rows)" }, { "value": "carousel", "label": "Carousel (scrolls sideways)" }], "info": "Use the carousel for long lists such as letters." },
         { "type": "range", "id": "cards_per_row", "label": "Cards in view", "min": 0, "max": 8, "step": 1, "default": 0, "info": "Columns across. 0 uses the section setting." },
         { "type": "range", "id": "rows", "label": "Rows", "min": 1, "max": 4, "step": 1, "default": 1, "info": "Carousel only. Two or more rows keep a long list, such as letters, compact." },
-        { "type": "select", "id": "image_ratio", "label": "Card shape", "default": "", "options": [{ "value": "", "label": "Use section setting" }, { "value": "1 / 1", "label": "Square" }, { "value": "4 / 5", "label": "Portrait" }, { "value": "3 / 4", "label": "Tall portrait" }], "info": "Square suits small cards such as letters." },
+        { "type": "select", "id": "image_ratio", "label": "Card shape", "default": "", "options": [{ "value": "", "label": "Use section setting" }, { "value": "auto", "label": "Original (follows the photo)" }, { "value": "1 / 1", "label": "Square" }, { "value": "4 / 5", "label": "Portrait" }, { "value": "3 / 4", "label": "Tall portrait" }], "info": "Original keeps a wide photo from sitting in a tall box with empty space above and below it. Square suits small cards such as letters." },
 
         { "type": "header", "content": "Personalization" },
         { "type": "checkbox", "id": "enable_personalization", "label": "Show text field", "default": false },

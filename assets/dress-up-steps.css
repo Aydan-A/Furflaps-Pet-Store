@@ -214,11 +214,20 @@
 .ds-step__toolbar {
   display: flex;
   margin-bottom: 1.4rem;
-  align-items: flex-end;
-  justify-content: space-between;
+  align-items: center;
+  justify-content: flex-end;
   gap: 1.6rem;
 }
-.ds-field { display: flex; flex: 0 1 34rem; align-items: center; gap: 1rem; }
+/* Like the price and the button, the field belongs to the open step and starts
+   hidden, so a closed row never flashes it before the script runs. */
+.ds-field { display: none; }
+.ds-step--open .ds-field {
+  display: flex;
+  flex: 0 1 30rem;
+  min-width: 0;
+  align-items: center;
+  gap: 1rem;
+}
 .ds-field__label { flex: 0 0 auto; font-size: 1.2rem; font-weight: 700; }
 .ds-field__input {
   width: 100%;
@@ -350,17 +359,16 @@
 .ds-card--blocked .ds-card__pick { opacity: .45; cursor: not-allowed; }
 
 /* Controls belong to the chosen card, but every card carries them, hidden, so
-   a row never changes height when a selection changes. They wrap rather than
-   scroll: on a narrow card the options sit directly under it and the quantity
-   drops to its own line, so a swatch is never cut off. */
+   a row never changes height when a selection changes. They follow the image
+   at the card's own gap rather than being pushed to the bottom of a stretched
+   card, and they wrap rather than scroll: on a narrow card the options sit
+   directly under it and the quantity drops below, never cut off. */
 .ds-card__controls {
   display: flex;
-  min-height: 3.6rem;
-  margin-top: auto;
   padding-inline: .6rem;
   flex-wrap: wrap;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
   gap: .6rem .8rem;
   visibility: hidden;
 }
@@ -375,10 +383,9 @@
   min-width: min-content;
   flex-wrap: wrap;
   align-items: center;
-  justify-content: center;
   gap: .6rem;
 }
-.ds-card__values { display: flex; flex-wrap: wrap; justify-content: center; gap: .4rem; }
+.ds-card__values { display: flex; flex-wrap: wrap; gap: .4rem; }
 .ds-card__value {
   display: inline-grid;
   min-width: 2.2rem;
@@ -441,10 +448,11 @@
 }
 .ds-card__select-caret svg { width: 1rem; height: .6rem; }
 
+/* Options left, quantity right, whether they share a line or wrap onto two. */
 .ds-card__quantity {
   display: flex;
   flex: 0 0 auto;
-  margin: 0 auto;
+  margin-left: auto;
   padding: .2rem;
   align-items: center;
   gap: .2rem;
@@ -499,7 +507,7 @@
   .ds-step--open .ds-step__actions { flex: 1 1 100%; margin-left: 3.8rem; justify-content: space-between; }
 
   .ds-step__toolbar { flex-wrap: wrap; }
-  .ds-field { flex: 1 1 100%; }
+  .ds-step--open .ds-field { flex: 1 1 100%; margin-left: 3.8rem; }
   /* Touch scrolling replaces the arrows on small screens, so the track
      becomes a real scroller again — still inside the step, never the page. */
   .ds-step__arrows { display: none; }

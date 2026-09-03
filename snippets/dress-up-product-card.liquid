@@ -87,9 +87,14 @@
   </button>
 
   {%- comment -%}
-    Controls belong to the chosen card, but keep their space so a row of cards
-    never jumps when a selection changes.
+    Controls belong to the chosen card, but every card carries them, hidden, so
+    a row never changes height when a selection changes. A step with neither
+    options nor a quantity control renders no strip at all, rather than an
+    empty one holding space under every card.
   {%- endcomment -%}
+  {%- assign has_quantity = false -%}
+  {%- if show_quantity and product.available -%}{%- assign has_quantity = true -%}{%- endif -%}
+  {%- if option_controls contains 'data-dress-option' or has_quantity -%}
   <div class="ds-card__controls">
     {%- comment -%}
       Spaces are stripped from both sides of the comparison, so "Collar Size"
@@ -205,6 +210,7 @@
       </div>
     {%- endif -%}
   </div>
+  {%- endif -%}
 
   <script type="application/json" data-dress-variants>{{ variants_json }}</script>
 </article>

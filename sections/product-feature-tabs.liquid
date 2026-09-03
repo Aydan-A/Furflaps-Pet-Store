@@ -87,6 +87,14 @@
                     assign color_value = blank
                     assign color_swatch_style = blank
                     assign count_value = blank
+                    assign color_metafield = product.metafields.custom.color
+                    if color_metafield == blank
+                      assign color_metafield = product.metafields.custom.colour
+                    endif
+                    assign count_metafield = product.metafields.custom.count
+                    if count_metafield == blank
+                      assign count_metafield = product.metafields.custom.quantity
+                    endif
 
                     for product_option in product.options_with_values
                       assign option_name = product_option.name | downcase
@@ -109,7 +117,24 @@
                     endfor
 
                     if color_value == blank
-                      assign color_value = product.metafields.custom.color.value | default: product.metafields.custom.colour.value
+                      if color_metafield.type contains 'metaobject_reference'
+                        assign color_reference = color_metafield.value
+                        if color_metafield.type contains 'list.'
+                          assign color_reference = color_metafield.value | first
+                        endif
+                        assign color_value = color_reference.label.value | default: color_reference.name.value | default: color_reference.title.value | default: color_reference.color_name.value | default: color_reference.colour_name.value | default: color_reference.display_name.value
+                        if color_value == blank and color_reference.system.handle != blank
+                          assign color_value = color_reference.system.handle | replace: '-', ' ' | capitalize
+                        endif
+                        assign referenced_color = color_reference.color.value | default: color_reference.colour.value | default: color_reference.hex.value | default: color_reference.hex_code.value
+                        if referenced_color != blank
+                          assign color_swatch_style = 'background-color: ' | append: referenced_color | append: ';'
+                        endif
+                      elsif color_metafield.type == 'list.single_line_text_field'
+                        assign color_value = color_metafield.value | first
+                      elsif color_metafield.type == 'single_line_text_field' or color_metafield.type == 'color'
+                        assign color_value = color_metafield.value
+                      endif
                     endif
 
                     if color_swatch_style == blank and color_value != blank and selected_variant.featured_media != blank
@@ -118,7 +143,17 @@
                     endif
 
                     if count_value == blank
-                      assign count_value = product.metafields.custom.count.value | default: product.metafields.custom.quantity.value
+                      if count_metafield.type contains 'metaobject_reference'
+                        assign count_reference = count_metafield.value
+                        if count_metafield.type contains 'list.'
+                          assign count_reference = count_metafield.value | first
+                        endif
+                        assign count_value = count_reference.count.value | default: count_reference.quantity.value | default: count_reference.value.value | default: count_reference.label.value | default: count_reference.name.value
+                      elsif count_metafield.type == 'list.single_line_text_field' or count_metafield.type == 'list.number_integer'
+                        assign count_value = count_metafield.value | first
+                      elsif count_metafield.type == 'single_line_text_field' or count_metafield.type == 'number_integer' or count_metafield.type == 'number_decimal'
+                        assign count_value = count_metafield.value
+                      endif
                     endif
 
                     if count_value == blank
@@ -135,22 +170,20 @@
                             {{ 'product-apparel-1' | placeholder_svg_tag: 'product-feature-tabs__placeholder' }}
                           {%- endif -%}
                         </div>
-                        <dl class="product-feature-tabs__details">
-                          <div class="product-feature-tabs__detail">
-                            <dt>Color</dt>
-                            <dd>
-                              {%- if color_swatch_style != blank -%}
-                                <span class="product-feature-tabs__swatch" style="{{ color_swatch_style }}" aria-hidden="true"></span>
-                              {%- endif -%}
-                              <span>{{ color_value | default: '—' | escape }}</span>
-                            </dd>
-                          </div>
-                          <div class="product-feature-tabs__detail">
-                            <dt>Count</dt>
-                            <dd>{{ count_value | escape }}</dd>
-                          </div>
-                        </dl>
                       </a>
+                      <dl class="product-feature-tabs__details">
+                        <div class="product-feature-tabs__detail product-feature-tabs__detail--color">
+                          <dt class="visually-hidden">Color</dt>
+                          <dd>
+                            <span class="product-feature-tabs__swatch"{% if color_swatch_style != blank %} style="{{ color_swatch_style }}"{% endif %} aria-hidden="true"></span>
+                            <span>{{ color_value | default: 'Not specified' | escape }}</span>
+                          </dd>
+                        </div>
+                        <div class="product-feature-tabs__detail product-feature-tabs__detail--count">
+                          <dt>Count</dt>
+                          <dd>{{ count_value | escape }}</dd>
+                        </div>
+                      </dl>
                     </article>
                   </li>
                 {%- endfor -%}
