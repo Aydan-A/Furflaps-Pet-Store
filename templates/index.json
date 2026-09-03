@@ -235,7 +235,8 @@
             "max_selections": 4,
             "selection_required": true,
             "show_options": true,
-            "option_names": "",
+            "option_names": "Size",
+            "option_style": "dropdown",
             "enable_quantity": true,
             "layout": "grid",
             "cards_per_row": 4,
@@ -259,6 +260,7 @@
             "selection_required": true,
             "show_options": true,
             "option_names": "",
+            "option_style": "buttons",
             "enable_quantity": true,
             "layout": "carousel",
             "cards_per_row": 8,
@@ -282,6 +284,7 @@
             "selection_required": false,
             "show_options": true,
             "option_names": "",
+            "option_style": "dropdown",
             "enable_quantity": true,
             "layout": "grid",
             "cards_per_row": 4,
@@ -406,28 +409,12 @@
             "label": "",
             "collection": "icons"
           }
-        },
-        "feature_BJ8cR6": {
-          "type": "feature",
-          "settings": {
-            "visible": true,
-            "text": "App connectivity"
-          }
-        },
-        "feature_xTptCE": {
-          "type": "feature",
-          "settings": {
-            "visible": true,
-            "text": "App connectivity"
-          }
         }
       },
       "block_order": [
         "tab_ADXaf6",
         "tab_Yf6YBD",
-        "tab_EbGHnG",
-        "feature_BJ8cR6",
-        "feature_xTptCE"
+        "tab_EbGHnG"
       ],
       "name": "Product feature tabs",
       "settings": {
@@ -445,10 +432,6 @@
         "columns_mobile": 1.2,
         "image_ratio": "3 / 4",
         "image_fit": "contain",
-        "show_product_info": false,
-        "show_sale_badge": true,
-        "sale_label": "Sale",
-        "features_label": "Product features",
         "tabs_label": "Product categories",
         "tabs_alignment": "center",
         "tab_height": 44,
@@ -461,19 +444,14 @@
         "background_color": "#ffffff",
         "text_color": "#000000",
         "card_background": "#f3f2f2",
-        "feature_background": "#f7f7f7",
-        "feature_pill": "#ffffff",
         "feature_border": "#ececec",
         "tab_shell_background": "#f5f5f5",
         "tab_border": "#e4e4e4",
         "tab_text": "#222222",
         "active_tab_background": "#1d1d1d",
         "active_tab_text": "#ffffff",
-        "badge_background": "#ff5a3c",
-        "badge_text": "#ffffff",
         "card_gap": 18,
         "card_radius": 10,
-        "badge_offset": 12,
         "header_gap": 24,
         "tabs_gap": 30,
         "padding_top": 40,

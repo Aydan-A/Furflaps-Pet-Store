@@ -244,6 +244,7 @@
                     index: forloop.index,
                     show_options: block.settings.show_options,
                     option_names: block.settings.option_names,
+                    option_style: block.settings.option_style,
                     show_quantity: block.settings.enable_quantity,
                     loading: 'lazy'
                   %}
@@ -336,6 +337,7 @@
         { "type": "checkbox", "id": "selection_required", "label": "Selection required to continue", "default": true, "info": "Turn off for optional extras." },
         { "type": "checkbox", "id": "show_options", "label": "Show product options (size, color, ...)", "default": true, "info": "Option values and prices come straight from each product's variants." },
         { "type": "text", "id": "option_names", "label": "Options to show", "info": "Comma separated, for example: Size. Leave empty to show every option a product has." },
+        { "type": "select", "id": "option_style", "label": "Option style", "default": "buttons", "options": [{ "value": "buttons", "label": "Buttons" }, { "value": "dropdown", "label": "Dropdown" }], "info": "Colours always show as swatches. Everything else, such as size, follows this." },
         { "type": "checkbox", "id": "enable_quantity", "label": "Show quantity control", "default": true },
 
         { "type": "header", "content": "Layout" },

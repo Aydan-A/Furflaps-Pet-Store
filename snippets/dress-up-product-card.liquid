@@ -14,6 +14,8 @@
   - index:         forloop index within the step
   - show_options:  boolean, render the option controls (size, colour, ...)
   - option_names:  comma separated option names to show; blank shows them all
+  - option_style:  'dropdown' puts non-colour options in a select; colours stay
+                   swatches either way
   - show_quantity: boolean, render the quantity stepper
   - loading:       image loading strategy
 {% endcomment %}
@@ -112,6 +114,22 @@
               assign is_swatch = true
             endif
           -%}
+          {%- if option_style == 'dropdown' and is_swatch == false -%}
+            {%- assign select_id = card_id | append: '-option-' | append: forloop.index0 -%}
+            <div class="ds-card__select">
+              <label class="visually-hidden" for="{{ select_id }}">{{ product.title | escape }} — {{ option.name | escape }}</label>
+              <select class="ds-card__select-input" id="{{ select_id }}" data-dress-option-select data-option-index="{{ forloop.index0 }}">
+                {%- for value in option.values -%}
+                  <option value="{{ value | escape }}" {% if variant.options[forloop.parentloop.index0] == value %}selected{% endif %}>{{ value }}</option>
+                {%- endfor -%}
+              </select>
+              <span class="ds-card__select-caret" aria-hidden="true">
+                <svg viewBox="0 0 10 6" focusable="false"><path d="M1 1l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </span>
+            </div>
+            {%- continue -%}
+          {%- endif -%}
+
           <div class="ds-card__values" role="group" aria-label="{{ product.title | escape }} — {{ option.name | escape }}">
             {%- for value in option.values -%}
               {%- liquid

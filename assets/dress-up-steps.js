@@ -42,9 +42,11 @@ if (!customElements.get('dress-up-steps')) {
         });
 
         this.removeEventListener('click', this.handleClick);
+        this.removeEventListener('change', this.handleChange);
         this.removeEventListener('input', this.handleInput);
         window.removeEventListener('resize', this.handleResize);
         this.addEventListener('click', this.handleClick);
+        this.addEventListener('change', this.handleChange);
         this.addEventListener('input', this.handleInput);
         window.addEventListener('resize', this.handleResize);
 
@@ -64,6 +66,7 @@ if (!customElements.get('dress-up-steps')) {
 
       disconnectedCallback() {
         this.removeEventListener('click', this.handleClick);
+        this.removeEventListener('change', this.handleChange);
         this.removeEventListener('input', this.handleInput);
         this.removeEventListener('shopify:block:select', this.handleBlockSelect);
         window.removeEventListener('resize', this.handleResize);
@@ -98,6 +101,7 @@ if (!customElements.get('dress-up-steps')) {
           imageEl: el.querySelector('.ds-card__image'),
           quantityValue: el.querySelector('[data-dress-quantity-value]'),
           optionButtons: Array.from(el.querySelectorAll('[data-dress-option]')),
+          optionSelects: Array.from(el.querySelectorAll('[data-dress-option-select]')),
           quantity: 1,
           selected: false,
           order: 0,
@@ -193,17 +197,30 @@ if (!customElements.get('dress-up-steps')) {
           const index = Number(button.dataset.optionIndex);
           const value = button.dataset.value;
           const chosen = card.selectedOptions[index] === value;
-          const available = card.variants.some(
-            (item) =>
-              item.available &&
-              item.options[index] === value &&
-              card.selectedOptions.every((option, i) => i === index || item.options[i] === option)
-          );
 
           button.setAttribute('aria-pressed', String(chosen));
           button.classList.toggle('ds-card__value--active', chosen);
-          button.classList.toggle('ds-card__value--unavailable', !available);
+          button.classList.toggle('ds-card__value--unavailable', !this.optionAvailable(card, index, value));
         });
+
+        card.optionSelects.forEach((select) => {
+          const index = Number(select.dataset.optionIndex);
+          select.value = card.selectedOptions[index] ?? select.value;
+          Array.from(select.options).forEach((option) => {
+            option.disabled = !this.optionAvailable(card, index, option.value);
+          });
+        });
+      }
+
+      // Is there an available variant carrying this value, alongside whatever
+      // else the customer has already chosen on this card?
+      optionAvailable(card, index, value) {
+        return card.variants.some(
+          (item) =>
+            item.available &&
+            item.options[index] === value &&
+            card.selectedOptions.every((option, i) => i === index || item.options[i] === option)
+        );
       }
 
       renderPill(step, isOpen, selections) {
@@ -328,6 +345,11 @@ if (!customElements.get('dress-up-steps')) {
         if (checkout) return this.onCheckout(checkout);
       };
 
+      handleChange = (event) => {
+        const select = event.target.closest('[data-dress-option-select]');
+        if (select) this.onOption(this.cardFor(select), select);
+      };
+
       handleInput = (event) => {
         if (!event.target.matches('[data-dress-text]')) return;
         const step = this.stepFor(event.target);
@@ -398,9 +420,10 @@ if (!customElements.get('dress-up-steps')) {
       // Choosing an option keeps the card on a real variant: if the combination
       // the customer built does not exist, the rest of the options move to the
       // first variant that does carry the value they just picked.
-      onOption(card, button) {
-        const index = Number(button.dataset.optionIndex);
-        const value = button.dataset.value;
+      onOption(card, control) {
+        if (!card) return;
+        const index = Number(control.dataset.optionIndex);
+        const value = control.dataset.value ?? control.value;
         const next = card.selectedOptions.slice();
         next[index] = value;
 
