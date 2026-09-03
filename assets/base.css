@@ -2403,17 +2403,18 @@ input[type='checkbox'] {
     grid-template-areas:
       'heading search icons'
       'navigation navigation navigation';
-    grid-template-columns: auto 1fr auto;
-    column-gap: clamp(1.2rem, 2vw, 2.4rem);
+    grid-template-columns: auto minmax(28rem, min(var(--header-search-max-width, 52rem), 45vw)) auto;
+    justify-content: center;
+    column-gap: var(--header-group-gap, 2.4rem);
     row-gap: var(--header-row-gap, 1.2rem);
   }
 
   .header--middle-left .header__search-inline {
     grid-area: search;
-    justify-self: stretch;
+    justify-self: center;
     align-self: center;
     width: 100%;
-    max-width: var(--header-search-max-width, 52rem);
+    max-width: 100%;
     margin: 0;
   }
 
@@ -2426,6 +2427,10 @@ input[type='checkbox'] {
     margin: 0;
   }
 
+  .header__search-inline .search-modal__form {
+    width: 100%;
+  }
+
   .header__search-inline .field__input {
     background-color: var(--header-search-bg, rgb(var(--color-background)));
     border-radius: var(--header-search-radius, var(--inputs-radius));
@@ -2434,14 +2439,36 @@ input[type='checkbox'] {
     margin: 0;
     box-shadow: none;
     outline: none;
-    height: 4rem;
-    min-height: 4rem;
-    padding-top: 0.8rem;
-    padding-bottom: 0.8rem;
+    height: 4.4rem;
+    min-height: 4.4rem;
+    padding: 0.8rem 5.6rem 0.8rem 1.8rem;
   }
 
-  .header__search-inline .field__label {
-    top: 1rem;
+  .header__search-inline .field__input::placeholder {
+    color: rgba(var(--color-foreground), 0.65);
+    opacity: 1;
+  }
+
+  .header__search-inline .search__button,
+  .header__search-inline .reset__button {
+    top: 50%;
+    transform: translateY(-50%);
+    width: 4.4rem;
+    height: 4.4rem;
+  }
+
+  .header__search-inline .search__button {
+    right: 0;
+  }
+
+  .header__search-inline .reset__button {
+    right: 4.4rem;
+  }
+
+  .header__search-inline .field__input:focus,
+  .header__search-inline .field__input:not(:placeholder-shown),
+  .header__search-inline .field__input:-webkit-autofill {
+    padding: 0.8rem 9.8rem 0.8rem 1.8rem;
   }
 
   .header__search-inline .field__input:focus,
@@ -2453,6 +2480,8 @@ input[type='checkbox'] {
 
   .header--middle-left .header__icons {
     gap: var(--header-icon-gap, 0.4rem);
+    align-items: center;
+    padding-right: 0;
   }
 
   .header--middle-left .header__icon .icon {
@@ -2460,12 +2489,19 @@ input[type='checkbox'] {
     height: var(--header-icon-size, 2rem);
   }
 
-  /* The cart artwork occupies about 44% of its 40x40 SVG viewBox, while
-     the other header icons fill theirs. Keep its SVG canvas proportionally
-     larger so the visible artwork follows the same icon-size setting. */
   .header--middle-left .header__icon--cart .icon {
-    width: calc(var(--header-icon-size, 2rem) * 2.2);
-    height: calc(var(--header-icon-size, 2rem) * 2.2);
+    width: calc(var(--header-icon-size, 2rem) * 2);
+    height: calc(var(--header-icon-size, 2rem) * 2);
+  }
+
+  .header--middle-left .header__heading-link {
+    gap: 0.8rem;
+  }
+
+  @media screen and (max-width: 1199px) {
+    .header--middle-left {
+      column-gap: max(1.2rem, calc(var(--header-group-gap, 2.4rem) * 0.65));
+    }
   }
 
   .header--middle-center:not(.drawer-menu) {
@@ -2658,7 +2694,6 @@ input[type='checkbox'] {
 
 .header__icon--cart {
   position: relative;
-  margin-right: -1.2rem;
 }
 
 .header__icon--menu[aria-expanded='true']::before {

@@ -94,6 +94,7 @@
     --header-search-border-width: {{ section.settings.search_border_thickness | default: 1 }}px;
     --header-side-padding: {{ section.settings.header_side_padding | default: 24 }}px;
     --header-row-gap: {{ section.settings.header_row_gap | default: 12 }}px;
+    --header-group-gap: {{ section.settings.header_group_gap | default: 24 }}px;
     --header-icon-size: {{ section.settings.icon_size | default: 20 }}px;
     --header-icon-gap: {{ section.settings.icon_gap | default: 4 }}px;
     --header-brand-font-family: {{ section.settings.brand_name_font.family }}, {{ section.settings.brand_name_font.fallback_families }};
@@ -278,7 +279,7 @@
           </localization-form>
         {%- endif -%}
       </div>
-      <div class="{% if section.settings.logo_position == 'middle-left' %}large-up-hide{% endif %}">
+      <div class="header__mobile-search{% if section.settings.logo_position == 'middle-left' %} large-up-hide{% endif %}">
         {% render 'header-search', input_id: 'Search-In-Modal' %}
       </div>
 
@@ -662,6 +663,12 @@
       "default": 580
     },
     {
+      "type": "text",
+      "id": "search_placeholder",
+      "default": "Search products",
+      "label": "Placeholder text"
+    },
+    {
       "type": "range",
       "id": "search_border_radius",
       "min": 0,
@@ -704,6 +711,16 @@
       "unit": "px",
       "label": "Gap between rows",
       "default": 12
+    },
+    {
+      "type": "range",
+      "id": "header_group_gap",
+      "min": 12,
+      "max": 48,
+      "step": 2,
+      "unit": "px",
+      "label": "Spacing between brand, search and actions",
+      "default": 24
     },
     {
       "type": "header",
