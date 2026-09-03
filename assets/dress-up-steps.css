@@ -378,14 +378,20 @@
    a row never changes height when a selection changes. They follow the image
    at the card's own gap rather than being pushed to the bottom of a stretched
    card, and they wrap rather than scroll: on a narrow card the options sit
-   directly under it and the quantity drops below, never cut off. */
+   directly under it and the quantity drops below, never cut off.
+
+   Centred, not spread: when the quantity shares a line the options absorb the
+   free space beside it and it still finishes at the right edge, and when it
+   wraps onto a line of its own it centres under the card. The row gap matches
+   the card's own gap, so image to options and options to quantity read the
+   same. */
 .ds-card__controls {
   display: flex;
   padding-inline: .6rem;
   flex-wrap: wrap;
   align-items: center;
-  justify-content: space-between;
-  gap: .6rem .8rem;
+  justify-content: center;
+  gap: .8rem;
   visibility: hidden;
 }
 .ds-card--selected .ds-card__controls { visibility: visible; }
@@ -467,12 +473,10 @@
 }
 .ds-card__select-caret svg { width: 1rem; height: .6rem; }
 
-/* Options left, quantity right, whether they share a line or wrap onto two. */
 .ds-card__quantity {
   display: flex;
   height: var(--ds-control-small);
   flex: 0 0 auto;
-  margin-left: auto;
   padding-inline: .2rem;
   align-items: center;
   border-radius: var(--ds-radius-control);

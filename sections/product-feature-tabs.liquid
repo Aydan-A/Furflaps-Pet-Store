@@ -2,6 +2,8 @@
 <script src="{{ 'product-form.js' | asset_url }}" defer="defer"></script>
 
 {%- liquid
+  assign added_label = section.settings.added_label | default: 'Added'
+
   # theme-check-disable BlockIdUsage
   assign first_tab_id = blank
   for block in section.blocks
@@ -142,9 +144,25 @@
                       endif
                     endif
 
-                    if color_swatch_style == blank and color_value != blank and selected_variant.featured_media != blank
-                      assign color_swatch_url = selected_variant.featured_media | image_url: width: 60
-                      assign color_swatch_style = 'background-image: url(' | append: color_swatch_url | append: ');'
+                    if color_swatch_style == blank and color_value != blank
+                      assign color_key = color_value | handleize
+                      case color_key
+                        when 'sky-blue'
+                          assign color_swatch_color = '#BFE8F7'
+                        when 'mint-green'
+                          assign color_swatch_color = '#A8E3CE'
+                        when 'lilac'
+                          assign color_swatch_color = '#C8A7E8'
+                        when 'yellow'
+                          assign color_swatch_color = '#F5D94E'
+                        when 'light-blue'
+                          assign color_swatch_color = '#ADD8E6'
+                        when 'dark-blue'
+                          assign color_swatch_color = '#24518A'
+                        else
+                          assign color_swatch_color = color_key | remove: '-'
+                      endcase
+                      assign color_swatch_style = 'background-color: ' | append: color_swatch_color | append: ';'
                     endif
 
                     assign quantity_min = selected_variant.quantity_rule.min | default: 1
@@ -187,9 +205,32 @@
                             class="product-feature-tabs__add"
                             type="submit"
                             name="add"
+                            data-pft-add
                             {% unless selected_variant.available %}disabled{% endunless %}
                           >
-                            <span>{% if selected_variant.available %}{{ 'products.product.add_to_cart' | t }}{% else %}{{ 'products.product.sold_out' | t }}{% endif %}</span>
+                            {%- comment -%}
+                              Labels stay first in the DOM so the accessible name is always the
+                              "Add to cart" text; the icon stage is moved ahead of them with flex order.
+                            {%- endcomment -%}
+                            <span class="product-feature-tabs__add-labels">
+                              <span class="product-feature-tabs__add-label">{% if selected_variant.available %}{{ 'products.product.add_to_cart' | t }}{% else %}{{ 'products.product.sold_out' | t }}{% endif %}</span>
+                              {%- if selected_variant.available -%}
+                                <span class="product-feature-tabs__add-label product-feature-tabs__add-label--success" aria-hidden="true">{{ added_label }}</span>
+                              {%- endif -%}
+                            </span>
+                            {%- if selected_variant.available -%}
+                              <span class="product-feature-tabs__add-stage" aria-hidden="true">
+                                <span class="product-feature-tabs__add-icon product-feature-tabs__add-icon--drop">
+                                  {{- 'icon-shirt.svg' | inline_asset_content -}}
+                                </span>
+                                <span class="product-feature-tabs__add-icon product-feature-tabs__add-icon--cart">
+                                  {{- 'icon-cart.svg' | inline_asset_content -}}
+                                </span>
+                                <span class="product-feature-tabs__add-icon product-feature-tabs__add-icon--check">
+                                  {{- 'icon-checkmark.svg' | inline_asset_content -}}
+                                </span>
+                              </span>
+                            {%- endif -%}
                             {%- render 'loading-spinner' -%}
                           </button>
                           <div class="product-form__error-message-wrapper" role="alert" hidden>
@@ -307,6 +348,8 @@
     { "type": "color", "id": "active_tab_text", "label": "Active tab text", "default": "#FFFFFF" },
     { "type": "color", "id": "add_button_background", "label": "Add to cart background", "default": "#1D1D1D" },
     { "type": "color", "id": "add_button_text", "label": "Add to cart text", "default": "#FFFFFF" },
+    { "type": "header", "content": "Add to cart button" },
+    { "type": "text", "id": "added_label", "label": "Added confirmation label", "default": "Added", "info": "Shown for a moment after an item is added to the cart." },
     { "type": "header", "content": "Layout and spacing" },
     { "type": "range", "id": "card_gap", "label": "Card gap", "min": 4, "max": 40, "step": 1, "unit": "px", "default": 18 },
     { "type": "range", "id": "card_radius", "label": "Card corner radius", "min": 0, "max": 40, "step": 1, "unit": "px", "default": 10 },
