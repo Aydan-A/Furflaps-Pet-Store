@@ -37,6 +37,9 @@
 }
 
 .dress-up-steps__steps { display: grid; gap: 1.6rem; }
+/* Grid items default to min-width: auto, which would let a wide track push
+   the whole section past the viewport. */
+.dress-up-steps__steps > .ds-step { min-width: 0; }
 
 /* ---------- Step ---------- */
 
@@ -261,11 +264,15 @@
   align-items: stretch;
   flex-wrap: wrap;
 }
-/* The overflow is clipped, not scrollable: on desktop the arrows move the
-   track, so there is no scrollbar and nothing spills past the step. The
-   padding keeps focus rings off the clipped edge. */
+/* The carousel is a grid that flows into columns, so a long list can sit in
+   two or more rows and still page sideways. The overflow is clipped, not
+   scrollable: the arrows move it, so there is no scrollbar and nothing spills
+   past the step. The padding keeps focus rings off the clipped edge. */
 .ds-track[data-layout='carousel'] {
-  flex-wrap: nowrap;
+  display: grid;
+  grid-auto-flow: column;
+  grid-template-rows: repeat(var(--ds-rows, 1), auto);
+  grid-auto-columns: calc((100% - (var(--ds-visible) - 1) * var(--ds-gap)) / var(--ds-visible));
   padding: .4rem;
   margin: -.4rem;
   overflow: hidden;
@@ -274,10 +281,12 @@
   overscroll-behavior-inline: contain;
 }
 
+/* A card never exceeds its track, whatever the flex basis resolves to. */
 .ds-card {
   display: flex;
   flex: 0 0 calc((100% - (var(--ds-visible) - 1) * var(--ds-gap)) / var(--ds-visible) - .02rem);
   min-width: 0;
+  max-width: 100%;
   flex-direction: column;
   gap: .8rem;
   scroll-snap-align: start;
@@ -337,6 +346,8 @@
   font-weight: 600;
 }
 .ds-card--soldout .ds-card__pick { opacity: .5; cursor: not-allowed; }
+/* The step already holds as many as it allows. */
+.ds-card--blocked .ds-card__pick { opacity: .45; cursor: not-allowed; }
 
 /* Controls belong to the chosen card, but hold their space so a row never
    jumps when a selection changes. */
@@ -458,6 +469,7 @@
   .ds-step__arrows { display: none; }
   .ds-track[data-layout='carousel'] {
     overflow-x: auto;
+    overflow-y: hidden;
     scroll-snap-type: x proximity;
     scrollbar-width: none;
   }

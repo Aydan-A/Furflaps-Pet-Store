@@ -1,42 +1,60 @@
 {{ 'dress-up-steps.css' | asset_url | stylesheet_tag }}
 <script src="{{ 'dress-up-steps.js' | asset_url }}" defer="defer"></script>
 
+{%- comment -%}
+  Every value below falls back to a real default. A setting saved before it
+  existed comes back nil, and "--ds-per-row: ;" is a defined-but-empty custom
+  property: var() substitutes the empty value instead of its fallback, which
+  breaks the calc that sizes the cards. Resolving the defaults here means the
+  section renders correctly whatever a theme has saved.
+{%- endcomment -%}
+{%- liquid
+  assign section_per_row = section.settings.cards_per_row | plus: 0
+  if section_per_row == 0
+    assign section_per_row = 4
+  endif
+  assign card_gap = section.settings.card_gap | plus: 0
+  if card_gap == 0
+    assign card_gap = 24
+  endif
+-%}
+
 {%- style -%}
   #shopify-section-{{ section.id }} {
-    --ds-background: {{ section.settings.background }};
-    --ds-text: {{ section.settings.text_color }};
-    --ds-muted: {{ section.settings.muted_text }};
-    --ds-panel: {{ section.settings.panel_background }};
-    --ds-surface: {{ section.settings.card_background }};
-    --ds-media: {{ section.settings.image_background }};
-    --ds-border: {{ section.settings.border_color }};
-    --ds-accent: {{ section.settings.accent }};
-    --ds-accent-text: {{ section.settings.accent_text }};
-    --ds-number-background: {{ section.settings.number_background }};
-    --ds-number-text: {{ section.settings.number_text }};
+    --ds-background: {{ section.settings.background | default: '#FFFFFF' }};
+    --ds-text: {{ section.settings.text_color | default: '#111111' }};
+    --ds-muted: {{ section.settings.muted_text | default: '#6B7280' }};
+    --ds-panel: {{ section.settings.panel_background | default: '#F4F4F4' }};
+    --ds-surface: {{ section.settings.card_background | default: '#FFFFFF' }};
+    --ds-media: {{ section.settings.image_background | default: '#E9EEF1' }};
+    --ds-border: {{ section.settings.border_color | default: '#E2E2E2' }};
+    --ds-accent: {{ section.settings.accent | default: '#F96D4B' }};
+    --ds-accent-text: {{ section.settings.accent_text | default: '#FFFFFF' }};
+    --ds-number-background: {{ section.settings.number_background | default: '#050505' }};
+    --ds-number-text: {{ section.settings.number_text | default: '#FFFFFF' }};
 
-    --ds-max-width: {{ section.settings.max_width }}px;
-    --ds-padding-top: {{ section.settings.padding_top }}px;
-    --ds-padding-bottom: {{ section.settings.padding_bottom }}px;
-    --ds-padding-inline: {{ section.settings.padding_inline }}px;
-    --ds-mobile-padding-top: {{ section.settings.mobile_padding_top }}px;
-    --ds-mobile-padding-bottom: {{ section.settings.mobile_padding_bottom }}px;
-    --ds-mobile-padding-inline: {{ section.settings.mobile_padding_inline }}px;
-    --ds-heading-gap: {{ section.settings.heading_gap }}px;
+    --ds-max-width: {{ section.settings.max_width | default: 1320 }}px;
+    --ds-padding-top: {{ section.settings.padding_top | default: 32 }}px;
+    --ds-padding-bottom: {{ section.settings.padding_bottom | default: 40 }}px;
+    --ds-padding-inline: {{ section.settings.padding_inline | default: 48 }}px;
+    --ds-mobile-padding-top: {{ section.settings.mobile_padding_top | default: 28 }}px;
+    --ds-mobile-padding-bottom: {{ section.settings.mobile_padding_bottom | default: 32 }}px;
+    --ds-mobile-padding-inline: {{ section.settings.mobile_padding_inline | default: 16 }}px;
+    --ds-heading-gap: {{ section.settings.heading_gap | default: 38 }}px;
 
-    --ds-per-row: {{ section.settings.cards_per_row }};
-    --ds-gap: {{ section.settings.card_gap }}px;
-    --ds-image-ratio: {{ section.settings.image_ratio }};
-    --ds-image-fit: {{ section.settings.image_fit }};
-    --ds-radius-card: {{ section.settings.card_radius }}px;
+    --ds-per-row: {{ section_per_row }};
+    --ds-gap: {{ card_gap }}px;
+    --ds-image-ratio: {{ section.settings.image_ratio | default: '4 / 5' }};
+    --ds-image-fit: {{ section.settings.image_fit | default: 'contain' }};
+    --ds-radius-card: {{ section.settings.card_radius | default: 14 }}px;
 
-    --ds-eyebrow-size: {{ section.settings.eyebrow_size }}px;
-    --ds-heading-size: {{ section.settings.heading_size }}px;
-    --ds-mobile-heading-size: {{ section.settings.mobile_heading_size }}px;
-    --ds-heading-weight: {{ section.settings.heading_weight }};
-    --ds-step-title-size: {{ section.settings.step_title_size }}px;
-    --ds-mobile-step-title-size: {{ section.settings.mobile_step_title_size }}px;
-    --ds-price-size: {{ section.settings.price_size }}px;
+    --ds-eyebrow-size: {{ section.settings.eyebrow_size | default: 11 }}px;
+    --ds-heading-size: {{ section.settings.heading_size | default: 34 }}px;
+    --ds-mobile-heading-size: {{ section.settings.mobile_heading_size | default: 28 }}px;
+    --ds-heading-weight: {{ section.settings.heading_weight | default: 700 }};
+    --ds-step-title-size: {{ section.settings.step_title_size | default: 20 }}px;
+    --ds-mobile-step-title-size: {{ section.settings.mobile_step_title_size | default: 17 }}px;
+    --ds-price-size: {{ section.settings.price_size | default: 18 }}px;
   }
 {%- endstyle -%}
 
@@ -88,9 +106,17 @@
             assign product_limit = 50
           endif
 
-          assign per_row = block.settings.cards_per_row
+          assign per_row = block.settings.cards_per_row | plus: 0
           if per_row == 0
-            assign per_row = section.settings.cards_per_row
+            assign per_row = section_per_row
+          endif
+          assign card_rows = block.settings.rows | plus: 0
+          if card_rows == 0
+            assign card_rows = 1
+          endif
+          assign max_picks = block.settings.max_selections | plus: 0
+          if max_picks == 0
+            assign max_picks = 1
           endif
 
           assign property_label = block.settings.personalization_label | default: 'Name'
@@ -105,10 +131,10 @@
           class="ds-step"
           data-dress-step
           data-index="{{ forloop.index0 }}"
-          data-max="{{ block.settings.max_selections }}"
+          data-max="{{ max_picks }}"
           {% if block.settings.selection_required %}data-required{% endif %}
           {% if is_final %}data-final{% endif %}
-          style="--ds-per-row: {{ per_row }};"
+          style="--ds-per-row: {{ per_row }}; --ds-rows: {{ card_rows }};"
           {{ block.shopify_attributes }}
         >
           <div class="ds-step__head">
@@ -302,7 +328,8 @@
 
         { "type": "header", "content": "Layout" },
         { "type": "select", "id": "layout", "label": "Card layout", "default": "grid", "options": [{ "value": "grid", "label": "Grid (wraps onto new rows)" }, { "value": "carousel", "label": "Carousel (scrolls sideways)" }], "info": "Use the carousel for long lists such as letters." },
-        { "type": "range", "id": "cards_per_row", "label": "Cards in view", "min": 0, "max": 8, "step": 1, "default": 0, "info": "0 uses the section setting." },
+        { "type": "range", "id": "cards_per_row", "label": "Cards in view", "min": 0, "max": 8, "step": 1, "default": 0, "info": "Columns across. 0 uses the section setting." },
+        { "type": "range", "id": "rows", "label": "Rows", "min": 1, "max": 4, "step": 1, "default": 1, "info": "Carousel only. Two or more rows keep a long list, such as letters, compact." },
 
         { "type": "header", "content": "Personalization" },
         { "type": "checkbox", "id": "enable_personalization", "label": "Show text field", "default": false },
@@ -334,6 +361,7 @@
             "max_selections": 12,
             "layout": "carousel",
             "cards_per_row": 6,
+            "rows": 2,
             "enable_personalization": true,
             "personalization_required": false
           }

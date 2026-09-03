@@ -171,13 +171,17 @@ if (!customElements.get('dress-up-steps')) {
           if (step.checkoutButton) step.checkoutButton.setAttribute('aria-disabled', String(!ready));
 
           this.renderPill(step, isOpen, selections);
-          step.cards.forEach((card) => this.renderCard(card));
+          // At the cap, the cards you cannot add read as unavailable rather
+          // than looking pickable and refusing.
+          const atLimit = step.max > 1 && selections.length >= step.max;
+          step.cards.forEach((card) => this.renderCard(card, atLimit));
           this.renderArrows(step);
         });
       }
 
-      renderCard(card) {
+      renderCard(card, atLimit) {
         card.el.classList.toggle('ds-card--selected', card.selected);
+        card.el.classList.toggle('ds-card--blocked', Boolean(atLimit) && !card.selected);
         card.pickButton.setAttribute('aria-pressed', String(card.selected));
         if (card.quantityValue) card.quantityValue.textContent = card.quantity;
 
