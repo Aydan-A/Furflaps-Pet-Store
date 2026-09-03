@@ -17,6 +17,7 @@
         "announcement-bar-0": {
           "type": "announcement",
           "settings": {
+            "prefix": "",
             "text": "Free shipping across Canada on orders $50+",
             "link": ""
           }
@@ -34,7 +35,7 @@
         "color_scheme": "scheme-1",
         "show_line_separator": true,
         "font_source": "body",
-        "message_font_size": 12,
+        "message_font_size": 16,
         "message_font_weight": "500",
         "message_vertical_padding": 7,
         "content_gap": 8,
