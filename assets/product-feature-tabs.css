@@ -193,11 +193,26 @@
 .product-feature-tabs__form { display: block; width: 100%; }
 
 .product-feature-tabs__add {
+  display: inline-flex;
+  width: 100%;
   min-height: 4rem;
+  padding: 0 1.6rem;
+  align-items: center;
+  justify-content: center;
+  gap: 0.8rem;
+  border: 0;
   border-radius: var(--pft-card-radius);
+  background: var(--pft-add-background);
+  color: var(--pft-add-text);
+  font: inherit;
   font-size: 1.3rem;
+  font-weight: 700;
+  cursor: pointer;
 }
 
+.product-feature-tabs__add:hover:not(:disabled) { opacity: 0.88; }
+.product-feature-tabs__add:disabled { opacity: 0.5; cursor: not-allowed; }
+.product-feature-tabs__add:focus-visible { outline: 0.2rem solid currentColor; outline-offset: 0.2rem; }
 .product-feature-tabs__add .loading__spinner { width: 1.6rem; }
 .product-feature-tabs__form .product-form__error-message-wrapper { margin-top: 0.6rem; font-size: 1.1rem; }
 .product-feature-tabs__empty { padding: 4rem 2rem; text-align: center; background: var(--pft-card-background); border-radius: var(--pft-card-radius); }

@@ -24,6 +24,8 @@
     --pft-tab-text: {{ section.settings.tab_text }};
     --pft-active-background: {{ section.settings.active_tab_background }};
     --pft-active-text: {{ section.settings.active_tab_text }};
+    --pft-add-background: {{ section.settings.add_button_background }};
+    --pft-add-text: {{ section.settings.add_button_text }};
     --pft-padding-top: {{ section.settings.padding_top }}px;
     --pft-padding-bottom: {{ section.settings.padding_bottom }}px;
     --pft-padding-inline: {{ section.settings.padding_inline }}px;
@@ -182,7 +184,7 @@
                           <input type="hidden" name="id" value="{{ selected_variant.id }}" class="product-variant-id">
                           <input type="hidden" name="quantity" value="{{ quantity_min }}">
                           <button
-                            class="product-feature-tabs__add button button--full-width"
+                            class="product-feature-tabs__add"
                             type="submit"
                             name="add"
                             {% unless selected_variant.available %}disabled{% endunless %}
@@ -303,6 +305,8 @@
     { "type": "color", "id": "tab_text", "label": "Inactive tab text", "default": "#222222" },
     { "type": "color", "id": "active_tab_background", "label": "Active tab background", "default": "#1D1D1D" },
     { "type": "color", "id": "active_tab_text", "label": "Active tab text", "default": "#FFFFFF" },
+    { "type": "color", "id": "add_button_background", "label": "Add to cart background", "default": "#1D1D1D" },
+    { "type": "color", "id": "add_button_text", "label": "Add to cart text", "default": "#FFFFFF" },
     { "type": "header", "content": "Layout and spacing" },
     { "type": "range", "id": "card_gap", "label": "Card gap", "min": 4, "max": 40, "step": 1, "unit": "px", "default": 18 },
     { "type": "range", "id": "card_radius", "label": "Card corner radius", "min": 0, "max": 40, "step": 1, "unit": "px", "default": 10 },
