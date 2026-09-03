@@ -18,7 +18,7 @@
           "type": "menu",
           "settings": {
             "show_item": true,
-            "heading": "Company",
+            "heading": "SHOP",
             "menu": "company"
           }
         },
@@ -26,7 +26,7 @@
           "type": "menu",
           "settings": {
             "show_item": true,
-            "heading": "Collection",
+            "heading": "COMPANY",
             "menu": "shop"
           }
         },
@@ -34,7 +34,7 @@
           "type": "menu",
           "settings": {
             "show_item": true,
-            "heading": "Get help",
+            "heading": "GET HELP",
             "menu": "get-help"
           }
         },
