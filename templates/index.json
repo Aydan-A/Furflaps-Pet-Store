@@ -236,7 +236,7 @@
             "selection_required": true,
             "show_options": true,
             "option_names": "Size",
-            "option_style": "buttons",
+            "option_style": "dropdown",
             "enable_quantity": true,
             "layout": "grid",
             "cards_per_row": 4,

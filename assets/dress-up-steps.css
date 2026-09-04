@@ -377,39 +377,39 @@
 /* Controls belong to the chosen card, but every card carries them, hidden, so
    a row never changes height when a selection changes. They follow the image
    at the card's own gap rather than being pushed to the bottom of a stretched
-   card.
+   card, and they wrap rather than scroll: on a narrow card the options sit
+   directly under it and the quantity drops below, never cut off.
 
-   Stacked and centred, not one wrapping line: the options sit under the image
-   and the quantity centres beneath them, so the stepper lands in the same
-   place on every card whether the options above it take one line or two. The
-   row gap matches the card's own gap, so image to options and options to
-   quantity read the same. */
+   Centred, not spread: when the quantity shares a line the options absorb the
+   free space beside it and it still finishes at the right edge, and when it
+   wraps onto a line of its own it centres under the card. The row gap matches
+   the card's own gap, so image to options and options to quantity read the
+   same. */
 .ds-card__controls {
   display: flex;
   padding-inline: .6rem;
-  flex-direction: column;
+  flex-wrap: wrap;
   align-items: center;
+  justify-content: center;
   gap: .8rem;
   visibility: hidden;
 }
 .ds-card--selected .ds-card__controls { visibility: visible; }
 
+/* min-content, not 0: the options box refuses to shrink narrower than a single
+   swatch, so a card too narrow for options and quantity side by side drops the
+   quantity onto its own line instead of squeezing the swatches out of sight. */
 .ds-card__options {
   display: flex;
-  max-width: 100%;
-  min-width: 0;
+  flex: 1 1 auto;
+  min-width: min-content;
   flex-wrap: wrap;
   align-items: center;
-  justify-content: center;
   gap: .6rem;
 }
-/* Values wrap rather than shrink: a size is written out in full - "S ( 25-35
-   cm)" - and that measurement is the point of it, so a row too narrow for
-   three of them takes a second line instead of clipping one. */
-.ds-card__values { display: flex; min-width: 0; flex-wrap: wrap; gap: .4rem; }
+.ds-card__values { display: flex; flex-wrap: wrap; gap: .4rem; }
 .ds-card__value {
   display: inline-grid;
-  max-width: 100%;
   min-width: var(--ds-control-small);
   height: var(--ds-control-small);
   padding: 0 1.2rem;
@@ -424,12 +424,6 @@
   font-weight: 700;
   line-height: 1;
   cursor: pointer;
-}
-.ds-card__value > span:not(.visually-hidden) {
-  max-width: 100%;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
 }
 .ds-card__value--swatch {
   width: 2.2rem;
