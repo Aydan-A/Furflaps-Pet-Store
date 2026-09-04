@@ -116,7 +116,7 @@
         "show_pagination": true,
         "autoplay": false,
         "autoplay_delay": 5,
-        "pagination_alignment": "left",
+        "pagination_alignment": "center",
         "pagination_offset_vertical": 24,
         "pagination_offset_horizontal": 48,
         "mobile_pagination_offset_vertical": 20,
