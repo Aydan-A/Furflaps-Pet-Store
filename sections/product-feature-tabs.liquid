@@ -209,28 +209,32 @@
                             {% unless selected_variant.available %}disabled{% endunless %}
                           >
                             {%- comment -%}
-                              Labels stay first in the DOM so the accessible name is always the
-                              "Add to cart" text; the icon stage is moved ahead of them with flex order.
+                              Two stacked faces: the default one carries the accessible name, the
+                              success one is hidden from assistive tech so the label never changes.
                             {%- endcomment -%}
-                            <span class="product-feature-tabs__add-labels">
-                              <span class="product-feature-tabs__add-label">{% if selected_variant.available %}{{ 'products.product.add_to_cart' | t }}{% else %}{{ 'products.product.sold_out' | t }}{% endif %}</span>
+                            <span class="product-feature-tabs__add-faces">
+                              <span class="product-feature-tabs__add-face">
+                                {%- if selected_variant.available -%}
+                                  <span class="product-feature-tabs__add-stage" aria-hidden="true">
+                                    <span class="product-feature-tabs__add-icon product-feature-tabs__add-icon--drop">
+                                      {{- 'icon-shirt.svg' | inline_asset_content -}}
+                                    </span>
+                                    <span class="product-feature-tabs__add-icon product-feature-tabs__add-icon--cart">
+                                      {{- 'icon-cart.svg' | inline_asset_content -}}
+                                    </span>
+                                  </span>
+                                {%- endif -%}
+                                <span class="product-feature-tabs__add-label">{% if selected_variant.available %}{{ 'products.product.add_to_cart' | t }}{% else %}{{ 'products.product.sold_out' | t }}{% endif %}</span>
+                              </span>
                               {%- if selected_variant.available -%}
-                                <span class="product-feature-tabs__add-label product-feature-tabs__add-label--success" aria-hidden="true">{{ added_label }}</span>
+                                <span class="product-feature-tabs__add-face product-feature-tabs__add-face--success" aria-hidden="true">
+                                  <span class="product-feature-tabs__add-icon product-feature-tabs__add-icon--check">
+                                    {{- 'icon-checkmark.svg' | inline_asset_content -}}
+                                  </span>
+                                  <span class="product-feature-tabs__add-label">{{ added_label | escape }}</span>
+                                </span>
                               {%- endif -%}
                             </span>
-                            {%- if selected_variant.available -%}
-                              <span class="product-feature-tabs__add-stage" aria-hidden="true">
-                                <span class="product-feature-tabs__add-icon product-feature-tabs__add-icon--drop">
-                                  {{- 'icon-shirt.svg' | inline_asset_content -}}
-                                </span>
-                                <span class="product-feature-tabs__add-icon product-feature-tabs__add-icon--cart">
-                                  {{- 'icon-cart.svg' | inline_asset_content -}}
-                                </span>
-                                <span class="product-feature-tabs__add-icon product-feature-tabs__add-icon--check">
-                                  {{- 'icon-checkmark.svg' | inline_asset_content -}}
-                                </span>
-                              </span>
-                            {%- endif -%}
                             {%- render 'loading-spinner' -%}
                           </button>
                           <div class="product-form__error-message-wrapper" role="alert" hidden>
@@ -267,8 +271,87 @@
         this.panels = [...this.querySelectorAll('[role="tabpanel"]')];
         this.addEventListener('click', this.onClick);
         this.addEventListener('keydown', this.onKeydown);
+
+        // Capture phase so we see the submit before product-form.js flips aria-disabled.
+        this.addEventListener('submit', this.onSubmit, true);
+        this.addTimers = new WeakMap();
+        if (document.readyState === 'loading') {
+          document.addEventListener('DOMContentLoaded', this.subscribeToCart, { once: true });
+        } else {
+          this.subscribeToCart();
+        }
       }
-      disconnectedCallback() { this.removeEventListener('click', this.onClick); this.removeEventListener('keydown', this.onKeydown); }
+      disconnectedCallback() {
+        this.removeEventListener('click', this.onClick);
+        this.removeEventListener('keydown', this.onKeydown);
+        this.removeEventListener('submit', this.onSubmit, true);
+        document.removeEventListener('DOMContentLoaded', this.subscribeToCart);
+        this.cartSubscriptions?.forEach((unsubscribe) => unsubscribe());
+        this.cartSubscriptions = null;
+      }
+
+      subscribeToCart = () => {
+        if (typeof subscribe !== 'function' || typeof PUB_SUB_EVENTS === 'undefined' || this.cartSubscriptions) return;
+        this.cartSubscriptions = [
+          subscribe(PUB_SUB_EVENTS.cartUpdate, (payload) => {
+            if (!this.pendingAdd || payload?.source !== 'product-form') return;
+            const { button, variantId } = this.pendingAdd;
+            if (payload.productVariantId && String(payload.productVariantId) !== String(variantId)) return;
+            this.pendingAdd = null;
+            this.playAdded(button);
+          }),
+          subscribe(PUB_SUB_EVENTS.cartError, () => { this.pendingAdd = null; }),
+        ];
+      };
+
+      onSubmit = (event) => {
+        const button = event.target.querySelector?.('[data-pft-add]');
+        // product-form.js ignores submits while a request is in flight; mirror that guard.
+        if (!button || button.disabled || button.getAttribute('aria-disabled') === 'true') return;
+        this.resetAddButton(button);
+        this.pendingAdd = { button, variantId: event.target.querySelector('[name="id"]')?.value };
+        // A dropped request never reports back, so don't leave a stale button waiting to animate.
+        clearTimeout(this.pendingAddTimer);
+        this.pendingAddTimer = setTimeout(() => { this.pendingAdd = null; }, 15000);
+      };
+
+      resetAddButton(button) {
+        const timers = this.addTimers.get(button);
+        if (timers) timers.forEach((timer) => clearTimeout(timer));
+        this.addTimers.delete(button);
+        button.removeAttribute('data-pft-state');
+      }
+
+      playAdded(button) {
+        if (!button.isConnected) return;
+        this.resetAddButton(button);
+        const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+        // Runs on the next frame so the loading spinner is already hidden when we measure.
+        requestAnimationFrame(() => {
+          if (!button.isConnected) return;
+          const face = button.querySelector('.product-feature-tabs__add-face');
+          const label = face?.querySelector('.product-feature-tabs__add-label');
+          const stage = button.querySelector('.product-feature-tabs__add-stage');
+          if (!face || !label || !stage) return;
+
+          if (!reduceMotion) {
+            // Slide the cart into the middle of the button by half the space the text leaves behind.
+            const styles = getComputedStyle(face);
+            const gap = parseFloat(styles.columnGap) || 0;
+            const direction = styles.direction === 'rtl' ? -1 : 1;
+            button.style.setProperty('--pft-add-shift', `${(direction * (label.offsetWidth + gap)) / 2}px`);
+          }
+
+          button.dataset.pftState = reduceMotion ? 'added' : 'dropping';
+          const timers = [];
+          if (!reduceMotion) {
+            timers.push(setTimeout(() => { button.dataset.pftState = 'added'; }, 620));
+          }
+          timers.push(setTimeout(() => this.resetAddButton(button), reduceMotion ? 1200 : 1620));
+          this.addTimers.set(button, timers);
+        });
+      }
       onClick = (event) => {
         const quantityButton = event.target.closest('[data-pft-quantity-change]');
         if (quantityButton) {

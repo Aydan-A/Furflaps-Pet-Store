@@ -214,6 +214,109 @@
 .product-feature-tabs__add:disabled { opacity: 0.5; cursor: not-allowed; }
 .product-feature-tabs__add:focus-visible { outline: 0.2rem solid currentColor; outline-offset: 0.2rem; }
 .product-feature-tabs__add .loading__spinner { width: 1.6rem; }
+
+/* Add to cart icon + success animation */
+.product-feature-tabs__add {
+  position: relative;
+  --pft-add-shift: 0px;
+}
+
+/* Default and success faces stack on the same spot, so the button never resizes
+   and each face stays centred on its own. Stretching this to the button height
+   gives the falling icon something that actually clips it - `overflow` on the
+   button itself is ignored by WebKit/Chromium. */
+.product-feature-tabs__add-faces {
+  align-self: stretch;
+  display: grid;
+  place-content: center;
+  place-items: center;
+  overflow: hidden;
+}
+
+.product-feature-tabs__add-face {
+  grid-area: 1 / 1;
+  display: inline-flex;
+  align-items: center;
+  column-gap: 0.8rem;
+  transition: opacity 0.18s ease;
+}
+
+.product-feature-tabs__add-face--success { opacity: 0; }
+
+.product-feature-tabs__add-label {
+  white-space: nowrap;
+  transition: opacity 0.16s ease;
+}
+
+/* Grid stacking keeps every icon centred on the same point, even the cart glyph
+   whose artboard is wider than the space the stage reserves in the button. */
+.product-feature-tabs__add-stage {
+  display: grid;
+  grid-template: minmax(0, 1fr) / minmax(0, 1fr);
+  place-items: center;
+  flex: 0 0 auto;
+  width: 1.5rem;
+  height: 1.8rem;
+  transition: transform 0.22s cubic-bezier(0.33, 0, 0.2, 1);
+}
+
+.product-feature-tabs__add-icon {
+  grid-area: 1 / 1;
+  flex: 0 0 auto;
+  pointer-events: none;
+}
+
+.product-feature-tabs__add-icon svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  fill: currentColor;
+}
+
+.product-feature-tabs__add-icon--cart { width: 3rem; height: 3rem; }
+.product-feature-tabs__add-icon--drop { width: 1.25rem; height: 1.25rem; opacity: 0; }
+.product-feature-tabs__add-icon--check { width: 1.4rem; height: 1.05rem; transform: scale(0.6); transition: transform 0.24s cubic-bezier(0.34, 1.5, 0.64, 1); }
+
+/* Item confirmed: the label steps aside, the cart centres, the product drops in */
+.product-feature-tabs__add[data-pft-state='dropping'] .product-feature-tabs__add-label { opacity: 0; }
+.product-feature-tabs__add[data-pft-state='dropping'] .product-feature-tabs__add-stage {
+  transform: translateX(var(--pft-add-shift));
+}
+
+.product-feature-tabs__add[data-pft-state='dropping'] .product-feature-tabs__add-icon--drop {
+  animation: pft-add-drop 0.62s linear forwards, pft-add-drop-fade 0.62s linear forwards;
+}
+
+.product-feature-tabs__add[data-pft-state='dropping'] .product-feature-tabs__add-icon--cart {
+  animation: pft-add-bounce 0.3s 0.33s cubic-bezier(0.3, 0.9, 0.4, 1) both;
+}
+
+/* Short success state */
+.product-feature-tabs__add[data-pft-state='added'] .product-feature-tabs__add-face { opacity: 0; }
+.product-feature-tabs__add[data-pft-state='added'] .product-feature-tabs__add-face--success { opacity: 1; }
+.product-feature-tabs__add[data-pft-state='added'] .product-feature-tabs__add-icon--check { transform: scale(1); }
+
+/* The product falls from above the button, settles, then disappears into the cart. */
+@keyframes pft-add-drop {
+  0% { transform: translateY(-2.6rem) scale(0.8); animation-timing-function: cubic-bezier(0.55, 0, 0.85, 0.2); }
+  55% { transform: translateY(0.1rem) scale(1); animation-timing-function: ease-out; }
+  72% { transform: translateY(0.1rem) scale(0.92); }
+  100% { transform: translateY(0.3rem) scale(0.7); }
+}
+
+@keyframes pft-add-drop-fade {
+  0% { opacity: 0; }
+  12% { opacity: 1; }
+  72% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+@keyframes pft-add-bounce {
+  0% { transform: translateY(0) scale(1, 1); }
+  35% { transform: translateY(0.15rem) scale(1.08, 0.92); }
+  70% { transform: translateY(-0.1rem) scale(0.97, 1.03); }
+  100% { transform: translateY(0) scale(1, 1); }
+}
 .product-feature-tabs__form .product-form__error-message-wrapper { margin-top: 0.6rem; font-size: 1.1rem; }
 .product-feature-tabs__empty { padding: 4rem 2rem; text-align: center; background: var(--pft-card-background); border-radius: var(--pft-card-radius); }
 .product-feature-tabs__footer { margin-top: 2.4rem; text-align: var(--pft-alignment); }
@@ -231,4 +334,13 @@
 
 @media (prefers-reduced-motion: reduce) {
   .product-feature-tabs__image { transition: none; }
+  .product-feature-tabs__add-stage,
+  .product-feature-tabs__add-face,
+  .product-feature-tabs__add-label,
+  .product-feature-tabs__add-icon--check { transition: none; }
+  .product-feature-tabs__add[data-pft-state] .product-feature-tabs__add-stage { transform: none; }
+  .product-feature-tabs__add[data-pft-state] .product-feature-tabs__add-icon--drop { animation: none; opacity: 0; }
+  .product-feature-tabs__add[data-pft-state] .product-feature-tabs__add-icon--cart { animation: none; }
+  .product-feature-tabs__add-icon--check,
+  .product-feature-tabs__add[data-pft-state='added'] .product-feature-tabs__add-icon--check { transform: none; }
 }
