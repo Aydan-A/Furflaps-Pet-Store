@@ -63,10 +63,36 @@
     endfor
   endif
 
+  comment
+    Some products cannot carry Shopify's native swatches — their category has
+    no Color attribute — so their colours live in custom.color instead. Build
+    the lookup once for the card and let the swatch snippet fall back to it.
+  endcomment
+  assign color_fallback_map = ''
+  if settings_card.show_swatches and color_option
+    capture color_fallback_map
+      render 'swatch-fallback-map', product: product
+    endcapture
+  endif
+
   assign swatch_total = 0
   if color_option
     for value in color_option.values
+      assign value_has_color = false
       if value.swatch != blank
+        assign value_has_color = true
+      elsif color_fallback_map != blank
+        capture value_name
+          echo value
+        endcapture
+        capture value_fallback
+          render 'swatch-fallback-color', map: color_fallback_map, name: value_name
+        endcapture
+        if value_fallback != blank
+          assign value_has_color = true
+        endif
+      endif
+      if value_has_color
         assign swatch_total = swatch_total | plus: 1
       endif
     endfor
@@ -209,12 +235,20 @@
       {%- assign swatches_shown = 0 -%}
       <ul class="cg-card__swatches" role="list" aria-label="{{ color_option.name | escape }}">
         {%- for value in color_option.values -%}
-          {%- if value.swatch != blank and swatches_shown < settings_card.swatches_to_show -%}
-            <li class="cg-card__swatch" title="{{ value | escape }}">
-              <span class="visually-hidden">{{ value }}</span>
-              {% render 'swatch', swatch: value.swatch %}
-            </li>
-            {%- assign swatches_shown = swatches_shown | plus: 1 -%}
+          {%- capture value_name %}{{ value }}{% endcapture -%}
+          {%- capture value_fallback -%}
+            {%- if color_fallback_map != blank -%}
+              {%- render 'swatch-fallback-color', map: color_fallback_map, name: value_name -%}
+            {%- endif -%}
+          {%- endcapture -%}
+          {%- if value.swatch != blank or value_fallback != blank -%}
+            {%- if swatches_shown < settings_card.swatches_to_show -%}
+              <li class="cg-card__swatch" title="{{ value | escape }}">
+                <span class="visually-hidden">{{ value }}</span>
+                {% render 'swatch', swatch: value.swatch, fallback_color: value_fallback %}
+              </li>
+              {%- assign swatches_shown = swatches_shown | plus: 1 -%}
+            {%- endif -%}
           {%- endif -%}
         {%- endfor -%}
         {%- assign swatches_remaining = swatch_total | minus: swatches_shown -%}
