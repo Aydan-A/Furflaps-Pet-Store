@@ -536,7 +536,7 @@
         "padding_bottom": 32,
         "quote_size": 32,
         "mobile_quote_size": 26,
-        "section_background": "#f3f3f3",
+        "section_background": "#FFFFFF",
         "panel_background": "#dff3f5",
         "text_color": "#111111",
         "accent_color": "#111111",
