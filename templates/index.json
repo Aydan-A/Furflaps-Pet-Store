@@ -222,6 +222,25 @@
         "mobile_padding_inline": 16
       }
     },
+    "before_after_comparison_H4KUmY": {
+      "type": "before-after-comparison",
+      "name": "Before/after comparison",
+      "settings": {
+        "heading": "See the difference",
+        "text": "<p>Drag the handle to compare the look before and after.</p>",
+        "button_label": "Shop now",
+        "button_link": "",
+        "before_image": "shopify://shop_images/7e3d4b90-1203-4bad-a312-1da6eee025ba_1_aa195e6d-52f0-4b3c-9b60-af4418677cc2.jpg",
+        "after_image": "shopify://shop_images/7e3d4b90-1203-4bad-a312-1da6eee025ba_2.jpg",
+        "initial_position": 45,
+        "show_product": true,
+        "product": "personalized-name-pet-collar-green",
+        "section_color_scheme": "scheme-1",
+        "color_scheme": "scheme-6",
+        "padding_top": 36,
+        "padding_bottom": 36
+      }
+    },
     "dress_up_steps_L8FhwL": {
       "type": "dress-up-steps",
       "blocks": {
@@ -343,25 +362,6 @@
         "mobile_padding_top": 28,
         "mobile_padding_bottom": 32,
         "mobile_padding_inline": 16
-      }
-    },
-    "before_after_comparison_H4KUmY": {
-      "type": "before-after-comparison",
-      "name": "Before/after comparison",
-      "settings": {
-        "heading": "See the difference",
-        "text": "<p>Drag the handle to compare the look before and after.</p>",
-        "button_label": "Shop now",
-        "button_link": "",
-        "before_image": "shopify://shop_images/7e3d4b90-1203-4bad-a312-1da6eee025ba_1_aa195e6d-52f0-4b3c-9b60-af4418677cc2.jpg",
-        "after_image": "shopify://shop_images/7e3d4b90-1203-4bad-a312-1da6eee025ba_2.jpg",
-        "initial_position": 45,
-        "show_product": true,
-        "product": "personalized-name-pet-collar-green",
-        "section_color_scheme": "scheme-1",
-        "color_scheme": "scheme-6",
-        "padding_top": 36,
-        "padding_bottom": 36
       }
     },
     "product_feature_tabs_EpMe6d": {
