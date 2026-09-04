@@ -356,9 +356,9 @@
         "before_image": "shopify://shop_images/7e3d4b90-1203-4bad-a312-1da6eee025ba_1_aa195e6d-52f0-4b3c-9b60-af4418677cc2.jpg",
         "after_image": "shopify://shop_images/7e3d4b90-1203-4bad-a312-1da6eee025ba_2.jpg",
         "initial_position": 45,
-        "content_width": 1700,
         "show_product": true,
         "product": "personalized-name-pet-collar-green",
+        "content_width": 1700,
         "padding_top": 36,
         "padding_bottom": 36
       }
@@ -513,8 +513,8 @@
         "padding_bottom": 32,
         "quote_size": 32,
         "mobile_quote_size": 26,
-        "section_background": "#FBFBFB",
-        "panel_background": "#dff3f5",
+        "section_background": "#fbfbfb",
+        "panel_background": "#E8F3F2",
         "text_color": "#111111",
         "accent_color": "#111111",
         "card_background": "linear-gradient(90deg, rgba(132, 63, 75, 0.92), rgba(135, 96, 72, 0.88) 100%)",
