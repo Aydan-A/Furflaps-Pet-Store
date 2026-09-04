@@ -98,71 +98,30 @@
                         endif
                       endfor
                     endif
-                    assign color_value = blank
-                    assign color_swatch_style = blank
+                    # Every colour on the card comes from the product itself.
+                    # The Colour option lists what the product is actually
+                    # available in, and the hex behind each value comes from
+                    # that value's own swatch, or from the custom.color
+                    # metaobjects the store keeps its palette in. A value with
+                    # no colour recorded anywhere renders as a plain chip
+                    # rather than as a guessed hex, which is what a hard-coded
+                    # name-to-hex table amounts to once the palette moves.
+                    assign color_option = blank
+                    for product_option in product.options_with_values
+                      assign option_name = product_option.name | downcase
+                      if option_name contains 'color' or option_name contains 'colour'
+                        assign color_option = product_option
+                        break
+                      endif
+                    endfor
+
+                    assign color_objects = blank
                     assign color_metafield = product.metafields.custom.color
                     if color_metafield == blank
                       assign color_metafield = product.metafields.custom.colour
                     endif
-
-                    for product_option in product.options_with_values
-                      assign option_name = product_option.name | downcase
-                      if option_name == 'color' or option_name == 'colour'
-                        assign color_value = selected_variant.options[forloop.index0]
-                        for option_value in product_option.values
-                          if option_value == color_value
-                            if option_value.swatch.color
-                              assign color_swatch_style = 'background-color: rgb(' | append: option_value.swatch.color.rgb | append: ');'
-                            elsif option_value.swatch.image
-                              assign color_swatch_url = option_value.swatch.image | image_url: width: 60
-                              assign color_swatch_style = 'background-image: url(' | append: color_swatch_url | append: ');'
-                            endif
-                            break
-                          endif
-                        endfor
-                      endif
-                    endfor
-
-                    if color_value == blank
-                      if color_metafield.type contains 'metaobject_reference'
-                        assign color_reference = color_metafield.value
-                        if color_metafield.type contains 'list.'
-                          assign color_reference = color_metafield.value | first
-                        endif
-                        assign color_value = color_reference.label.value | default: color_reference.name.value | default: color_reference.title.value | default: color_reference.color_name.value | default: color_reference.colour_name.value | default: color_reference.display_name.value
-                        if color_value == blank and color_reference.system.handle != blank
-                          assign color_value = color_reference.system.handle | replace: '-', ' ' | capitalize
-                        endif
-                        assign referenced_color = color_reference.color.value | default: color_reference.colour.value | default: color_reference.hex.value | default: color_reference.hex_code.value
-                        if referenced_color != blank
-                          assign color_swatch_style = 'background-color: ' | append: referenced_color | append: ';'
-                        endif
-                      elsif color_metafield.type == 'list.single_line_text_field'
-                        assign color_value = color_metafield.value | first
-                      elsif color_metafield.type == 'single_line_text_field' or color_metafield.type == 'color'
-                        assign color_value = color_metafield.value
-                      endif
-                    endif
-
-                    if color_swatch_style == blank and color_value != blank
-                      assign color_key = color_value | handleize
-                      case color_key
-                        when 'sky-blue'
-                          assign color_swatch_color = '#BFE8F7'
-                        when 'mint-green'
-                          assign color_swatch_color = '#A8E3CE'
-                        when 'lilac'
-                          assign color_swatch_color = '#C8A7E8'
-                        when 'yellow'
-                          assign color_swatch_color = '#F5D94E'
-                        when 'light-blue'
-                          assign color_swatch_color = '#ADD8E6'
-                        when 'dark-blue'
-                          assign color_swatch_color = '#24518A'
-                        else
-                          assign color_swatch_color = color_key | remove: '-'
-                      endcase
-                      assign color_swatch_style = 'background-color: ' | append: color_swatch_color | append: ';'
+                    if color_metafield.type == 'list.metaobject_reference'
+                      assign color_objects = color_metafield.value
                     endif
 
                     assign quantity_min = selected_variant.quantity_rule.min | default: 1
@@ -182,8 +141,45 @@
                       </a>
                       <div class="product-feature-tabs__details">
                         <div class="product-feature-tabs__color">
-                          <span class="product-feature-tabs__swatch"{% if color_swatch_style != blank %} style="{{ color_swatch_style }}"{% endif %} aria-hidden="true"></span>
-                          {%- if color_value != blank -%}<span>{{ color_value | escape }}</span>{%- endif -%}
+                          {%- if color_option != blank -%}
+                            {%- for color_name in color_option.values -%}
+                              {%- liquid
+                                assign swatch_style = blank
+                                if color_name.swatch.color
+                                  assign swatch_style = 'background-color: rgb(' | append: color_name.swatch.color.rgb | append: ');'
+                                elsif color_name.swatch.image
+                                  assign swatch_url = color_name.swatch.image | image_url: width: 60
+                                  assign swatch_style = 'background-image: url(' | append: swatch_url | append: ');'
+                                endif
+                                if swatch_style == blank and color_objects != blank
+                                  assign wanted_color = color_name | downcase | strip
+                                  for color_object in color_objects
+                                    assign object_label = color_object.label.value | default: color_object.system.handle | replace: '-', ' ' | downcase | strip
+                                    if object_label == wanted_color and color_object.color.value != blank
+                                      assign swatch_style = 'background-color: ' | append: color_object.color.value | append: ';'
+                                      break
+                                    endif
+                                  endfor
+                                endif
+                              -%}
+                              <span class="product-feature-tabs__swatch"{% if swatch_style != blank %} style="{{ swatch_style }}"{% endif %} aria-hidden="true"></span>
+                            {%- endfor -%}
+                            {%- if color_option.values.size == 1 -%}
+                              <span>{{ color_option.values | first | escape }}</span>
+                            {%- else -%}
+                              <span class="visually-hidden">{{ color_option.values | join: ', ' | escape }}</span>
+                            {%- endif -%}
+                          {%- elsif color_objects != blank -%}
+                            {%- for color_object in color_objects -%}
+                              {%- assign object_label = color_object.label.value | default: color_object.system.handle | replace: '-', ' ' -%}
+                              <span
+                                class="product-feature-tabs__swatch"
+                                {% if color_object.color.value != blank %}style="background-color: {{ color_object.color.value }};"{% endif %}
+                                aria-hidden="true"
+                              ></span>
+                              <span class="visually-hidden">{{ object_label | escape }}</span>
+                            {%- endfor -%}
+                          {%- endif -%}
                         </div>
                         <div
                           class="product-feature-tabs__quantity"
