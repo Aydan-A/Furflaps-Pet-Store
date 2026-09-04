@@ -12,15 +12,6 @@
     "main": {
       "type": "main-product",
       "blocks": {
-        "collapsible_tab_8Rhdh4": {
-          "type": "collapsible_tab",
-          "settings": {
-            "heading": "Collapsible row",
-            "icon": "check_mark",
-            "content": "",
-            "page": ""
-          }
-        },
         "vendor": {
           "type": "text",
           "settings": {
@@ -66,7 +57,6 @@
         }
       },
       "block_order": [
-        "collapsible_tab_8Rhdh4",
         "vendor",
         "title",
         "price",
