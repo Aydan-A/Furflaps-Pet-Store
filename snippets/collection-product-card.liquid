@@ -1,0 +1,327 @@
+{% comment %}
+  Product card used by the collection product grid.
+
+  Kept separate from `card-product` on purpose: this card belongs to the
+  collection listing only, so it can follow the storefront's card language
+  (the one set by the homepage "Hot this week" cards) without touching the
+  cards used by the product page, search or featured sections.
+
+  Accepts:
+  - product: {Object} Product Liquid object
+  - section: {Object} The collection product grid section
+  - lazy_load: {String} 'lazy' or 'eager'
+{% endcomment %}
+
+{%- liquid
+  assign settings_card = section.settings
+
+  assign is_available = product.available
+  assign on_sale = false
+  if product.compare_at_price > product.price and product.price_varies == false and product.compare_at_price_varies == false
+    assign on_sale = true
+  endif
+
+  assign custom_badge = blank
+  if settings_card.show_custom_badge
+    assign custom_badge = product.metafields.custom.card_badge.value | strip
+  endif
+
+  assign discount_label = blank
+  if settings_card.show_discount and on_sale
+    assign discount_pct = product.compare_at_price | minus: product.price | times: 100 | divided_by: product.compare_at_price
+    assign discount_label = discount_pct | prepend: '-' | append: '%'
+  endif
+
+  assign money_price = product.price | money
+  if settings.currency_code_enabled
+    assign money_price = product.price | money_with_currency
+  endif
+  if product.price_varies
+    assign money_price = 'products.product.price.from_price_html' | t: price: money_price
+  endif
+
+  assign money_compare_price = blank
+  if on_sale
+    assign money_compare_price = product.compare_at_price | money
+    if settings.currency_code_enabled
+      assign money_compare_price = product.compare_at_price | money_with_currency
+    endif
+  endif
+
+  assign color_option = null
+  if settings_card.show_swatches
+    assign target_option_name = settings_card.color_option_name | downcase
+    for option in product.options_with_values
+      assign option_name = option.name | downcase
+      if option_name == target_option_name
+        assign color_option = option
+        break
+      endif
+    endfor
+  endif
+
+  assign swatch_total = 0
+  if color_option
+    for value in color_option.values
+      if value.swatch != blank
+        assign swatch_total = swatch_total | plus: 1
+      endif
+    endfor
+  endif
+
+  assign quantity_rules = false
+  if product.selected_or_first_available_variant.quantity_rule.min > 1 or product.selected_or_first_available_variant.quantity_rule.max != null or product.selected_or_first_available_variant.quantity_rule.increment > 1
+    assign quantity_rules = true
+  endif
+
+  assign needs_options = false
+  if product.variants_count > 1 or quantity_rules
+    assign needs_options = true
+  endif
+
+  assign second_media = null
+  if settings_card.show_secondary_image and product.media[1] != null
+    assign second_media = product.media[1]
+  endif
+
+  assign card_id = section.id | append: '-' | append: product.id
+
+  assign media_style = ''
+  if settings_card.image_ratio == 'adapt' and product.featured_media
+    assign media_style = '--cg-image-ratio: ' | append: product.featured_media.aspect_ratio | append: ';'
+  endif
+-%}
+
+<div class="cg-card{% unless is_available %} cg-card--sold-out{% endunless %}">
+  <div class="cg-card__media-wrap">
+    {%- comment -%}
+      No link here on purpose: the card title carries a stretched link that
+      covers the whole card, so a second anchor would only duplicate the
+      target for keyboard and screen reader users.
+    {%- endcomment -%}
+    <div class="cg-card__media"{% if media_style != '' %} style="{{ media_style }}"{% endif %}>
+      {%- if product.featured_media -%}
+        {{
+          product.featured_media
+          | image_url: width: 900
+          | image_tag:
+            class: 'cg-card__image cg-card__image--primary',
+            widths: '180, 240, 360, 480, 640, 750, 900',
+            sizes: '(min-width: 990px) 24vw, (min-width: 750px) 33vw, 45vw',
+            loading: lazy_load,
+            alt: product.featured_media.alt
+        }}
+        {%- if second_media -%}
+          {{
+            second_media
+            | image_url: width: 900
+            | image_tag:
+              class: 'cg-card__image cg-card__image--secondary',
+              widths: '180, 240, 360, 480, 640, 750, 900',
+              sizes: '(min-width: 990px) 24vw, (min-width: 750px) 33vw, 45vw',
+              loading: 'lazy',
+              alt: ''
+          }}
+        {%- endif -%}
+      {%- else -%}
+        {{ 'product-apparel-1' | placeholder_svg_tag: 'cg-card__image cg-card__placeholder' }}
+      {%- endif -%}
+    </div>
+
+    {%- liquid
+      assign has_badges = false
+      if custom_badge != blank
+        assign has_badges = true
+      endif
+      if settings_card.show_sold_out_badge and is_available == false
+        assign has_badges = true
+      endif
+    -%}
+    {%- if has_badges -%}
+      <div class="cg-card__badges">
+        {%- if settings_card.show_sold_out_badge and is_available == false -%}
+          <span class="cg-card__badge cg-card__badge--sold-out">{{ 'products.product.sold_out' | t }}</span>
+        {%- endif -%}
+        {%- if custom_badge != blank -%}
+          <span class="cg-card__badge cg-card__badge--custom">{{ custom_badge | escape }}</span>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+
+    {%- if settings_card.quick_add != 'none' -%}
+      {%- if is_available == false -%}
+        <span
+          class="cg-card__add cg-card__add--disabled"
+          aria-hidden="true"
+          title="{{ 'products.product.sold_out' | t }}"
+        >
+          {{- 'icon-cart.svg' | inline_asset_content -}}
+        </span>
+      {%- elsif needs_options -%}
+        <modal-opener class="cg-card__add-wrap no-js-hidden" data-modal="#CgQuickAdd-{{ card_id }}">
+          <button
+            id="CgQuickAddButton-{{ card_id }}"
+            type="button"
+            name="add"
+            class="cg-card__add"
+            aria-haspopup="dialog"
+            aria-label="{{ 'products.product.choose_options' | t }} — {{ product.title | escape }}"
+            data-product-url="{{ product.url }}"
+          >
+            <span class="cg-card__add-icon">
+              {{- 'icon-plus.svg' | inline_asset_content -}}
+            </span>
+            {%- render 'loading-spinner' -%}
+          </button>
+        </modal-opener>
+        <quick-add-modal id="CgQuickAdd-{{ card_id }}" class="quick-add-modal">
+          <div
+            role="dialog"
+            aria-label="{{ 'products.product.choose_product_options' | t: product_name: product.title | escape }}"
+            aria-modal="true"
+            class="quick-add-modal__content global-settings-popup"
+            tabindex="-1"
+          >
+            <button
+              id="CgQuickAddClose-{{ card_id }}"
+              type="button"
+              class="quick-add-modal__toggle"
+              aria-label="{{ 'accessibility.close' | t }}"
+            >
+              {{- 'icon-close.svg' | inline_asset_content -}}
+            </button>
+            <div id="QuickAddInfo-{{ product.id }}" class="quick-add-modal__content-info"></div>
+          </div>
+        </quick-add-modal>
+      {%- else -%}
+        {%- assign form_id = 'CgAtc-' | append: card_id -%}
+        <product-form class="cg-card__add-wrap" data-section-id="{{ section.id }}">
+          {%- form 'product',
+            product,
+            id: form_id,
+            class: 'cg-card__add-form',
+            novalidate: 'novalidate',
+            data-type: 'add-to-cart-form'
+          -%}
+            <input
+              type="hidden"
+              name="id"
+              value="{{ product.selected_or_first_available_variant.id }}"
+              class="product-variant-id"
+            >
+            <button
+              id="{{ form_id }}-submit"
+              class="cg-card__add"
+              type="submit"
+              name="add"
+              aria-haspopup="dialog"
+              aria-label="{{ 'products.product.add_to_cart' | t }} — {{ product.title | escape }}"
+              data-sold-out-message="true"
+            >
+              {%- comment -%}
+                product-form.js treats the button's first span as its label and
+                hides it when a variant turns out to be sold out, so keep a
+                text span ahead of the icon — otherwise the icon is what
+                disappears and the button is left empty.
+              {%- endcomment -%}
+              <span class="visually-hidden">{{ 'products.product.add_to_cart' | t }}</span>
+              <span class="cg-card__add-icon">
+                {{- 'icon-cart.svg' | inline_asset_content -}}
+              </span>
+              <span class="sold-out-message hidden">
+                {{ 'products.product.sold_out' | t }}
+              </span>
+              {%- render 'loading-spinner' -%}
+            </button>
+            <div class="product-form__error-message-wrapper" role="alert" hidden>
+              <span class="product-form__error-message"></span>
+            </div>
+          {%- endform -%}
+        </product-form>
+      {%- endif -%}
+    {%- endif -%}
+  </div>
+
+  <div class="cg-card__info">
+    {%- if swatch_total > 0 -%}
+      {%- assign swatches_shown = 0 -%}
+      <ul class="cg-card__swatches" role="list" aria-label="{{ color_option.name | escape }}">
+        {%- for value in color_option.values -%}
+          {%- if value.swatch != blank and swatches_shown < settings_card.swatches_to_show -%}
+            <li class="cg-card__swatch" title="{{ value | escape }}">
+              <span class="visually-hidden">{{ value }}</span>
+              {% render 'swatch', swatch: value.swatch %}
+            </li>
+            {%- assign swatches_shown = swatches_shown | plus: 1 -%}
+          {%- endif -%}
+        {%- endfor -%}
+        {%- assign swatches_remaining = swatch_total | minus: swatches_shown -%}
+        {%- if swatches_remaining > 0 -%}
+          <li class="cg-card__swatch-more">+{{ swatches_remaining }}</li>
+        {%- endif -%}
+      </ul>
+    {%- endif -%}
+
+    {%- if settings_card.show_vendor and product.vendor != blank -%}
+      <p class="cg-card__vendor">
+        <span class="visually-hidden">{{ 'products.product.vendor' | t }}</span>
+        {{ product.vendor }}
+      </p>
+    {%- endif -%}
+
+    <h3 class="cg-card__title">
+      <a class="cg-card__link" href="{{ product.url }}">
+        {{- product.title | escape -}}
+      </a>
+    </h3>
+
+    {%- if settings_card.show_rating and product.metafields.reviews.rating.value != blank -%}
+      {%- liquid
+        assign rating_decimal = 0
+        assign decimal = product.metafields.reviews.rating.value.rating | modulo: 1
+        if decimal >= 0.3 and decimal <= 0.7
+          assign rating_decimal = 0.5
+        elsif decimal > 0.7
+          assign rating_decimal = 1
+        endif
+      -%}
+      <div class="cg-card__rating">
+        <div
+          class="rating"
+          role="img"
+          aria-label="{{ 'accessibility.star_reviews_info' | t: rating_value: product.metafields.reviews.rating.value, rating_max: product.metafields.reviews.rating.value.scale_max }}"
+        >
+          <span
+            aria-hidden="true"
+            class="rating-star"
+            style="--rating: {{ product.metafields.reviews.rating.value.rating | floor }}; --rating-max: {{ product.metafields.reviews.rating.value.scale_max }}; --rating-decimal: {{ rating_decimal }};"
+          ></span>
+        </div>
+        <span class="cg-card__rating-count" aria-hidden="true">
+          ({{ product.metafields.reviews.rating_count }})
+        </span>
+        <span class="visually-hidden">
+          {{ product.metafields.reviews.rating_count }} {{ 'accessibility.total_reviews' | t }}
+        </span>
+      </div>
+    {%- endif -%}
+
+    <div class="cg-card__prices">
+      <span class="cg-card__price{% if on_sale %} cg-card__price--sale{% endif %}">
+        {%- if on_sale -%}
+          <span class="visually-hidden">{{ 'products.product.price.sale_price' | t }}</span>
+        {%- endif -%}
+        {{ money_price }}
+      </span>
+      {%- if money_compare_price != blank -%}
+        <s class="cg-card__price-was">
+          <span class="visually-hidden">{{ 'products.product.price.regular_price' | t }}</span>
+          {{ money_compare_price }}
+        </s>
+      {%- endif -%}
+      {%- if discount_label != blank -%}
+        <span class="cg-card__discount">{{ discount_label }}</span>
+      {%- endif -%}
+    </div>
+  </div>
+</div>
