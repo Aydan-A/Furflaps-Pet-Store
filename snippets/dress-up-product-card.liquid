@@ -176,6 +176,16 @@
                   endfor
                 endif
               endif
+
+              # "S ( 25-35 cm)" is three pills' worth of width for one letter
+              # of meaning. The pill wears the part before the bracket, so a
+              # card's sizes stay on one row; the value in full stays on the
+              # button as its accessible name, its tooltip, and the data the
+              # builder adds to the cart.
+              assign value_label = value | split: '(' | first | strip
+              if value_label == blank
+                assign value_label = value
+              endif
             -%}
             <button
               class="ds-card__value{% if swatch_style != blank %} ds-card__value--swatch{% endif %}"
@@ -184,9 +194,15 @@
               data-dress-option
               data-option-index="{{ forloop.parentloop.index0 }}"
               data-value="{{ value | escape }}"
+              {% unless swatch_style != blank or value_label == value %}title="{{ value | escape }}"{% endunless %}
               {% if swatch_style != blank %}style="{{ swatch_style }}"{% endif %}
             >
-              <span {% if swatch_style != blank %}class="visually-hidden"{% endif %}>{{ value }}</span>
+              {%- if swatch_style != blank or value_label == value -%}
+                <span {% if swatch_style != blank %}class="visually-hidden"{% endif %}>{{ value }}</span>
+              {%- else -%}
+                <span aria-hidden="true">{{ value_label }}</span>
+                <span class="visually-hidden">{{ value }}</span>
+              {%- endif -%}
             </button>
           {%- endfor -%}
         </div>

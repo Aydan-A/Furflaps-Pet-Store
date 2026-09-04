@@ -377,42 +377,42 @@
 /* Controls belong to the chosen card, but every card carries them, hidden, so
    a row never changes height when a selection changes. They follow the image
    at the card's own gap rather than being pushed to the bottom of a stretched
-   card, and they wrap rather than scroll: on a narrow card the options sit
-   directly under it and the quantity drops below, never cut off.
+   card.
 
-   Centred, not spread: when the quantity shares a line the options absorb the
-   free space beside it and it still finishes at the right edge, and when it
-   wraps onto a line of its own it centres under the card. The row gap matches
-   the card's own gap, so image to options and options to quantity read the
-   same. */
+   Two centred rows, not one wrapping line: the options keep to a single row
+   under the image and the quantity sits centred beneath them, so a card reads
+   the same whatever its options are and whatever width the step is at. The
+   row gap matches the card's own gap, so image to options and options to
+   quantity read the same. */
 .ds-card__controls {
   display: flex;
   padding-inline: .6rem;
-  flex-wrap: wrap;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
   gap: .8rem;
   visibility: hidden;
 }
 .ds-card--selected .ds-card__controls { visibility: visible; }
 
-/* min-content, not 0: the options box refuses to shrink narrower than a single
-   swatch, so a card too narrow for options and quantity side by side drops the
-   quantity onto its own line instead of squeezing the swatches out of sight. */
 .ds-card__options {
   display: flex;
-  flex: 1 1 auto;
-  min-width: min-content;
+  max-width: 100%;
+  min-width: 0;
   flex-wrap: wrap;
   align-items: center;
+  justify-content: center;
   gap: .6rem;
 }
-.ds-card__values { display: flex; flex-wrap: wrap; gap: .4rem; }
+/* One row, always. A value too wide for the card shrinks and clips rather
+   than dropping the row onto a second line: the labels are already trimmed to
+   their short form in the card snippet, so what is left to lose is the tail of
+   a long word, not the value itself. */
+.ds-card__values { display: flex; min-width: 0; flex-wrap: nowrap; gap: .4rem; }
 .ds-card__value {
   display: inline-grid;
   min-width: var(--ds-control-small);
   height: var(--ds-control-small);
-  padding: 0 1.2rem;
+  padding: 0 1rem;
   place-items: center;
   border: .2rem solid transparent;
   border-radius: var(--ds-radius-control);
@@ -424,6 +424,12 @@
   font-weight: 700;
   line-height: 1;
   cursor: pointer;
+}
+.ds-card__value > span:not(.visually-hidden) {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 .ds-card__value--swatch {
   width: 2.2rem;
