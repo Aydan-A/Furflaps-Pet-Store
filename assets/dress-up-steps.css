@@ -1,15 +1,32 @@
+/* "Pick - Pair - Play!" builder.
+   One spacing, radius, card, selection and button system for all three steps.
+   Scoped to .dress-up-steps / .ds-step / .ds-card / .ds-button. */
+
 .dress-up-steps {
+  --ds-gap: 2.4rem;
+  --ds-step-padding: 2rem;
+  --ds-radius-step: 1.6rem;
+  --ds-radius-control: 99rem;
+  --ds-control-height: 4.4rem;
+  --ds-control-small: 3.2rem;
+  /* Two spacing steps carry the row: items inside a group sit at the small
+     one, groups are separated by the large one. That difference is what makes
+     the heading and the name field read as two groups rather than four loose
+     items at one flat gap. */
+  --ds-gap-field: .8rem;
+  --ds-gap-group: 2.8rem;
+
   display: block;
   padding: var(--ds-padding-top) var(--ds-padding-inline) var(--ds-padding-bottom);
   background: var(--ds-background);
   color: var(--ds-text);
 }
-
 .dress-up-steps__inner { max-width: var(--ds-max-width); margin: 0 auto; }
+
+/* Section heading */
 .dress-up-steps__header { margin: 0 auto var(--ds-heading-gap); text-align: center; }
 .dress-up-steps__eyebrow {
   margin: 0 0 1rem;
-  color: inherit;
   font-size: var(--ds-eyebrow-size);
   font-weight: 700;
   line-height: 1.2;
@@ -19,34 +36,60 @@
 .dress-up-steps__heading {
   max-width: 62rem;
   margin: 0 auto;
-  color: inherit;
   font-family: var(--font-heading-family);
   font-size: var(--ds-heading-size);
   font-weight: var(--ds-heading-weight);
   line-height: 1.08;
   letter-spacing: -.025em;
 }
-.dress-up-steps__list { display: grid; gap: var(--ds-step-gap); }
-.dress-up-steps__step {
-  overflow: hidden;
-  border-radius: var(--ds-radius);
-  background: var(--ds-panel-background);
+
+.dress-up-steps__steps { display: grid; gap: 1.6rem; }
+/* Grid items default to min-width: auto, which would let a wide track push
+   the whole section past the viewport. */
+.dress-up-steps__steps > .ds-step { min-width: 0; }
+
+/* ---------- Step ---------- */
+
+.ds-step {
+  /* Declared here, not on the section, so each step's own "cards in view"
+     setting is the one that resolves. */
+  --ds-visible: var(--ds-per-row, 4);
+  border: .1rem solid transparent;
+  border-radius: var(--ds-radius-step);
+  background: var(--ds-panel);
 }
-.dress-up-steps__summary {
+.ds-step--open { border-color: var(--ds-border); }
+
+/* Header row: the heading group, then the field group, then flexible space,
+   then price and button pinned right - in the same place on every step and in
+   every state. Groups wrap onto a second line before anything compresses. */
+.ds-step__head {
   display: flex;
-  min-height: var(--ds-summary-height);
-  padding: 1.6rem 2.4rem;
+  min-height: 7.2rem;
+  padding: 1.4rem var(--ds-step-padding);
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1.2rem var(--ds-gap-group);
+}
+.ds-step__toggle {
+  display: inline-flex;
+  flex: 0 1 auto;
+  min-width: 0;
+  padding: 0;
   align-items: center;
   gap: 1.2rem;
+  border: 0;
+  background: none;
+  color: inherit;
+  font-family: inherit;
+  text-align: left;
   cursor: pointer;
-  list-style: none;
 }
-.dress-up-steps__summary::-webkit-details-marker { display: none; }
-.dress-up-steps__summary::marker { content: ''; }
-.dress-up-steps__number {
+.ds-step__toggle[aria-disabled='true'] { cursor: not-allowed; opacity: .55; }
+.ds-step__number {
   display: inline-grid;
-  width: 2.4rem;
-  height: 2.4rem;
+  width: 2.6rem;
+  height: 2.6rem;
   flex: 0 0 auto;
   place-items: center;
   border-radius: 50%;
@@ -55,113 +98,464 @@
   font-size: 1.2rem;
   font-weight: 700;
 }
-.dress-up-steps__step-title {
-  margin: 0;
-  color: inherit;
+.ds-step__title {
+  min-width: 0;
   font-size: var(--ds-step-title-size);
   font-weight: 700;
   line-height: 1.25;
 }
-.dress-up-steps__benefits {
-  display: flex;
-  margin: 0 0 0 auto;
-  padding: 0;
-  gap: .8rem;
-  list-style: none;
-}
-.dress-up-steps__benefit {
+
+/* Collapsed summary pill */
+.ds-step__pill {
   display: inline-flex;
-  min-height: 2.8rem;
-  padding: .5rem 1rem;
-  align-items: center;
-  gap: .5rem;
-  border: .1rem solid var(--ds-pill-border);
-  border-radius: 99rem;
-  background: var(--ds-pill-background);
-  color: inherit;
-  font-size: 1.1rem;
-  font-weight: 600;
-  line-height: 1;
-  white-space: nowrap;
-}
-.dress-up-steps__benefit svg { width: 1rem; height: 1rem; }
-.dress-up-steps__summary:focus-visible,
-.dress-steps-card a:focus-visible { outline: .2rem solid currentColor; outline-offset: .3rem; }
-.dress-up-steps__content { padding: 0 2.4rem 2.4rem; }
-.dress-up-steps__products {
-  display: grid;
-  grid-template-columns: repeat(var(--ds-columns), minmax(0, 1fr));
-  gap: var(--ds-card-gap);
+  max-width: 38rem;
+  min-width: 0;
   margin: 0;
-  padding: 0;
-  list-style: none;
+  padding: .5rem .6rem .5rem 1rem;
+  align-items: center;
+  gap: .6rem;
+  border-radius: var(--ds-radius-control);
+  background: var(--ds-accent);
+  color: var(--ds-accent-text);
+  font-size: 1.3rem;
+  font-weight: 600;
+  line-height: 1.2;
 }
-.dress-steps-card__media {
-  position: relative;
-  display: block;
-  overflow: hidden;
-  aspect-ratio: var(--ds-image-ratio);
-  border-radius: var(--ds-card-radius);
-  background: var(--ds-image-background);
+.ds-step__pill[hidden] { display: none; }
+.ds-step__pill-text { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ds-step__pill-image {
+  width: 2rem;
+  height: 2rem;
+  flex: 0 0 auto;
+  border-radius: 50%;
+  background: var(--ds-media);
+  object-fit: cover;
+}
+.ds-step__pill-image[hidden] { display: none; }
+.ds-step__pill-remove {
+  display: grid;
+  width: 2rem;
+  height: 2rem;
+  flex: 0 0 auto;
+  place-items: center;
+  border: 0;
+  border-radius: 50%;
+  background: none;
   color: inherit;
+  cursor: pointer;
 }
-.dress-steps-card__image { width: 100%; height: 100%; object-fit: var(--ds-image-fit); transition: transform 250ms ease; }
-.dress-steps-card__media:hover .dress-steps-card__image { transform: scale(1.02); }
-.dress-steps-card__badges {
-  position: absolute;
-  z-index: 1;
-  top: 1rem;
-  left: 1rem;
+.ds-step__pill-remove svg { width: 1rem; height: 1rem; }
+.ds-step__pill-remove:hover { background: rgba(0, 0, 0, .12); }
+
+/* The open step owns the price and the button. They start hidden so a closed
+   row never flashes its controls before the script runs. */
+.ds-step__actions { display: none; }
+.ds-step--open .ds-step__actions {
   display: flex;
-  align-items: flex-start;
-  flex-direction: column;
-  gap: .5rem;
+  flex: 0 0 auto;
+  margin-left: auto;
+  align-items: center;
+  gap: 1.6rem;
 }
-.dress-steps-card__badge {
-  padding: .45rem .75rem;
-  border-radius: 99rem;
-  color: var(--ds-badge-text);
-  font-size: 1rem;
+.ds-step__price { margin: 0; font-size: var(--ds-price-size); font-weight: 700; white-space: nowrap; }
+
+.ds-button {
+  display: inline-flex;
+  min-height: var(--ds-control-height);
+  padding: 0 2.2rem;
+  align-items: center;
+  gap: .8rem;
+  border: .1rem solid transparent;
+  border-radius: var(--ds-radius-control);
+  font-family: inherit;
+  font-size: 1.4rem;
   font-weight: 700;
   line-height: 1;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: opacity 150ms ease, background-color 150ms ease;
 }
-.dress-steps-card__badge--sale { background: var(--ds-sale); }
-.dress-steps-card__badge--sold-out { background: var(--ds-sold-out); }
-.dress-steps-card__badge--custom { background: var(--ds-custom-badge); }
-.dress-steps-card__content { padding-top: 1.2rem; }
-.dress-steps-card__title { margin: 0 0 .6rem; color: inherit; font-size: var(--ds-card-title-size); font-weight: 650; line-height: 1.25; }
-.dress-steps-card__title a { color: inherit; text-decoration: none; }
-.dress-steps-card__title a:hover { text-decoration: underline; }
-.dress-steps-card__price { font-size: var(--ds-price-size); font-weight: 650; }
-.dress-steps-card__price .price-item--sale { color: var(--ds-sale); }
-.dress-steps-card__price .price-item--regular { font-size: .85em; }
-.dress-steps-card__swatches { display: flex; min-height: 1.2rem; margin: .8rem 0 0; padding: 0; gap: .5rem; list-style: none; }
-.dress-steps-card__swatches li, .dress-steps-card__swatches .swatch { display: block; width: 1.2rem; height: 1.2rem; }
-.dress-steps-card__swatches .swatch { border-radius: .1rem; }
-.dress-up-steps__empty { padding: 3rem; text-align: center; }
+.ds-button[hidden] { display: none; }
+.ds-button--primary { background: var(--ds-accent); color: var(--ds-accent-text); }
+.ds-button--ghost { background: transparent; border-color: var(--ds-border); color: var(--ds-text); }
+.ds-button:hover:not(:disabled):not([aria-disabled='true']) { opacity: .88; }
+.ds-button--primary[aria-disabled='true'],
+.ds-button--primary:disabled {
+  opacity: .45;
+  cursor: not-allowed;
+}
+.ds-button__icon svg { width: 1.8rem; height: 1.8rem; }
+.ds-button.is-loading { pointer-events: none; }
+.ds-button__spinner {
+  width: 1.4rem;
+  height: 1.4rem;
+  border: .2rem solid currentColor;
+  border-right-color: transparent;
+  border-radius: 50%;
+  animation: ds-spin 700ms linear infinite;
+}
+.ds-button__spinner[hidden] { display: none; }
+@keyframes ds-spin { to { transform: rotate(360deg); } }
+
+.ds-step__error {
+  margin: 0;
+  padding: 0 var(--ds-step-padding) 1.6rem;
+  color: var(--ds-accent);
+  font-size: 1.3rem;
+  font-weight: 600;
+}
+.ds-step__error[hidden] { display: none; }
+
+/* ---------- Panel ---------- */
+
+.ds-step__panel { padding: 0 var(--ds-step-padding) var(--ds-step-padding); }
+.ds-step__panel[hidden] { display: none; }
+.ds-step__empty {
+  margin: 0;
+  padding: 3rem;
+  border: .1rem dashed var(--ds-border);
+  border-radius: var(--ds-radius-card);
+  color: var(--ds-muted);
+  text-align: center;
+}
+
+/* Name field and carousel controls share one compact row above the cards. */
+.ds-step__toolbar {
+  display: flex;
+  margin-bottom: 1.4rem;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 1.6rem;
+}
+/* Like the price and the button, the field belongs to the open step and starts
+   hidden, so a closed row never flashes it before the script runs. */
+.ds-field { display: none; }
+.ds-step--open .ds-field {
+  display: flex;
+  flex: 0 1 auto;
+  min-width: 0;
+  align-items: center;
+  gap: var(--ds-gap-field);
+}
+/* The label carries the input's own size, a step under the heading: it reads
+   as that field's label rather than as the smallest text on the row. */
+.ds-field__label { flex: 0 0 auto; font-size: 1.4rem; font-weight: 600; }
+.ds-field__input {
+  /* Sized for a name, not stretched to fill the row. Border-box so the height
+     token means the same thing here as it does on the button beside it,
+     whatever the surrounding theme sets. */
+  box-sizing: border-box;
+  width: 22rem;
+  max-width: 100%;
+  height: var(--ds-control-height);
+  padding: 0 1.8rem;
+  border: .1rem solid var(--ds-border);
+  border-radius: var(--ds-radius-control);
+  background: var(--ds-surface);
+  color: inherit;
+  font-family: inherit;
+  font-size: 1.4rem;
+  font-weight: 600;
+}
+.ds-field__input::placeholder { color: var(--ds-muted); font-weight: 500; }
+.ds-field__input[aria-invalid='true'] { border-color: var(--ds-accent); }
+
+.ds-step__arrows { display: flex; margin-left: auto; gap: .8rem; }
+.ds-arrow {
+  display: grid;
+  width: 3.6rem;
+  height: 3.6rem;
+  place-items: center;
+  border: .1rem solid var(--ds-border);
+  border-radius: 50%;
+  background: var(--ds-surface);
+  color: var(--ds-text);
+  cursor: pointer;
+}
+.ds-arrow svg { width: 1.4rem; height: 1.4rem; }
+.ds-arrow:disabled { opacity: .35; cursor: not-allowed; }
+
+/* ---------- Card track ----------
+   One sizing rule for both layouts: cards always fit the container a whole
+   number at a time, so a row never shows a clipped card and the page itself
+   never scrolls sideways. */
+.ds-track {
+  display: flex;
+  min-width: 0;
+  max-width: 100%;
+  gap: var(--ds-gap);
+  align-items: stretch;
+  flex-wrap: wrap;
+}
+/* The carousel is a grid of fixed-width columns, so a long list can sit in
+   two or more rows, fill left to right, and still page sideways. The overflow is clipped, not
+   scrollable: the arrows move it, so there is no scrollbar and nothing spills
+   past the step. The padding keeps focus rings off the clipped edge. */
+.ds-track[data-layout='carousel'] {
+  display: grid;
+  grid-template-columns: repeat(var(--ds-columns-total, 1), calc((100% - (var(--ds-visible) - 1) * var(--ds-gap)) / var(--ds-visible)));
+  padding: .4rem;
+  margin: -.4rem;
+  overflow: hidden;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  overscroll-behavior-inline: contain;
+}
+
+/* A card never exceeds its track, whatever the flex basis resolves to. It is
+   also the containing block for its own absolutely positioned content: a
+   visually-hidden label with no positioned ancestor would otherwise escape the
+   carousel's clip and give the page a horizontal scrollbar. */
+.ds-card {
+  position: relative;
+  display: flex;
+  flex: 0 0 calc((100% - (var(--ds-visible) - 1) * var(--ds-gap)) / var(--ds-visible) - .02rem);
+  min-width: 0;
+  max-width: 100%;
+  flex-direction: column;
+  gap: .8rem;
+  scroll-snap-align: start;
+}
+
+/* The card is the image: picking it rings it in the accent colour. */
+.ds-card__pick {
+  position: relative;
+  display: block;
+  width: 100%;
+  padding: 0;
+  overflow: hidden;
+  aspect-ratio: var(--ds-image-ratio);
+  border: 0;
+  border-radius: var(--ds-radius-card);
+  background: var(--ds-media);
+  cursor: pointer;
+  transition: box-shadow 150ms ease;
+}
+.ds-card--selected .ds-card__pick { box-shadow: 0 0 0 .2rem var(--ds-accent); }
+.ds-card__image {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: var(--ds-image-fit);
+  transition: transform 250ms ease;
+}
+.ds-card__pick:hover .ds-card__image { transform: scale(1.02); }
+.ds-card__check {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  display: grid;
+  width: 2.2rem;
+  height: 2.2rem;
+  place-items: center;
+  border: .1rem solid var(--ds-border);
+  border-radius: .6rem;
+  background: var(--ds-surface);
+  color: transparent;
+  transition: background-color 150ms ease, border-color 150ms ease, color 150ms ease;
+}
+.ds-card__check svg { width: 1.3rem; height: 1.3rem; }
+.ds-card--selected .ds-card__check {
+  border-color: var(--ds-accent);
+  background: var(--ds-accent);
+  color: var(--ds-accent-text);
+}
+.ds-card__flag {
+  position: absolute;
+  bottom: 1rem;
+  left: 1rem;
+  padding: .4rem .8rem;
+  border-radius: var(--ds-radius-control);
+  background: var(--ds-surface);
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+.ds-card--soldout .ds-card__pick { opacity: .5; cursor: not-allowed; }
+/* The step already holds as many as it allows. */
+.ds-card--blocked .ds-card__pick { opacity: .45; cursor: not-allowed; }
+
+/* Controls belong to the chosen card, but every card carries them, hidden, so
+   a row never changes height when a selection changes. They follow the image
+   at the card's own gap rather than being pushed to the bottom of a stretched
+   card, and they wrap rather than scroll: on a narrow card the options sit
+   directly under it and the quantity drops below, never cut off.
+
+   Centred as a pair, not spread to the edges: the options take the width they
+   need and no more, so the size sits next to the quantity rather than at the
+   far side of the card from it, and the two read as one pair of controls. The
+   row gap matches the card's own gap, so image to options and options to
+   quantity read the same. */
+.ds-card__controls {
+  display: flex;
+  padding-inline: .6rem;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: .8rem;
+  visibility: hidden;
+}
+.ds-card--selected .ds-card__controls { visibility: visible; }
+
+/* min-content, not 0: the options box refuses to shrink narrower than a single
+   swatch, so a card too narrow for options and quantity side by side drops the
+   quantity onto its own line instead of squeezing the swatches out of sight.
+   It does not grow either - free space belongs on both sides of the pair, not
+   between the size and the stepper. */
+.ds-card__options {
+  display: flex;
+  flex: 0 1 auto;
+  min-width: min-content;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: .6rem;
+}
+.ds-card__values { display: flex; flex-wrap: wrap; gap: .4rem; }
+.ds-card__value {
+  display: inline-grid;
+  min-width: var(--ds-control-small);
+  height: var(--ds-control-small);
+  padding: 0 1.2rem;
+  place-items: center;
+  border: .2rem solid transparent;
+  border-radius: var(--ds-radius-control);
+  background: var(--ds-surface);
+  box-shadow: inset 0 0 0 .1rem var(--ds-border);
+  color: inherit;
+  font-family: inherit;
+  font-size: 1.3rem;
+  font-weight: 700;
+  line-height: 1;
+  cursor: pointer;
+}
+.ds-card__value--swatch {
+  width: 2.2rem;
+  min-width: 0;
+  height: 2.2rem;
+  padding: 0;
+  border-radius: 50%;
+  background-clip: padding-box;
+  background-position: center;
+  background-size: cover;
+}
+.ds-card__value--active { border-color: var(--ds-accent); box-shadow: none; }
+/* Sold-out values stay visible, so what is on offer is never a surprise. */
+.ds-card__value--unavailable { opacity: .35; text-decoration: line-through; }
+.ds-card__value--swatch.ds-card__value--unavailable { text-decoration: none; }
+
+/* Size and quantity are peers on one row, so they share a height, a border, a
+   radius and a type size. The select also holds its width across values, so
+   picking Medium after Small does not shift the row. */
+.ds-card__select { position: relative; display: flex; flex: 0 1 auto; min-width: 0; align-items: center; }
+.ds-card__select-input {
+  width: 100%;
+  min-width: 9rem;
+  height: var(--ds-control-small);
+  padding: 0 2.8rem 0 1.2rem;
+  appearance: none;
+  border: 0;
+  border-radius: var(--ds-radius-control);
+  background: var(--ds-surface);
+  box-shadow: inset 0 0 0 .1rem var(--ds-border);
+  color: inherit;
+  font-family: inherit;
+  font-size: 1.3rem;
+  font-weight: 700;
+  line-height: 1;
+  cursor: pointer;
+  text-overflow: ellipsis;
+}
+.ds-card__select-input:focus-visible { outline: .2rem solid var(--ds-text); outline-offset: .2rem; }
+.ds-card__select-caret {
+  position: absolute;
+  right: .9rem;
+  display: grid;
+  place-items: center;
+  color: var(--ds-muted);
+  pointer-events: none;
+}
+.ds-card__select-caret svg { width: 1rem; height: .6rem; }
+
+.ds-card__quantity {
+  display: flex;
+  height: var(--ds-control-small);
+  flex: 0 0 auto;
+  padding-inline: .2rem;
+  align-items: center;
+  border-radius: var(--ds-radius-control);
+  background: var(--ds-surface);
+  box-shadow: inset 0 0 0 .1rem var(--ds-border);
+}
+.ds-card__quantity-button {
+  display: grid;
+  width: calc(var(--ds-control-small) - .6rem);
+  height: calc(var(--ds-control-small) - .6rem);
+  place-items: center;
+  border: 0;
+  border-radius: 50%;
+  background: none;
+  color: var(--ds-accent);
+  font-family: inherit;
+  font-size: 1.6rem;
+  line-height: 1;
+  cursor: pointer;
+}
+.ds-card__quantity-button:hover:not(:disabled) { background: rgba(0, 0, 0, .06); }
+/* One is the floor, so the control says so rather than going quietly nowhere. */
+.ds-card__quantity-button:disabled { color: var(--ds-border); cursor: not-allowed; }
+.ds-card__quantity-value { min-width: 2rem; font-size: 1.3rem; font-weight: 700; text-align: center; }
+
+/* Focus */
+.ds-step__toggle:focus-visible,
+.ds-step__pill-remove:focus-visible,
+.ds-button:focus-visible,
+.ds-arrow:focus-visible,
+.ds-card__value:focus-visible,
+.ds-card__quantity-button:focus-visible,
+.ds-field__input:focus-visible { outline: .2rem solid var(--ds-text); outline-offset: .3rem; }
+.ds-card__pick:focus-visible { outline: .2rem solid var(--ds-text); outline-offset: .2rem; }
+
+/* ---------- Responsive ---------- */
 
 @media screen and (max-width: 989px) {
-  .dress-up-steps__products { --ds-columns: 2; }
+  .ds-step { --ds-visible: min(var(--ds-per-row, 4), 3); }
 }
+
 @media screen and (max-width: 749px) {
-  .dress-up-steps { padding: var(--ds-mobile-padding-top) var(--ds-mobile-padding-inline) var(--ds-mobile-padding-bottom); }
-  .dress-up-steps__heading { font-size: var(--ds-mobile-heading-size); }
-  .dress-up-steps__summary { min-height: auto; padding: 1.4rem 1.6rem; flex-wrap: wrap; }
-  .dress-up-steps__step-title { font-size: var(--ds-mobile-step-title-size); }
-  .dress-up-steps__benefits { width: 100%; margin-left: 3.6rem; overflow-x: auto; }
-  .dress-up-steps__content { padding: 0 1.6rem 1.6rem; }
-  .dress-up-steps__products {
-    display: grid;
-    grid-auto-flow: column;
-    grid-auto-columns: min(76vw, 28rem);
-    grid-template-columns: none;
-    overflow-x: auto;
-    overscroll-behavior-inline: contain;
-    scroll-snap-type: inline mandatory;
-    scrollbar-width: thin;
+  .ds-step { --ds-visible: min(var(--ds-per-row, 4), 2); }
+  .dress-up-steps {
+    /* Room for a fingertip on the controls a customer actually taps. */
+    --ds-control-small: 4rem;
+    --ds-step-padding: 1.4rem;
+    padding: var(--ds-mobile-padding-top) var(--ds-mobile-padding-inline) var(--ds-mobile-padding-bottom);
   }
-  .dress-up-steps__product { scroll-snap-align: start; }
+  .dress-up-steps__heading { font-size: var(--ds-mobile-heading-size); }
+
+  .ds-step__head { flex-wrap: wrap; gap: 1.2rem; }
+  .ds-step__title { font-size: var(--ds-mobile-step-title-size); }
+  .ds-step__toggle { flex: 1 1 100%; }
+  .ds-step__pill { max-width: 100%; margin-left: 3.8rem; }
+  .ds-field__input { width: 100%; }
+  .ds-step--open .ds-step__actions { flex: 1 1 100%; margin-left: 3.8rem; justify-content: space-between; }
+
+  .ds-step__toolbar { flex-wrap: wrap; }
+  .ds-step--open .ds-field { flex: 1 1 100%; margin-left: 3.8rem; }
+  /* Touch scrolling replaces the arrows on small screens, so the track
+     becomes a real scroller again — still inside the step, never the page. */
+  .ds-step__arrows { display: none; }
+  .ds-track[data-layout='carousel'] {
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-snap-type: x proximity;
+    scrollbar-width: none;
+  }
+  .ds-track[data-layout='carousel']::-webkit-scrollbar { display: none; }
 }
+
 @media (prefers-reduced-motion: reduce) {
-  .dress-steps-card__image { transition: none; }
+  .ds-card__pick,
+  .ds-card__image,
+  .ds-card__check,
+  .ds-button { transition: none; }
+  .ds-button__spinner { animation: none; }
+  .ds-track[data-layout='carousel'] { scroll-behavior: auto; }
 }

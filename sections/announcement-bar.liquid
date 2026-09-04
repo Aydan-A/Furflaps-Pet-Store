@@ -1,6 +1,51 @@
 {{ 'component-slideshow.css' | asset_url | stylesheet_tag }}
 {{ 'component-slider.css' | asset_url | stylesheet_tag }}
 
+{%- style -%}
+  #shopify-section-{{ section.id }} {
+    --announcement-font-size: {{ section.settings.message_font_size | default: 12 }}px;
+    --announcement-font-weight: {{ section.settings.message_font_weight | default: 500 }};
+    --announcement-padding: {{ section.settings.message_vertical_padding | default: 7 }}px;
+    --announcement-side-padding: {{ section.settings.side_padding | default: 32 }}px;
+    --announcement-content-gap: {{ section.settings.content_gap | default: 8 }}px;
+    --announcement-content-max-width: {% if section.settings.content_width == 'full' %}none{% else %}var(--page-width){% endif %};
+  }
+
+  #shopify-section-{{ section.id }} .utility-bar__grid {
+    max-width: var(--announcement-content-max-width);
+    padding-right: var(--announcement-side-padding);
+    padding-left: var(--announcement-side-padding);
+  }
+
+  {%- if section.settings.use_custom_colors -%}
+    #shopify-section-{{ section.id }} .utility-bar--custom-colors {
+      background: {{ section.settings.background_color }};
+      color: {{ section.settings.text_color }};
+    }
+
+    #shopify-section-{{ section.id }} .utility-bar--custom-colors .announcement-bar,
+    #shopify-section-{{ section.id }} .utility-bar--custom-colors .announcement-bar__announcement,
+    #shopify-section-{{ section.id }} .utility-bar--custom-colors .announcement-bar__link,
+    #shopify-section-{{ section.id }} .utility-bar--custom-colors .slider-button,
+    #shopify-section-{{ section.id }} .utility-bar--custom-colors .list-social__link,
+    #shopify-section-{{ section.id }} .utility-bar--custom-colors .localization-form__select {
+      color: {{ section.settings.text_color }};
+    }
+
+    #shopify-section-{{ section.id }} .utility-bar--custom-colors.utility-bar--bottom-border,
+    #shopify-section-{{ section.id }} .utility-bar--custom-colors.utility-bar--bottom-border-social-only {
+      border-bottom-color: {{ section.settings.text_color | color_modify: 'alpha', 0.12 }};
+    }
+  {%- endif -%}
+
+  @media screen and (max-width: 749px) {
+    #shopify-section-{{ section.id }} .utility-bar__grid {
+      padding-right: 1.5rem;
+      padding-left: 1.5rem;
+    }
+  }
+{%- endstyle -%}
+
 {%- liquid
   assign social_icons = true
   if settings.social_facebook_link == blank and settings.social_instagram_link == blank and settings.social_youtube_link == blank and settings.social_tiktok_link == blank and settings.social_twitter_link == blank and settings.social_pinterest_link == blank and settings.social_snapchat_link == blank and settings.social_tumblr_link == blank and settings.social_vimeo_link == blank
@@ -19,7 +64,7 @@
 {% endif %}
 
 <div
-  class="utility-bar color-{{ section.settings.color_scheme }} gradient{% if section.settings.show_line_separator and section.blocks.size > 0 %} utility-bar--bottom-border{% elsif section.settings.show_line_separator and section.settings.show_social and social_icons%} utility-bar--bottom-border-social-only{% endif %}{% if section.settings.enable_country_selector or section.settings.enable_language_selector %} header-localization{% endif %}"
+  class="utility-bar color-{{ section.settings.color_scheme }} gradient{% if section.settings.use_custom_colors %} utility-bar--custom-colors{% endif %}{% if section.settings.show_line_separator and section.blocks.size > 0 %} utility-bar--bottom-border{% elsif section.settings.show_line_separator and section.settings.show_social and social_icons%} utility-bar--bottom-border-social-only{% endif %}{% if section.settings.enable_country_selector or section.settings.enable_language_selector %} header-localization{% endif %}"
 >
   <div class="page-width utility-bar__grid{% if announcement_bar and language_country_selector or section.settings.show_social and social_icons %} utility-bar__grid--3-col{% elsif language_country_selector or section.settings.show_social and social_icons %} utility-bar__grid--2-col{% endif %}">
     {%- if section.settings.show_social and social_icons -%}
@@ -39,9 +84,12 @@
               class="announcement-bar__link link link--text focus-inset animate-arrow"
             >
           {%- endif -%}
-          <p class="announcement-bar__message h5">
-            <span>{{ section.blocks.first.settings.text | escape }}</span>
-            {%- if section.blocks.first.settings.link != blank -%}
+          <p class="announcement-bar__message{% if section.settings.font_source == 'heading' %} h5{% endif %}">
+            {%- if section.blocks.first.settings.prefix != blank -%}
+              <span class="announcement-bar__prefix">{{ section.blocks.first.settings.prefix | escape }}</span>
+            {%- endif -%}
+            <span class="announcement-bar__text">{{ section.blocks.first.settings.text | escape }}</span>
+            {%- if section.blocks.first.settings.link != blank and section.settings.show_link_arrow -%}
               {{- 'icon-arrow.svg' | inline_asset_content -}}
             {%- endif -%}
           </p>
@@ -57,10 +105,10 @@
         aria-roledescription="{{ 'sections.announcements.carousel' | t }}"
         aria-label="{{ 'sections.announcements.announcement_bar' | t }}"
       >
-        <div class="announcement-bar-slider slider-buttons">
+        <div class="announcement-bar-slider slider-buttons{% unless section.settings.show_navigation %} announcement-bar-slider--no-navigation{% endunless %}">
           <button
             type="button"
-            class="slider-button slider-button--prev"
+            class="slider-button slider-button--prev{% unless section.settings.show_navigation %} hidden{% endunless %}"
             name="previous"
             aria-label="{{ 'sections.announcements.previous_announcement' | t }}"
             aria-controls="Slider-{{ section.id }}"
@@ -99,9 +147,12 @@
                         class="announcement-bar__link link link--text focus-inset animate-arrow"
                       >
                     {%- endif -%}
-                    <p class="announcement-bar__message h5">
-                      <span>{{ block.settings.text | escape }}</span>
-                      {%- if block.settings.link != blank -%}
+                    <p class="announcement-bar__message{% if section.settings.font_source == 'heading' %} h5{% endif %}">
+                      {%- if block.settings.prefix != blank -%}
+                        <span class="announcement-bar__prefix">{{ block.settings.prefix | escape }}</span>
+                      {%- endif -%}
+                      <span class="announcement-bar__text">{{ block.settings.text | escape }}</span>
+                      {%- if block.settings.link != blank and section.settings.show_link_arrow -%}
                         {{- 'icon-arrow.svg' | inline_asset_content -}}
                       {%- endif -%}
                     </p>
@@ -115,7 +166,7 @@
           </div>
           <button
             type="button"
-            class="slider-button slider-button--next"
+            class="slider-button slider-button--next{% unless section.settings.show_navigation %} hidden{% endunless %}"
             name="next"
             aria-label="{{ 'sections.announcements.next_announcement' | t }}"
             aria-controls="Slider-{{ section.id }}"
@@ -172,6 +223,47 @@
   },
   "settings": [
     {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "select",
+      "id": "content_width",
+      "options": [
+        {
+          "value": "page",
+          "label": "Theme page width"
+        },
+        {
+          "value": "full",
+          "label": "Full width"
+        }
+      ],
+      "default": "full",
+      "label": "Content width"
+    },
+    {
+      "type": "range",
+      "id": "side_padding",
+      "min": 16,
+      "max": 64,
+      "step": 4,
+      "unit": "px",
+      "label": "Desktop side spacing",
+      "default": 32
+    },
+    {
+      "type": "checkbox",
+      "id": "show_navigation",
+      "default": true,
+      "label": "Show previous and next buttons",
+      "info": "Buttons appear when there is more than one announcement."
+    },
+    {
+      "type": "header",
+      "content": "Rotation"
+    },
+    {
       "type": "checkbox",
       "id": "auto_rotate",
       "label": "t:sections.announcement-bar.settings.auto_rotate.label",
@@ -188,16 +280,120 @@
       "default": 5
     },    
     {
+      "type": "header",
+      "content": "Appearance"
+    },
+    {
       "type": "color_scheme",
       "id": "color_scheme",
       "label": "t:sections.all.colors.label",
       "default": "scheme-4"
-    },  
+    },
+    {
+      "type": "checkbox",
+      "id": "use_custom_colors",
+      "default": false,
+      "label": "Use custom colors"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "default": "#E6EEF1",
+      "label": "Background color",
+      "info": "Used when custom colors are enabled."
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "default": "#121212",
+      "label": "Text and icon color",
+      "info": "Used when custom colors are enabled."
+    },
     {
       "type": "checkbox",
       "id": "show_line_separator",
       "default": true,
       "label": "t:sections.header.settings.show_line_separator.label"
+    },
+    {
+      "type": "header",
+      "content": "Message style"
+    },
+    {
+      "type": "select",
+      "id": "font_source",
+      "options": [
+        {
+          "value": "body",
+          "label": "Body font"
+        },
+        {
+          "value": "heading",
+          "label": "Heading font"
+        }
+      ],
+      "default": "body",
+      "label": "Font"
+    },
+    {
+      "type": "range",
+      "id": "message_font_size",
+      "min": 10,
+      "max": 16,
+      "step": 1,
+      "unit": "px",
+      "label": "Font size",
+      "default": 12
+    },
+    {
+      "type": "select",
+      "id": "message_font_weight",
+      "options": [
+        {
+          "value": "400",
+          "label": "Regular"
+        },
+        {
+          "value": "500",
+          "label": "Medium"
+        },
+        {
+          "value": "600",
+          "label": "Semibold"
+        },
+        {
+          "value": "700",
+          "label": "Bold"
+        }
+      ],
+      "default": "500",
+      "label": "Font weight"
+    },
+    {
+      "type": "range",
+      "id": "message_vertical_padding",
+      "min": 4,
+      "max": 16,
+      "step": 1,
+      "unit": "px",
+      "label": "Vertical padding",
+      "default": 7
+    },
+    {
+      "type": "range",
+      "id": "content_gap",
+      "min": 4,
+      "max": 16,
+      "step": 2,
+      "unit": "px",
+      "label": "Spacing between prefix, text and arrow",
+      "default": 8
+    },
+    {
+      "type": "checkbox",
+      "id": "show_link_arrow",
+      "default": true,
+      "label": "Show arrow for linked announcements"
     },
     {
       "type": "header",
@@ -234,6 +430,12 @@
       "type": "announcement",
       "name": "t:sections.announcement-bar.blocks.announcement.name",
       "settings": [
+        {
+          "type": "text",
+          "id": "prefix",
+          "label": "Prefix",
+          "info": "Optional short text or emoji shown before the message."
+        },
         {
           "type": "text",
           "id": "text",

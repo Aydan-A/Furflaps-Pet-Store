@@ -80,10 +80,17 @@
             </details>
           </header-menu>
         {%- else -%}
+          {%- liquid
+            assign link_title_down = link.title | downcase
+            assign is_sale_link = false
+            if link_title_down == 'sale'
+              assign is_sale_link = true
+            endif
+          -%}
           <a
             id="HeaderMenu-{{ link.handle }}"
             href="{{ link.url }}"
-            class="header__menu-item list-menu__item link link--text focus-inset"
+            class="header__menu-item list-menu__item link link--text focus-inset{% if is_sale_link %} header__menu-item--accent{% endif %}"
             {% if link.current %}
               aria-current="page"
             {% endif %}

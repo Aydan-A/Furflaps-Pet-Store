@@ -2,164 +2,288 @@
 <script src="{{ 'before-after-comparison.js' | asset_url }}" defer="defer"></script>
 
 {%- liquid
-  assign button_link = section.settings.button_link
-  if button_link == blank and section.settings.product != blank
-    assign button_link = section.settings.product.url
-  elsif button_link == blank and section.settings.collection != blank
-    assign button_link = section.settings.collection.url
-  elsif button_link == blank and section.settings.page != blank
-    assign button_link = section.settings.page.url
+  assign featured_product = section.settings.product
+  assign show_product = false
+  if section.settings.show_product and featured_product != blank
+    assign show_product = true
   endif
 
-  assign before_mobile = section.settings.before_mobile_image | default: section.settings.before_image
-  assign after_mobile = section.settings.after_mobile_image | default: section.settings.after_image
+  if show_product
+    assign featured_variant = featured_product.selected_or_first_available_variant
+    assign quantity_rule = featured_variant.quantity_rule
+    comment
+      Anything with options or quantity rules goes through the theme's quick-add
+      modal so a customer never adds an arbitrary variant from the overlay.
+    endcomment
+    assign needs_options = false
+    if featured_product.variants_count > 1 or quantity_rule.min > 1 or quantity_rule.max != null or quantity_rule.increment > 1
+      assign needs_options = true
+    endif
+    assign product_form_id = 'BeforeAfterAdd-' | append: section.id | append: '-' | append: featured_product.id
+  endif
+
   assign loading = 'lazy'
   assign fetch_priority = 'auto'
   if section.index == 1
     assign loading = 'eager'
     assign fetch_priority = 'high'
   endif
+
+  comment
+    Widths are expressed against the section's own container, not the viewport, so
+    the browser picks the same source in the Theme Editor iframe as on the
+    storefront. 116px is the page-width gutter pair plus the column gap; 0.6 is
+    the image column's share of the grid.
+  endcomment
+  assign content_width = section.settings.content_width
+  assign media_width = content_width | minus: 116 | times: 0.6 | round
+  capture media_sizes
+    echo '(min-width: '
+    echo content_width
+    echo 'px) '
+    echo media_width
+    echo 'px, (min-width: 750px) calc((100vw - 116px) * 0.6), calc(100vw - 30px)'
+  endcapture
+  assign media_widths = '375, 550, 750, 900, 1100, 1400, 1800, 2200'
 -%}
 
+{%- if show_product -%}
+  {{ 'quick-add.css' | asset_url | stylesheet_tag }}
+  <script src="{{ 'product-form.js' | asset_url }}" defer="defer"></script>
+  {%- if needs_options -%}
+    <script src="{{ 'quick-add.js' | asset_url }}" defer="defer"></script>
+  {%- endif -%}
+{%- endif -%}
+
 {%- style -%}
-  #shopify-section-{{ section.id }} {
-    --bac-background: {{ section.settings.section_background }};
-    --bac-content-background: {{ section.settings.content_background }};
-    --bac-heading-color: {{ section.settings.heading_color }};
-    --bac-text-color: {{ section.settings.text_color }};
-    --bac-button-background: {{ section.settings.button_background }};
-    --bac-button-color: {{ section.settings.button_color }};
-    --bac-button-border: {{ section.settings.button_border }};
-    --bac-divider-color: {{ section.settings.divider_color }};
-    --bac-handle-background: {{ section.settings.handle_background }};
-    --bac-handle-color: {{ section.settings.handle_color }};
-    --bac-image-zoom: {{ section.settings.image_zoom | divided_by: 100.0 }};
-    --bac-position: {{ section.settings.initial_position }}%;
-    --bac-height: {{ section.settings.desktop_height }}px;
-    --bac-mobile-content-height: {{ section.settings.mobile_content_height }}px;
-    --bac-mobile-media-height: {{ section.settings.mobile_media_height }}px;
-    --bac-content-width: {{ section.settings.content_width }}%;
-    --bac-gap: {{ section.settings.panel_gap }}px;
-    --bac-radius: {{ section.settings.panel_radius }}px;
-    --bac-content-padding-v: {{ section.settings.content_padding_vertical }}px;
-    --bac-content-padding-h: {{ section.settings.content_padding_horizontal }}px;
-    --bac-heading-size: {{ section.settings.heading_size }}px;
-    --bac-mobile-heading-size: {{ section.settings.mobile_heading_size }}px;
-    --bac-padding-top: {{ section.settings.padding_top }}px;
-    --bac-padding-bottom: {{ section.settings.padding_bottom }}px;
-    --bac-padding-inline: {{ section.settings.padding_inline }}px;
+  .section-{{ section.id }}-padding {
+    --bac-max-width: {{ section.settings.content_width }}px;
+
+    padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
+    padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
+  }
+
+  @media screen and (min-width: 750px) {
+    .section-{{ section.id }}-padding {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
   }
 {%- endstyle -%}
 
-<before-after-comparison class="before-after-comparison" data-before-after>
-  <div class="before-after-comparison__grid">
-    <div class="before-after-comparison__content">
-      <div class="before-after-comparison__content-inner">
-        {%- if section.settings.heading != blank -%}
-          <h2 class="before-after-comparison__heading">{{ section.settings.heading }}</h2>
-        {%- endif -%}
+<div class="section-{{ section.id }}-padding">
+  <div class="page-width before-after-comparison__container">
+    <before-after-comparison
+      class="before-after-comparison"
+      style="--bac-position: {{ section.settings.initial_position }}%;"
+    >
+      <div class="before-after-comparison__content">
+        <div class="before-after-comparison__content-inner">
+          {%- if section.settings.heading != blank -%}
+            <h2 class="before-after-comparison__heading h1">{{ section.settings.heading }}</h2>
+          {%- endif -%}
 
-        {%- if section.settings.text != blank -%}
-          <div class="before-after-comparison__text rte">{{ section.settings.text }}</div>
-        {%- endif -%}
+          {%- if section.settings.text != blank -%}
+            <div class="before-after-comparison__text rte">{{ section.settings.text }}</div>
+          {%- endif -%}
 
-        {%- if section.settings.button_label != blank -%}
-          <a
-            class="before-after-comparison__button"
-            {% if button_link != blank %}
-              href="{{ button_link }}"
-            {% else %}
-              role="link" aria-disabled="true"
-            {% endif %}
-          >
-            {{ section.settings.button_label | escape }}
-          </a>
-        {%- endif -%}
+          {%- if section.settings.button_label != blank -%}
+            <a
+              class="before-after-comparison__button"
+              {% if section.settings.button_link != blank %}
+                href="{{ section.settings.button_link }}"
+              {% else %}
+                role="link" aria-disabled="true"
+              {% endif %}
+            >
+              {{- section.settings.button_label | escape -}}
+            </a>
+          {%- endif -%}
+        </div>
       </div>
-    </div>
 
-    <div class="before-after-comparison__media" data-comparison-media>
-      <div class="before-after-comparison__image before-after-comparison__image--before">
-        {%- if section.settings.before_image != blank -%}
-          <picture>
-            {%- if before_mobile != blank -%}
-              <source
-                media="(max-width: 749px)"
-                srcset="
-                  {{ before_mobile | image_url: width: 375 }} 375w,
-                  {{ before_mobile | image_url: width: 550 }} 550w,
-                  {{ before_mobile | image_url: width: 750 }} 750w,
-                  {{ before_mobile | image_url: width: 1100 }} 1100w
-                "
-                sizes="100vw"
-              >
-            {%- endif -%}
+      <div class="before-after-comparison__media">
+        <div class="before-after-comparison__image before-after-comparison__image--before">
+          {%- if section.settings.before_image != blank -%}
             {{
               section.settings.before_image
-              | image_url: width: 2400
+              | image_url: width: 2200
               | image_tag:
-                widths: '550, 750, 1100, 1500, 2000, 2400',
-                sizes: '(min-width: 990px) 60vw, (min-width: 750px) 50vw, 100vw',
+                widths: media_widths,
+                sizes: media_sizes,
                 loading: loading,
                 fetchpriority: fetch_priority
             }}
-          </picture>
-        {%- else -%}
-          {{ 'lifestyle-1' | placeholder_svg_tag: 'before-after-comparison__placeholder' }}
-        {%- endif -%}
-      </div>
+          {%- else -%}
+            {{ 'lifestyle-1' | placeholder_svg_tag: 'before-after-comparison__placeholder' }}
+          {%- endif -%}
+        </div>
 
-      <div class="before-after-comparison__image before-after-comparison__image--after" aria-hidden="true">
-        {%- if section.settings.after_image != blank -%}
-          <picture>
-            {%- if after_mobile != blank -%}
-              <source
-                media="(max-width: 749px)"
-                srcset="
-                  {{ after_mobile | image_url: width: 375 }} 375w,
-                  {{ after_mobile | image_url: width: 550 }} 550w,
-                  {{ after_mobile | image_url: width: 750 }} 750w,
-                  {{ after_mobile | image_url: width: 1100 }} 1100w
-                "
-                sizes="100vw"
-              >
-            {%- endif -%}
+        <div class="before-after-comparison__image before-after-comparison__image--after" aria-hidden="true">
+          {%- if section.settings.after_image != blank -%}
             {{
               section.settings.after_image
-              | image_url: width: 2400
+              | image_url: width: 2200
               | image_tag:
-                widths: '550, 750, 1100, 1500, 2000, 2400',
-                sizes: '(min-width: 990px) 60vw, (min-width: 750px) 50vw, 100vw',
+                widths: media_widths,
+                sizes: media_sizes,
                 loading: loading,
                 fetchpriority: fetch_priority
             }}
-          </picture>
-        {%- else -%}
-          {{ 'lifestyle-2' | placeholder_svg_tag: 'before-after-comparison__placeholder' }}
+          {%- else -%}
+            {{ 'lifestyle-2' | placeholder_svg_tag: 'before-after-comparison__placeholder' }}
+          {%- endif -%}
+        </div>
+
+        <div class="before-after-comparison__divider" aria-hidden="true">
+          <span class="before-after-comparison__handle">
+            <svg viewBox="0 0 28 18" aria-hidden="true" focusable="false">
+              <path
+                d="M10 3 4 9l6 6M18 3l6 6-6 6"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
+          </span>
+        </div>
+
+        <input
+          class="before-after-comparison__range"
+          data-comparison-range
+          type="range"
+          min="0"
+          max="100"
+          step="1"
+          value="{{ section.settings.initial_position }}"
+          aria-label="Compare the before and after images"
+        >
+
+        {%- if show_product -%}
+          <div class="before-after-comparison__product">
+            {%- if needs_options -%}
+              <div class="before-after-comparison__product-card">
+                <a
+                  class="before-after-comparison__product-title"
+                  href="{{ featured_product.url }}"
+                  id="{{ product_form_id }}-title"
+                >
+                  {{- featured_product.title | escape -}}
+                </a>
+                <div class="before-after-comparison__product-action">
+                  <modal-opener data-modal="#{{ product_form_id }}-modal">
+                    <button
+                      id="{{ product_form_id }}-submit"
+                      type="button"
+                      class="button"
+                      aria-haspopup="dialog"
+                      aria-labelledby="{{ product_form_id }}-submit {{ product_form_id }}-title"
+                      data-product-url="{{ featured_product.url }}"
+                    >
+                      {{- 'products.product.choose_options' | t -}}
+                      {%- render 'loading-spinner' -%}
+                    </button>
+                  </modal-opener>
+                </div>
+              </div>
+            {%- else -%}
+              <product-form class="before-after-comparison__product-form" data-section-id="{{ section.id }}">
+                {%- form 'product',
+                  featured_product,
+                  id: product_form_id,
+                  class: 'form',
+                  novalidate: 'novalidate',
+                  data-type: 'add-to-cart-form'
+                -%}
+                  <input
+                    type="hidden"
+                    name="id"
+                    value="{{ featured_variant.id }}"
+                    class="product-variant-id"
+                    {% if featured_variant.available == false %}
+                      disabled
+                    {% endif %}
+                  >
+                  <div class="before-after-comparison__product-card">
+                    <a
+                      class="before-after-comparison__product-title"
+                      href="{{ featured_product.url }}"
+                      id="{{ product_form_id }}-title"
+                    >
+                      {{- featured_product.title | escape -}}
+                    </a>
+                    <div class="before-after-comparison__product-action">
+                      <button
+                        id="{{ product_form_id }}-submit"
+                        type="submit"
+                        name="add"
+                        class="button"
+                        aria-labelledby="{{ product_form_id }}-submit {{ product_form_id }}-title"
+                        aria-live="polite"
+                        data-sold-out-message="true"
+                        {% if featured_variant.available == false %}
+                          disabled
+                        {% endif %}
+                      >
+                        <span>
+                          {%- if featured_variant.available -%}
+                            {{ 'products.product.add_to_cart' | t }}
+                          {%- else -%}
+                            {{ 'products.product.sold_out' | t }}
+                          {%- endif -%}
+                        </span>
+                        <span class="sold-out-message hidden">
+                          {{ 'products.product.sold_out' | t }}
+                        </span>
+                        {%- render 'loading-spinner' -%}
+                      </button>
+                    </div>
+                  </div>
+                  <div class="product-form__error-message-wrapper" role="alert" hidden>
+                    <span class="product-form__error-message"></span>
+                  </div>
+                {%- endform -%}
+              </product-form>
+            {%- endif -%}
+          </div>
         {%- endif -%}
       </div>
-
-      <div class="before-after-comparison__divider" aria-hidden="true">
-        <span class="before-after-comparison__handle">
-          <svg viewBox="0 0 28 18" aria-hidden="true">
-            <path d="M10 3 4 9l6 6M18 3l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-        </span>
-      </div>
-
-      <input
-        class="before-after-comparison__range"
-        data-comparison-range
-        type="range"
-        min="0"
-        max="100"
-        step="1"
-        value="{{ section.settings.initial_position }}"
-        aria-label="{{ section.settings.accessibility_label | escape }}"
-      >
-    </div>
+    </before-after-comparison>
   </div>
-</before-after-comparison>
+
+  {%- comment -%}
+    The quick add dialog is fixed-position, so it has to live outside the media
+    panel: that panel clips its overflow and opens its own stacking context.
+  {%- endcomment -%}
+  {%- if show_product and needs_options -%}
+    <quick-add-modal id="{{ product_form_id }}-modal" class="quick-add-modal">
+      <div
+        role="dialog"
+        aria-label="{{ 'products.product.choose_product_options' | t: product_name: featured_product.title | escape }}"
+        aria-modal="true"
+        class="quick-add-modal__content global-settings-popup"
+        tabindex="-1"
+      >
+        {%- comment -%}
+          ModalDialog's constructor binds to [id^="ModalClose-"] without a null
+          check, so a close button named anything else throws and the custom
+          element never upgrades - which leaves the opener with no show() to call.
+        {%- endcomment -%}
+        <button
+          id="ModalClose-{{ section.id }}-{{ featured_product.id }}"
+          type="button"
+          class="quick-add-modal__toggle"
+          aria-label="{{ 'accessibility.close' | t }}"
+        >
+          {{- 'icon-close.svg' | inline_asset_content -}}
+        </button>
+        <div id="QuickAddInfo-{{ section.id }}-{{ featured_product.id }}" class="quick-add-modal__content-info"></div>
+      </div>
+    </quick-add-modal>
+  {%- endif -%}
+</div>
 
 {% schema %}
 {
@@ -170,59 +294,77 @@
   "settings": [
     { "type": "header", "content": "Content" },
     { "type": "inline_richtext", "id": "heading", "label": "Heading", "default": "See the difference" },
-    { "type": "richtext", "id": "text", "label": "Text", "default": "<p>Drag the handle to compare the look before and after.</p>" },
+    {
+      "type": "richtext",
+      "id": "text",
+      "label": "Text",
+      "default": "<p>Drag the handle to compare the look before and after.</p>"
+    },
     { "type": "text", "id": "button_label", "label": "Button label", "default": "Shop now" },
     { "type": "url", "id": "button_link", "label": "Button link" },
-    { "type": "product", "id": "product", "label": "Fallback button product" },
-    { "type": "collection", "id": "collection", "label": "Fallback button collection" },
-    { "type": "page", "id": "page", "label": "Fallback button page" },
 
-    { "type": "header", "content": "Comparison images" },
+    { "type": "header", "content": "Comparison" },
     { "type": "image_picker", "id": "before_image", "label": "Before image" },
     { "type": "image_picker", "id": "after_image", "label": "After image" },
-    { "type": "image_picker", "id": "before_mobile_image", "label": "Before mobile image" },
-    { "type": "image_picker", "id": "after_mobile_image", "label": "After mobile image" },
-    { "type": "range", "id": "image_zoom", "label": "Image zoom", "min": 100, "max": 200, "step": 5, "unit": "%", "default": 100 },
-    { "type": "paragraph", "content": "100% fills the comparison frame. Increase the value to zoom in, or return it toward 100% to zoom out without exposing empty space." },
-    { "type": "range", "id": "initial_position", "label": "Initial handle position", "min": 10, "max": 90, "step": 5, "unit": "%", "default": 50 },
+    {
+      "type": "range",
+      "id": "initial_position",
+      "label": "Initial handle position",
+      "min": 20,
+      "max": 80,
+      "step": 5,
+      "unit": "%",
+      "default": 50
+    },
 
-    { "type": "header", "content": "Desktop layout" },
-    { "type": "range", "id": "desktop_height", "label": "Height", "min": 360, "max": 900, "step": 10, "unit": "px", "default": 540 },
-    { "type": "range", "id": "content_width", "label": "Content panel width", "min": 30, "max": 60, "step": 1, "unit": "%", "default": 40 },
-    { "type": "range", "id": "panel_gap", "label": "Panel gap", "min": 0, "max": 40, "step": 1, "unit": "px", "default": 16 },
-    { "type": "range", "id": "panel_radius", "label": "Panel corner radius", "min": 0, "max": 50, "step": 1, "unit": "px", "default": 12 },
-    { "type": "range", "id": "content_padding_vertical", "label": "Content vertical padding", "min": 20, "max": 140, "step": 4, "unit": "px", "default": 64 },
-    { "type": "range", "id": "content_padding_horizontal", "label": "Content horizontal padding", "min": 20, "max": 140, "step": 4, "unit": "px", "default": 48 },
+    { "type": "header", "content": "Featured product" },
+    {
+      "type": "checkbox",
+      "id": "show_product",
+      "label": "Show product on the image",
+      "default": true
+    },
+    { "type": "product", "id": "product", "label": "Product" },
+    {
+      "type": "paragraph",
+      "content": "Products with options open the theme's quick add window so the customer picks a variant before it is added."
+    },
 
-    { "type": "header", "content": "Mobile layout" },
-    { "type": "range", "id": "mobile_content_height", "label": "Content height", "min": 240, "max": 600, "step": 10, "unit": "px", "default": 320 },
-    { "type": "range", "id": "mobile_media_height", "label": "Comparison height", "min": 260, "max": 700, "step": 10, "unit": "px", "default": 360 },
+    { "type": "header", "content": "Layout" },
+    {
+      "type": "range",
+      "id": "content_width",
+      "label": "Content width",
+      "info": "Maximum width of the section on desktop. Narrower screens scale down automatically.",
+      "min": 1000,
+      "max": 2000,
+      "step": 20,
+      "unit": "px",
+      "default": 1700
+    },
 
-    { "type": "header", "content": "Typography" },
-    { "type": "range", "id": "heading_size", "label": "Heading size", "min": 24, "max": 80, "step": 1, "unit": "px", "default": 46 },
-    { "type": "range", "id": "mobile_heading_size", "label": "Mobile heading size", "min": 22, "max": 52, "step": 1, "unit": "px", "default": 32 },
-
-    { "type": "header", "content": "Colors" },
-    { "type": "color", "id": "section_background", "label": "Section background", "default": "#FFFFFF" },
-    { "type": "color", "id": "content_background", "label": "Content background", "default": "#F44316" },
-    { "type": "color", "id": "heading_color", "label": "Heading", "default": "#FFFFFF" },
-    { "type": "color", "id": "text_color", "label": "Text", "default": "#FFFFFF" },
-    { "type": "color", "id": "button_background", "label": "Button background", "default": "#FFFFFF" },
-    { "type": "color", "id": "button_color", "label": "Button text", "default": "#111111" },
-    { "type": "color", "id": "button_border", "label": "Button border", "default": "#FFFFFF" },
-    { "type": "color", "id": "divider_color", "label": "Divider", "default": "#FFFFFF" },
-    { "type": "color", "id": "handle_background", "label": "Handle background", "default": "#FFFFFF" },
-    { "type": "color", "id": "handle_color", "label": "Handle icon", "default": "#111111" },
     { "type": "header", "content": "Section spacing" },
-    { "type": "range", "id": "padding_top", "label": "Top padding", "min": 0, "max": 100, "step": 2, "unit": "px", "default": 16 },
-    { "type": "range", "id": "padding_bottom", "label": "Bottom padding", "min": 0, "max": 100, "step": 2, "unit": "px", "default": 16 },
-    { "type": "range", "id": "padding_inline", "label": "Side padding", "min": 0, "max": 100, "step": 2, "unit": "px", "default": 16 },
-
-    { "type": "header", "content": "Accessibility" },
-    { "type": "text", "id": "accessibility_label", "label": "Slider label", "default": "Reveal the before and after images" }
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Top padding",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Bottom padding",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "default": 36
+    }
   ],
-  "presets": [
-    { "name": "Before/after comparison" }
-  ]
+  "presets": [{ "name": "Before/after comparison" }]
 }
 {% endschema %}

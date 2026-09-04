@@ -1,16 +1,18 @@
-.hot-this-week {
+.hot-week-picks {
+  display: block;
   background: var(--hot-section-background);
   color: var(--hot-text-color);
+  margin-block: var(--hot-margin-top) var(--hot-margin-bottom);
   padding-block: var(--hot-padding-top) var(--hot-padding-bottom);
 }
 
-.hot-this-week__inner {
+.hot-week-picks__inner {
   max-width: var(--page-width);
   margin: 0 auto;
   padding-inline: var(--hot-padding-inline);
 }
 
-.hot-this-week__header {
+.hot-week-picks__header {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -19,7 +21,7 @@
   margin-bottom: var(--hot-header-spacing);
 }
 
-.hot-this-week__heading {
+.hot-week-picks__heading {
   margin: 0;
   color: inherit;
   font-family: var(--hot-heading-font-family);
@@ -30,13 +32,59 @@
   letter-spacing: var(--hot-heading-letter-spacing);
 }
 
-.hot-this-week__tabs {
+.hot-week-picks__controls {
+  display: flex;
+  align-items: center;
+  gap: 1.6rem;
+}
+
+.hot-week-picks__tabs {
   display: flex;
   align-items: center;
   gap: var(--hot-tab-gap);
 }
 
-.hot-this-week__tab {
+.hot-week-picks__nav {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.hot-week-picks__nav[hidden] {
+  display: none;
+}
+
+.hot-week-picks__arrow {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--hot-arrow-size);
+  height: var(--hot-arrow-size);
+  padding: 0;
+  border: 1px solid var(--hot-arrow-border);
+  border-radius: 50%;
+  background: var(--hot-arrow-background);
+  color: var(--hot-arrow-icon);
+  cursor: pointer;
+  transition: opacity 150ms ease;
+}
+
+.hot-week-picks__arrow svg {
+  width: 55%;
+  height: 55%;
+}
+
+.hot-week-picks__arrow:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+.hot-week-picks__arrow:focus-visible {
+  outline: 0.2rem solid currentColor;
+  outline-offset: 0.2rem;
+}
+
+.hot-week-picks__tab {
   appearance: none;
   min-height: var(--hot-tab-height);
   padding: 0 var(--hot-tab-padding);
@@ -50,41 +98,121 @@
   font-weight: 600;
 }
 
-.hot-this-week__tab[aria-selected='true'] {
+.hot-week-picks__tab[aria-selected='true'] {
   background: var(--hot-tab-active-background);
   color: var(--hot-tab-active-text);
 }
 
-.hot-this-week__tab:focus-visible,
+.hot-week-picks__tab:focus-visible,
 .hot-card__link:focus-visible {
   outline: 0.2rem solid currentColor;
   outline-offset: 0.3rem;
 }
 
-.hot-this-week__panel[hidden] {
+.hot-week-picks__panel[hidden] {
   display: none;
 }
 
-.hot-this-week__products {
+.hot-week-picks__products {
   list-style: none;
   margin: 0;
   padding: 0;
   display: grid;
-  grid-template-columns: repeat(var(--hot-columns), minmax(0, 1fr));
+  grid-auto-flow: column;
+  grid-auto-columns: calc((100% - (var(--hot-columns) - 1) * var(--hot-card-gap)) / var(--hot-columns));
   gap: var(--hot-card-gap);
+  overflow-x: auto;
+  overscroll-behavior-inline: contain;
+  scroll-snap-type: inline mandatory;
+  scroll-behavior: smooth;
+  scrollbar-width: none;
 }
 
-.hot-this-week__product {
+.hot-week-picks__products::-webkit-scrollbar {
+  display: none;
+}
+
+.hot-week-picks__product {
   display: flex;
   min-width: 0;
+  scroll-snap-align: start;
 }
 
-.hot-this-week__card {
+@media (prefers-reduced-motion: reduce) {
+  .hot-week-picks__products {
+    scroll-behavior: auto;
+  }
+}
+
+.hot-week-picks__card {
   display: flex;
   flex-direction: column;
   width: 100%;
   color: inherit;
   text-decoration: none;
+}
+
+.hot-card__media-wrap {
+  position: relative;
+}
+
+.hot-card__cart-form,
+.hot-card__cart-form .form {
+  display: block;
+}
+
+.hot-card__cart {
+  position: absolute;
+  z-index: 3;
+  right: var(--hot-badge-offset);
+  bottom: var(--hot-badge-offset);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--hot-cart-size);
+  height: var(--hot-cart-size);
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: var(--hot-cart-background);
+  color: var(--hot-cart-icon);
+  box-shadow: 0 0.1rem 0.6rem rgba(0, 0, 0, 0.15);
+  cursor: pointer;
+  transition: transform 150ms ease;
+}
+
+.hot-card__cart svg {
+  width: 60%;
+  height: 60%;
+}
+
+.hot-card__cart:hover {
+  transform: scale(1.06);
+}
+
+.hot-card__cart:focus-visible {
+  outline: 0.2rem solid currentColor;
+  outline-offset: 0.2rem;
+}
+
+.hot-card__cart--disabled {
+  opacity: 0.4;
+  cursor: default;
+  box-shadow: none;
+}
+
+.hot-card__cart .sold-out-message {
+  display: none;
+}
+
+.hot-card__cart.loading .hot-card__cart-icon {
+  visibility: hidden;
+}
+
+.hot-card__cart .loading__spinner {
+  position: absolute;
+  width: 60%;
+  height: 60%;
 }
 
 .hot-card__media {
@@ -129,6 +257,35 @@
   margin-top: var(--hot-card-content-spacing);
 }
 
+.hot-card__swatches {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 0 0 0.4rem;
+  padding: 0;
+  list-style: none;
+}
+
+.hot-card__swatch {
+  display: block;
+  width: var(--hot-swatch-size);
+  height: var(--hot-swatch-size);
+}
+
+.hot-card__swatch .swatch {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+}
+
+.hot-card__swatch-more {
+  font-size: calc(var(--hot-swatch-size) * 0.8);
+  line-height: 1;
+  color: var(--hot-description-color);
+}
+
 .hot-card__title {
   margin: 0;
   font-size: var(--hot-product-title-size);
@@ -152,8 +309,10 @@
   color: var(--hot-description-color);
   display: -webkit-box;
   -webkit-line-clamp: var(--hot-description-lines);
+  line-clamp: var(--hot-description-lines);
   -webkit-box-orient: vertical;
   overflow: hidden;
+  overflow-wrap: anywhere;
 }
 
 .hot-card__prices {
@@ -190,7 +349,7 @@
   align-self: center;
 }
 
-.hot-this-week__empty {
+.hot-week-picks__empty {
   grid-column: 1 / -1;
   padding: 4rem 2rem;
   border-radius: var(--hot-card-radius);
@@ -199,25 +358,30 @@
 }
 
 @media screen and (max-width: 989px) {
-  .hot-this-week__products {
+  .hot-week-picks__products {
     --hot-columns: var(--hot-columns-tablet);
   }
 }
 
 @media screen and (max-width: 749px) {
-  .hot-this-week {
+  .hot-week-picks {
+    margin-block: var(--hot-mobile-margin-top) var(--hot-mobile-margin-bottom);
     padding-block: var(--hot-mobile-padding-top) var(--hot-mobile-padding-bottom);
   }
 
-  .hot-this-week__inner {
+  .hot-week-picks__inner {
     padding-inline: var(--hot-mobile-padding-inline);
   }
 
-  .hot-this-week__heading {
+  .hot-week-picks__heading {
     font-size: min(var(--hot-mobile-heading-size), 2.8rem);
   }
 
-  .hot-this-week__products {
+  .hot-week-picks__nav {
+    display: none;
+  }
+
+  .hot-week-picks__products {
     --hot-columns: var(--hot-columns-mobile);
   }
 }

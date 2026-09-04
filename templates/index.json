@@ -17,7 +17,7 @@
           "settings": {
             "heading": "Made for them. Personalized by you.",
             "description": "<p>Personalized collars made for cats and dogs, with playful colours, custom names, and a style that's uniquely theirs.</p>",
-            "button_label": "Shop now",
+            "button_label": "Shop Sale",
             "button_link": "shopify://collections/all",
             "background_color": "#cc302a",
             "heading_color": "#ffffff",
@@ -32,7 +32,7 @@
           "settings": {
             "heading": "Accessories as unique as they are.",
             "description": "<p>Discover thoughtful accessories and everyday essentials selected for happier, healthier pets.</p>",
-            "button_label": "Explore products",
+            "button_label": "Explore new arrivals",
             "button_link": "shopify://collections/all",
             "background_color": "#e8e0d5",
             "heading_color": "#111111",
@@ -65,24 +65,24 @@
         "family"
       ],
       "settings": {
-        "image": "shopify://shop_images/08e25e0f6fb56c07d54a8ed0e0d4d1a3.jpg",
+        "image": "shopify://shop_images/29_04a09287-3f2a-490b-aaba-d924697fffeb_png.webp",
         "media_background": "#ffffff",
         "image_fit": "cover",
         "image_position": "center center",
-        "desktop_height": 400,
+        "desktop_section_ratio": "5 / 2",
         "content_width": 52,
-        "panel_gap": 10,
-        "panel_radius": 16,
+        "panel_gap": 16,
+        "panel_radius": 12,
         "content_max_width": 520,
-        "content_padding_vertical": 64,
-        "content_padding_horizontal": 64,
+        "content_padding_vertical": 44,
+        "content_padding_horizontal": 48,
         "content_position": "center",
         "content_alignment": "center",
-        "mobile_content_height": 340,
-        "mobile_media_height": 320,
+        "mobile_media_ratio": "3 / 2",
+        "mobile_image_position": "center center",
         "mobile_panel_gap": 12,
         "mobile_panel_radius": 14,
-        "mobile_content_padding_vertical": 38,
+        "mobile_content_padding_vertical": 30,
         "mobile_content_padding_horizontal": 20,
         "mobile_description_spacing": 16,
         "mobile_button_spacing": 20,
@@ -99,8 +99,8 @@
         "body_weight": "400",
         "body_line_height": 140,
         "body_letter_spacing": 0,
-        "description_spacing": 20,
-        "button_spacing": 28,
+        "description_spacing": 14,
+        "button_spacing": 20,
         "button_height": 48,
         "mobile_button_height": 46,
         "button_padding": 26,
@@ -117,9 +117,9 @@
         "autoplay": false,
         "autoplay_delay": 5,
         "pagination_alignment": "center",
-        "pagination_offset_vertical": 44,
-        "pagination_offset_horizontal": 44,
-        "mobile_pagination_offset_vertical": 28,
+        "pagination_offset_vertical": 24,
+        "pagination_offset_horizontal": 48,
+        "mobile_pagination_offset_vertical": 20,
         "mobile_pagination_offset_horizontal": 24,
         "indicator_width": 30,
         "indicator_height": 6,
@@ -129,9 +129,9 @@
         "indicator_color": "#ffffff",
         "indicator_border_color": "#ffffff",
         "indicator_active_color": "#7d0501",
-        "padding_top": 12,
-        "padding_inline": 12,
-        "padding_bottom": 12,
+        "padding_top": 16,
+        "padding_inline": 16,
+        "padding_bottom": 16,
         "mobile_padding_top": 8,
         "mobile_padding_inline": 8,
         "mobile_padding_bottom": 8,
@@ -140,62 +140,19 @@
         "pagination_item_label": "Go to promotion"
       }
     },
-    "hot_this_week": {
-      "type": "hot-this-week",
-      "blocks": {
-        "card_charm_bundle": {
-          "type": "product_card",
-          "settings": {
-            "custom_title": "Charm Bundle",
-            "description": "Pick any four charms and save — mix letters, numbers and shapes in whichever colours you like.",
-            "show_badge": true,
-            "badge_text": "New",
-            "custom_price": "$9.99",
-            "custom_compare_price": "$11.75",
-            "show_discount": true,
-            "discount_text": "15% off",
-            "tab": "best_sellers"
-          }
-        },
-        "card_leash_collar": {
-          "type": "product_card",
-          "settings": {
-            "custom_title": "Waterproof Dog Leash + Collar Set",
-            "description": "5ft leash + waterproof collar + charm add-ons.",
-            "custom_price": "$60.00",
-            "custom_compare_price": "$63.00",
-            "show_discount": true,
-            "discount_text": "4% off",
-            "tab": "best_sellers"
-          }
-        },
-        "card_letter_charm": {
-          "type": "product_card",
-          "settings": {
-            "custom_title": "Letter Charm — Personalised Collar Add-on",
-            "description": "Three colours, fits 5/8\" and 1\" collar widths.",
-            "custom_price": "$2.99",
-            "tab": "new_arrivals"
-          }
-        },
-        "card_number_charm": {
-          "type": "product_card",
-          "settings": {
-            "custom_title": "Number Charm",
-            "description": "Add a house number or birth year — same three colours as the letters.",
-            "custom_price": "From $2.99",
-            "tab": "new_arrivals"
-          }
-        }
-      },
-      "block_order": ["card_charm_bundle", "card_leash_collar", "card_letter_charm", "card_number_charm"],
+    "hot_week_picks_PyhcEc": {
+      "type": "hot-week-picks",
+      "name": "Hot week picks",
       "settings": {
         "show_heading": true,
         "heading": "Hot This Week",
         "show_tabs": true,
+        "best_sellers_collection": "frontpage",
         "best_sellers_label": "Best Sellers",
+        "new_arrivals_collection": "new-arrivals",
         "new_arrivals_label": "New Arrivals",
         "default_tab": "best_sellers",
+        "products_to_show": 10,
         "tabs_accessibility_label": "Product collections",
         "columns_desktop": 4,
         "columns_tablet": 2,
@@ -207,14 +164,21 @@
         "image_fit": "contain",
         "product_title_size": 18,
         "price_size": 18,
-        "description_color": "#6e7787",
+        "show_description": true,
+        "description_source": "metafield_then_description",
+        "description_words": 20,
+        "description_metafield_namespace": "custom",
+        "description_metafield_key": "card_description",
+        "description_color": "#a2a9b7",
         "description_size": 14,
-        "description_lines": 2,
+        "description_lines": 1,
+        "show_metafield_badge": false,
         "badge_offset": 10,
         "badge_background": "#7961d7",
         "badge_text_color": "#ffffff",
+        "show_discount": true,
         "compare_price_color": "#8a93a0",
-        "discount_pill_background": "#00b878",
+        "discount_pill_background": "#ff0000",
         "discount_pill_text": "#ffffff",
         "heading_font": "assistant_n7",
         "heading_size": 32,
@@ -222,6 +186,19 @@
         "heading_weight": "700",
         "heading_letter_spacing": -3,
         "tab_font_size": 13,
+        "show_swatches": true,
+        "color_option_name": "Color",
+        "swatches_to_show": 4,
+        "swatch_size": 14,
+        "show_add_to_cart": true,
+        "cart_button_size": 40,
+        "cart_button_background": "#ffffff",
+        "cart_button_icon_color": "#111111",
+        "show_arrows": true,
+        "arrow_size": 36,
+        "arrow_background": "#ffffff",
+        "arrow_icon_color": "#111111",
+        "arrow_border_color": "#dddddd",
         "tab_height": 36,
         "tab_padding": 16,
         "tab_radius": 18,
@@ -230,8 +207,12 @@
         "text_color": "#111111",
         "image_background": "#f0f3f5",
         "tab_text": "#111111",
-        "tab_active_background": "#eeeeec",
+        "tab_active_background": "#e5e7eb",
         "tab_active_text": "#111111",
+        "margin_top": 0,
+        "margin_bottom": 0,
+        "mobile_margin_top": 0,
+        "mobile_margin_bottom": 0,
         "header_spacing": 28,
         "padding_top": 40,
         "padding_bottom": 48,
@@ -247,31 +228,76 @@
         "step_zWNjhr": {
           "type": "step",
           "settings": {
-            "title": "Pick a collar you love",
+            "title": "Pick a collar",
+            "products": [],
             "collection": "collars",
-            "benefit_1": "",
-            "benefit_2": "Eco-Friendly",
-            "open_by_default": true
+            "products_to_show": 8,
+            "max_selections": 4,
+            "selection_required": true,
+            "show_options": true,
+            "option_names": "Size",
+            "option_style": "dropdown",
+            "enable_quantity": true,
+            "layout": "grid",
+            "cards_per_row": 4,
+            "card_gap": 0,
+            "rows": 1,
+            "image_ratio": "",
+            "enable_personalization": false,
+            "personalization_label": "Name",
+            "personalization_placeholder": "Enter a name",
+            "personalization_max_chars": 12,
+            "personalization_required": true
           }
         },
         "step_G9XGPD": {
           "type": "step",
           "settings": {
-            "title": "Match it with cool letters",
+            "title": "Match it with letters",
+            "products": [],
             "collection": "letters",
-            "benefit_1": "100% Cotton",
-            "benefit_2": "Water Proof",
-            "open_by_default": false
+            "products_to_show": 0,
+            "max_selections": 12,
+            "selection_required": true,
+            "show_options": true,
+            "option_names": "",
+            "option_style": "buttons",
+            "enable_quantity": true,
+            "layout": "carousel",
+            "cards_per_row": 8,
+            "card_gap": 12,
+            "rows": 3,
+            "image_ratio": "1 / 1",
+            "enable_personalization": true,
+            "personalization_label": "Name",
+            "personalization_placeholder": "Enter a name",
+            "personalization_max_chars": 12,
+            "personalization_required": false
           }
         },
         "step_33GmAx": {
           "type": "step",
           "settings": {
             "title": "Add fun extras",
+            "products": [],
             "collection": "icons",
-            "benefit_1": "100% Cotton",
-            "benefit_2": "Colorful",
-            "open_by_default": false
+            "products_to_show": 8,
+            "max_selections": 6,
+            "selection_required": false,
+            "show_options": true,
+            "option_names": "",
+            "option_style": "buttons",
+            "enable_quantity": true,
+            "layout": "grid",
+            "cards_per_row": 4,
+            "card_gap": 0,
+            "rows": 1,
+            "image_ratio": "",
+            "enable_personalization": false,
+            "personalization_label": "Name",
+            "personalization_placeholder": "Enter a name",
+            "personalization_max_chars": 12,
+            "personalization_required": true
           }
         }
       },
@@ -282,45 +308,38 @@
       ],
       "name": "Dress up in steps",
       "settings": {
-        "eyebrow": "How you style it",
+        "eyebrow": "Design Yourself",
         "heading": "Pick - Pair - Play!",
-        "products_to_show": 4,
-        "columns_desktop": 4,
+        "button_label": "Save and continue",
+        "cta_label": "Go to cart",
+        "error_message": "Almost there! Make a pick here and we'll keep going.",
+        "locked_message": "Let's finish the step above first, then this one opens up.",
+        "limit_message": "You can pick up to {max} here. Remove one to swap it out.",
+        "cards_per_row": 4,
+        "card_gap": 24,
         "image_ratio": "4 / 5",
         "image_fit": "contain",
-        "show_swatches": true,
-        "color_option_name": "Color",
-        "swatches_to_show": 4,
-        "show_custom_badge": false,
-        "badge_namespace": "custom",
-        "badge_key": "badge",
+        "card_radius": 14,
         "eyebrow_size": 11,
         "heading_size": 34,
         "mobile_heading_size": 28,
         "heading_weight": "700",
         "step_title_size": 20,
         "mobile_step_title_size": 17,
-        "card_title_size": 18,
-        "price_size": 16,
+        "price_size": 18,
         "background": "#ffffff",
         "text_color": "#111111",
+        "muted_text": "#6b7280",
         "panel_background": "#f4f4f4",
+        "card_background": "#ffffff",
         "image_background": "#e9eef1",
+        "border_color": "#e2e2e2",
+        "accent": "#f96d4b",
+        "accent_text": "#ffffff",
         "number_background": "#050505",
         "number_text": "#ffffff",
-        "pill_background": "#ffffff",
-        "pill_border": "#d6d6d6",
-        "sale_color": "#d93a2f",
-        "sold_out_color": "#555555",
-        "custom_badge_color": "#7a59d1",
-        "badge_text": "#ffffff",
         "max_width": 1320,
-        "panel_radius": 12,
-        "card_radius": 12,
-        "summary_height": 72,
         "heading_gap": 38,
-        "step_gap": 8,
-        "card_gap": 10,
         "padding_top": 32,
         "padding_bottom": 40,
         "padding_inline": 48,
@@ -337,37 +356,14 @@
         "text": "<p>Drag the handle to compare the look before and after.</p>",
         "button_label": "Shop now",
         "button_link": "",
-        "product": "",
-        "collection": "",
-        "page": "",
         "before_image": "shopify://shop_images/7e3d4b90-1203-4bad-a312-1da6eee025ba_1_aa195e6d-52f0-4b3c-9b60-af4418677cc2.jpg",
         "after_image": "shopify://shop_images/7e3d4b90-1203-4bad-a312-1da6eee025ba_2.jpg",
-        "image_zoom": 100,
-        "initial_position": 50,
-        "desktop_height": 540,
-        "content_width": 40,
-        "panel_gap": 16,
-        "panel_radius": 12,
-        "content_padding_vertical": 64,
-        "content_padding_horizontal": 48,
-        "mobile_content_height": 320,
-        "mobile_media_height": 360,
-        "heading_size": 46,
-        "mobile_heading_size": 32,
-        "section_background": "#2a2525",
-        "content_background": "#d83a32",
-        "heading_color": "#ffffff",
-        "text_color": "#ffffff",
-        "button_background": "#ffffff",
-        "button_color": "#111111",
-        "button_border": "#ffffff",
-        "divider_color": "#ffffff",
-        "handle_background": "#ffffff",
-        "handle_color": "#111111",
-        "padding_top": 16,
-        "padding_bottom": 16,
-        "padding_inline": 16,
-        "accessibility_label": "Reveal the before and after images"
+        "initial_position": 45,
+        "show_product": true,
+        "product": "personalized-name-pet-collar-green",
+        "content_width": 1700,
+        "padding_top": 36,
+        "padding_bottom": 36
       }
     },
     "product_feature_tabs_EpMe6d": {
@@ -377,44 +373,31 @@
           "type": "tab",
           "settings": {
             "label": "",
-            "collection": "dress-up"
+            "collection": "collars",
+            "option_name": "Size"
           }
         },
         "tab_Yf6YBD": {
           "type": "tab",
           "settings": {
             "label": "",
-            "collection": "letters"
+            "collection": "letters",
+            "option_name": ""
           }
         },
         "tab_EbGHnG": {
           "type": "tab",
           "settings": {
             "label": "",
-            "collection": "icons"
-          }
-        },
-        "feature_BJ8cR6": {
-          "type": "feature",
-          "settings": {
-            "visible": true,
-            "text": "App connectivity"
-          }
-        },
-        "feature_xTptCE": {
-          "type": "feature",
-          "settings": {
-            "visible": true,
-            "text": "App connectivity"
+            "collection": "icons",
+            "option_name": ""
           }
         }
       },
       "block_order": [
         "tab_ADXaf6",
         "tab_Yf6YBD",
-        "tab_EbGHnG",
-        "feature_BJ8cR6",
-        "feature_xTptCE"
+        "tab_EbGHnG"
       ],
       "name": "Product feature tabs",
       "settings": {
@@ -430,12 +413,8 @@
         "columns_desktop": 4,
         "columns_tablet": 2.5,
         "columns_mobile": 1.2,
-        "image_ratio": "1 / 1",
+        "image_ratio": "3 / 4",
         "image_fit": "contain",
-        "show_product_info": false,
-        "show_sale_badge": true,
-        "sale_label": "Sale",
-        "features_label": "Product features",
         "tabs_label": "Product categories",
         "tabs_alignment": "center",
         "tab_height": 44,
@@ -448,19 +427,17 @@
         "background_color": "#ffffff",
         "text_color": "#000000",
         "card_background": "#f3f2f2",
-        "feature_background": "#f7f7f7",
-        "feature_pill": "#ffffff",
         "feature_border": "#ececec",
         "tab_shell_background": "#f5f5f5",
         "tab_border": "#e4e4e4",
         "tab_text": "#222222",
-        "active_tab_background": "#1d1d1d",
+        "active_tab_background": "#e50b0b",
         "active_tab_text": "#ffffff",
-        "badge_background": "#ff5a3c",
-        "badge_text": "#ffffff",
+        "add_button_background": "#000000",
+        "add_button_text": "#ffffff",
+        "added_label": "Added",
         "card_gap": 18,
         "card_radius": 10,
-        "badge_offset": 12,
         "header_gap": 24,
         "tabs_gap": 30,
         "padding_top": 40,
@@ -471,19 +448,94 @@
         "mobile_padding_inline": 16
       }
     },
+    "tsapb_eebdb509_yHUxkA": {
+      "type": "tsapb-eebdb509",
+      "blocks": {
+        "image_E3bYWy": {
+          "type": "image",
+          "settings": {
+            "image_desktop": "shopify://shop_images/4_da0d315f-75d2-442d-b993-ac78afc0cca2_png.webp",
+            "image_url": ""
+          }
+        },
+        "image_xNyrca": {
+          "type": "image",
+          "settings": {
+            "image_desktop": "shopify://shop_images/3_9c44253e-19d0-4347-a795-a04e96e1d0b6.webp",
+            "image_url": ""
+          }
+        },
+        "image_Vbb8Qt": {
+          "type": "image",
+          "settings": {
+            "image_desktop": "shopify://shop_images/5_49c7ee17-9a7e-4296-88dd-bdad2e6428dd.webp",
+            "image_url": ""
+          }
+        },
+        "image_b7tqH9": {
+          "type": "image",
+          "settings": {
+            "image_desktop": "shopify://shop_images/Rectangle_7.webp",
+            "image_url": ""
+          }
+        },
+        "image_Ddq34R": {
+          "type": "image",
+          "settings": {
+            "image_desktop": "shopify://shop_images/18_9250820b-5b9b-4dd1-aa5d-919925c9cb79.webp",
+            "image_url": ""
+          }
+        },
+        "image_q3wznX": {
+          "type": "image",
+          "settings": {
+            "image_desktop": "shopify://shop_images/29_eb74efe0-4646-4b15-8909-e67baee4bcac.webp",
+            "image_url": ""
+          }
+        }
+      },
+      "block_order": [
+        "image_E3bYWy",
+        "image_xNyrca",
+        "image_Vbb8Qt",
+        "image_b7tqH9",
+        "image_Ddq34R",
+        "image_q3wznX"
+      ],
+      "name": "❤️ Square: Media Gallery",
+      "settings": {
+        "heading": "Gallery",
+        "heading_size": "32",
+        "heading_style": "regular",
+        "heading_alignment": "center",
+        "heading_color": "#222222",
+        "images_per_row_desktop": 6,
+        "images_per_row_mobile": 2,
+        "space_between_images": 12,
+        "enable_image_popup": true,
+        "section_width": 91,
+        "section_max_width": "",
+        "vertical_padding": 40,
+        "vertical_margin": 0,
+        "vertical_padding_mobile": 20,
+        "vertical_margin_mobile": 0,
+        "section_background": "",
+        "images_border_color": ""
+      }
+    },
     "featured_testimonials_GdmtJw": {
       "type": "featured-testimonials",
       "blocks": {
         "testimonial_TjKy8E": {
           "type": "testimonial",
           "settings": {
-            "image": "shopify://shop_images/4eeeba29-f6bd-4cdb-9736-521330bbcbc4.png",
-            "quote": "<p>“I absolutely love Mochi’s collar. The colours are even prettier in person, and her name looks so cute on her. It feels like it was made just for her.”</p>",
+            "image": "shopify://shop_images/25_2ffb7db3-5ae7-4f1b-be3b-d397bc617427_png.webp",
+            "quote": "<p><strong>“I absolutely love Maple’s collar. The colours are even prettier in person, and her name looks so cute on her. It feels like it was made just for her.”</strong></p>",
             "avatar": "shopify://shop_images/woman-looking-down.jpg",
             "customer_name": "Antiga Murad",
             "show_verified": true,
-            "verified_label": "Verified customer",
-            "product": "custom-pet-silicone-collar",
+            "verified_label": "Dog parent",
+            "product": "personalized-name-pet-collar",
             "product_title": "",
             "button_label": "Shop",
             "button_link": ""
@@ -542,8 +594,8 @@
         "padding_bottom": 32,
         "quote_size": 32,
         "mobile_quote_size": 26,
-        "section_background": "#f3f3f3",
-        "panel_background": "#dff3f5",
+        "section_background": "#fbfbfb",
+        "panel_background": "#e8f3f2",
         "text_color": "#111111",
         "accent_color": "#111111",
         "card_background": "linear-gradient(90deg, rgba(132, 63, 75, 0.92), rgba(135, 96, 72, 0.88) 100%)",
@@ -561,19 +613,8 @@
           "type": "highlight",
           "settings": {
             "show_item": true,
-            "title": "Soft & Comfortable",
-            "text": "<p>Personalized for Your Pet</p>",
-            "button_label": "",
-            "button_link": "",
-            "button_style_secondary": false
-          }
-        },
-        "highlight_ALCEyj": {
-          "type": "highlight",
-          "settings": {
-            "show_item": true,
-            "title": "Ships Across Canada",
-            "text": "<p>Durable enough for parks, walks, and zoomies.</p>",
+            "title": "Made Just for Your Pet",
+            "text": "<p>Personalize their collar with their name, colors, letters, and charms.</p>",
             "button_label": "",
             "button_link": "",
             "button_style_secondary": false
@@ -583,8 +624,19 @@
           "type": "highlight",
           "settings": {
             "show_item": true,
-            "title": "Collectable Designs",
-            "text": "<p>New patch drops to keep the style fresh.</p>",
+            "title": "Soft for Everyday Wear",
+            "text": "<p>Comfortable and lightweight for walks, naps, playtime.</p>",
+            "button_label": "",
+            "button_link": "",
+            "button_style_secondary": false
+          }
+        },
+        "highlight_ALCEyj": {
+          "type": "highlight",
+          "settings": {
+            "show_item": true,
+            "title": "Delivered Across Canada",
+            "text": "<p>Your custom FurFlaps collar, delivered to your door.</p>",
             "button_label": "",
             "button_link": "",
             "button_style_secondary": false
@@ -593,14 +645,14 @@
       },
       "block_order": [
         "highlight_zYFQcM",
-        "highlight_ALCEyj",
-        "highlight_RmBCeP"
+        "highlight_RmBCeP",
+        "highlight_ALCEyj"
       ],
       "name": "Feature highlights",
       "settings": {
         "heading": "",
         "intro_text": "",
-        "section_heading_size": "h1",
+        "section_heading_size": "h2",
         "header_alignment": "center",
         "use_page_width": false,
         "max_width": 1600,
@@ -615,15 +667,15 @@
         "icon_size": 60,
         "image_fit": "contain",
         "icon_spacing": 18,
-        "heading_size": 24,
-        "mobile_heading_size": 21,
+        "heading_size": 18,
+        "mobile_heading_size": 15,
         "heading_weight": "700",
-        "text_size": 16,
+        "text_size": 14,
         "mobile_text_size": 15,
         "text_max_width": 380,
         "text_spacing": 6,
         "button_spacing": 20,
-        "section_background": "#f7f7f7",
+        "section_background": "#fde6de",
         "panel_background": "#fde6de",
         "text_color": "#ff4b22",
         "padding_top": 14,
@@ -639,15 +691,109 @@
         "show_on_desktop": true,
         "show_on_mobile": true
       }
+    },
+    "tsapb_ce7789ea_DTmRqH": {
+      "type": "tsapb-ce7789ea",
+      "blocks": {
+        "icon_L7cUHk": {
+          "type": "icon",
+          "settings": {
+            "icon_type": "icon",
+            "icon": "star",
+            "font_awesome": "",
+            "icon_image_corner_radius": 0,
+            "icon_title": "Made Just for Your Pet",
+            "icon_description": "Personalize their collar with their name, colors, letters, and charms."
+          }
+        },
+        "icon_dPL3cQ": {
+          "type": "icon",
+          "settings": {
+            "icon_type": "icon",
+            "icon": "magic",
+            "font_awesome": "",
+            "icon_image_corner_radius": 0,
+            "icon_title": "Soft for Everyday Wear",
+            "icon_description": "Comfortable and lightweight for walks, naps, playtime, and zoomies."
+          }
+        },
+        "icon_zqC3i3": {
+          "type": "icon",
+          "settings": {
+            "icon_type": "icon",
+            "icon": "pencil_ruler",
+            "font_awesome": "",
+            "icon_image_corner_radius": 0,
+            "icon_title": "Key Benefit",
+            "icon_description": "Describe how the benefit brings value"
+          }
+        },
+        "icon_6paUJ3": {
+          "type": "icon",
+          "settings": {
+            "icon_type": "icon",
+            "icon": "box",
+            "font_awesome": "",
+            "icon_image_corner_radius": 0,
+            "icon_title": "Key Benefit",
+            "icon_description": "Describe how the benefit brings value"
+          }
+        }
+      },
+      "block_order": [
+        "icon_L7cUHk",
+        "icon_dPL3cQ",
+        "icon_zqC3i3",
+        "icon_6paUJ3"
+      ],
+      "disabled": true,
+      "name": "❤️ Square: Value Icons",
+      "settings": {
+        "icon_color": "#222222",
+        "icon_size": 48,
+        "icon_title_size": "20",
+        "icon_title_color": "#ff4b22",
+        "icon_description_size": "14",
+        "icon_description_color": "#ff4b22",
+        "icons_per_row_desktop": 4,
+        "icons_mobile_layout": "2",
+        "space_between_icons": 24,
+        "space_between_rows": 64,
+        "space_between_rows_mobile": 40,
+        "heading": "",
+        "heading_size": "32",
+        "heading_style": "regular",
+        "heading_alignment": "center",
+        "heading_color": "#ff4b22",
+        "section_background_style": "color",
+        "section_background": "#fde6de",
+        "section_background_gradient": "linear-gradient(to right, #fed951, #ff46c7)",
+        "section_background_animation": false,
+        "overlay_color": "#222222",
+        "overlay_opacity": 0,
+        "section_width": 100,
+        "section_max_width": "",
+        "spacing_type": "desktop",
+        "padding_top": 40,
+        "padding_bottom": 40,
+        "margin_top": 0,
+        "margin_bottom": 0,
+        "padding_top_mobile": 20,
+        "padding_bottom_mobile": 20,
+        "margin_top_mobile": 0,
+        "margin_bottom_mobile": 0
+      }
     }
   },
   "order": [
     "furflaps_hero",
-    "hot_this_week",
+    "hot_week_picks_PyhcEc",
     "dress_up_steps_L8FhwL",
     "before_after_comparison_H4KUmY",
     "product_feature_tabs_EpMe6d",
+    "tsapb_eebdb509_yHUxkA",
     "featured_testimonials_GdmtJw",
-    "feature_highlights_iY7VnD"
+    "feature_highlights_iY7VnD",
+    "tsapb_ce7789ea_DTmRqH"
   ]
 }

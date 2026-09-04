@@ -285,6 +285,29 @@
   justify-self: flex-end;
 }
 
+.card__badge .badge--new,
+.card__badge .badge--pre-order,
+.card__badge .badge--preorder {
+  border: 0;
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  line-height: 1;
+  padding: 0.7rem 1rem;
+  text-transform: uppercase;
+}
+
+.card__badge .badge--new {
+  background: #7961d7;
+  color: #fff;
+}
+
+.card__badge .badge--pre-order,
+.card__badge .badge--preorder {
+  background: #ff5a3c;
+  color: #fff;
+}
+
 .card:not(.card--horizontal) > .card__content > .card__badge {
   margin: 1.3rem;
 }

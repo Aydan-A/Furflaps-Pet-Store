@@ -17,6 +17,7 @@
         "announcement-bar-0": {
           "type": "announcement",
           "settings": {
+            "prefix": "",
             "text": "Free shipping across Canada on orders $50+",
             "link": ""
           }
@@ -26,10 +27,19 @@
         "announcement-bar-0"
       ],
       "settings": {
-        "auto_rotate": false,
+        "content_width": "full",
+        "side_padding": 32,
+        "show_navigation": true,
+        "auto_rotate": true,
         "change_slides_speed": 5,
-        "color_scheme": "scheme-1",
+        "color_scheme": "scheme-2",
         "show_line_separator": true,
+        "font_source": "heading",
+        "message_font_size": 16,
+        "message_font_weight": "400",
+        "message_vertical_padding": 7,
+        "content_gap": 8,
+        "show_link_arrow": true,
         "show_social": false,
         "enable_country_selector": false,
         "enable_language_selector": false
@@ -40,6 +50,29 @@
       "settings": {
         "logo_position": "middle-left",
         "mobile_logo_position": "left",
+        "show_brand_name": true,
+        "brand_name_font": "almarai_n4",
+        "brand_name_font_size": 25,
+        "brand_name_uppercase": true,
+        "nav_link_gap": 28,
+        "nav_font_size": 18,
+        "nav_alignment": "center",
+        "nav_accent_color": "#cc2b2b",
+        "search_bg_color": "#ffffff",
+        "search_max_width": 680,
+        "search_placeholder": "Search products",
+        "search_border_radius": 24,
+        "search_border_thickness": 1,
+        "content_width": "full",
+        "header_side_padding": 32,
+        "header_row_gap": 8,
+        "header_group_gap": 24,
+        "show_account_icon": true,
+        "show_wishlist_icon": false,
+        "wishlist_url": "",
+        "show_cart_icon": true,
+        "icon_size": 22,
+        "icon_gap": 6,
         "menu": "main-menu",
         "menu_type_desktop": "dropdown",
         "sticky_header_type": "on-scroll-up",
@@ -50,8 +83,8 @@
         "enable_language_selector": true,
         "enable_customer_avatar": true,
         "margin_bottom": 0,
-        "padding_top": 0,
-        "padding_bottom": 0
+        "padding_top": 8,
+        "padding_bottom": 8
       }
     }
   },

@@ -1,84 +1,264 @@
-{{ 'component-price.css' | asset_url | stylesheet_tag }}
-{{ 'component-swatch.css' | asset_url | stylesheet_tag }}
 {{ 'dress-up-steps.css' | asset_url | stylesheet_tag }}
 <script src="{{ 'dress-up-steps.js' | asset_url }}" defer="defer"></script>
 
+{%- comment -%}
+  Every value below falls back to a real default. A setting saved before it
+  existed comes back nil, and "--ds-per-row: ;" is a defined-but-empty custom
+  property: var() substitutes the empty value instead of its fallback, which
+  breaks the calc that sizes the cards. Resolving the defaults here means the
+  section renders correctly whatever a theme has saved.
+{%- endcomment -%}
+{%- liquid
+  assign section_per_row = section.settings.cards_per_row | plus: 0
+  if section_per_row == 0
+    assign section_per_row = 4
+  endif
+  assign card_gap = section.settings.card_gap | plus: 0
+  if card_gap == 0
+    assign card_gap = 24
+  endif
+-%}
+
 {%- style -%}
   #shopify-section-{{ section.id }} {
-    --ds-background: {{ section.settings.background }};
-    --ds-text: {{ section.settings.text_color }};
-    --ds-panel-background: {{ section.settings.panel_background }};
-    --ds-image-background: {{ section.settings.image_background }};
-    --ds-number-background: {{ section.settings.number_background }};
-    --ds-number-text: {{ section.settings.number_text }};
-    --ds-pill-background: {{ section.settings.pill_background }};
-    --ds-pill-border: {{ section.settings.pill_border }};
-    --ds-sale: {{ section.settings.sale_color }};
-    --ds-sold-out: {{ section.settings.sold_out_color }};
-    --ds-custom-badge: {{ section.settings.custom_badge_color }};
-    --ds-badge-text: {{ section.settings.badge_text }};
-    --ds-max-width: {{ section.settings.max_width }}px;
-    --ds-padding-top: {{ section.settings.padding_top }}px;
-    --ds-padding-bottom: {{ section.settings.padding_bottom }}px;
-    --ds-padding-inline: {{ section.settings.padding_inline }}px;
-    --ds-mobile-padding-top: {{ section.settings.mobile_padding_top }}px;
-    --ds-mobile-padding-bottom: {{ section.settings.mobile_padding_bottom }}px;
-    --ds-mobile-padding-inline: {{ section.settings.mobile_padding_inline }}px;
-    --ds-heading-gap: {{ section.settings.heading_gap }}px;
-    --ds-step-gap: {{ section.settings.step_gap }}px;
-    --ds-card-gap: {{ section.settings.card_gap }}px;
-    --ds-radius: {{ section.settings.panel_radius }}px;
-    --ds-card-radius: {{ section.settings.card_radius }}px;
-    --ds-summary-height: {{ section.settings.summary_height }}px;
-    --ds-columns: {{ section.settings.columns_desktop }};
-    --ds-image-ratio: {{ section.settings.image_ratio }};
-    --ds-image-fit: {{ section.settings.image_fit }};
-    --ds-eyebrow-size: {{ section.settings.eyebrow_size }}px;
-    --ds-heading-size: {{ section.settings.heading_size }}px;
-    --ds-mobile-heading-size: {{ section.settings.mobile_heading_size }}px;
-    --ds-heading-weight: {{ section.settings.heading_weight }};
-    --ds-step-title-size: {{ section.settings.step_title_size }}px;
-    --ds-mobile-step-title-size: {{ section.settings.mobile_step_title_size }}px;
-    --ds-card-title-size: {{ section.settings.card_title_size }}px;
-    --ds-price-size: {{ section.settings.price_size }}px;
+    --ds-background: {{ section.settings.background | default: '#FFFFFF' }};
+    --ds-text: {{ section.settings.text_color | default: '#111111' }};
+    --ds-muted: {{ section.settings.muted_text | default: '#6B7280' }};
+    --ds-panel: {{ section.settings.panel_background | default: '#F4F4F4' }};
+    --ds-surface: {{ section.settings.card_background | default: '#FFFFFF' }};
+    --ds-media: {{ section.settings.image_background | default: '#E9EEF1' }};
+    --ds-border: {{ section.settings.border_color | default: '#E2E2E2' }};
+    --ds-accent: {{ section.settings.accent | default: '#F96D4B' }};
+    --ds-accent-text: {{ section.settings.accent_text | default: '#FFFFFF' }};
+    --ds-number-background: {{ section.settings.number_background | default: '#050505' }};
+    --ds-number-text: {{ section.settings.number_text | default: '#FFFFFF' }};
+
+    --ds-max-width: {{ section.settings.max_width | default: 1320 }}px;
+    --ds-padding-top: {{ section.settings.padding_top | default: 32 }}px;
+    --ds-padding-bottom: {{ section.settings.padding_bottom | default: 40 }}px;
+    --ds-padding-inline: {{ section.settings.padding_inline | default: 48 }}px;
+    --ds-mobile-padding-top: {{ section.settings.mobile_padding_top | default: 28 }}px;
+    --ds-mobile-padding-bottom: {{ section.settings.mobile_padding_bottom | default: 32 }}px;
+    --ds-mobile-padding-inline: {{ section.settings.mobile_padding_inline | default: 16 }}px;
+    --ds-heading-gap: {{ section.settings.heading_gap | default: 38 }}px;
+
+    --ds-per-row: {{ section_per_row }};
+    --ds-gap: {{ card_gap }}px;
+    --ds-image-ratio: {{ section.settings.image_ratio | default: '4 / 5' }};
+    --ds-image-fit: {{ section.settings.image_fit | default: 'contain' }};
+    --ds-radius-card: {{ section.settings.card_radius | default: 14 }}px;
+
+    --ds-eyebrow-size: {{ section.settings.eyebrow_size | default: 11 }}px;
+    --ds-heading-size: {{ section.settings.heading_size | default: 34 }}px;
+    --ds-mobile-heading-size: {{ section.settings.mobile_heading_size | default: 28 }}px;
+    --ds-heading-weight: {{ section.settings.heading_weight | default: 700 }};
+    --ds-step-title-size: {{ section.settings.step_title_size | default: 20 }}px;
+    --ds-mobile-step-title-size: {{ section.settings.mobile_step_title_size | default: 17 }}px;
+    --ds-price-size: {{ section.settings.price_size | default: 18 }}px;
   }
 {%- endstyle -%}
 
-<dress-up-steps class="dress-up-steps">
+{%- liquid
+  assign step_blocks = section.blocks | where: 'type', 'step'
+  assign step_count = step_blocks.size
+-%}
+
+<dress-up-steps
+  class="dress-up-steps"
+  data-cart-add-url="{{ routes.cart_add_url }}"
+  data-cart-url="{{ routes.cart_url }}"
+  data-money-format="{{ shop.money_format | strip_html | escape }}"
+  data-error-message="{{ section.settings.error_message | escape }}"
+  data-locked-message="{{ section.settings.locked_message | escape }}"
+  data-limit-message="{{ section.settings.limit_message | escape }}"
+>
   <div class="dress-up-steps__inner">
-    <header class="dress-up-steps__header">
-      {%- if section.settings.eyebrow != blank -%}<p class="dress-up-steps__eyebrow">{{ section.settings.eyebrow | escape }}</p>{%- endif -%}
-      {%- if section.settings.heading != blank -%}<h2 class="dress-up-steps__heading">{{ section.settings.heading | escape | newline_to_br }}</h2>{%- endif -%}
-    </header>
+    {%- if section.settings.eyebrow != blank or section.settings.heading != blank -%}
+      <header class="dress-up-steps__header">
+        {%- if section.settings.eyebrow != blank -%}
+          <p class="dress-up-steps__eyebrow">{{ section.settings.eyebrow | escape }}</p>
+        {%- endif -%}
+        {%- if section.settings.heading != blank -%}
+          <h2 class="dress-up-steps__heading">{{ section.settings.heading | escape | newline_to_br }}</h2>
+        {%- endif -%}
+      </header>
+    {%- endif -%}
 
-    <div class="dress-up-steps__list">
-      {%- for block in section.blocks -%}
-        <details class="dress-up-steps__step" data-dress-step {% if block.settings.open_by_default %}open{% endif %} {{ block.shopify_attributes }}>
-          <summary class="dress-up-steps__summary">
-            <span class="dress-up-steps__number" aria-hidden="true">{{ forloop.index }}</span>
-            <h3 class="dress-up-steps__step-title">{{ block.settings.title | escape }}</h3>
-            {%- if block.settings.benefit_1 != blank or block.settings.benefit_2 != blank -%}
-              <ul class="dress-up-steps__benefits" role="list">
-                {%- if block.settings.benefit_1 != blank -%}<li class="dress-up-steps__benefit"><svg viewBox="0 0 12 12" aria-hidden="true"><path d="m2 6 2.5 2.5L10 3" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>{{ block.settings.benefit_1 | escape }}</li>{%- endif -%}
-                {%- if block.settings.benefit_2 != blank -%}<li class="dress-up-steps__benefit"><svg viewBox="0 0 12 12" aria-hidden="true"><path d="m2 6 2.5 2.5L10 3" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>{{ block.settings.benefit_2 | escape }}</li>{%- endif -%}
-              </ul>
+    <div class="dress-up-steps__steps">
+      {%- for block in step_blocks -%}
+        {%- liquid
+          assign step_number = forloop.index
+          assign panel_id = 'DressPanel-' | append: section.id | append: '-' | append: block.id
+          assign field_id = 'DressText-' | append: section.id | append: '-' | append: block.id
+          assign is_final = false
+          if step_number == step_count
+            assign is_final = true
+          endif
+
+          # Merchant-picked products win; the collection is the fallback.
+          assign step_products = block.settings.products
+          if step_products == blank and block.settings.collection != blank
+            assign step_products = block.settings.collection.products
+          endif
+
+          assign product_limit = block.settings.products_to_show
+          if product_limit == 0
+            assign product_limit = 50
+          endif
+
+          assign per_row = block.settings.cards_per_row | plus: 0
+          if per_row == 0
+            assign per_row = section_per_row
+          endif
+          # A step of small square tiles, such as the letters, reads tighter
+          # than a step of large product cards at the one section gap. 0 keeps
+          # the step on the section setting.
+          assign step_gap = block.settings.card_gap | plus: 0
+          assign card_rows = block.settings.rows | plus: 0
+          if card_rows == 0
+            assign card_rows = 1
+          endif
+          assign max_picks = block.settings.max_selections | plus: 0
+          if max_picks == 0
+            assign max_picks = 1
+          endif
+
+          # With more than one row, the track needs to know how many columns it
+          # holds, so the cards fill left to right — A B C across the top row,
+          # not A C E with B D F hidden underneath.
+          assign shown_count = step_products.size
+          if shown_count > product_limit
+            assign shown_count = product_limit
+          endif
+          assign columns_total = shown_count | plus: card_rows | minus: 1 | divided_by: card_rows
+          if columns_total < 1
+            assign columns_total = 1
+          endif
+
+          assign property_label = block.settings.personalization_label | default: 'Name'
+          assign layout = block.settings.layout | default: 'grid'
+          assign is_carousel = false
+          if layout == 'carousel'
+            assign is_carousel = true
+          endif
+        -%}
+
+        <section
+          class="ds-step"
+          data-dress-step
+          data-index="{{ forloop.index0 }}"
+          data-max="{{ max_picks }}"
+          {% if block.settings.selection_required %}data-required{% endif %}
+          {% if is_final %}data-final{% endif %}
+          style="--ds-per-row: {{ per_row }}; --ds-rows: {{ card_rows }}; --ds-columns-total: {{ columns_total }};{% if step_gap > 0 %} --ds-gap: {{ step_gap }}px;{% endif %}{% if block.settings.image_ratio != blank %} --ds-image-ratio: {{ block.settings.image_ratio }};{% endif %}"
+          {{ block.shopify_attributes }}
+        >
+          <div class="ds-step__head">
+            <button
+              class="ds-step__toggle"
+              type="button"
+              aria-expanded="{% if step_number == 1 %}true{% else %}false{% endif %}"
+              aria-controls="{{ panel_id }}"
+              data-dress-toggle
+            >
+              <span class="ds-step__number" aria-hidden="true">{{ step_number }}</span>
+              <span class="ds-step__title">{{ block.settings.title | escape }}</span>
+            </button>
+
+            {%- comment -%}
+              A saved step collapses to this pill. Its close button reopens the
+              step for editing, so a closed row carries one control, not two.
+            {%- endcomment -%}
+            <p class="ds-step__pill" data-dress-pill hidden>
+              <img class="ds-step__pill-image" alt="" width="20" height="20" data-dress-pill-image hidden>
+              <span class="ds-step__pill-text" data-dress-pill-text></span>
+              <button class="ds-step__pill-remove" type="button" data-dress-edit>
+                <span class="visually-hidden">{{ 'customer.addresses.edit' | t }}: {{ block.settings.title | escape }}</span>
+                <svg viewBox="0 0 10 10" aria-hidden="true" focusable="false">
+                  <path d="M1 1l8 8M9 1l-8 8" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+                </svg>
+              </button>
+            </p>
+
+            {%- if block.settings.enable_personalization -%}
+              <div class="ds-field">
+                <label class="ds-field__label" for="{{ field_id }}">{{ property_label | escape }}</label>
+                <input
+                  class="ds-field__input"
+                  type="text"
+                  id="{{ field_id }}"
+                  placeholder="{{ block.settings.personalization_placeholder | escape }}"
+                  maxlength="{{ block.settings.personalization_max_chars }}"
+                  autocomplete="off"
+                  data-dress-text
+                  data-property="{{ property_label | escape }}"
+                  {% if block.settings.personalization_required %}data-text-required{% endif %}
+                >
+              </div>
             {%- endif -%}
-          </summary>
 
-          <div class="dress-up-steps__content">
-            {%- if block.settings.collection != blank and block.settings.collection.products_count > 0 -%}
-              <ul class="dress-up-steps__products" role="list">
-                {%- for product in block.settings.collection.products limit: section.settings.products_to_show -%}
-                  <li class="dress-up-steps__product">
-                    {% render 'dress-up-product-card', product: product, section: section, loading: 'lazy' %}
-                  </li>
+            <div class="ds-step__actions">
+              <p class="ds-step__price" data-dress-price aria-live="polite">{{ 0 | money }}</p>
+
+              {%- if is_final -%}
+                <button class="ds-button ds-button--primary" type="button" data-dress-checkout aria-disabled="true">
+                  <span class="ds-button__icon svg-wrapper" aria-hidden="true">{{ 'icon-cart.svg' | inline_asset_content }}</span>
+                  <span>{{ section.settings.cta_label | escape }}</span>
+                  <span class="ds-button__spinner" data-dress-spinner hidden></span>
+                </button>
+              {%- else -%}
+                <button class="ds-button ds-button--primary" type="button" data-dress-save aria-disabled="true">
+                  {{- section.settings.button_label | escape -}}
+                </button>
+              {%- endif -%}
+            </div>
+          </div>
+
+          <div class="ds-step__panel" id="{{ panel_id }}" data-dress-panel {% unless step_number == 1 %}hidden{% endunless %}>
+            {%- if is_carousel -%}
+              <div class="ds-step__toolbar">
+                <div class="ds-step__arrows" data-dress-arrows>
+                  <button class="ds-arrow" type="button" data-dress-scroll="-1" aria-controls="{{ panel_id }}">
+                    <span class="visually-hidden">{{ 'general.slider.previous_slide' | t }}</span>
+                    <svg viewBox="0 0 12 12" aria-hidden="true" focusable="false"><path d="M7.5 1.5 3 6l4.5 4.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  </button>
+                  <button class="ds-arrow" type="button" data-dress-scroll="1" aria-controls="{{ panel_id }}">
+                    <span class="visually-hidden">{{ 'general.slider.next_slide' | t }}</span>
+                    <svg viewBox="0 0 12 12" aria-hidden="true" focusable="false"><path d="M4.5 1.5 9 6l-4.5 4.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  </button>
+                </div>
+              </div>
+            {%- endif -%}
+
+            {%- if step_products.first != blank -%}
+              <div
+                class="ds-track"
+                data-layout="{{ layout }}"
+                data-dress-track
+                role="group"
+                aria-label="{{ block.settings.title | escape }}"
+              >
+                {%- for product in step_products limit: product_limit -%}
+                  {% render 'dress-up-product-card',
+                    product: product,
+                    section: section,
+                    block: block,
+                    index: forloop.index,
+                    show_options: block.settings.show_options,
+                    option_names: block.settings.option_names,
+                    option_style: block.settings.option_style,
+                    show_quantity: block.settings.enable_quantity,
+                    loading: 'lazy'
+                  %}
                 {%- endfor -%}
-              </ul>
+              </div>
             {%- elsif request.design_mode -%}
-              <div class="dress-up-steps__empty">Choose a collection for this step in the Theme Editor.</div>
+              <p class="ds-step__empty">Choose products or a collection for this step in the Theme Editor.</p>
             {%- endif -%}
           </div>
-        </details>
+
+          <p class="ds-step__error" data-dress-error role="alert" hidden></p>
+        </section>
       {%- endfor -%}
     </div>
   </div>
@@ -93,20 +273,22 @@
   "max_blocks": 6,
   "settings": [
     { "type": "header", "content": "Content" },
-    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "How you style it" },
-    { "type": "textarea", "id": "heading", "label": "Heading", "default": "Dress up in 3 steps.\nPick - Pair - Play!" },
-    { "type": "range", "id": "products_to_show", "label": "Products per step", "min": 2, "max": 8, "step": 1, "default": 4 },
-    { "type": "range", "id": "columns_desktop", "label": "Desktop columns", "min": 2, "max": 5, "step": 1, "default": 4 },
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Design Yourself" },
+    { "type": "textarea", "id": "heading", "label": "Heading", "default": "Pick - Pair - Play!" },
+
+    { "type": "header", "content": "Labels" },
+    { "type": "text", "id": "button_label", "label": "Step button", "default": "Save and continue" },
+    { "type": "text", "id": "cta_label", "label": "Final button", "default": "Go to cart" },
+    { "type": "text", "id": "error_message", "label": "Incomplete step message", "default": "Almost there! Make a pick here and we'll keep going." },
+    { "type": "text", "id": "locked_message", "label": "Locked step message", "default": "Let's finish the step above first, then this one opens up." },
+    { "type": "text", "id": "limit_message", "label": "Selection limit message", "default": "You can pick up to {max} here. Remove one to swap it out.", "info": "Shown when a customer picks more than a step allows. {max} is replaced with that step's own limit." },
 
     { "type": "header", "content": "Product cards" },
+    { "type": "range", "id": "cards_per_row", "label": "Cards in view", "min": 2, "max": 8, "step": 1, "default": 4, "info": "Default for every step. Each step can override it. Cards always fit whole — a step never shows a half card." },
+    { "type": "range", "id": "card_gap", "label": "Space between cards", "min": 8, "max": 48, "step": 2, "unit": "px", "default": 24 },
     { "type": "select", "id": "image_ratio", "label": "Image ratio", "default": "4 / 5", "options": [{ "value": "1 / 1", "label": "Square" }, { "value": "4 / 5", "label": "Portrait" }, { "value": "3 / 4", "label": "Tall portrait" }] },
     { "type": "select", "id": "image_fit", "label": "Image fit", "default": "contain", "options": [{ "value": "contain", "label": "Contain" }, { "value": "cover", "label": "Cover" }] },
-    { "type": "checkbox", "id": "show_swatches", "label": "Show Shopify color swatches", "default": true },
-    { "type": "text", "id": "color_option_name", "label": "Color option name", "default": "Color" },
-    { "type": "range", "id": "swatches_to_show", "label": "Swatches to show", "min": 1, "max": 6, "step": 1, "default": 4 },
-    { "type": "checkbox", "id": "show_custom_badge", "label": "Show metafield badge", "default": false },
-    { "type": "text", "id": "badge_namespace", "label": "Badge metafield namespace", "default": "custom" },
-    { "type": "text", "id": "badge_key", "label": "Badge metafield key", "default": "badge" },
+    { "type": "range", "id": "card_radius", "label": "Card corner radius", "min": 0, "max": 30, "step": 2, "unit": "px", "default": 14 },
 
     { "type": "header", "content": "Typography" },
     { "type": "range", "id": "eyebrow_size", "label": "Eyebrow size", "min": 9, "max": 18, "step": 1, "unit": "px", "default": 11 },
@@ -115,31 +297,24 @@
     { "type": "select", "id": "heading_weight", "label": "Heading weight", "default": "700", "options": [{ "value": "600", "label": "Semibold" }, { "value": "700", "label": "Bold" }, { "value": "800", "label": "Extra bold" }] },
     { "type": "range", "id": "step_title_size", "label": "Step title size", "min": 14, "max": 28, "step": 1, "unit": "px", "default": 20 },
     { "type": "range", "id": "mobile_step_title_size", "label": "Mobile step title size", "min": 14, "max": 22, "step": 1, "unit": "px", "default": 17 },
-    { "type": "range", "id": "card_title_size", "label": "Product title size", "min": 11, "max": 20, "step": 1, "unit": "px", "default": 13 },
-    { "type": "range", "id": "price_size", "label": "Price size", "min": 11, "max": 20, "step": 1, "unit": "px", "default": 13 },
+    { "type": "range", "id": "price_size", "label": "Price size", "min": 11, "max": 24, "step": 1, "unit": "px", "default": 18 },
 
     { "type": "header", "content": "Colors" },
     { "type": "color", "id": "background", "label": "Section background", "default": "#FFFFFF" },
     { "type": "color", "id": "text_color", "label": "Text", "default": "#111111" },
+    { "type": "color", "id": "muted_text", "label": "Secondary text", "default": "#6B7280" },
     { "type": "color", "id": "panel_background", "label": "Step background", "default": "#F4F4F4" },
+    { "type": "color", "id": "card_background", "label": "Card background", "default": "#FFFFFF" },
     { "type": "color", "id": "image_background", "label": "Image background", "default": "#E9EEF1" },
+    { "type": "color", "id": "border_color", "label": "Borders", "default": "#E2E2E2" },
+    { "type": "color", "id": "accent", "label": "Accent (buttons and selection)", "default": "#F96D4B" },
+    { "type": "color", "id": "accent_text", "label": "Accent text", "default": "#FFFFFF" },
     { "type": "color", "id": "number_background", "label": "Step number background", "default": "#050505" },
     { "type": "color", "id": "number_text", "label": "Step number text", "default": "#FFFFFF" },
-    { "type": "color", "id": "pill_background", "label": "Benefit background", "default": "#FFFFFF" },
-    { "type": "color", "id": "pill_border", "label": "Benefit border", "default": "#D6D6D6" },
-    { "type": "color", "id": "sale_color", "label": "Sale color", "default": "#D93A2F" },
-    { "type": "color", "id": "sold_out_color", "label": "Sold out badge", "default": "#555555" },
-    { "type": "color", "id": "custom_badge_color", "label": "Custom badge", "default": "#7A59D1" },
-    { "type": "color", "id": "badge_text", "label": "Badge text", "default": "#FFFFFF" },
 
     { "type": "header", "content": "Layout and spacing" },
     { "type": "range", "id": "max_width", "label": "Content max width", "min": 900, "max": 1600, "step": 20, "unit": "px", "default": 1320 },
-    { "type": "range", "id": "panel_radius", "label": "Step corner radius", "min": 0, "max": 30, "step": 1, "unit": "px", "default": 12 },
-    { "type": "range", "id": "card_radius", "label": "Image corner radius", "min": 0, "max": 30, "step": 1, "unit": "px", "default": 12 },
-    { "type": "range", "id": "summary_height", "label": "Collapsed step height", "min": 56, "max": 100, "step": 2, "unit": "px", "default": 72 },
     { "type": "range", "id": "heading_gap", "label": "Space below heading", "min": 20, "max": 70, "step": 2, "unit": "px", "default": 38 },
-    { "type": "range", "id": "step_gap", "label": "Space between steps", "min": 4, "max": 24, "step": 1, "unit": "px", "default": 8 },
-    { "type": "range", "id": "card_gap", "label": "Product card gap", "min": 6, "max": 30, "step": 1, "unit": "px", "default": 10 },
     { "type": "range", "id": "padding_top", "label": "Desktop top padding", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 32 },
     { "type": "range", "id": "padding_bottom", "label": "Desktop bottom padding", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 40 },
     { "type": "range", "id": "padding_inline", "label": "Desktop side padding", "min": 12, "max": 80, "step": 2, "unit": "px", "default": 48 },
@@ -152,11 +327,34 @@
       "type": "step",
       "name": "Step",
       "settings": [
-        { "type": "text", "id": "title", "label": "Title", "default": "Pick a top you love" },
-        { "type": "collection", "id": "collection", "label": "Collection" },
-        { "type": "text", "id": "benefit_1", "label": "Benefit 1", "default": "4-Way Stretch" },
-        { "type": "text", "id": "benefit_2", "label": "Benefit 2", "default": "Eco-Friendly" },
-        { "type": "checkbox", "id": "open_by_default", "label": "Open by default", "default": false }
+        { "type": "text", "id": "title", "label": "Title", "default": "Pick a collar you love" },
+
+        { "type": "header", "content": "Products" },
+        { "type": "product_list", "id": "products", "label": "Products", "limit": 50, "info": "Pick, reorder or remove the cards shown in this step. Leave empty to use the collection below." },
+        { "type": "collection", "id": "collection", "label": "Fallback collection" },
+        { "type": "range", "id": "products_to_show", "label": "Products to show", "min": 0, "max": 50, "step": 1, "default": 0, "info": "0 shows every product, up to the 50 Shopify returns to a section." },
+
+        { "type": "header", "content": "Choices" },
+        { "type": "range", "id": "max_selections", "label": "Products a customer can pick", "min": 1, "max": 12, "step": 1, "default": 1, "info": "How many products this step accepts at once. 1 keeps it single choice, and picking another swaps it. Above 1, a customer must remove one before picking past the limit. Each pick keeps its own options and quantity, and becomes its own cart line." },
+        { "type": "checkbox", "id": "selection_required", "label": "Selection required to continue", "default": true, "info": "Turn off for optional extras." },
+        { "type": "checkbox", "id": "show_options", "label": "Show product options (size, color, ...)", "default": true, "info": "Option values and prices come straight from each product's variants." },
+        { "type": "text", "id": "option_names", "label": "Options to show", "info": "Comma separated, for example: Size. Leave empty to show every option a product has." },
+        { "type": "select", "id": "option_style", "label": "Option style", "default": "buttons", "options": [{ "value": "buttons", "label": "Buttons" }, { "value": "dropdown", "label": "Dropdown" }], "info": "Colours always show as swatches. Everything else, such as size, follows this." },
+        { "type": "checkbox", "id": "enable_quantity", "label": "Show quantity control", "default": true },
+
+        { "type": "header", "content": "Layout" },
+        { "type": "select", "id": "layout", "label": "Card layout", "default": "grid", "options": [{ "value": "grid", "label": "Grid (wraps onto new rows)" }, { "value": "carousel", "label": "Carousel (scrolls sideways)" }], "info": "Use the carousel for long lists such as letters." },
+        { "type": "range", "id": "cards_per_row", "label": "Cards in view", "min": 0, "max": 8, "step": 1, "default": 0, "info": "Columns across. 0 uses the section setting." },
+        { "type": "range", "id": "card_gap", "label": "Space between cards", "min": 0, "max": 48, "step": 2, "unit": "px", "default": 0, "info": "0 uses the section setting. Small tiles, such as the letters, usually want less space than full product cards." },
+        { "type": "range", "id": "rows", "label": "Rows", "min": 1, "max": 4, "step": 1, "default": 1, "info": "Carousel only. Two or more rows keep a long list, such as letters, compact." },
+        { "type": "select", "id": "image_ratio", "label": "Card shape", "default": "", "options": [{ "value": "", "label": "Use section setting" }, { "value": "auto", "label": "Original (follows the photo)" }, { "value": "1 / 1", "label": "Square" }, { "value": "4 / 5", "label": "Portrait" }, { "value": "3 / 4", "label": "Tall portrait" }], "info": "Original keeps a wide photo from sitting in a tall box with empty space above and below it. Square suits small cards such as letters." },
+
+        { "type": "header", "content": "Personalization" },
+        { "type": "checkbox", "id": "enable_personalization", "label": "Show text field", "default": false },
+        { "type": "text", "id": "personalization_label", "label": "Field label", "default": "Name", "info": "Also the line item property name shown in the cart and on orders." },
+        { "type": "text", "id": "personalization_placeholder", "label": "Field placeholder", "default": "Enter a name" },
+        { "type": "range", "id": "personalization_max_chars", "label": "Maximum characters", "min": 3, "max": 40, "step": 1, "default": 12 },
+        { "type": "checkbox", "id": "personalization_required", "label": "Required to continue", "default": true }
       ]
     }
   ],
@@ -164,9 +362,39 @@
     {
       "name": "Dress up in steps",
       "blocks": [
-        { "type": "step", "settings": { "title": "Pick a top you love", "benefit_1": "4-Way Stretch", "benefit_2": "Eco-Friendly", "open_by_default": true } },
-        { "type": "step", "settings": { "title": "Match it with cool bottoms", "benefit_1": "100% Cotton", "benefit_2": "Water Proof" } },
-        { "type": "step", "settings": { "title": "Add fun extras", "benefit_1": "100% Cotton", "benefit_2": "Colorful" } }
+        {
+          "type": "step",
+          "settings": {
+            "title": "Pick a collar",
+            "max_selections": 2,
+            "layout": "grid",
+            "cards_per_row": 4
+          }
+        },
+        {
+          "type": "step",
+          "settings": {
+            "title": "Match it with letters",
+            "max_selections": 12,
+            "layout": "carousel",
+            "cards_per_row": 6,
+            "rows": 2,
+            "card_gap": 12,
+            "image_ratio": "1 / 1",
+            "enable_personalization": true,
+            "personalization_required": false
+          }
+        },
+        {
+          "type": "step",
+          "settings": {
+            "title": "Add fun extras",
+            "max_selections": 6,
+            "selection_required": false,
+            "layout": "grid",
+            "cards_per_row": 4
+          }
+        }
       ]
     }
   ]

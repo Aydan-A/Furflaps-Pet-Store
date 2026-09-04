@@ -18,31 +18,31 @@
           "type": "menu",
           "settings": {
             "show_item": true,
-            "heading": "Company",
-            "menu": ""
+            "heading": "SHOP",
+            "menu": "company"
           }
         },
         "menu_zGNdPK": {
           "type": "menu",
           "settings": {
             "show_item": true,
-            "heading": "Collection",
-            "menu": ""
+            "heading": "COMPANY",
+            "menu": "shop"
           }
         },
         "menu_gqEmXi": {
           "type": "menu",
           "settings": {
             "show_item": true,
-            "heading": "Get help",
-            "menu": ""
+            "heading": "GET HELP",
+            "menu": "get-help"
           }
         },
         "social_image_MmHyfL": {
           "type": "social_image",
           "settings": {
             "show_item": true,
-            "image": "shopify://shop_images/ChatGPT_Image_Jul_18_2026_at_06_07_11_PM.png",
+            "image": "shopify://shop_images/9418dcff-48bc-4c2a-afba-e1e2eacbcaf7.png",
             "link": "",
             "link_label": ""
           }
@@ -51,7 +51,7 @@
           "type": "social_image",
           "settings": {
             "show_item": true,
-            "image": "shopify://shop_images/59572af2-d031-4706-a2af-f2591b986d9d.png",
+            "image": "shopify://shop_images/4a1b15ce-07de-472a-b702-fcc501adf240.png",
             "link": "",
             "link_label": ""
           }
@@ -60,7 +60,7 @@
           "type": "social_image",
           "settings": {
             "show_item": true,
-            "image": "shopify://shop_images/c818a6fa-2d1e-4f77-b521-89ca5df7a5c1.png",
+            "image": "shopify://shop_images/ChatGPT_Image_Jul_18_2026_at_06_21_13_PM.png",
             "link": "",
             "link_label": ""
           }
@@ -79,7 +79,7 @@
         "show_on_desktop": true,
         "show_on_mobile": true,
         "show_newsletter": true,
-        "heading": "Subscribe today & get 10% off your first purchase",
+        "heading": "Subscribe today & get 10% off  your first purchase",
         "heading_size": 32,
         "mobile_heading_size": 26,
         "heading_max_width": 520,
@@ -89,7 +89,7 @@
         "consent_text": "<p>By subscribing you agree to the Terms of Use & Privacy Policy.</p>",
         "form_alignment": "center",
         "menu_columns": 3,
-        "menu_width": 1,
+        "menu_width": 2,
         "panel_padding": 32,
         "show_gallery": true,
         "gallery_heading": "Follow us on Instagram",
@@ -113,11 +113,11 @@
         "padding_top": 40,
         "padding_bottom": 40,
         "background_color": "#050505",
-        "panel_color": "#113d30",
+        "panel_color": "#020408",
         "text_color": "#ffffff",
         "muted_text_color": "#c8c8c8",
         "border_color": "#3a3a3a",
-        "accent_color": "#050505",
+        "accent_color": "#ff4b22",
         "input_background": "#ffffff",
         "input_text_color": "#151515"
       }

@@ -1,85 +1,152 @@
+/*
+  Before/after comparison.
+
+  Every size in here is derived from the section's own container or from theme
+  tokens - never from viewport units. The Theme Editor renders the storefront in
+  a narrower iframe, so a layout measured in `vw` or pinned to a fixed pixel
+  height drifts between the editor and the live site. Container-relative sizing
+  keeps both identical at the same rendered width, and lets the whole component
+  grow or shrink from the one Content width setting without redistributing its
+  columns, padding, type or corners.
+
+  The container itself is the theme's .page-width - its centring, gutters and
+  box-sizing - with only the max-width overridden, so the section can run wider
+  than the rest of the storefront without a bespoke container. The double class
+  beats .page-width's own max-width regardless of stylesheet order.
+*/
+.page-width.before-after-comparison__container {
+  max-width: var(--bac-max-width, var(--page-width));
+}
+
 .before-after-comparison {
-  display: block;
-  padding: var(--bac-padding-top) var(--bac-padding-inline) var(--bac-padding-bottom);
-  background: var(--bac-background);
-}
+  /* Matches the 14-18px corner language used by the store's other custom sections. */
+  --bac-radius: 1.6rem;
+  --bac-gap: 1.6rem;
 
-.before-after-comparison__grid {
+  /* The section carries its own palette, the way this store's other custom
+     sections do. Everything on the image side keeps reading --color-background /
+     --color-foreground, which resolve from the theme's default scheme at :root. */
+  --bac-panel-background: #d83a32;
+  --bac-panel-foreground: #ffffff;
+  --bac-button-background: #ffffff;
+  --bac-button-foreground: #111111;
+  --bac-button-border: #ffffff;
+
   display: grid;
-  grid-template-columns: minmax(0, var(--bac-content-width)) minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1fr);
   gap: var(--bac-gap);
-  height: var(--bac-height);
 }
 
-.before-after-comparison__content,
-.before-after-comparison__media {
-  min-width: 0;
-  border-radius: var(--bac-radius);
-  overflow: hidden;
+@media screen and (min-width: 750px) {
+  .before-after-comparison {
+    grid-template-columns: minmax(0, 40fr) minmax(0, 60fr);
+    align-items: stretch;
+  }
 }
+
+/* Content panel
+   ========================================================================== */
 
 .before-after-comparison__content {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: var(--bac-content-padding-v) var(--bac-content-padding-h);
-  color: var(--bac-text-color);
-  background: var(--bac-content-background);
+  padding: 4rem 2.4rem;
+  border-radius: var(--bac-radius);
+  color: var(--bac-panel-foreground);
+  background-color: var(--bac-panel-background);
   text-align: center;
 }
 
+@media screen and (min-width: 750px) {
+  .before-after-comparison__content {
+    padding: 4.8rem 3.2rem;
+  }
+}
+
+@media screen and (min-width: 990px) {
+  .before-after-comparison__content {
+    padding: 6.4rem 4.8rem;
+  }
+}
+
 .before-after-comparison__content-inner {
-  width: min(100%, 52rem);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.6rem;
+  width: 100%;
+  max-width: 52rem;
 }
 
 .before-after-comparison__heading {
   margin: 0;
-  color: var(--bac-heading-color);
-  font-size: var(--bac-heading-size);
-  font-weight: 700;
-  line-height: 1.08;
+  color: inherit;
 }
 
 .before-after-comparison__text {
-  margin-top: 1.8rem;
-  color: var(--bac-text-color);
-  font-size: 1.7rem;
-  line-height: 1.45;
-}
-
-.before-after-comparison__text p {
   margin: 0;
+  color: inherit;
 }
 
+.before-after-comparison__text > :first-child {
+  margin-top: 0;
+}
+
+.before-after-comparison__text > :last-child {
+  margin-bottom: 0;
+}
+
+/* The panel CTA is the section's own pill button, as it was originally. */
 .before-after-comparison__button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   min-height: 4.6rem;
-  margin-top: 2.6rem;
+  margin-top: 1rem;
   padding: 0 2.6rem;
   border: 1px solid var(--bac-button-border);
   border-radius: 999px;
-  color: var(--bac-button-color);
-  background: var(--bac-button-background);
+  color: var(--bac-button-foreground);
+  background-color: var(--bac-button-background);
   font-size: 1.5rem;
   font-weight: 700;
   line-height: 1;
   text-decoration: none;
 }
 
+/* Comparison media
+   ========================================================================== */
+
 .before-after-comparison__media {
   position: relative;
   isolation: isolate;
-  background: #eeeeee;
+  overflow: hidden;
+  border-radius: var(--bac-radius);
+  /* Height follows the container width instead of a fixed pixel value, so the
+     panel keeps its proportions at every content width. */
+  aspect-ratio: 1 / 1;
+  background-color: rgba(var(--color-foreground), 0.06);
   user-select: none;
-  touch-action: pan-y;
+  -webkit-user-select: none;
+}
+
+@media screen and (min-width: 750px) {
+  .before-after-comparison__media {
+    aspect-ratio: 4 / 3;
+  }
+}
+
+@media screen and (min-width: 990px) {
+  .before-after-comparison__media {
+    aspect-ratio: 16 / 10;
+  }
 }
 
 .before-after-comparison__image,
 .before-after-comparison__image picture,
 .before-after-comparison__image img,
-.before-after-comparison__placeholder {
+.before-after-comparison__image .before-after-comparison__placeholder {
   position: absolute;
   inset: 0;
   display: block;
@@ -88,26 +155,24 @@
 }
 
 .before-after-comparison__image img,
-.before-after-comparison__placeholder {
+.before-after-comparison__image .before-after-comparison__placeholder {
   object-fit: cover;
   object-position: center;
-  transform: scale(var(--bac-image-zoom));
-  transform-origin: center;
 }
 
 .before-after-comparison__image--after {
   z-index: 1;
-  clip-path: inset(0 calc(100% - var(--bac-position)) 0 0);
+  clip-path: inset(0 calc(100% - var(--bac-position, 50%)) 0 0);
 }
 
 .before-after-comparison__divider {
   position: absolute;
-  z-index: 3;
+  z-index: 2;
   top: 0;
   bottom: 0;
-  left: var(--bac-position);
+  left: var(--bac-position, 50%);
   width: 2px;
-  background: var(--bac-divider-color);
+  background-color: rgb(var(--color-background));
   transform: translateX(-50%);
   pointer-events: none;
 }
@@ -117,84 +182,172 @@
   top: 50%;
   left: 50%;
   display: grid;
-  width: 5.6rem;
-  height: 5.6rem;
+  width: 5.2rem;
+  height: 5.2rem;
   place-items: center;
-  border: 2px solid var(--bac-divider-color);
+  border: 2px solid rgb(var(--color-background));
   border-radius: 50%;
-  color: var(--bac-handle-color);
-  background: var(--bac-handle-background);
-  box-shadow: 0 2px 12px rgb(0 0 0 / 18%);
+  color: rgb(var(--color-foreground));
+  background-color: rgb(var(--color-background));
+  box-shadow: 0 0.2rem 1.2rem rgba(var(--color-shadow), 0.25);
   transform: translate(-50%, -50%);
 }
 
 .before-after-comparison__handle svg {
-  width: 2.8rem;
-  height: 1.8rem;
+  width: 2.6rem;
+  height: 1.6rem;
 }
 
+/* The range input is the whole interaction surface: pointer drags, taps and
+   arrow keys all come for free, so no custom drag handling is needed. */
 .before-after-comparison__range {
   position: absolute;
-  z-index: 4;
+  z-index: 3;
   inset: 0;
   width: 100%;
   height: 100%;
   margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
   opacity: 0;
   cursor: ew-resize;
-}
-
-.before-after-comparison__range:focus-visible + * {
-  outline: none;
+  touch-action: pan-y;
+  -webkit-appearance: none;
+  appearance: none;
 }
 
 .before-after-comparison__media:has(.before-after-comparison__range:focus-visible) {
-  outline: 3px solid currentColor;
-  outline-offset: 3px;
+  outline: 0.2rem solid rgba(var(--color-foreground), 0.6);
+  outline-offset: 0.3rem;
 }
 
-@media screen and (min-width: 750px) and (max-width: 989px) {
-  .before-after-comparison__grid {
-    grid-template-columns: minmax(0, 42%) minmax(0, 58%);
-  }
+/* Featured product overlay
+   ========================================================================== */
 
-  .before-after-comparison__content {
-    padding: 3.6rem 2.8rem;
+.before-after-comparison__product {
+  position: absolute;
+  z-index: 4;
+  top: 0;
+  right: 0;
+  left: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0.8rem;
+  /* Equal inset from the top and both edges of the image. Absolute positioning
+     keeps the overlay out of the media panel's height calculation. */
+  padding: 1.6rem;
+  /* Only the card itself takes pointer events so drags still work around it. */
+  pointer-events: none;
+}
+
+.before-after-comparison__product-form,
+.before-after-comparison__product-form .form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  margin: 0;
+}
+
+.before-after-comparison__product-card {
+  display: flex;
+  align-items: center;
+  gap: 1.6rem;
+  width: 100%;
+  min-width: 0;
+  padding: 0.8rem 1rem 0.8rem 2rem;
+  border: 1px solid rgba(var(--color-background), 0.35);
+  border-radius: calc(var(--bac-radius) + 0.4rem);
+  color: rgb(var(--color-foreground));
+  background-color: rgba(var(--color-background), 0.8);
+  box-shadow: 0 0.4rem 1.6rem rgba(var(--color-shadow), 0.12);
+  pointer-events: auto;
+}
+
+/* Where the blur lands, the card can be far more transparent and still read. */
+@supports ((backdrop-filter: blur(1rem)) or (-webkit-backdrop-filter: blur(1rem))) {
+  .before-after-comparison__product-card {
+    background-color: rgba(var(--color-background), 0.38);
+    -webkit-backdrop-filter: blur(1.8rem) saturate(1.2);
+    backdrop-filter: blur(1.8rem) saturate(1.2);
   }
+}
+
+.before-after-comparison__product-title {
+  display: -webkit-box;
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  color: inherit;
+  font-size: 1.6rem;
+  font-weight: 600;
+  line-height: 1.35;
+  text-align: left;
+  text-decoration: none;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.before-after-comparison__product-title:hover {
+  text-decoration: underline;
+}
+
+.before-after-comparison__product-action {
+  flex: 0 0 auto;
+}
+
+/* The overlay action is deliberately lighter than the panel CTA: the product
+   name is the primary information on the card. It keeps the panel CTA's pill
+   shape though - the theme's global button radius is 0, which would leave the
+   one square corner set in a section built entirely from rounded shapes.
+   Both custom properties are overridden, not just border-radius: the theme
+   draws a button's border and shadow on ::after and ::before, which round
+   from --buttons-radius and --buttons-radius-outset. */
+.before-after-comparison__product .button {
+  --buttons-radius: 99rem;
+  --buttons-radius-outset: 99rem;
+
+  min-width: 0;
+  min-height: 3.8rem;
+  padding: 0 1.8rem;
+  font-size: 1.4rem;
+  white-space: nowrap;
+}
+
+.before-after-comparison__product .product-form__error-message-wrapper {
+  padding: 0.8rem 1.2rem;
+  border-radius: calc(var(--bac-radius) + 0.4rem);
+  color: rgb(var(--color-foreground));
+  background-color: rgba(var(--color-background), 0.9);
+  font-size: 1.3rem;
+  line-height: 1.4;
+  text-align: left;
+  pointer-events: auto;
 }
 
 @media screen and (max-width: 749px) {
-  .before-after-comparison__grid {
-    grid-template-columns: minmax(0, 1fr);
-    height: auto;
+  .before-after-comparison__product {
+    padding: 1.2rem;
   }
 
-  .before-after-comparison__content {
-    min-height: var(--bac-mobile-content-height);
-    padding: 3.6rem 2rem;
+  .before-after-comparison__product-card {
+    gap: 1.2rem;
+    padding: 0.6rem 0.6rem 0.6rem 1.4rem;
   }
 
-  .before-after-comparison__media {
-    height: var(--bac-mobile-media-height);
+  .before-after-comparison__product-title {
+    font-size: 1.4rem;
   }
 
-  .before-after-comparison__heading {
-    font-size: var(--bac-mobile-heading-size);
-  }
-
-  .before-after-comparison__text {
-    font-size: 1.5rem;
+  .before-after-comparison__product .button {
+    min-height: 3.4rem;
+    padding: 0 1.4rem;
+    font-size: 1.3rem;
   }
 
   .before-after-comparison__handle {
-    width: 4.8rem;
-    height: 4.8rem;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .before-after-comparison__image--after,
-  .before-after-comparison__divider {
-    transition: none;
+    width: 4.4rem;
+    height: 4.4rem;
   }
 }

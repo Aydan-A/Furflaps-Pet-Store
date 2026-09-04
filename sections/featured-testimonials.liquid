@@ -40,7 +40,7 @@
   data-interval="{{ section.settings.autoplay_speed | times: 1000 }}"
   style="text-align: {{ section.settings.text_alignment }};"
 >
-  <div class="featured-testimonials__outer{% if section.settings.use_page_width %} page-width{% endif %}">
+  <div class="featured-testimonials__outer{% if section.settings.use_page_width %} page-width{% else %} featured-testimonials__outer--full{% endif %}">
     <div class="featured-testimonials__frame">
       {%- if section.blocks.size > 0 -%}
         {%- for block in section.blocks -%}
@@ -165,7 +165,7 @@
     { "type": "select", "id": "text_alignment", "label": "Text alignment", "default": "left", "options": [{ "value": "left", "label": "Left" }, { "value": "center", "label": "Center" }] },
 
     { "type": "header", "content": "Layout" },
-    { "type": "checkbox", "id": "use_page_width", "label": "Constrain to theme page width", "default": true },
+    { "type": "checkbox", "id": "use_page_width", "label": "Use theme page width", "info": "Turn off to use the full available page width.", "default": true },
     { "type": "range", "id": "max_width", "label": "Maximum width", "min": 900, "max": 1600, "step": 20, "unit": "px", "default": 1200 },
     { "type": "range", "id": "desktop_height", "label": "Desktop height", "min": 440, "max": 760, "step": 10, "unit": "px", "default": 560 },
     { "type": "range", "id": "media_width", "label": "Image width", "min": 32, "max": 55, "step": 1, "unit": "%", "default": 38 },
