@@ -502,7 +502,7 @@
         "autoplay": false,
         "autoplay_speed": 5,
         "text_alignment": "left",
-        "use_page_width": false,
+        "use_page_width": true,
         "max_width": 1200,
         "desktop_height": 560,
         "media_width": 38,
