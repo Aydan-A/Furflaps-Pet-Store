@@ -1,6 +1,236 @@
+{% doc %}
+  @prompt
+    Create a polished product-information accordion block for the product page that displays these product Rich text metafields as collapsible dropdowns: custom.whats_included with the heading “What’s included”, custom.product_features with the heading “Product features”, and custom.care_instructions with the heading “Care instructions”. Only show a dropdown when its metafield has content. Match the existing theme’s typography, spacing, colors, and accordion behavior, and make the headings editable while keeping the metafield connections intact.
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-product-accordion-{{ ai_gen_id }} {
+    display: block;
+    width: 100%;
+  }
+
+  .ai-product-accordion-item-{{ ai_gen_id }} {
+    border-top: 1px solid rgba(18, 18, 18, 0.1);
+  }
+
+  .ai-product-accordion-item-{{ ai_gen_id }}:last-child {
+    border-bottom: 1px solid rgba(18, 18, 18, 0.1);
+  }
+
+  .ai-product-accordion-header-{{ ai_gen_id }} {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 16px 0;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    text-align: left;
+    font-family: inherit;
+    font-size: 16px;
+    font-weight: 500;
+    color: #121212;
+    transition: color 0.2s ease;
+  }
+
+  .ai-product-accordion-header-{{ ai_gen_id }}:hover {
+    color: rgba(18, 18, 18, 0.75);
+  }
+
+  .ai-product-accordion-icon-{{ ai_gen_id }} {
+    flex-shrink: 0;
+    width: 20px;
+    height: 20px;
+    margin-left: 12px;
+    transition: transform 0.3s ease;
+  }
+
+  .ai-product-accordion-icon-{{ ai_gen_id }} svg {
+    width: 100%;
+    height: 100%;
+    stroke: currentColor;
+  }
+
+  .ai-product-accordion-item-{{ ai_gen_id }}.active .ai-product-accordion-icon-{{ ai_gen_id }} {
+    transform: rotate(180deg);
+  }
+
+  .ai-product-accordion-content-{{ ai_gen_id }} {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease;
+  }
+
+  .ai-product-accordion-body-{{ ai_gen_id }} {
+    padding-bottom: 16px;
+    font-size: 14px;
+    line-height: 1.6;
+    color: rgba(18, 18, 18, 0.75);
+  }
+
+  .ai-product-accordion-body-{{ ai_gen_id }} p {
+    margin: 0 0 12px;
+  }
+
+  .ai-product-accordion-body-{{ ai_gen_id }} p:last-child {
+    margin-bottom: 0;
+  }
+
+  .ai-product-accordion-body-{{ ai_gen_id }} ul,
+  .ai-product-accordion-body-{{ ai_gen_id }} ol {
+    margin: 0 0 12px;
+    padding-left: 20px;
+  }
+
+  .ai-product-accordion-body-{{ ai_gen_id }} li {
+    margin-bottom: 6px;
+  }
+
+  .ai-product-accordion-body-{{ ai_gen_id }} li:last-child {
+    margin-bottom: 0;
+  }
+{% endstyle %}
+
+<product-accordion-{{ ai_gen_id }} class="ai-product-accordion-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
+  {% if product.metafields.custom.whats_included != blank %}
+    <div class="ai-product-accordion-item-{{ ai_gen_id }}">
+      <button
+        type="button"
+        class="ai-product-accordion-header-{{ ai_gen_id }}"
+        aria-expanded="false"
+      >
+        <span>{{ block.settings.whats_included_heading }}</span>
+        <span class="ai-product-accordion-icon-{{ ai_gen_id }}">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="6 9 12 15 18 9"></polyline>
+          </svg>
+        </span>
+      </button>
+      <div class="ai-product-accordion-content-{{ ai_gen_id }}">
+        <div class="ai-product-accordion-body-{{ ai_gen_id }}">
+          {{ product.metafields.custom.whats_included }}
+        </div>
+      </div>
+    </div>
+  {% endif %}
+
+  {% if product.metafields.custom.product_features != blank %}
+    <div class="ai-product-accordion-item-{{ ai_gen_id }}">
+      <button
+        type="button"
+        class="ai-product-accordion-header-{{ ai_gen_id }}"
+        aria-expanded="false"
+      >
+        <span>{{ block.settings.product_features_heading }}</span>
+        <span class="ai-product-accordion-icon-{{ ai_gen_id }}">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="6 9 12 15 18 9"></polyline>
+          </svg>
+        </span>
+      </button>
+      <div class="ai-product-accordion-content-{{ ai_gen_id }}">
+        <div class="ai-product-accordion-body-{{ ai_gen_id }}">
+          {{ product.metafields.custom.product_features }}
+        </div>
+      </div>
+    </div>
+  {% endif %}
+
+  {% if product.metafields.custom.care_instructions != blank %}
+    <div class="ai-product-accordion-item-{{ ai_gen_id }}">
+      <button
+        type="button"
+        class="ai-product-accordion-header-{{ ai_gen_id }}"
+        aria-expanded="false"
+      >
+        <span>{{ block.settings.care_instructions_heading }}</span>
+        <span class="ai-product-accordion-icon-{{ ai_gen_id }}">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="6 9 12 15 18 9"></polyline>
+          </svg>
+        </span>
+      </button>
+      <div class="ai-product-accordion-content-{{ ai_gen_id }}">
+        <div class="ai-product-accordion-body-{{ ai_gen_id }}">
+          {{ product.metafields.custom.care_instructions }}
+        </div>
+      </div>
+    </div>
+  {% endif %}
+</product-accordion-{{ ai_gen_id }}>
+
+<script>
+  (function() {
+    class ProductAccordion{{ ai_gen_id }} extends HTMLElement {
+      constructor() {
+        super();
+      }
+
+      connectedCallback() {
+        this.items = this.querySelectorAll('.ai-product-accordion-item-{{ ai_gen_id }}');
+        this.setupAccordion();
+      }
+
+      setupAccordion() {
+        this.items.forEach((item) => {
+          const header = item.querySelector('.ai-product-accordion-header-{{ ai_gen_id }}');
+          const content = item.querySelector('.ai-product-accordion-content-{{ ai_gen_id }}');
+          const body = item.querySelector('.ai-product-accordion-body-{{ ai_gen_id }}');
+
+          header.addEventListener('click', () => {
+            const isActive = item.classList.contains('active');
+
+            if (isActive) {
+              item.classList.remove('active');
+              header.setAttribute('aria-expanded', 'false');
+              content.style.maxHeight = '0';
+            } else {
+              item.classList.add('active');
+              header.setAttribute('aria-expanded', 'true');
+              content.style.maxHeight = body.scrollHeight + 'px';
+            }
+          });
+        });
+      }
+    }
+
+    customElements.define('product-accordion-{{ ai_gen_id }}', ProductAccordion{{ ai_gen_id }});
+  })();
+</script>
+
 {% schema %}
- {
-   "name": "AI_Block",
-   "tag": "shopify-ai-generated-block"
- }
+{
+  "name": "Product information",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Accordion headings"
+    },
+    {
+      "type": "text",
+      "id": "whats_included_heading",
+      "label": "What's included heading",
+      "default": "What's included"
+    },
+    {
+      "type": "text",
+      "id": "product_features_heading",
+      "label": "Product features heading",
+      "default": "Product features"
+    },
+    {
+      "type": "text",
+      "id": "care_instructions_heading",
+      "label": "Care instructions heading",
+      "default": "Care instructions"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Product information"
+    }
+  ]
+}
 {% endschema %}
