@@ -466,12 +466,14 @@
         "image_b7tqH9": {
           "type": "image",
           "settings": {
+            "image_desktop": "shopify://shop_images/Rectangle_7.webp",
             "image_url": ""
           }
         },
         "image_Ddq34R": {
           "type": "image",
           "settings": {
+            "image_desktop": "shopify://shop_images/18_9250820b-5b9b-4dd1-aa5d-919925c9cb79.webp",
             "image_url": ""
           }
         },
