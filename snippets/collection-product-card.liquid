@@ -275,8 +275,15 @@
               class="quick-add-modal__content global-settings-popup"
               tabindex="-1"
             >
+              {%- comment -%}
+                The id prefix is a contract, not a name: ModalDialog's
+                constructor wires the close button with
+                querySelector('[id^="ModalClose-"]') and does not null check,
+                so anything else throws during upgrade and the whole dialog
+                stops responding.
+              {%- endcomment -%}
               <button
-                id="CgQuickAddClose-{{ card_id }}"
+                id="ModalClose-{{ card_id }}"
                 type="button"
                 class="quick-add-modal__toggle"
                 aria-label="{{ 'accessibility.close' | t }}"
