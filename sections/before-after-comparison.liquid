@@ -71,13 +71,13 @@
   }
 {%- endstyle -%}
 
-<div class="section-{{ section.id }}-padding gradient color-{{ section.settings.section_color_scheme }}">
+<div class="section-{{ section.id }}-padding">
   <div class="page-width before-after-comparison__container">
     <before-after-comparison
       class="before-after-comparison"
       style="--bac-position: {{ section.settings.initial_position }}%;"
     >
-      <div class="before-after-comparison__content gradient color-{{ section.settings.color_scheme }}">
+      <div class="before-after-comparison__content">
         <div class="before-after-comparison__content-inner">
           {%- if section.settings.heading != blank -%}
             <h2 class="before-after-comparison__heading h1">{{ section.settings.heading }}</h2>
@@ -89,7 +89,7 @@
 
           {%- if section.settings.button_label != blank -%}
             <a
-              class="before-after-comparison__button button"
+              class="before-after-comparison__button"
               {% if section.settings.button_link != blank %}
                 href="{{ section.settings.button_link }}"
               {% else %}
@@ -338,9 +338,7 @@
       "default": 1700
     },
 
-    { "type": "header", "content": "Style" },
-    { "type": "color_scheme", "id": "section_color_scheme", "label": "Section color scheme", "default": "scheme-1" },
-    { "type": "color_scheme", "id": "color_scheme", "label": "Content panel color scheme", "default": "scheme-6" },
+    { "type": "header", "content": "Section spacing" },
     {
       "type": "range",
       "id": "padding_top",
