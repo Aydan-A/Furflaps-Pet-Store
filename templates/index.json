@@ -409,7 +409,7 @@
         "button_label": "",
         "button_link": "",
         "button_style": "primary",
-        "products_to_show": 8,
+        "products_to_show": 0,
         "columns_desktop": 4,
         "columns_tablet": 2.5,
         "columns_mobile": 1.2,

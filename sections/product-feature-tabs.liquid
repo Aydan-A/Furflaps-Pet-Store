@@ -4,6 +4,13 @@
 {%- liquid
   assign added_label = section.settings.added_label | default: 'Added'
 
+  # 0 means every product, the way the dress-up steps read it. "limit: 0"
+  # renders nothing, so it resolves to the 50 Shopify returns to a section.
+  assign product_limit = section.settings.products_to_show | plus: 0
+  if product_limit == 0
+    assign product_limit = 50
+  endif
+
   # theme-check-disable BlockIdUsage
   assign first_tab_id = blank
   for block in section.blocks
@@ -86,7 +93,7 @@
           <div class="product-feature-tabs__panel" id="PftPanel-{{ section.id }}-{{ block.id }}" role="tabpanel" aria-labelledby="PftTab-{{ section.id }}-{{ block.id }}" tabindex="0" {% unless block.id == first_tab_id %}hidden{% endunless %}>
             {%- if block.settings.collection != blank and block.settings.collection.products_count > 0 -%}
               <ul class="product-feature-tabs__grid" role="list">
-                {%- for product in block.settings.collection.products limit: section.settings.products_to_show -%}
+                {%- for product in block.settings.collection.products limit: product_limit -%}
                   {%- liquid
                     assign product_form_id = 'PftForm-' | append: section.id | append: '-' | append: block.id | append: '-' | append: forloop.index
                     assign selected_variant = product.selected_or_first_available_variant
@@ -547,7 +554,7 @@
     { "type": "url", "id": "button_link", "label": "Button link" },
     { "type": "select", "id": "button_style", "label": "Button style", "default": "primary", "options": [{ "value": "primary", "label": "Primary" }, { "value": "secondary", "label": "Secondary" }] },
     { "type": "header", "content": "Products" },
-    { "type": "range", "id": "products_to_show", "label": "Products per tab", "min": 2, "max": 12, "step": 1, "default": 8 },
+    { "type": "range", "id": "products_to_show", "label": "Products per tab", "min": 0, "max": 50, "step": 1, "default": 8, "info": "0 shows every product, up to the 50 Shopify returns to a section. A collection with more than a row of products scrolls sideways." },
     { "type": "range", "id": "columns_desktop", "label": "Desktop products visible", "min": 2, "max": 6, "step": 1, "default": 4 },
     { "type": "range", "id": "columns_tablet", "label": "Tablet products visible", "min": 1, "max": 4, "step": 0.5, "default": 2.5 },
     { "type": "range", "id": "columns_mobile", "label": "Mobile products visible", "min": 1, "max": 2, "step": 0.1, "default": 1.2 },
