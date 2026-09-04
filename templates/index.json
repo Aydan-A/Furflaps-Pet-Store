@@ -702,6 +702,75 @@
         "margin_top_mobile": 0,
         "margin_bottom_mobile": 0
       }
+    },
+    "tsapb_eebdb509_yHUxkA": {
+      "type": "tsapb-eebdb509",
+      "blocks": {
+        "image_E3bYWy": {
+          "type": "image",
+          "settings": {
+            "image_url": ""
+          }
+        },
+        "image_xNyrca": {
+          "type": "image",
+          "settings": {
+            "image_url": ""
+          }
+        },
+        "image_Vbb8Qt": {
+          "type": "image",
+          "settings": {
+            "image_url": ""
+          }
+        },
+        "image_b7tqH9": {
+          "type": "image",
+          "settings": {
+            "image_url": ""
+          }
+        },
+        "image_Ddq34R": {
+          "type": "image",
+          "settings": {
+            "image_url": ""
+          }
+        },
+        "image_q3wznX": {
+          "type": "image",
+          "settings": {
+            "image_url": ""
+          }
+        }
+      },
+      "block_order": [
+        "image_E3bYWy",
+        "image_xNyrca",
+        "image_Vbb8Qt",
+        "image_b7tqH9",
+        "image_Ddq34R",
+        "image_q3wznX"
+      ],
+      "name": "❤️ Square: Media Gallery",
+      "settings": {
+        "heading": "Media Gallery",
+        "heading_size": "32",
+        "heading_style": "regular",
+        "heading_alignment": "center",
+        "heading_color": "#222222",
+        "images_per_row_desktop": 3,
+        "images_per_row_mobile": 2,
+        "space_between_images": 12,
+        "enable_image_popup": true,
+        "section_width": 90,
+        "section_max_width": "",
+        "vertical_padding": 40,
+        "vertical_margin": 0,
+        "vertical_padding_mobile": 20,
+        "vertical_margin_mobile": 0,
+        "section_background": "",
+        "images_border_color": ""
+      }
     }
   },
   "order": [
@@ -710,6 +779,7 @@
     "dress_up_steps_L8FhwL",
     "before_after_comparison_H4KUmY",
     "product_feature_tabs_EpMe6d",
+    "tsapb_eebdb509_yHUxkA",
     "featured_testimonials_GdmtJw",
     "feature_highlights_iY7VnD",
     "tsapb_ce7789ea_DTmRqH"
