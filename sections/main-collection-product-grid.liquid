@@ -58,6 +58,7 @@
 
   assign column_gap_mobile = section.settings.column_gap | times: 0.7 | round: 0
   assign row_gap_mobile = section.settings.row_gap | times: 0.7 | round: 0
+  assign content_padding_mobile = section.settings.content_padding | times: 0.5 | round: 0
 -%}
 
 {%- style -%}
@@ -70,6 +71,9 @@
     --cg-column-gap-mobile: {{ column_gap_mobile }}px;
     --cg-row-gap-mobile: {{ row_gap_mobile }}px;
     --cg-block-gap: {{ section.settings.block_gap }}px;
+    --cg-content-width: {{ section.settings.content_width }}px;
+    --cg-content-padding: {{ section.settings.content_padding }}px;
+    --cg-content-padding-mobile: {{ content_padding_mobile }}px;
     --cg-sidebar-width: {{ section.settings.sidebar_width }}px;
     --cg-sidebar-gap: {{ section.settings.sidebar_gap }}px;
     --cg-control-height: {{ section.settings.control_height }}px;
@@ -87,10 +91,10 @@
     --cg-badge-background: {{ section.settings.badge_background }};
     --cg-badge-text: {{ section.settings.badge_text_color }};
     --cg-badge-offset: {{ section.settings.badge_offset }}px;
-    --cg-add-size: {{ section.settings.add_button_size }}px;
-    --cg-add-background: {{ section.settings.add_button_background }};
-    --cg-add-icon: {{ section.settings.add_button_icon_color }};
+    --cg-action-height: {{ section.settings.action_height }}px;
     --cg-swatch-size: {{ section.settings.swatch_size }}px;
+    --cg-facet-control-size: {{ section.settings.facet_control_size }}px;
+    --cg-facet-swatch-size: {{ section.settings.facet_swatch_size }}px;
   }
 
   .section-{{ section.id }}-padding {
@@ -113,71 +117,73 @@
 >
   <div class="section-{{ section.id }}-padding gradient color-{{ section.settings.color_scheme }}">
     {%- paginate collection.products by section.settings.products_per_page -%}
-      <div class="collection-grid__inner page-width">
-        {%- comment -%}
-          The sidebar layout keeps sorting and the count in their own toolbar
-          above everything, so sorting is the first tabbable control. The
-          drawer layout gets both from the facets snippet instead.
-        {%- endcomment -%}
-        {%- if use_sidebar -%}
-          <facet-filters-form class="facets cg-toolbar">
-            <form class="cg-toolbar__form" id="FacetSortForm">
-              <div class="cg-count" role="status">
-                <h2 class="cg-count__text">
-                  <span id="ProductCountDesktop">
-                    {%- if collection.results_count -%}
-                      {{
-                        'templates.search.results_with_count'
-                        | t: terms: collection.terms, count: collection.results_count
-                      }}
-                    {%- elsif collection.products_count == collection.all_products_count -%}
-                      {{ 'products.facets.product_count_simple' | t: count: collection.products_count }}
-                    {%- else -%}
-                      {{
-                        'products.facets.product_count'
-                        | t: product_count: collection.products_count, count: collection.all_products_count
-                      }}
-                    {%- endif -%}
-                  </span>
-                </h2>
-                {%- render 'loading-spinner' -%}
-              </div>
-
-              {%- if section.settings.enable_sorting -%}
-                <div class="cg-sort">
-                  <h2 class="cg-sort__label">
-                    <label for="SortBy">{{ 'products.facets.sort_by_label' | t }}</label>
-                  </h2>
-                  <div class="cg-sort__field">
-                    {%- assign sort_by = collection.sort_by | default: collection.default_sort_by -%}
-                    <select
-                      name="sort_by"
-                      class="cg-sort__select"
-                      id="SortBy"
-                      aria-describedby="a11y-refresh-page-message"
-                    >
-                      {%- for option in collection.sort_options -%}
-                        <option
-                          value="{{ option.value | escape }}"
-                          {% if option.value == sort_by %}
-                            selected="selected"
-                          {% endif %}
-                        >
-                          {{ option.name | escape }}
-                        </option>
-                      {%- endfor -%}
-                    </select>
-                    <span class="cg-sort__caret">
-                      {{- 'icon-caret.svg' | inline_asset_content -}}
-                    </span>
-                  </div>
-                </div>
-              {%- endif -%}
-            </form>
-          </facet-filters-form>
-        {%- endif -%}
-
+      <div class="collection-grid__inner">
         <div class="cg-layout{% if show_sidebar_column %} cg-layout--sidebar{% endif %}">
+          {%- comment -%}
+            The toolbar is the first child so sorting is the first tabbable
+            control, but on desktop the grid places it over the products
+            rather than across the page, so the count and the sorting read as
+            part of the grid. The drawer layout gets both from the facets
+            snippet instead.
+          {%- endcomment -%}
+          {%- if use_sidebar -%}
+            <facet-filters-form class="facets cg-toolbar">
+              <form class="cg-toolbar__form" id="FacetSortForm">
+                <div class="cg-count" role="status">
+                  <h2 class="cg-count__text">
+                    <span id="ProductCountDesktop">
+                      {%- if collection.results_count -%}
+                        {{
+                          'templates.search.results_with_count'
+                          | t: terms: collection.terms, count: collection.results_count
+                        }}
+                      {%- elsif collection.products_count == collection.all_products_count -%}
+                        {{ 'products.facets.product_count_simple' | t: count: collection.products_count }}
+                      {%- else -%}
+                        {{
+                          'products.facets.product_count'
+                          | t: product_count: collection.products_count, count: collection.all_products_count
+                        }}
+                      {%- endif -%}
+                    </span>
+                  </h2>
+                  {%- render 'loading-spinner' -%}
+                </div>
+
+                {%- if section.settings.enable_sorting -%}
+                  <div class="cg-sort">
+                    <h2 class="cg-sort__label">
+                      <label for="SortBy">{{ 'products.facets.sort_by_label' | t }}</label>
+                    </h2>
+                    <div class="cg-sort__field">
+                      {%- assign sort_by = collection.sort_by | default: collection.default_sort_by -%}
+                      <select
+                        name="sort_by"
+                        class="cg-sort__select"
+                        id="SortBy"
+                        aria-describedby="a11y-refresh-page-message"
+                      >
+                        {%- for option in collection.sort_options -%}
+                          <option
+                            value="{{ option.value | escape }}"
+                            {% if option.value == sort_by %}
+                              selected="selected"
+                            {% endif %}
+                          >
+                            {{ option.name | escape }}
+                          </option>
+                        {%- endfor -%}
+                      </select>
+                      <span class="cg-sort__caret">
+                        {{- 'icon-caret.svg' | inline_asset_content -}}
+                      </span>
+                    </div>
+                  </div>
+                {%- endif -%}
+              </form>
+            </facet-filters-form>
+          {%- endif -%}
+
           {%- if section.settings.enable_filtering or section.settings.enable_sorting -%}
             <aside
               {% if show_sidebar_column %}
@@ -194,7 +200,8 @@
                 enable_filtering: section.settings.enable_filtering,
                 enable_sorting: section.settings.enable_sorting,
                 filter_type: section.settings.filter_type,
-                paginate: paginate
+                paginate: paginate,
+                color_swatches: true
               %}
             </aside>
           {%- endif -%}
@@ -336,6 +343,28 @@
       "label": "Spacing between toolbar, grid and pagination"
     },
     {
+      "type": "range",
+      "id": "content_width",
+      "min": 1100,
+      "max": 1800,
+      "step": 20,
+      "unit": "px",
+      "default": 1400,
+      "label": "Maximum content width",
+      "info": "The grid shares this width with the filter sidebar, so it can run wider than the theme's page width without the cards turning narrow."
+    },
+    {
+      "type": "range",
+      "id": "content_padding",
+      "min": 0,
+      "max": 80,
+      "step": 4,
+      "unit": "px",
+      "default": 32,
+      "label": "Side padding",
+      "info": "Halved on mobile."
+    },
+    {
       "type": "color_scheme",
       "id": "color_scheme",
       "label": "t:sections.all.colors.label",
@@ -376,7 +405,7 @@
       "max": 340,
       "step": 10,
       "unit": "px",
-      "default": 260,
+      "default": 240,
       "label": "Sidebar width"
     },
     {
@@ -386,7 +415,7 @@
       "max": 80,
       "step": 4,
       "unit": "px",
-      "default": 40,
+      "default": 32,
       "label": "Space between sidebar and grid"
     },
     {
@@ -414,6 +443,26 @@
       "unit": "px",
       "default": 20,
       "label": "Sort and filter button corner radius"
+    },
+    {
+      "type": "range",
+      "id": "facet_control_size",
+      "min": 14,
+      "max": 26,
+      "step": 1,
+      "unit": "px",
+      "default": 20,
+      "label": "Filter selection circle size"
+    },
+    {
+      "type": "range",
+      "id": "facet_swatch_size",
+      "min": 20,
+      "max": 44,
+      "step": 2,
+      "unit": "px",
+      "default": 28,
+      "label": "Filter colour swatch size"
     },
     {
       "type": "header",
@@ -612,35 +661,23 @@
     {
       "type": "select",
       "id": "quick_add",
-      "default": "icon",
-      "label": "Quick add button",
-      "info": "Products with more than one variant open a quick add dialog.",
+      "default": "button",
+      "label": "Card action",
+      "info": "Products that still need a variant chosen show \"Choose options\" and open a dialog — they are never added straight to the cart.",
       "options": [
         { "value": "none", "label": "Hidden" },
-        { "value": "icon", "label": "Icon on the image" }
+        { "value": "button", "label": "Button under the price" }
       ]
     },
     {
       "type": "range",
-      "id": "add_button_size",
-      "min": 28,
+      "id": "action_height",
+      "min": 32,
       "max": 56,
       "step": 2,
       "unit": "px",
       "default": 40,
-      "label": "Button size"
-    },
-    {
-      "type": "color",
-      "id": "add_button_background",
-      "default": "#ffffff",
-      "label": "Button background"
-    },
-    {
-      "type": "color",
-      "id": "add_button_icon_color",
-      "default": "#111111",
-      "label": "Button icon colour"
+      "label": "Button height"
     },
     {
       "type": "header",

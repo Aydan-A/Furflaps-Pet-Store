@@ -7,6 +7,9 @@
   - enable_sorting: {Boolean} Show sorting when true
   - filter_type: {String} Type of filter
   - paginate: {Object}
+  - color_swatches: {Boolean} Render colour filters as swatches even when the
+    filter's own presentation is text, as long as every value carries a swatch.
+    Off by default so the search page keeps Dawn's behaviour. (optional)
 
   Usage:
   {% render 'facets', results: collection, enable_filtering: true, enable_sorting: true, filter_type: 'vertical', paginate: paginate %}
@@ -118,6 +121,13 @@
               {% liquid
                 assign total_active_values = total_active_values | plus: filter.active_values.size
                 assign presentation = filter.presentation | default: default_presentation
+
+                if color_swatches and presentation == 'text'
+                  assign swatch_value_count = filter.values | map: 'swatch' | compact | size
+                  if swatch_value_count > 0 and swatch_value_count == filter.values.size
+                    assign presentation = 'swatch'
+                  endif
+                endif
 
                 if presentation == 'image'
                   assign show_more_number = 12
@@ -516,6 +526,14 @@
                 {%- for filter in results.filters -%}
                   {% liquid
                     assign presentation = filter.presentation | default: default_presentation
+
+                    if color_swatches and presentation == 'text'
+                      assign swatch_value_count = filter.values | map: 'swatch' | compact | size
+                      if swatch_value_count > 0 and swatch_value_count == filter.values.size
+                        assign presentation = 'swatch'
+                      endif
+                    endif
+
                     if presentation == 'image'
                       assign visual_layout_class = 'facets-layout facets-layout-grid facets-layout-grid--' | append: presentation
                     else

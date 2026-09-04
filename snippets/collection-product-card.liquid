@@ -6,6 +6,9 @@
   (the one set by the homepage "Hot this week" cards) without touching the
   cards used by the product page, search or featured sections.
 
+  Every card follows the same vertical rhythm so rows line up:
+  image -> title -> options -> price -> action.
+
   Accepts:
   - product: {Object} Product Liquid object
   - section: {Object} The collection product grid section
@@ -74,6 +77,10 @@
     assign quantity_rules = true
   endif
 
+  comment
+    Anything Shopify still needs a selection for gets "Choose options" and a
+    dialog. Never a one click add that guesses the variant.
+  endcomment
   assign needs_options = false
   if product.variants_count > 1 or quantity_rules
     assign needs_options = true
@@ -147,120 +154,12 @@
         {%- endif -%}
       </div>
     {%- endif -%}
-
-    {%- if settings_card.quick_add != 'none' -%}
-      {%- if is_available == false -%}
-        <span
-          class="cg-card__add cg-card__add--disabled"
-          aria-hidden="true"
-          title="{{ 'products.product.sold_out' | t }}"
-        >
-          {{- 'icon-cart.svg' | inline_asset_content -}}
-        </span>
-      {%- elsif needs_options -%}
-        <modal-opener class="cg-card__add-wrap no-js-hidden" data-modal="#CgQuickAdd-{{ card_id }}">
-          <button
-            id="CgQuickAddButton-{{ card_id }}"
-            type="button"
-            name="add"
-            class="cg-card__add"
-            aria-haspopup="dialog"
-            aria-label="{{ 'products.product.choose_options' | t }} — {{ product.title | escape }}"
-            data-product-url="{{ product.url }}"
-          >
-            <span class="cg-card__add-icon">
-              {{- 'icon-plus.svg' | inline_asset_content -}}
-            </span>
-            {%- render 'loading-spinner' -%}
-          </button>
-        </modal-opener>
-        <quick-add-modal id="CgQuickAdd-{{ card_id }}" class="quick-add-modal">
-          <div
-            role="dialog"
-            aria-label="{{ 'products.product.choose_product_options' | t: product_name: product.title | escape }}"
-            aria-modal="true"
-            class="quick-add-modal__content global-settings-popup"
-            tabindex="-1"
-          >
-            <button
-              id="CgQuickAddClose-{{ card_id }}"
-              type="button"
-              class="quick-add-modal__toggle"
-              aria-label="{{ 'accessibility.close' | t }}"
-            >
-              {{- 'icon-close.svg' | inline_asset_content -}}
-            </button>
-            <div id="QuickAddInfo-{{ product.id }}" class="quick-add-modal__content-info"></div>
-          </div>
-        </quick-add-modal>
-      {%- else -%}
-        {%- assign form_id = 'CgAtc-' | append: card_id -%}
-        <product-form class="cg-card__add-wrap" data-section-id="{{ section.id }}">
-          {%- form 'product',
-            product,
-            id: form_id,
-            class: 'cg-card__add-form',
-            novalidate: 'novalidate',
-            data-type: 'add-to-cart-form'
-          -%}
-            <input
-              type="hidden"
-              name="id"
-              value="{{ product.selected_or_first_available_variant.id }}"
-              class="product-variant-id"
-            >
-            <button
-              id="{{ form_id }}-submit"
-              class="cg-card__add"
-              type="submit"
-              name="add"
-              aria-haspopup="dialog"
-              aria-label="{{ 'products.product.add_to_cart' | t }} — {{ product.title | escape }}"
-              data-sold-out-message="true"
-            >
-              {%- comment -%}
-                product-form.js treats the button's first span as its label and
-                hides it when a variant turns out to be sold out, so keep a
-                text span ahead of the icon — otherwise the icon is what
-                disappears and the button is left empty.
-              {%- endcomment -%}
-              <span class="visually-hidden">{{ 'products.product.add_to_cart' | t }}</span>
-              <span class="cg-card__add-icon">
-                {{- 'icon-cart.svg' | inline_asset_content -}}
-              </span>
-              <span class="sold-out-message hidden">
-                {{ 'products.product.sold_out' | t }}
-              </span>
-              {%- render 'loading-spinner' -%}
-            </button>
-            <div class="product-form__error-message-wrapper" role="alert" hidden>
-              <span class="product-form__error-message"></span>
-            </div>
-          {%- endform -%}
-        </product-form>
-      {%- endif -%}
-    {%- endif -%}
   </div>
 
   <div class="cg-card__info">
-    {%- if swatch_total > 0 -%}
-      {%- assign swatches_shown = 0 -%}
-      <ul class="cg-card__swatches" role="list" aria-label="{{ color_option.name | escape }}">
-        {%- for value in color_option.values -%}
-          {%- if value.swatch != blank and swatches_shown < settings_card.swatches_to_show -%}
-            <li class="cg-card__swatch" title="{{ value | escape }}">
-              <span class="visually-hidden">{{ value }}</span>
-              {% render 'swatch', swatch: value.swatch %}
-            </li>
-            {%- assign swatches_shown = swatches_shown | plus: 1 -%}
-          {%- endif -%}
-        {%- endfor -%}
-        {%- assign swatches_remaining = swatch_total | minus: swatches_shown -%}
-        {%- if swatches_remaining > 0 -%}
-          <li class="cg-card__swatch-more">+{{ swatches_remaining }}</li>
-        {%- endif -%}
-      </ul>
-    {%- endif -%}
+    <h3 class="cg-card__title">
+      <a class="cg-card__link" href="{{ product.url }}">{{ product.title | escape }}</a>
+    </h3>
 
     {%- if settings_card.show_vendor and product.vendor != blank -%}
       <p class="cg-card__vendor">
@@ -268,12 +167,6 @@
         {{ product.vendor }}
       </p>
     {%- endif -%}
-
-    <h3 class="cg-card__title">
-      <a class="cg-card__link" href="{{ product.url }}">
-        {{- product.title | escape -}}
-      </a>
-    </h3>
 
     {%- if settings_card.show_rating and product.metafields.reviews.rating.value != blank -%}
       {%- liquid
@@ -306,21 +199,124 @@
       </div>
     {%- endif -%}
 
-    <div class="cg-card__prices">
-      <span class="cg-card__price{% if on_sale %} cg-card__price--sale{% endif %}">
-        {%- if on_sale -%}
-          <span class="visually-hidden">{{ 'products.product.price.sale_price' | t }}</span>
+    {%- if swatch_total > 0 -%}
+      {%- assign swatches_shown = 0 -%}
+      <ul class="cg-card__swatches" role="list" aria-label="{{ color_option.name | escape }}">
+        {%- for value in color_option.values -%}
+          {%- if value.swatch != blank and swatches_shown < settings_card.swatches_to_show -%}
+            <li class="cg-card__swatch" title="{{ value | escape }}">
+              <span class="visually-hidden">{{ value }}</span>
+              {% render 'swatch', swatch: value.swatch %}
+            </li>
+            {%- assign swatches_shown = swatches_shown | plus: 1 -%}
+          {%- endif -%}
+        {%- endfor -%}
+        {%- assign swatches_remaining = swatch_total | minus: swatches_shown -%}
+        {%- if swatches_remaining > 0 -%}
+          <li class="cg-card__swatch-more">+{{ swatches_remaining }}</li>
         {%- endif -%}
-        {{ money_price }}
-      </span>
-      {%- if money_compare_price != blank -%}
-        <s class="cg-card__price-was">
-          <span class="visually-hidden">{{ 'products.product.price.regular_price' | t }}</span>
-          {{ money_compare_price }}
-        </s>
-      {%- endif -%}
-      {%- if discount_label != blank -%}
-        <span class="cg-card__discount">{{ discount_label }}</span>
+      </ul>
+    {%- endif -%}
+
+    {%- comment -%}
+      Price and action are pinned to the bottom of the card together so the
+      buttons sit on one line across the whole row, whatever the titles do.
+    {%- endcomment -%}
+    <div class="cg-card__foot">
+      <div class="cg-card__prices">
+        <span class="cg-card__price{% if on_sale %} cg-card__price--sale{% endif %}">
+          {%- if on_sale -%}
+            <span class="visually-hidden">{{ 'products.product.price.sale_price' | t }}</span>
+          {%- endif -%}
+          {{ money_price }}
+        </span>
+        {%- if money_compare_price != blank -%}
+          <s class="cg-card__price-was">
+            <span class="visually-hidden">{{ 'products.product.price.regular_price' | t }}</span>
+            {{ money_compare_price }}
+          </s>
+        {%- endif -%}
+        {%- if discount_label != blank -%}
+          <span class="cg-card__discount">{{ discount_label }}</span>
+        {%- endif -%}
+      </div>
+
+      {%- if settings_card.quick_add != 'none' -%}
+        {%- if is_available == false -%}
+          <button class="cg-card__action" type="button" disabled>
+            {{- 'products.product.sold_out' | t -}}
+          </button>
+        {%- elsif needs_options -%}
+          <modal-opener class="cg-card__action-wrap no-js-hidden" data-modal="#CgQuickAdd-{{ card_id }}">
+            <button
+              id="CgQuickAddButton-{{ card_id }}"
+              type="button"
+              name="add"
+              class="cg-card__action"
+              aria-haspopup="dialog"
+              aria-label="{{ 'products.product.choose_options' | t }} — {{ product.title | escape }}"
+              data-product-url="{{ product.url }}"
+            >
+              <span class="cg-card__action-label">{{ 'products.product.choose_options' | t }}</span>
+              {%- render 'loading-spinner' -%}
+            </button>
+          </modal-opener>
+          <quick-add-modal id="CgQuickAdd-{{ card_id }}" class="quick-add-modal">
+            <div
+              role="dialog"
+              aria-label="{{ 'products.product.choose_product_options' | t: product_name: product.title | escape }}"
+              aria-modal="true"
+              class="quick-add-modal__content global-settings-popup"
+              tabindex="-1"
+            >
+              <button
+                id="CgQuickAddClose-{{ card_id }}"
+                type="button"
+                class="quick-add-modal__toggle"
+                aria-label="{{ 'accessibility.close' | t }}"
+              >
+                {{- 'icon-close.svg' | inline_asset_content -}}
+              </button>
+              <div id="QuickAddInfo-{{ product.id }}" class="quick-add-modal__content-info"></div>
+            </div>
+          </quick-add-modal>
+        {%- else -%}
+          {%- assign form_id = 'CgAtc-' | append: card_id -%}
+          <product-form class="cg-card__action-wrap" data-section-id="{{ section.id }}">
+            {%- form 'product',
+              product,
+              id: form_id,
+              class: 'cg-card__action-form',
+              novalidate: 'novalidate',
+              data-type: 'add-to-cart-form'
+            -%}
+              <input
+                type="hidden"
+                name="id"
+                value="{{ product.selected_or_first_available_variant.id }}"
+                class="product-variant-id"
+              >
+              <button
+                id="{{ form_id }}-submit"
+                class="cg-card__action"
+                type="submit"
+                name="add"
+                aria-haspopup="dialog"
+                aria-label="{{ 'products.product.add_to_cart' | t }} — {{ product.title | escape }}"
+                data-sold-out-message="true"
+              >
+                <span class="cg-card__action-label">{{ 'products.product.add_to_cart' | t }}</span>
+                <span class="sold-out-message hidden">
+                  {{ 'products.product.sold_out' | t }}
+                </span>
+                {%- render 'loading-spinner' -%}
+              </button>
+              <div class="product-form__error-message-wrapper" role="alert" hidden>
+                <span class="product-form__error-message"></span>
+              </div>
+            {%- endform -%}
+          </product-form>
+        {%- endif -%}
       {%- endif -%}
     </div>
   </div>
