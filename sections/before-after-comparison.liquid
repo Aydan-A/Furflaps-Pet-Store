@@ -266,8 +266,13 @@
         class="quick-add-modal__content global-settings-popup"
         tabindex="-1"
       >
+        {%- comment -%}
+          ModalDialog's constructor binds to [id^="ModalClose-"] without a null
+          check, so a close button named anything else throws and the custom
+          element never upgrades - which leaves the opener with no show() to call.
+        {%- endcomment -%}
         <button
-          id="{{ product_form_id }}-modal-close"
+          id="ModalClose-{{ section.id }}-{{ featured_product.id }}"
           type="button"
           class="quick-add-modal__toggle"
           aria-label="{{ 'accessibility.close' | t }}"
