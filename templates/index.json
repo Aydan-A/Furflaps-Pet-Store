@@ -503,7 +503,7 @@
         "heading_style": "regular",
         "heading_alignment": "center",
         "heading_color": "#222222",
-        "images_per_row_desktop": 3,
+        "images_per_row_desktop": 6,
         "images_per_row_mobile": 2,
         "space_between_images": 12,
         "enable_image_popup": true,
