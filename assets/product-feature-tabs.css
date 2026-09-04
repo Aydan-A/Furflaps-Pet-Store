@@ -124,7 +124,6 @@
   min-height: 3.2rem;
   margin: 0;
   padding: 0.2rem 0.6rem 0;
-  flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
   gap: 1.2rem;
@@ -155,31 +154,49 @@
   background-size: cover;
 }
 
-/* A non-colour option, such as size, reads as its values rather than as
-   swatches, and takes a full row of its own: a size written out in full is
-   too wide to share the quantity's line, and cutting it down would throw away
-   the measurement that makes it useful. */
-.product-feature-tabs__options {
+/* A non-colour option, such as size, is a control rather than a label: it
+   takes the colour swatches' place on the row and shares the quantity's
+   height, border and radius, so the two read as one pair of controls. The
+   select holds one value at a time, which is what keeps a size written out in
+   full on a single line. */
+.product-feature-tabs__option-field {
+  position: relative;
   display: flex;
-  flex: 1 0 100%;
-  flex-wrap: wrap;
+  flex: 0 1 auto;
+  min-width: 0;
   align-items: center;
-  gap: 0.4rem;
 }
 
-.product-feature-tabs__option {
-  display: inline-flex;
-  height: 2rem;
-  padding: 0 0.7rem;
-  flex: 0 1 auto;
-  align-items: center;
-  justify-content: center;
+.product-feature-tabs__option-select {
+  width: 100%;
+  min-width: 0;
+  height: 2.8rem;
   overflow: hidden;
+  padding: 0 2.4rem 0 1rem;
+  appearance: none;
   border: 0.1rem solid var(--pft-feature-border);
   border-radius: 99rem;
-  font-size: 1.1rem;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-size: 1.2rem;
   line-height: 1;
-  white-space: nowrap;
+  text-overflow: ellipsis;
+  cursor: pointer;
+}
+
+.product-feature-tabs__option-caret {
+  position: absolute;
+  right: 0.9rem;
+  display: grid;
+  width: 1rem;
+  place-items: center;
+  pointer-events: none;
+}
+
+.product-feature-tabs__option-caret svg {
+  width: 1rem;
+  height: 0.6rem;
 }
 
 .product-feature-tabs__quantity {

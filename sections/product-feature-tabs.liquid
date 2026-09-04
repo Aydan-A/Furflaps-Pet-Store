@@ -127,7 +127,7 @@
                       endfor
                     endif
 
-                    # Colours are swatches; everything else is its values.
+                    # Colours are swatches; everything else is a control.
                     assign card_option_is_color = false
                     assign card_option_name = card_option.name | downcase
                     if card_option_name contains 'color' or card_option_name contains 'colour'
@@ -149,6 +149,15 @@
                       assign color_objects = color_metafield.value
                     endif
 
+                    # An empty swatch slot would still hold its gap on the row,
+                    # so a card showing a size control renders no slot at all.
+                    assign show_swatches = false
+                    if card_option_is_color
+                      assign show_swatches = true
+                    elsif card_option == blank and color_objects != blank
+                      assign show_swatches = true
+                    endif
+
                     assign quantity_min = selected_variant.quantity_rule.min | default: 1
                     assign quantity_step = selected_variant.quantity_rule.increment | default: 1
                     assign quantity_max = selected_variant.quantity_rule.max
@@ -166,20 +175,84 @@
                       </a>
                       <div class="product-feature-tabs__details">
                         {%- comment -%}
-                          A size is written out in full - "S ( 25-35 cm)" - and
-                          the measurement is the point of it, so the values take
-                          a row of their own above the quantity rather than
-                          being cut down to fit beside it.
+                          A size is written out in full - "S ( 25-35 cm)" -
+                          because the measurement is the point of it, and three
+                          of those will not fit a card's width as buttons. The
+                          select carries one at a time, so the size stays whole,
+                          stays on the quantity's line, and is something a
+                          customer can actually choose before adding.
+
+                          Each value carries the id of the variant that has it
+                          and keeps everything else about the card - the colour
+                          its photo shows - so choosing a size never silently
+                          changes the colour, and the script has no variant
+                          matching to do.
                         {%- endcomment -%}
                         {%- if card_option != blank and card_option_is_color == false -%}
-                          <div class="product-feature-tabs__options">
-                            {%- for option_value in card_option.values -%}
-                              <span class="product-feature-tabs__option">{{ option_value | escape }}</span>
-                            {%- endfor -%}
+                          {%- assign option_index = card_option.position | minus: 1 -%}
+                          <div class="product-feature-tabs__option-field">
+                            <label class="visually-hidden" for="{{ product_form_id }}-option">
+                              {{- product.title | escape }} — {{ card_option.name | escape -}}
+                            </label>
+                            <select class="product-feature-tabs__option-select" id="{{ product_form_id }}-option" data-pft-option>
+                              {%- for option_value in card_option.values -%}
+                                {%- liquid
+                                  assign value_variant = blank
+                                  for product_variant in product.variants
+                                    if product_variant.options[option_index] != option_value
+                                      continue
+                                    endif
+                                    assign keeps_rest = true
+                                    for other_option in product.options_with_values
+                                      assign other_index = forloop.index0
+                                      if other_index == option_index
+                                        continue
+                                      endif
+                                      if product_variant.options[other_index] != selected_variant.options[other_index]
+                                        assign keeps_rest = false
+                                        break
+                                      endif
+                                    endfor
+                                    if keeps_rest
+                                      assign value_variant = product_variant
+                                      break
+                                    endif
+                                  endfor
+
+                                  # A product whose options do not combine into
+                                  # every pairing still gets a variant for the
+                                  # value, rather than an option that adds
+                                  # nothing.
+                                  if value_variant == blank
+                                    for product_variant in product.variants
+                                      if product_variant.options[option_index] == option_value
+                                        assign value_variant = product_variant
+                                        break
+                                      endif
+                                    endfor
+                                  endif
+                                -%}
+                                {%- if value_variant != blank -%}
+                                  <option
+                                    value="{{ value_variant.id }}"
+                                    data-available="{{ value_variant.available }}"
+                                    {% if value_variant.id == selected_variant.id %}selected{% endif %}
+                                    {% unless value_variant.available %}disabled{% endunless %}
+                                  >
+                                    {{- option_value | escape -}}
+                                    {%- unless value_variant.available %} ({{ 'products.product.sold_out' | t }}){% endunless -%}
+                                  </option>
+                                {%- endif -%}
+                              {%- endfor -%}
+                            </select>
+                            <span class="product-feature-tabs__option-caret" aria-hidden="true">
+                              <svg viewBox="0 0 10 6" focusable="false"><path d="M1 1l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                            </span>
                           </div>
                         {%- endif -%}
+                        {%- if show_swatches -%}
                         <div class="product-feature-tabs__color">
-                          {%- if card_option != blank and card_option_is_color -%}
+                          {%- if card_option_is_color -%}
                             {%- for color_name in card_option.values -%}
                               {%- liquid
                                 assign swatch_style = blank
@@ -207,7 +280,7 @@
                             {%- else -%}
                               <span class="visually-hidden">{{ card_option.values | join: ', ' | escape }}</span>
                             {%- endif -%}
-                          {%- elsif card_option == blank and color_objects != blank -%}
+                          {%- else -%}
                             {%- for color_object in color_objects -%}
                               {%- assign object_label = color_object.label.value | default: color_object.system.handle | replace: '-', ' ' -%}
                               <span
@@ -219,6 +292,7 @@
                             {%- endfor -%}
                           {%- endif -%}
                         </div>
+                        {%- endif -%}
                         <div
                           class="product-feature-tabs__quantity"
                           data-pft-quantity
@@ -305,6 +379,7 @@
         this.panels = [...this.querySelectorAll('[role="tabpanel"]')];
         this.addEventListener('click', this.onClick);
         this.addEventListener('keydown', this.onKeydown);
+        this.addEventListener('change', this.onChange);
 
         // Capture phase so we see the submit before product-form.js flips aria-disabled.
         this.addEventListener('submit', this.onSubmit, true);
@@ -318,6 +393,7 @@
       disconnectedCallback() {
         this.removeEventListener('click', this.onClick);
         this.removeEventListener('keydown', this.onKeydown);
+        this.removeEventListener('change', this.onChange);
         this.removeEventListener('submit', this.onSubmit, true);
         document.removeEventListener('DOMContentLoaded', this.subscribeToCart);
         this.cartSubscriptions?.forEach((unsubscribe) => unsubscribe());
@@ -420,6 +496,22 @@
         }
         const tab = event.target.closest('[role="tab"]');
         if (tab) this.select(tab);
+      };
+
+      // Each option already carries its own variant id, so choosing a size is
+      // a matter of moving that id onto the form the button submits.
+      onChange = (event) => {
+        const select = event.target.closest('[data-pft-option]');
+        if (!select) return;
+        const card = select.closest('.product-feature-tabs__card');
+        const variantInput = card?.querySelector('.product-variant-id');
+        if (variantInput) variantInput.value = select.value;
+
+        // A sold-out size is disabled and cannot be chosen, but a variant can
+        // sell out between the page rendering and the customer picking it.
+        const button = card?.querySelector('[data-pft-add]');
+        const chosen = select.selectedOptions[0];
+        if (button && chosen) button.disabled = chosen.dataset.available === 'false';
       };
       onKeydown = (event) => {
         const tab = event.target.closest('[role="tab"]');
