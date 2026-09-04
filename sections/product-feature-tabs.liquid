@@ -165,19 +165,21 @@
                         </div>
                       </a>
                       <div class="product-feature-tabs__details">
-                        <div class="product-feature-tabs__color">
-                          {%- if card_option != blank and card_option_is_color == false -%}
+                        {%- comment -%}
+                          A size is written out in full - "S ( 25-35 cm)" - and
+                          the measurement is the point of it, so the values take
+                          a row of their own above the quantity rather than
+                          being cut down to fit beside it.
+                        {%- endcomment -%}
+                        {%- if card_option != blank and card_option_is_color == false -%}
+                          <div class="product-feature-tabs__options">
                             {%- for option_value in card_option.values -%}
-                              {%- liquid
-                                assign value_label = option_value | split: '(' | first | strip
-                                if value_label == blank
-                                  assign value_label = option_value
-                                endif
-                              -%}
-                              <span class="product-feature-tabs__option" title="{{ option_value | escape }}" aria-hidden="true">{{ value_label | escape }}</span>
+                              <span class="product-feature-tabs__option">{{ option_value | escape }}</span>
                             {%- endfor -%}
-                            <span class="visually-hidden">{{ card_option.name | escape }}: {{ card_option.values | join: ', ' | escape }}</span>
-                          {%- elsif card_option != blank -%}
+                          </div>
+                        {%- endif -%}
+                        <div class="product-feature-tabs__color">
+                          {%- if card_option != blank and card_option_is_color -%}
                             {%- for color_name in card_option.values -%}
                               {%- liquid
                                 assign swatch_style = blank
@@ -205,7 +207,7 @@
                             {%- else -%}
                               <span class="visually-hidden">{{ card_option.values | join: ', ' | escape }}</span>
                             {%- endif -%}
-                          {%- elsif color_objects != blank -%}
+                          {%- elsif card_option == blank and color_objects != blank -%}
                             {%- for color_object in color_objects -%}
                               {%- assign object_label = color_object.label.value | default: color_object.system.handle | replace: '-', ' ' -%}
                               <span

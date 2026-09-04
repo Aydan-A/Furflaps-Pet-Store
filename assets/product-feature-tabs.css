@@ -124,6 +124,7 @@
   min-height: 3.2rem;
   margin: 0;
   padding: 0.2rem 0.6rem 0;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
   gap: 1.2rem;
@@ -155,13 +156,21 @@
 }
 
 /* A non-colour option, such as size, reads as its values rather than as
-   swatches. They keep the swatch's height and border so a collars card and a
-   letters card sit at the same weight under their images. */
+   swatches, and takes a full row of its own: a size written out in full is
+   too wide to share the quantity's line, and cutting it down would throw away
+   the measurement that makes it useful. */
+.product-feature-tabs__options {
+  display: flex;
+  flex: 1 0 100%;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem;
+}
+
 .product-feature-tabs__option {
   display: inline-flex;
-  height: 1.8rem;
-  min-width: 1.8rem;
-  padding: 0 0.6rem;
+  height: 2rem;
+  padding: 0 0.7rem;
   flex: 0 1 auto;
   align-items: center;
   justify-content: center;
