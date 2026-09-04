@@ -110,6 +110,10 @@
           if per_row == 0
             assign per_row = section_per_row
           endif
+          # A step of small square tiles, such as the letters, reads tighter
+          # than a step of large product cards at the one section gap. 0 keeps
+          # the step on the section setting.
+          assign step_gap = block.settings.card_gap | plus: 0
           assign card_rows = block.settings.rows | plus: 0
           if card_rows == 0
             assign card_rows = 1
@@ -146,7 +150,7 @@
           data-max="{{ max_picks }}"
           {% if block.settings.selection_required %}data-required{% endif %}
           {% if is_final %}data-final{% endif %}
-          style="--ds-per-row: {{ per_row }}; --ds-rows: {{ card_rows }}; --ds-columns-total: {{ columns_total }};{% if block.settings.image_ratio != blank %} --ds-image-ratio: {{ block.settings.image_ratio }};{% endif %}"
+          style="--ds-per-row: {{ per_row }}; --ds-rows: {{ card_rows }}; --ds-columns-total: {{ columns_total }};{% if step_gap > 0 %} --ds-gap: {{ step_gap }}px;{% endif %}{% if block.settings.image_ratio != blank %} --ds-image-ratio: {{ block.settings.image_ratio }};{% endif %}"
           {{ block.shopify_attributes }}
         >
           <div class="ds-step__head">
@@ -341,6 +345,7 @@
         { "type": "header", "content": "Layout" },
         { "type": "select", "id": "layout", "label": "Card layout", "default": "grid", "options": [{ "value": "grid", "label": "Grid (wraps onto new rows)" }, { "value": "carousel", "label": "Carousel (scrolls sideways)" }], "info": "Use the carousel for long lists such as letters." },
         { "type": "range", "id": "cards_per_row", "label": "Cards in view", "min": 0, "max": 8, "step": 1, "default": 0, "info": "Columns across. 0 uses the section setting." },
+        { "type": "range", "id": "card_gap", "label": "Space between cards", "min": 0, "max": 48, "step": 2, "unit": "px", "default": 0, "info": "0 uses the section setting. Small tiles, such as the letters, usually want less space than full product cards." },
         { "type": "range", "id": "rows", "label": "Rows", "min": 1, "max": 4, "step": 1, "default": 1, "info": "Carousel only. Two or more rows keep a long list, such as letters, compact." },
         { "type": "select", "id": "image_ratio", "label": "Card shape", "default": "", "options": [{ "value": "", "label": "Use section setting" }, { "value": "auto", "label": "Original (follows the photo)" }, { "value": "1 / 1", "label": "Square" }, { "value": "4 / 5", "label": "Portrait" }, { "value": "3 / 4", "label": "Tall portrait" }], "info": "Original keeps a wide photo from sitting in a tall box with empty space above and below it. Square suits small cards such as letters." },
 
@@ -374,6 +379,7 @@
             "layout": "carousel",
             "cards_per_row": 6,
             "rows": 2,
+            "card_gap": 12,
             "image_ratio": "1 / 1",
             "enable_personalization": true,
             "personalization_required": false
