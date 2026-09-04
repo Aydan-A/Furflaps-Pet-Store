@@ -30,18 +30,21 @@
   endif
 
   comment
-    Widths are expressed against the theme's page width, not the viewport, so the
-    browser picks the same source in the Theme Editor iframe as on the storefront.
+    Widths are expressed against the section's own container, not the viewport, so
+    the browser picks the same source in the Theme Editor iframe as on the
+    storefront. 116px is the page-width gutter pair plus the column gap; 0.6 is
+    the image column's share of the grid.
   endcomment
-  assign media_width = settings.page_width | minus: 100 | times: 0.6 | round
+  assign content_width = section.settings.content_width
+  assign media_width = content_width | minus: 116 | times: 0.6 | round
   capture media_sizes
     echo '(min-width: '
-    echo settings.page_width
+    echo content_width
     echo 'px) '
     echo media_width
     echo 'px, (min-width: 750px) calc((100vw - 116px) * 0.6), calc(100vw - 30px)'
   endcapture
-  assign media_widths = '375, 550, 750, 900, 1100, 1320'
+  assign media_widths = '375, 550, 750, 900, 1100, 1400, 1800, 2200'
 -%}
 
 {%- if show_product -%}
@@ -54,6 +57,8 @@
 
 {%- style -%}
   .section-{{ section.id }}-padding {
+    --bac-max-width: {{ section.settings.content_width }}px;
+
     padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
     padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
   }
@@ -67,7 +72,7 @@
 {%- endstyle -%}
 
 <div class="section-{{ section.id }}-padding gradient color-{{ section.settings.section_color_scheme }}">
-  <div class="page-width">
+  <div class="page-width before-after-comparison__container">
     <before-after-comparison
       class="before-after-comparison"
       style="--bac-position: {{ section.settings.initial_position }}%;"
@@ -102,7 +107,7 @@
           {%- if section.settings.before_image != blank -%}
             {{
               section.settings.before_image
-              | image_url: width: 1320
+              | image_url: width: 2200
               | image_tag:
                 widths: media_widths,
                 sizes: media_sizes,
@@ -118,7 +123,7 @@
           {%- if section.settings.after_image != blank -%}
             {{
               section.settings.after_image
-              | image_url: width: 1320
+              | image_url: width: 2200
               | image_tag:
                 widths: media_widths,
                 sizes: media_sizes,
@@ -318,6 +323,19 @@
     {
       "type": "paragraph",
       "content": "Products with options open the theme's quick add window so the customer picks a variant before it is added."
+    },
+
+    { "type": "header", "content": "Layout" },
+    {
+      "type": "range",
+      "id": "content_width",
+      "label": "Content width",
+      "info": "Maximum width of the section on desktop. Narrower screens scale down automatically.",
+      "min": 1000,
+      "max": 2000,
+      "step": 20,
+      "unit": "px",
+      "default": 1700
     },
 
     { "type": "header", "content": "Style" },
