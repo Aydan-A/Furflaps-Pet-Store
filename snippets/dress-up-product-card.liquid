@@ -90,100 +90,114 @@
     Controls belong to the chosen card, but every card carries them, hidden, so
     a row never changes height when a selection changes. A step with neither
     options nor a quantity control renders no strip at all, rather than an
-    empty one holding space under every card.
+    empty one holding space under every card. That is why the controls are
+    built before the strip that holds them: whether the strip is rendered at
+    all depends on whether the options produced a control, so the capture has
+    to have run by the time that is asked.
+
+    Spaces are stripped from both sides of the name comparison, and a wanted
+    name matches anywhere in the option's name, so "Size" finds the "Collar
+    Size" these products actually use and a merchant can write "Size, Colour"
+    either way.
   {%- endcomment -%}
+  {%- assign wanted_options = option_names | downcase | replace: ' ', '' | split: ',' -%}
+
+  {%- capture option_controls -%}
+    {%- if show_options -%}
+      {%- for option in product.options_with_values -%}
+        {%- if option.values.size < 2 -%}{%- continue -%}{%- endif -%}
+        {%- liquid
+          assign option_name = option.name | downcase
+          if wanted_options.size > 0
+            assign option_key = option_name | replace: ' ', ''
+            assign option_wanted = false
+            for wanted in wanted_options
+              if wanted == blank
+                continue
+              endif
+              if option_key contains wanted
+                assign option_wanted = true
+                break
+              endif
+            endfor
+            unless option_wanted
+              continue
+            endunless
+          endif
+          assign is_swatch = false
+          if option_name contains 'color' or option_name contains 'colour'
+            assign is_swatch = true
+          endif
+        -%}
+        {%- if option_style == 'dropdown' and is_swatch == false -%}
+          {%- assign select_id = card_id | append: '-option-' | append: forloop.index0 -%}
+          <div class="ds-card__select">
+            <label class="visually-hidden" for="{{ select_id }}">{{ product.title | escape }} — {{ option.name | escape }}</label>
+            <select class="ds-card__select-input" id="{{ select_id }}" data-dress-option-select data-option-index="{{ forloop.index0 }}">
+              {%- for value in option.values -%}
+                <option value="{{ value | escape }}" {% if variant.options[forloop.parentloop.index0] == value %}selected{% endif %}>{{ value }}</option>
+              {%- endfor -%}
+            </select>
+            <span class="ds-card__select-caret" aria-hidden="true">
+              <svg viewBox="0 0 10 6" focusable="false"><path d="M1 1l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </span>
+          </div>
+          {%- continue -%}
+        {%- endif -%}
+
+        <div class="ds-card__values" role="group" aria-label="{{ product.title | escape }} — {{ option.name | escape }}">
+          {%- for value in option.values -%}
+            {%- liquid
+              assign swatch_style = ''
+              if is_swatch
+                if value.swatch.color
+                  assign swatch_style = 'background-color: rgb(' | append: value.swatch.color.rgb | append: ');'
+                elsif value.swatch.image
+                  assign swatch_url = value.swatch.image | image_url: width: 60
+                  assign swatch_style = 'background-image: url(' | append: swatch_url | append: ');'
+                else
+                  # No swatch set on the option value in Shopify: fall back to
+                  # the photo of the variant wearing that colour, so a colour
+                  # always reads as a swatch and never as a word.
+                  for product_variant in product.variants
+                    case option.position
+                      when 1
+                        assign candidate_value = product_variant.option1
+                      when 2
+                        assign candidate_value = product_variant.option2
+                      else
+                        assign candidate_value = product_variant.option3
+                    endcase
+                    if candidate_value == value and product_variant.featured_media != blank
+                      assign swatch_url = product_variant.featured_media | image_url: width: 60
+                      assign swatch_style = 'background-image: url(' | append: swatch_url | append: ');'
+                      break
+                    endif
+                  endfor
+                endif
+              endif
+            -%}
+            <button
+              class="ds-card__value{% if swatch_style != blank %} ds-card__value--swatch{% endif %}"
+              type="button"
+              aria-pressed="false"
+              data-dress-option
+              data-option-index="{{ forloop.parentloop.index0 }}"
+              data-value="{{ value | escape }}"
+              {% if swatch_style != blank %}style="{{ swatch_style }}"{% endif %}
+            >
+              <span {% if swatch_style != blank %}class="visually-hidden"{% endif %}>{{ value }}</span>
+            </button>
+          {%- endfor -%}
+        </div>
+      {%- endfor -%}
+    {%- endif -%}
+  {%- endcapture -%}
+
   {%- assign has_quantity = false -%}
   {%- if show_quantity and product.available -%}{%- assign has_quantity = true -%}{%- endif -%}
   {%- if option_controls contains 'data-dress-option' or has_quantity -%}
   <div class="ds-card__controls">
-    {%- comment -%}
-      Spaces are stripped from both sides of the comparison, so "Collar Size"
-      matches and a merchant can write "Size, Colour" either way.
-    {%- endcomment -%}
-    {%- assign wanted_options = option_names | downcase | replace: ' ', '' | split: ',' -%}
-
-    {%- capture option_controls -%}
-      {%- if show_options -%}
-        {%- for option in product.options_with_values -%}
-          {%- if option.values.size < 2 -%}{%- continue -%}{%- endif -%}
-          {%- liquid
-            assign option_name = option.name | downcase
-            if wanted_options.size > 0
-              assign option_key = option.name | downcase | replace: ' ', ''
-              unless wanted_options contains option_key
-                continue
-              endunless
-            endif
-            assign is_swatch = false
-            if option_name contains 'color' or option_name contains 'colour'
-              assign is_swatch = true
-            endif
-          -%}
-          {%- if option_style == 'dropdown' and is_swatch == false -%}
-            {%- assign select_id = card_id | append: '-option-' | append: forloop.index0 -%}
-            <div class="ds-card__select">
-              <label class="visually-hidden" for="{{ select_id }}">{{ product.title | escape }} — {{ option.name | escape }}</label>
-              <select class="ds-card__select-input" id="{{ select_id }}" data-dress-option-select data-option-index="{{ forloop.index0 }}">
-                {%- for value in option.values -%}
-                  <option value="{{ value | escape }}" {% if variant.options[forloop.parentloop.index0] == value %}selected{% endif %}>{{ value }}</option>
-                {%- endfor -%}
-              </select>
-              <span class="ds-card__select-caret" aria-hidden="true">
-                <svg viewBox="0 0 10 6" focusable="false"><path d="M1 1l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
-              </span>
-            </div>
-            {%- continue -%}
-          {%- endif -%}
-
-          <div class="ds-card__values" role="group" aria-label="{{ product.title | escape }} — {{ option.name | escape }}">
-            {%- for value in option.values -%}
-              {%- liquid
-                assign swatch_style = ''
-                if is_swatch
-                  if value.swatch.color
-                    assign swatch_style = 'background-color: rgb(' | append: value.swatch.color.rgb | append: ');'
-                  elsif value.swatch.image
-                    assign swatch_url = value.swatch.image | image_url: width: 60
-                    assign swatch_style = 'background-image: url(' | append: swatch_url | append: ');'
-                  else
-                    # No swatch set on the option value in Shopify: fall back to
-                    # the photo of the variant wearing that colour, so a colour
-                    # always reads as a swatch and never as a word.
-                    for product_variant in product.variants
-                      case option.position
-                        when 1
-                          assign candidate_value = product_variant.option1
-                        when 2
-                          assign candidate_value = product_variant.option2
-                        else
-                          assign candidate_value = product_variant.option3
-                      endcase
-                      if candidate_value == value and product_variant.featured_media != blank
-                        assign swatch_url = product_variant.featured_media | image_url: width: 60
-                        assign swatch_style = 'background-image: url(' | append: swatch_url | append: ');'
-                        break
-                      endif
-                    endfor
-                  endif
-                endif
-              -%}
-              <button
-                class="ds-card__value{% if swatch_style != blank %} ds-card__value--swatch{% endif %}"
-                type="button"
-                aria-pressed="false"
-                data-dress-option
-                data-option-index="{{ forloop.parentloop.index0 }}"
-                data-value="{{ value | escape }}"
-                {% if swatch_style != blank %}style="{{ swatch_style }}"{% endif %}
-              >
-                <span {% if swatch_style != blank %}class="visually-hidden"{% endif %}>{{ value }}</span>
-              </button>
-            {%- endfor -%}
-          </div>
-        {%- endfor -%}
-      {%- endif -%}
-    {%- endcapture -%}
-
     {%- comment -%}
       Only wrap real controls: an empty options box would take the place of the
       quantity stepper as the row's only child, and stop it centring.
