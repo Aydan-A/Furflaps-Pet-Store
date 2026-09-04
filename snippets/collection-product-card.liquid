@@ -78,12 +78,18 @@
   endif
 
   comment
-    Anything Shopify still needs a selection for gets "Choose options" and a
-    dialog. Never a one click add that guesses the variant.
+    Anything Shopify still needs a selection for opens the dialog rather than
+    adding a guessed variant. The label is the merchant's call: "Choose
+    options" says what the click does, "Add to cart" says where it leads.
   endcomment
   assign needs_options = false
   if product.variants_count > 1 or quantity_rules
     assign needs_options = true
+  endif
+
+  assign options_label = 'products.product.choose_options' | t
+  if settings_card.action_label == 'add_to_cart'
+    assign options_label = 'products.product.add_to_cart' | t
   endif
 
   assign second_media = null
@@ -254,10 +260,10 @@
               name="add"
               class="cg-card__action"
               aria-haspopup="dialog"
-              aria-label="{{ 'products.product.choose_options' | t }} — {{ product.title | escape }}"
+              aria-label="{{ options_label }} — {{ product.title | escape }}"
               data-product-url="{{ product.url }}"
             >
-              <span class="cg-card__action-label">{{ 'products.product.choose_options' | t }}</span>
+              <span class="cg-card__action-label">{{ options_label }}</span>
               {%- render 'loading-spinner' -%}
             </button>
           </modal-opener>
