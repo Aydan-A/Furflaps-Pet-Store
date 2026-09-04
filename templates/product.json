@@ -58,24 +58,6 @@
           "type": "description",
           "settings": {}
         },
-        "collapsible_tab_dMKpiH": {
-          "type": "collapsible_tab",
-          "settings": {
-            "heading": "Collapsible row",
-            "icon": "check_mark",
-            "content": "",
-            "page": ""
-          }
-        },
-        "collapsible_tab_LMemEU": {
-          "type": "collapsible_tab",
-          "settings": {
-            "heading": "Collapsible row",
-            "icon": "check_mark",
-            "content": "",
-            "page": ""
-          }
-        },
         "share": {
           "type": "share",
           "settings": {
@@ -92,8 +74,6 @@
         "quantity_selector",
         "buy_buttons",
         "description",
-        "collapsible_tab_dMKpiH",
-        "collapsible_tab_LMemEU",
         "share"
       ],
       "settings": {
@@ -141,30 +121,11 @@
         "padding_top": 36,
         "padding_bottom": 28
       }
-    },
-    "178855514080209034": {
-      "type": "_blocks",
-      "blocks": {
-        "ai_gen_block_cbb4868_cbGVzN": {
-          "type": "ai_gen_block_cbb4868",
-          "settings": {
-            "whats_included_heading": "What's included",
-            "product_features_heading": "Product features",
-            "care_instructions_heading": "Care instructions"
-          },
-          "blocks": {}
-        }
-      },
-      "block_order": [
-        "ai_gen_block_cbb4868_cbGVzN"
-      ],
-      "settings": {}
     }
   },
   "order": [
     "main",
     "disclosures",
-    "related-products",
-    "178855514080209034"
+    "related-products"
   ]
 }
