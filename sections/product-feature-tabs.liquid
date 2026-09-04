@@ -322,10 +322,28 @@
         button.removeAttribute('data-pft-state');
       }
 
+      // Dawn opens the drawer a frame after the response, which would cover the
+      // button mid-animation. Hold it back until the product has landed.
+      deferCartDrawer(delay) {
+        const drawer = document.querySelector('cart-drawer');
+        if (!drawer || this.drawerDeferred || typeof drawer.open !== 'function') return;
+        const open = drawer.open;
+        let queued = null;
+        this.drawerDeferred = true;
+        drawer.open = (...args) => { queued = args; };
+        setTimeout(() => {
+          delete drawer.open;
+          this.drawerDeferred = false;
+          if (queued) open.apply(drawer, queued);
+        }, delay);
+      }
+
       playAdded(button) {
         if (!button.isConnected) return;
         this.resetAddButton(button);
         const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        // Patch synchronously: renderContents schedules the open before our next frame.
+        if (!reduceMotion) this.deferCartDrawer(700);
 
         // Runs on the next frame so the loading spinner is already hidden when we measure.
         requestAnimationFrame(() => {

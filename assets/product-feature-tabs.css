@@ -208,18 +208,14 @@
   font-size: 1.3rem;
   font-weight: 700;
   cursor: pointer;
+  position: relative;
+  --pft-add-shift: 0px;
 }
 
 .product-feature-tabs__add:hover:not(:disabled) { opacity: 0.88; }
 .product-feature-tabs__add:disabled { opacity: 0.5; cursor: not-allowed; }
 .product-feature-tabs__add:focus-visible { outline: 0.2rem solid currentColor; outline-offset: 0.2rem; }
 .product-feature-tabs__add .loading__spinner { width: 1.6rem; }
-
-/* Add to cart icon + success animation */
-.product-feature-tabs__add {
-  position: relative;
-  --pft-add-shift: 0px;
-}
 
 /* Default and success faces stack on the same spot, so the button never resizes
    and each face stays centred on its own. Stretching this to the button height
