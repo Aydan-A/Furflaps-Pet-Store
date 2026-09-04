@@ -98,48 +98,23 @@
                         endif
                       endfor
                     endif
-                    # Each card shows one of the product's own options under
-                    # its image, and the tab says which: the collars tab asks
-                    # for the size, the letters tab leaves it to the colour. A
-                    # wanted name matches anywhere in the option's name, so
-                    # "Size" finds the "Collar Size" these products use, and a
-                    # tab that names an option a product does not have falls
-                    # back to colour rather than leaving the row empty.
-                    assign card_option = blank
-                    assign wanted_option = block.settings.option_name | downcase | replace: ' ', ''
-                    if wanted_option != blank
-                      for product_option in product.options_with_values
-                        assign option_key = product_option.name | downcase | replace: ' ', ''
-                        if option_key contains wanted_option
-                          assign card_option = product_option
-                          break
-                        endif
-                      endfor
-                    endif
+                    # Every colour on the card comes from the product itself.
+                    # The Colour option lists what the product is actually
+                    # available in, and the hex behind each value comes from
+                    # that value's own swatch, or from the custom.color
+                    # metaobjects the store keeps its palette in. A value with
+                    # no colour recorded anywhere renders as a plain chip
+                    # rather than as a guessed hex, which is what a hard-coded
+                    # name-to-hex table amounts to once the palette moves.
+                    assign color_option = blank
+                    for product_option in product.options_with_values
+                      assign option_name = product_option.name | downcase
+                      if option_name contains 'color' or option_name contains 'colour'
+                        assign color_option = product_option
+                        break
+                      endif
+                    endfor
 
-                    if card_option == blank
-                      for product_option in product.options_with_values
-                        assign option_name = product_option.name | downcase
-                        if option_name contains 'color' or option_name contains 'colour'
-                          assign card_option = product_option
-                          break
-                        endif
-                      endfor
-                    endif
-
-                    # Colours are swatches; everything else is its values.
-                    assign card_option_is_color = false
-                    assign card_option_name = card_option.name | downcase
-                    if card_option_name contains 'color' or card_option_name contains 'colour'
-                      assign card_option_is_color = true
-                    endif
-
-                    # The hex behind a colour comes from the value's own
-                    # swatch, or from the custom.color metaobjects the store
-                    # keeps its palette in. A value with no colour recorded
-                    # anywhere renders as a plain chip rather than as a guessed
-                    # hex, which is what a hard-coded name-to-hex table amounts
-                    # to once the palette moves.
                     assign color_objects = blank
                     assign color_metafield = product.metafields.custom.color
                     if color_metafield == blank
@@ -166,19 +141,8 @@
                       </a>
                       <div class="product-feature-tabs__details">
                         <div class="product-feature-tabs__color">
-                          {%- if card_option != blank and card_option_is_color == false -%}
-                            {%- for option_value in card_option.values -%}
-                              {%- liquid
-                                assign value_label = option_value | split: '(' | first | strip
-                                if value_label == blank
-                                  assign value_label = option_value
-                                endif
-                              -%}
-                              <span class="product-feature-tabs__option" title="{{ option_value | escape }}" aria-hidden="true">{{ value_label | escape }}</span>
-                            {%- endfor -%}
-                            <span class="visually-hidden">{{ card_option.name | escape }}: {{ card_option.values | join: ', ' | escape }}</span>
-                          {%- elsif card_option != blank -%}
-                            {%- for color_name in card_option.values -%}
+                          {%- if color_option != blank -%}
+                            {%- for color_name in color_option.values -%}
                               {%- liquid
                                 assign swatch_style = blank
                                 if color_name.swatch.color
@@ -200,10 +164,10 @@
                               -%}
                               <span class="product-feature-tabs__swatch"{% if swatch_style != blank %} style="{{ swatch_style }}"{% endif %} aria-hidden="true"></span>
                             {%- endfor -%}
-                            {%- if card_option.values.size == 1 -%}
-                              <span>{{ card_option.values | first | escape }}</span>
+                            {%- if color_option.values.size == 1 -%}
+                              <span>{{ color_option.values | first | escape }}</span>
                             {%- else -%}
-                              <span class="visually-hidden">{{ card_option.values | join: ', ' | escape }}</span>
+                              <span class="visually-hidden">{{ color_option.values | join: ', ' | escape }}</span>
                             {%- endif -%}
                           {%- elsif color_objects != blank -%}
                             {%- for color_object in color_objects -%}
@@ -496,16 +460,7 @@
     { "type": "range", "id": "mobile_padding_inline", "label": "Mobile side padding", "min": 8, "max": 40, "step": 2, "unit": "px", "default": 16 }
   ],
   "blocks": [
-    {
-      "type": "tab",
-      "name": "Collection tab",
-      "limit": 6,
-      "settings": [
-        { "type": "text", "id": "label", "label": "Tab label" },
-        { "type": "collection", "id": "collection", "label": "Collection" },
-        { "type": "text", "id": "option_name", "label": "Option shown on the card", "info": "For example: Size. The name matches anywhere in the product's own option name, so Size finds Collar Size. Leave empty to show the product's colours." }
-      ]
-    }
+    { "type": "tab", "name": "Collection tab", "limit": 6, "settings": [{ "type": "text", "id": "label", "label": "Tab label" }, { "type": "collection", "id": "collection", "label": "Collection" }] }
   ],
   "presets": [{ "name": "Product feature tabs", "blocks": [{ "type": "tab" }, { "type": "tab" }, { "type": "tab" }] }]
 }

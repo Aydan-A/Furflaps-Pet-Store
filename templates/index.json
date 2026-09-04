@@ -371,24 +371,21 @@
           "type": "tab",
           "settings": {
             "label": "",
-            "collection": "collars",
-            "option_name": "Size"
+            "collection": "collars"
           }
         },
         "tab_Yf6YBD": {
           "type": "tab",
           "settings": {
             "label": "",
-            "collection": "letters",
-            "option_name": ""
+            "collection": "letters"
           }
         },
         "tab_EbGHnG": {
           "type": "tab",
           "settings": {
             "label": "",
-            "collection": "icons",
-            "option_name": ""
+            "collection": "icons"
           }
         }
       },
