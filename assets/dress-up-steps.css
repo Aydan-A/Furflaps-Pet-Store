@@ -379,9 +379,9 @@
    at the card's own gap rather than being pushed to the bottom of a stretched
    card.
 
-   Two centred rows, not one wrapping line: the options keep to a single row
-   under the image and the quantity sits centred beneath them, so a card reads
-   the same whatever its options are and whatever width the step is at. The
+   Stacked and centred, not one wrapping line: the options sit under the image
+   and the quantity centres beneath them, so the stepper lands in the same
+   place on every card whether the options above it take one line or two. The
    row gap matches the card's own gap, so image to options and options to
    quantity read the same. */
 .ds-card__controls {
@@ -403,16 +403,16 @@
   justify-content: center;
   gap: .6rem;
 }
-/* One row, always. A value too wide for the card shrinks and clips rather
-   than dropping the row onto a second line: the labels are already trimmed to
-   their short form in the card snippet, so what is left to lose is the tail of
-   a long word, not the value itself. */
-.ds-card__values { display: flex; min-width: 0; flex-wrap: nowrap; gap: .4rem; }
+/* Values wrap rather than shrink: a size is written out in full - "S ( 25-35
+   cm)" - and that measurement is the point of it, so a row too narrow for
+   three of them takes a second line instead of clipping one. */
+.ds-card__values { display: flex; min-width: 0; flex-wrap: wrap; gap: .4rem; }
 .ds-card__value {
   display: inline-grid;
+  max-width: 100%;
   min-width: var(--ds-control-small);
   height: var(--ds-control-small);
-  padding: 0 1rem;
+  padding: 0 1.2rem;
   place-items: center;
   border: .2rem solid transparent;
   border-radius: var(--ds-radius-control);
