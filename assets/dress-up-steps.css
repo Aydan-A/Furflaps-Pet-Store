@@ -261,6 +261,13 @@
 .ds-field__input[aria-invalid='true'] { border-color: var(--ds-accent); }
 
 .ds-step__arrows { display: flex; margin-left: auto; gap: .8rem; }
+
+/* Swipe cue for the carousel. Desktop and tablet have the arrows to say the
+   track carries on; phones hide them, so the track gets a scrollbar of its own
+   instead - one that reports both how far along it is and how much of the row
+   is in view, which the arrows cannot. Decorative: the track is already
+   scrollable by touch and the arrows still drive it by keyboard. */
+.ds-progress { display: none; }
 .ds-arrow {
   display: grid;
   width: 3.6rem;
@@ -558,12 +565,57 @@
     scrollbar-width: none;
   }
   .ds-track[data-layout='carousel']::-webkit-scrollbar { display: none; }
+
+  /* Every card reserves room for the controls it only reveals once picked, so a
+     row keeps its height as selections change. Four across on a desktop that
+     reserve is a single control row; two or three across on a phone the options
+     and the quantity each need a line of their own, and the reserve becomes a
+     void most of a tile tall under every card in the grid. Here the controls
+     collapse instead and the picked card grows - and that is the card just
+     tapped, so the row changes exactly where the customer is already looking. */
+  .ds-card__controls { display: none; }
+  .ds-card--selected .ds-card__controls { display: flex; }
+
+  /* The price and the button are the step's own pair rather than two things at
+     opposite ends of the row: the button takes whatever width the price leaves,
+     which also makes the step's primary action the widest target in it. */
+  .ds-step--open .ds-step__actions { gap: 1.2rem; justify-content: flex-start; }
+  .ds-step--open .ds-step__actions .ds-button { flex: 1 1 auto; justify-content: center; }
+
+  .ds-progress {
+    position: relative;
+    display: block;
+    width: min(12rem, 40%);
+    height: .3rem;
+    margin: 1.6rem auto 0;
+    border-radius: var(--ds-radius-control);
+    background: color-mix(in srgb, currentColor 12%, transparent);
+  }
+
+  /* Beats the display: block above when the track fits and there is nothing to
+     report. */
+  .ds-progress[hidden] { display: none; }
+
+  .ds-progress span {
+    position: absolute;
+    inset-block: 0;
+    left: var(--ds-progress-offset, 0%);
+    width: var(--ds-progress-size, 100%);
+    border-radius: inherit;
+    background: color-mix(in srgb, currentColor 55%, transparent);
+  }
 }
 
-/* Below 480px a card narrower than half the step cannot hold its size control
-   and quantity stepper, so two is the floor whatever the step is set to. */
+/* Below 480px a card narrower than half the step cannot hold a size select and
+   a quantity stepper side by side, so two is the floor - but only for the steps
+   that have a select. A step whose options are swatch or value buttons carries
+   nothing that wide, and holding it to two made a step of small square tiles as
+   coarse as a step of product photos: the alphabet showed two letters at a time
+   and ran several screens sideways. Where :has is unsupported the floor is
+   simply lost, which changes nothing - the rule above already resolves to two
+   for any step set to four or fewer, and only a step set higher reaches here. */
 @media screen and (max-width: 479px) {
-  .ds-step { --ds-visible: min(var(--ds-per-row, 4), 2); }
+  .ds-step:has(.ds-card__select) { --ds-visible: min(var(--ds-per-row, 4), 2); }
 }
 
 @media (prefers-reduced-motion: reduce) {

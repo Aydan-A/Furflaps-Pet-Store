@@ -22,6 +22,7 @@ if (!customElements.get('dress-up-steps')) {
             index,
             panel: el.querySelector('[data-dress-panel]'),
             track: el.querySelector('[data-dress-track]'),
+            progress: el.querySelector('[data-dress-progress]'),
             toggle: el.querySelector('[data-dress-toggle]'),
             pill: el.querySelector('[data-dress-pill]'),
             pillText: el.querySelector('[data-dress-pill-text]'),
@@ -250,7 +251,26 @@ if (!customElements.get('dress-up-steps')) {
         }
       }
 
+      // The phone-only scroll cue is driven by the same scroll, open and resize
+      // events as the arrows, so it is rendered from here rather than wiring up
+      // a second set of listeners for it.
+      renderProgress(step) {
+        if (!step.progress || !step.track) return;
+
+        const maxScroll = step.track.scrollWidth - step.track.clientWidth;
+        step.progress.hidden = maxScroll <= 1;
+        if (step.progress.hidden) return;
+
+        // The thumb is as long a share of the bar as the visible part of the
+        // track is of its full width, and slides across the rest as it scrolls.
+        const visible = step.track.clientWidth / step.track.scrollWidth;
+        const travelled = step.track.scrollLeft / maxScroll;
+        step.progress.style.setProperty('--ds-progress-size', `${(visible * 100).toFixed(2)}%`);
+        step.progress.style.setProperty('--ds-progress-offset', `${(travelled * (1 - visible) * 100).toFixed(2)}%`);
+      }
+
       renderArrows(step) {
+        this.renderProgress(step);
         if (!step.arrows.length || !step.track) return;
         const maxScroll = step.track.scrollWidth - step.track.clientWidth - 1;
         const scrollable = maxScroll > 0;
