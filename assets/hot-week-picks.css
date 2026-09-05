@@ -149,6 +149,15 @@
 }
 
 .hot-week-picks__card {
+  /* The card is the containing block for its own absolutely positioned
+     content. The visually-hidden swatch names and "Regular price" label are
+     position: absolute with no positioned ancestor otherwise, so their
+     containing block would be the page - and an element whose containing block
+     sits outside a scroller cannot be clipped by it. They kept their static
+     positions far down the row and gave the whole page ~766px of sideways
+     scroll on WebKit (Safari/iOS), while Chrome clipped them and showed
+     nothing wrong. Same guard as .ds-card in dress-up-steps.css. */
+  position: relative;
   display: flex;
   flex-direction: column;
   width: 100%;
