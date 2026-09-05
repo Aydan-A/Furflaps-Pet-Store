@@ -403,7 +403,7 @@
       "name": "Product feature tabs",
       "settings": {
         "show_header": true,
-        "heading": "Shop by Collections",
+        "heading": "<strong>Shop by Collections</strong>",
         "text": "",
         "heading_size": "h1",
         "alignment": "center",
