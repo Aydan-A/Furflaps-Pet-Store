@@ -526,6 +526,19 @@
   cursor: pointer;
 }
 .ds-card__quantity-button:hover:not(:disabled) { background: rgba(0, 0, 0, .06); }
+
+/* The stepper is sized for a product card. On a tile narrower than the stepper
+   itself it hung over the cards either side - 8px into each gap on a letter at
+   320px. Below that width it spans its own card instead and trades the fixed
+   button size for one that fits, staying above the 24px minimum. Measured
+   against the card rather than the screen: how narrow a card gets depends on
+   the step's own cards-in-view setting as much as on the viewport. */
+@container (max-width: 10.4rem) {
+  .ds-card__controls { padding-inline: 0; }
+  .ds-card__quantity { width: 100%; justify-content: space-between; padding-inline: .2rem; }
+  .ds-card__quantity-button { width: 2.8rem; height: 2.8rem; }
+  .ds-card__quantity-value { min-width: 1.2rem; }
+}
 /* One is the floor, so the control says so rather than going quietly nowhere. */
 .ds-card__quantity-button:disabled { color: var(--ds-border); cursor: not-allowed; }
 .ds-card__quantity-value { min-width: 2rem; font-size: 1.3rem; font-weight: 700; text-align: center; }
