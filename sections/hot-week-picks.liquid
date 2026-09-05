@@ -187,6 +187,14 @@
               </li>
             {%- endfor -%}
           </ul>
+          {%- comment -%}
+            Phone-only swipe affordance; the scroll arrows are hidden at that
+            width. Hidden until the script measures a row that actually scrolls,
+            and decorative, so it is out of the accessibility tree entirely.
+          {%- endcomment -%}
+          <div class="hot-week-picks__progress" data-progress aria-hidden="true" hidden>
+            <span></span>
+          </div>
         {%- else -%}
           <div class="hot-week-picks__empty">
             {%- if request.design_mode -%}

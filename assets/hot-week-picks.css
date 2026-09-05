@@ -148,6 +148,15 @@
   }
 }
 
+/* Swipe affordance. Desktop and tablet have the arrows to say the row scrolls;
+   phones hide them, so the row gets a scrollbar of its own instead. The thumb is
+   sized to the share of the row that is visible and offset by how far it has
+   been scrolled, so it reports position and length the way the arrows cannot.
+   Purely decorative - the row is already scrollable by touch and by keyboard. */
+.hot-week-picks__progress {
+  display: none;
+}
+
 .hot-week-picks__card {
   /* The card is the containing block for its own absolutely positioned
      content. The visually-hidden swatch names and "Regular price" label are
@@ -414,5 +423,81 @@
   .hot-card__cart {
     width: max(var(--hot-cart-size), 4.4rem);
     height: max(var(--hot-cart-size), 4.4rem);
+  }
+
+  /* The header stacks and centres. Side by side, the heading and the tabs each
+     took a whole line anyway - wrapped, but still hard against the left gutter,
+     which read as two unrelated rows rather than one titled control. */
+  .hot-week-picks__header {
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1.4rem;
+    text-align: center;
+  }
+
+  .hot-week-picks__heading {
+    /* Merchant headings longer than one line split evenly rather than leaving a
+       single word on the second line. Ignored where unsupported. */
+    text-wrap: balance;
+  }
+
+  .hot-week-picks__controls {
+    width: 100%;
+    justify-content: center;
+  }
+
+  /* The two tabs become one segmented control. On its own the filled active tab
+     reads as a lone button and the inactive one as loose text; a hairline track
+     around the pair says they are two states of the same choice. The track's
+     colours come from the section's own text colour and tab radius, so it
+     follows the merchant's palette instead of introducing a setting. */
+  .hot-week-picks__tabs {
+    padding: 0.4rem;
+    border: 1px solid color-mix(in srgb, currentColor 16%, transparent);
+    border-radius: calc(var(--hot-tab-radius) + 0.4rem);
+  }
+
+  /* The row runs to both screen edges, with the gutter moved onto the scroller
+     as padding. The card width is unchanged - the grid still measures 100% of
+     the same content box - but a card now leaves the screen at its edge instead
+     of stopping short of it, so the peeking next card reads as a row that
+     continues rather than as content cut off. */
+  .hot-week-picks__panel {
+    margin-inline: calc(var(--hot-mobile-padding-inline) * -1);
+  }
+
+  .hot-week-picks__products {
+    padding-inline: var(--hot-mobile-padding-inline);
+    scroll-padding-inline: var(--hot-mobile-padding-inline);
+  }
+
+  .hot-week-picks__empty {
+    margin-inline: var(--hot-mobile-padding-inline);
+  }
+
+  .hot-week-picks__progress {
+    position: relative;
+    display: block;
+    width: min(12rem, 40%);
+    height: 0.3rem;
+    margin: 1.8rem auto 0;
+    border-radius: 999px;
+    background: color-mix(in srgb, currentColor 12%, transparent);
+  }
+
+  /* Beats the display: block above when the row fits and there is nothing to
+     report. */
+  .hot-week-picks__progress[hidden] {
+    display: none;
+  }
+
+  .hot-week-picks__progress span {
+    position: absolute;
+    inset-block: 0;
+    left: var(--hot-progress-offset, 0%);
+    width: var(--hot-progress-size, 100%);
+    border-radius: inherit;
+    background: color-mix(in srgb, currentColor 55%, transparent);
   }
 }
