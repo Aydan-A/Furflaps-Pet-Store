@@ -162,8 +162,21 @@
         tabindex="0"
         {% unless panel_is_active or section.settings.show_tabs == false %}hidden{% endunless %}
       >
+        {%- liquid
+          # A row only shows the next card peeking past the edge when there is
+          # a next card. Below the mobile column count the row still fills the
+          # width, so a short collection does not end in a stray gap.
+          assign shown_count = tab_collection.products_count
+          if shown_count > section.settings.products_to_show
+            assign shown_count = section.settings.products_to_show
+          endif
+          assign mobile_columns = section.settings.columns_mobile | plus: 0
+          if mobile_columns < 1
+            assign mobile_columns = 1
+          endif
+        -%}
         {%- if tab_collection != blank and tab_collection.products_count > 0 -%}
-          <ul class="hot-week-picks__products" role="list">
+          <ul class="hot-week-picks__products{% if shown_count > mobile_columns %} hot-week-picks__products--peek{% endif %}" role="list">
             {%- for product in tab_collection.products limit: section.settings.products_to_show -%}
               <li class="hot-week-picks__product">
                 {% render 'hot-week-picks-card',

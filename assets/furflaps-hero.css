@@ -232,6 +232,42 @@
   fill: currentColor;
 }
 
+/* Tablets keep the two-panel layout, but the desktop section ratio gives the
+   content panel less height than the desktop type needs at this width, and the
+   panel clips what does not fit. Here the panel takes its height from its own
+   content and the type steps between the two sizes the section already has,
+   so nothing is cut off. Desktop (990px and up) is untouched. */
+@media screen and (min-width: 750px) and (max-width: 989px) {
+  .furflaps-hero__grid {
+    aspect-ratio: auto;
+  }
+
+  /* The desktop setting is the ceiling and 4vw the fluid value, so the padding
+     never grows past what the merchant set however the two are configured. */
+  .furflaps-hero__slide {
+    padding: min(var(--ff-content-padding-vertical), max(2.4rem, 4vw))
+      min(var(--ff-content-padding-horizontal), max(2rem, 4vw));
+  }
+
+  /* The dots overlay the foot of the panel. With the panel now sized by its
+     content there is no slack left for them to sit in, so a slide that has
+     pagination reserves their offset - the same clearance the phone layout's
+     larger bottom padding already leaves. */
+  .furflaps-hero__content:has(.furflaps-hero__pagination) .furflaps-hero__slide {
+    padding-bottom: calc(
+      var(--ff-pagination-offset-vertical) + var(--ff-indicator-height) + 0.4rem
+    );
+  }
+
+  .furflaps-hero__heading {
+    font-size: clamp(var(--ff-mobile-heading-size), 4.6vw, var(--ff-heading-size));
+  }
+
+  .furflaps-hero__description {
+    font-size: clamp(var(--ff-mobile-body-size), 2vw, var(--ff-body-size));
+  }
+}
+
 @media screen and (max-width: 749px) {
   .furflaps-hero {
     padding: var(--ff-mobile-section-padding-top) var(--ff-mobile-section-padding-inline) var(--ff-mobile-section-padding-bottom);

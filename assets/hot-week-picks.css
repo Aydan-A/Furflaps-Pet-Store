@@ -1,4 +1,8 @@
 .hot-week-picks {
+  /* How much of the next card shows past the right edge on phones, where the
+     scroll arrows are hidden and the row has nothing else to say it scrolls. */
+  --hot-mobile-peek: 3.2rem;
+
   display: block;
   background: var(--hot-section-background);
   color: var(--hot-text-color);
@@ -383,5 +387,23 @@
 
   .hot-week-picks__products {
     --hot-columns: var(--hot-columns-mobile);
+  }
+
+  /* Only a row that actually has more products than fit gives up the peek, so
+     a short row still fills the width rather than ending in a stray gap. */
+  .hot-week-picks__products--peek {
+    grid-auto-columns: calc(
+      (100% - (var(--hot-columns) - 1) * var(--hot-card-gap) - var(--hot-mobile-peek)) / var(--hot-columns)
+    );
+  }
+
+  /* Touch targets: the merchant sizes stay in charge above the 44px floor. */
+  .hot-week-picks__tab {
+    min-height: max(var(--hot-tab-height), 4.4rem);
+  }
+
+  .hot-card__cart {
+    width: max(var(--hot-cart-size), 4.4rem);
+    height: max(var(--hot-cart-size), 4.4rem);
   }
 }

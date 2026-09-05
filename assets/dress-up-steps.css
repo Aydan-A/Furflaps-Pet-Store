@@ -516,12 +516,21 @@
 
 /* ---------- Responsive ---------- */
 
+/* How many cards a step shows shrinks with the screen, but a step of small
+   square tiles and a step of large product cards should not land on the same
+   count: eight letters per row dropping straight to two made each letter the
+   size of a collar photo and turned the alphabet into a long sideways scroll.
+   The count now steps down from the step's own setting, floored so large cards
+   keep the counts they had and capped so a card never drops below the width its
+   size-and-quantity row needs. Subtraction rather than a fraction, so the count
+   is always whole and a step never shows a half card. A step set to 4 is
+   unchanged at every width; a step set to 8 keeps more of its tiles in view. */
 @media screen and (max-width: 989px) {
-  .ds-step { --ds-visible: min(var(--ds-per-row, 4), 3); }
+  .ds-step { --ds-visible: min(var(--ds-per-row, 4), clamp(3, calc(var(--ds-per-row, 4) - 4), 4)); }
 }
 
 @media screen and (max-width: 749px) {
-  .ds-step { --ds-visible: min(var(--ds-per-row, 4), 2); }
+  .ds-step { --ds-visible: min(var(--ds-per-row, 4), clamp(2, calc(var(--ds-per-row, 4) - 4), 3)); }
   .dress-up-steps {
     /* Room for a fingertip on the controls a customer actually taps. */
     --ds-control-small: 4rem;
@@ -549,6 +558,12 @@
     scrollbar-width: none;
   }
   .ds-track[data-layout='carousel']::-webkit-scrollbar { display: none; }
+}
+
+/* Below 480px a card narrower than half the step cannot hold its size control
+   and quantity stepper, so two is the floor whatever the step is set to. */
+@media screen and (max-width: 479px) {
+  .ds-step { --ds-visible: min(var(--ds-per-row, 4), 2); }
 }
 
 @media (prefers-reduced-motion: reduce) {

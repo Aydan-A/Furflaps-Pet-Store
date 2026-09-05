@@ -121,6 +121,55 @@
       padding-bottom: {{ section.settings.padding_bottom }}px;
     }
   }
+
+  /* Phones: the 3rem gutter above is a desktop measure, and the brand name is
+     set to never wrap. Together they made the logo, name and icons wider than
+     a 320-390px viewport, so the whole page scrolled sideways. The gutter drops
+     to the theme's own page gutter, the name scales with the viewport up to the
+     merchant's size, and every part of the row is allowed to shrink. */
+  @media screen and (max-width: 749px) {
+    .header {
+      padding-inline: 1.5rem;
+      column-gap: 0.4rem;
+    }
+
+    .header .header__heading,
+    .header .header__heading-link {
+      min-width: 0;
+    }
+
+    .header .header__heading-link {
+      gap: 0.6rem;
+      padding-inline: 0;
+    }
+
+    .header .header__heading-logo-wrapper {
+      width: auto;
+      flex: 0 1 auto;
+    }
+
+    /* max-width only ever shrinks, so the logo keeps its set width from about
+       390px up and gives a little back on the narrowest phones, where the row
+       has the least to share. */
+    .header .header__heading-logo {
+      max-width: min(100%, 18vw);
+    }
+
+    .header .header__brand-name {
+      min-width: 0;
+      overflow: hidden;
+      font-size: clamp(1.3rem, 4.6vw, var(--header-brand-font-size, 2rem));
+      text-overflow: ellipsis;
+    }
+
+    /* The icon buttons carry a 44px tap area around a ~20px glyph. Hanging that
+       overhang into the gutter, as the menu button already does on the left,
+       lines the glyphs up with the page gutter instead of sitting 3rem inside. */
+    .header .header__icons {
+      margin-right: -1.2rem;
+      padding-right: 0;
+    }
+  }
 {%- endstyle -%}
 
 <script src="{{ 'cart-notification.js' | asset_url }}" defer="defer"></script>

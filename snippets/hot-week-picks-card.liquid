@@ -59,6 +59,28 @@
     assign discount_final = discount_pct | append: '% off'
   endif
 
+  # The card's width is set by the column count for the breakpoint, so the
+  # sizes hint is derived from the same settings rather than a fixed guess.
+  # A single full-width card was being told it was 72vw, which loaded an image
+  # too small for it on a phone.
+  assign hot_columns_mobile = section.settings.columns_mobile | plus: 0
+  if hot_columns_mobile < 1
+    assign hot_columns_mobile = 1
+  endif
+  assign hot_columns_tablet = section.settings.columns_tablet | plus: 0
+  if hot_columns_tablet < 1
+    assign hot_columns_tablet = 1
+  endif
+  assign hot_mobile_vw = 90 | divided_by: hot_columns_mobile
+  assign hot_tablet_vw = 92 | divided_by: hot_columns_tablet
+  capture hot_card_sizes
+    echo '(min-width: 990px) 25vw, (min-width: 750px) '
+    echo hot_tablet_vw
+    echo 'vw, '
+    echo hot_mobile_vw
+    echo 'vw'
+  endcapture
+
   assign money_price = blank
   assign money_compare_price = blank
   if settings.currency_code_enabled
@@ -92,7 +114,7 @@
           | image_tag:
             class: 'hot-card__image',
             widths: '240, 360, 480, 640, 750, 900',
-            sizes: '(min-width: 990px) 25vw, (min-width: 750px) 38vw, 72vw',
+            sizes: hot_card_sizes,
             loading: lazy_load
         }}
       {%- else -%}

@@ -5,6 +5,16 @@
     assign loading = 'eager'
     assign fetch_priority = 'high'
   endif
+
+  # The sizes attribute takes CSS lengths but not custom properties: a var()
+  # here is invalid, so the browser fell back to 100vw and pulled the largest
+  # source for an icon a few dozen pixels wide. The icon is one size at every
+  # breakpoint, so the setting itself is the hint.
+  assign icon_size = section.settings.icon_size | plus: 0
+  if icon_size < 1
+    assign icon_size = 60
+  endif
+  assign icon_sizes = icon_size | append: 'px'
 -%}
 
 {%- style -%}
@@ -197,7 +207,7 @@
                   | image_url: width: 400
                   | image_tag:
                     widths: '60, 90, 120, 180, 240, 320, 400',
-                    sizes: '(min-width: 750px) var(--feature-highlights-icon-size), var(--feature-highlights-icon-size)',
+                    sizes: icon_sizes,
                     loading: loading,
                     fetchpriority: fetch_priority,
                     class: 'feature-highlights__image'
