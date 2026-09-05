@@ -315,6 +315,11 @@
    carousel's clip and give the page a horizontal scrollbar. */
 .ds-card {
   position: relative;
+  /* The card sizes its own overlay controls: a step of letter tiles and a step
+     of product photos sit side by side at the same breakpoint but are half the
+     width apart, so screen width cannot tell them apart. Safe on a card whose
+     inline size already comes from its flex basis rather than its contents. */
+  container-type: inline-size;
   display: flex;
   flex: 0 0 calc((100% - (var(--ds-visible) - 1) * var(--ds-gap)) / var(--ds-visible) - .02rem);
   min-width: 0;
@@ -367,6 +372,20 @@
   background: var(--ds-accent);
   color: var(--ds-accent-text);
 }
+/* At the size it takes on a product photo the tick covered a fifth of a letter
+   and crowded the glyph off centre. Ignored where container queries are
+   unsupported, which leaves the larger tick - cramped, never broken. */
+@container (max-width: 12rem) {
+  .ds-card__check {
+    top: .6rem;
+    right: .6rem;
+    width: 1.8rem;
+    height: 1.8rem;
+    border-radius: .5rem;
+  }
+  .ds-card__check svg { width: 1.1rem; height: 1.1rem; }
+}
+
 .ds-card__flag {
   position: absolute;
   bottom: 1rem;
