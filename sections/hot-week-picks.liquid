@@ -308,7 +308,7 @@
 
     { "type": "header", "content": "Colour swatches" },
     { "type": "checkbox", "id": "show_swatches", "label": "Show colour swatches", "default": true },
-    { "type": "text", "id": "color_option_name", "label": "Colour option name", "default": "Color", "info": "Must match the product option name exactly. Only values set up as swatches in Shopify are shown." },
+    { "type": "text", "id": "color_option_name", "label": "Colour option name", "default": "Color", "info": "Must match the product option name. Values without a Shopify swatch fall back to the product's custom.color colours." },
     { "type": "range", "id": "swatches_to_show", "label": "Swatches to show", "min": 2, "max": 8, "step": 1, "default": 4 },
     { "type": "range", "id": "swatch_size", "label": "Swatch size", "min": 10, "max": 24, "step": 2, "unit": "px", "default": 14 },
 
