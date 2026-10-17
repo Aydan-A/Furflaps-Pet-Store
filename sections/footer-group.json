@@ -27,7 +27,7 @@
           "settings": {
             "show_item": true,
             "heading": "COMPANY",
-            "menu": ""
+            "menu": "footer-menu-company"
           }
         },
         "menu_gqEmXi": {
@@ -35,13 +35,14 @@
           "settings": {
             "show_item": true,
             "heading": "GET HELP",
-            "menu": ""
+            "menu": "footer-menu-get-help"
           }
         },
         "social_image_MmHyfL": {
           "type": "social_image",
           "settings": {
             "show_item": true,
+            "image": "shopify://shop_images/ChatGPT_Image_Sep_4_2026_at_08_57_20_PM.png",
             "link": "",
             "link_label": ""
           }
@@ -50,6 +51,7 @@
           "type": "social_image",
           "settings": {
             "show_item": true,
+            "image": "shopify://shop_images/7e3d4b90-1203-4bad-a312-1da6eee025ba_1_aa195e6d-52f0-4b3c-9b60-af4418677cc2.jpg",
             "link": "",
             "link_label": ""
           }
@@ -58,6 +60,7 @@
           "type": "social_image",
           "settings": {
             "show_item": true,
+            "image": "shopify://shop_images/18_9250820b-5b9b-4dd1-aa5d-919925c9cb79.webp",
             "link": "",
             "link_label": ""
           }
