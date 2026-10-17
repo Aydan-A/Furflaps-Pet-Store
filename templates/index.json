@@ -386,7 +386,7 @@
           "type": "tab",
           "settings": {
             "label": "Letters",
-            "collection": "letters",
+            "collection": "pet-collar-accessories",
             "option_name": ""
           }
         },
