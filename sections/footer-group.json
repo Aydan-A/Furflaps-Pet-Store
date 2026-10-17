@@ -19,7 +19,7 @@
           "settings": {
             "show_item": true,
             "heading": "SHOP",
-            "menu": "company"
+            "menu": "footer-menu-shop"
           }
         },
         "menu_zGNdPK": {
@@ -27,7 +27,7 @@
           "settings": {
             "show_item": true,
             "heading": "COMPANY",
-            "menu": "shop"
+            "menu": ""
           }
         },
         "menu_gqEmXi": {
@@ -35,14 +35,13 @@
           "settings": {
             "show_item": true,
             "heading": "GET HELP",
-            "menu": "get-help"
+            "menu": ""
           }
         },
         "social_image_MmHyfL": {
           "type": "social_image",
           "settings": {
             "show_item": true,
-            "image": "shopify://shop_images/9418dcff-48bc-4c2a-afba-e1e2eacbcaf7.png",
             "link": "",
             "link_label": ""
           }
@@ -51,7 +50,6 @@
           "type": "social_image",
           "settings": {
             "show_item": true,
-            "image": "shopify://shop_images/4a1b15ce-07de-472a-b702-fcc501adf240.png",
             "link": "",
             "link_label": ""
           }
@@ -60,7 +58,6 @@
           "type": "social_image",
           "settings": {
             "show_item": true,
-            "image": "shopify://shop_images/ChatGPT_Image_Jul_18_2026_at_06_21_13_PM.png",
             "link": "",
             "link_label": ""
           }
@@ -79,7 +76,7 @@
         "show_on_desktop": true,
         "show_on_mobile": true,
         "show_newsletter": true,
-        "heading": "Subscribe today & get 10% off  your first purchase",
+        "heading": "Subscribe today & get 10% off &nbsp;your first purchase",
         "heading_size": 32,
         "mobile_heading_size": 26,
         "heading_max_width": 520,
