@@ -229,7 +229,12 @@
           "type": "step",
           "settings": {
             "title": "Pick a collar",
-            "products": [],
+            "products": [
+              "personalized-name-pet-collar-lilac",
+              "personalized-name-pet-collar-mint-green",
+              "personalized-name-pet-collar-sky-blue",
+              "personalized-name-pet-collar-yellow"
+            ],
             "collection": "collars",
             "products_to_show": 8,
             "max_selections": 4,
