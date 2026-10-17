@@ -16,11 +16,11 @@ if (!customElements.get('hot-week-picks')) {
       this.tracks.forEach((track) => track.addEventListener('scroll', this.onScroll, { passive: true }));
 
       if ('ResizeObserver' in window) {
-        this.resizeObserver = new ResizeObserver(() => this.updateArrows());
+        this.resizeObserver = new ResizeObserver(() => this.update());
         this.tracks.forEach((track) => this.resizeObserver.observe(track));
       }
 
-      this.updateArrows();
+      this.update();
     }
 
     disconnectedCallback() {
@@ -35,7 +35,10 @@ if (!customElements.get('hot-week-picks')) {
 
     onTabClick = (event) => this.selectTab(event.currentTarget);
 
-    onScroll = () => this.updateArrows();
+    onScroll = (event) => {
+      this.updateProgress(event.currentTarget);
+      this.updateArrows();
+    };
 
     onArrowClick = (event) => {
       const track = this.activeTrack();
@@ -66,6 +69,29 @@ if (!customElements.get('hot-week-picks')) {
       return this.activePanel()?.querySelector('.hot-week-picks__products') || null;
     }
 
+    // Both panels keep their own row and their own bar, so each is measured on
+    // its own rather than only whichever tab happens to be open.
+    update() {
+      this.tracks.forEach((track) => this.updateProgress(track));
+      this.updateArrows();
+    }
+
+    // The thumb is as long a share of the bar as the visible part of the row is
+    // of its full width, and slides across the remainder as the row scrolls.
+    updateProgress(track) {
+      const bar = track?.parentElement?.querySelector('[data-progress]');
+      if (!bar) return;
+
+      const maxScroll = track.scrollWidth - track.clientWidth;
+      bar.hidden = maxScroll <= 1;
+      if (bar.hidden) return;
+
+      const visible = track.clientWidth / track.scrollWidth;
+      const travelled = track.scrollLeft / maxScroll;
+      bar.style.setProperty('--hot-progress-size', `${(visible * 100).toFixed(2)}%`);
+      bar.style.setProperty('--hot-progress-offset', `${(travelled * (1 - visible) * 100).toFixed(2)}%`);
+    }
+
     updateArrows() {
       if (!this.nav) return;
       const track = this.activeTrack();
@@ -91,7 +117,8 @@ if (!customElements.get('hot-week-picks')) {
         panel.hidden = panel.id !== selectedTab.getAttribute('aria-controls');
       });
       if (moveFocus) selectedTab.focus();
-      this.updateArrows();
+      // A hidden panel measures as zero, so the newly shown row is remeasured.
+      this.update();
     }
   }
 

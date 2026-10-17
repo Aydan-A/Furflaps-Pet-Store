@@ -1,0 +1,26 @@
+{% comment %}
+  Looks one option value up in the map built by `swatch-fallback-map`.
+  Outputs the colour, or nothing when the name has no entry — callers treat
+  an empty result as "no swatch available" and keep the text control rather
+  than drawing a blank chip.
+
+  Accepts:
+  - map: {String} output of `swatch-fallback-map`
+  - name: {String} the option value's name
+
+  Usage:
+  {%- capture fallback_color -%}
+    {%- render 'swatch-fallback-color', map: map, name: value.name -%}
+  {%- endcapture -%}
+{% endcomment %}
+{%- liquid
+  assign needle = name | strip | downcase
+  assign entries = map | split: '||'
+  for entry in entries
+    assign parts = entry | split: '~'
+    if parts[0] == needle
+      echo parts[1]
+      break
+    endif
+  endfor
+-%}

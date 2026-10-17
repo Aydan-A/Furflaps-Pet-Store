@@ -1,0 +1,31 @@
+{% comment %}
+  Builds a colour lookup for products whose option values carry no native
+  swatch.
+
+  Shopify only derives `option_value.swatch` from the built-in
+  shopify.color-pattern metafield, and that definition is constrained to
+  product categories that expose a Color attribute. Collar Charms is not one
+  of them, so those products hold the same colour metaobjects under
+  custom.color instead and their option values come back with no swatch.
+
+  The output is a flat string because Liquid has no maps:
+    yellow~#FFE500||sky blue~#A0D9EF||
+  Build it once per product and pass it down; never rebuild it per variant.
+
+  Accepts:
+  - product: {Object} Product Liquid object
+
+  Usage:
+  {%- capture color_fallback_map -%}
+    {%- render 'swatch-fallback-map', product: product -%}
+  {%- endcapture -%}
+{% endcomment %}
+{%- for entry in product.metafields.custom.color.value -%}
+  {%- capture entry_label %}{{ entry.label }}{% endcapture -%}
+  {%- capture entry_color %}{{ entry.color }}{% endcapture -%}
+  {%- assign entry_label = entry_label | strip | downcase -%}
+  {%- assign entry_color = entry_color | strip -%}
+  {%- if entry_label != blank and entry_color != blank -%}
+    {{- entry_label }}~{{ entry_color }}||
+  {%- endif -%}
+{%- endfor -%}

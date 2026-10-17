@@ -18,7 +18,7 @@
             "heading": "Made for them. Personalized by you.",
             "description": "<p>Personalized collars made for cats and dogs, with playful colours, custom names, and a style that's uniquely theirs.</p>",
             "button_label": "Shop Sale",
-            "button_link": "shopify://collections/all",
+            "button_link": "shopify://collections/dog-leashes",
             "background_color": "#cc302a",
             "heading_color": "#ffffff",
             "text_color": "#ffffff",
@@ -33,7 +33,7 @@
             "heading": "Accessories as unique as they are.",
             "description": "<p>Discover thoughtful accessories and everyday essentials selected for happier, healthier pets.</p>",
             "button_label": "Explore new arrivals",
-            "button_link": "shopify://collections/all",
+            "button_link": "shopify://collections/icons",
             "background_color": "#e8e0d5",
             "heading_color": "#111111",
             "text_color": "#202020",
@@ -65,7 +65,7 @@
         "family"
       ],
       "settings": {
-        "image": "shopify://shop_images/29_04a09287-3f2a-490b-aaba-d924697fffeb_png.webp",
+        "image": "shopify://shop_images/ChatGPT_Image_Sep_4_2026_at_08_57_20_PM.png",
         "media_background": "#ffffff",
         "image_fit": "cover",
         "image_position": "center center",
@@ -147,7 +147,7 @@
         "show_heading": true,
         "heading": "Hot This Week",
         "show_tabs": true,
-        "best_sellers_collection": "frontpage",
+        "best_sellers_collection": "best-selling-collar-charm-sets",
         "best_sellers_label": "Best Sellers",
         "new_arrivals_collection": "new-arrivals",
         "new_arrivals_label": "New Arrivals",
@@ -229,8 +229,13 @@
           "type": "step",
           "settings": {
             "title": "Pick a collar",
-            "products": [],
-            "collection": "collars",
+            "products": [
+              "personalized-name-pet-collar-lilac",
+              "personalized-name-pet-collar-mint-green",
+              "personalized-name-pet-collar-sky-blue",
+              "personalized-name-pet-collar-yellow"
+            ],
+            "collection": "pet-collar-accessories",
             "products_to_show": 8,
             "max_selections": 4,
             "selection_required": true,
@@ -356,11 +361,11 @@
         "text": "<p>Drag the handle to compare the look before and after.</p>",
         "button_label": "Shop now",
         "button_link": "",
-        "before_image": "shopify://shop_images/7e3d4b90-1203-4bad-a312-1da6eee025ba_1_aa195e6d-52f0-4b3c-9b60-af4418677cc2.jpg",
-        "after_image": "shopify://shop_images/7e3d4b90-1203-4bad-a312-1da6eee025ba_2.jpg",
+        "before_image": "shopify://shop_images/7e3d4b90-1203-4bad-a312-1da6eee025ba_2.jpg",
+        "after_image": "shopify://shop_images/7e3d4b90-1203-4bad-a312-1da6eee025ba_1_aa195e6d-52f0-4b3c-9b60-af4418677cc2.jpg",
         "initial_position": 45,
         "show_product": true,
-        "product": "personalized-name-pet-collar-green",
+        "product": "personalized-name-pet-collar-mint-green",
         "content_width": 1700,
         "padding_top": 36,
         "padding_bottom": 36
@@ -372,24 +377,24 @@
         "tab_ADXaf6": {
           "type": "tab",
           "settings": {
-            "label": "",
-            "collection": "collars",
+            "label": "Collars",
+            "collection": "personalized-pet-collars",
             "option_name": "Size"
           }
         },
         "tab_Yf6YBD": {
           "type": "tab",
           "settings": {
-            "label": "",
-            "collection": "letters",
+            "label": "Letters",
+            "collection": "pet-collar-accessories",
             "option_name": ""
           }
         },
         "tab_EbGHnG": {
           "type": "tab",
           "settings": {
-            "label": "",
-            "collection": "icons",
+            "label": "Icons",
+            "collection": "personalized-dog-collars",
             "option_name": ""
           }
         }
@@ -402,14 +407,14 @@
       "name": "Product feature tabs",
       "settings": {
         "show_header": true,
-        "heading": "Shop by Collections",
+        "heading": "<strong>Shop by Collections</strong>",
         "text": "",
         "heading_size": "h1",
         "alignment": "center",
         "button_label": "",
         "button_link": "",
         "button_style": "primary",
-        "products_to_show": 8,
+        "products_to_show": 0,
         "columns_desktop": 4,
         "columns_tablet": 2.5,
         "columns_mobile": 1.2,
@@ -430,16 +435,16 @@
         "feature_border": "#ececec",
         "tab_shell_background": "#f5f5f5",
         "tab_border": "#e4e4e4",
-        "tab_text": "#222222",
+        "tab_text": "#190303",
         "active_tab_background": "#e50b0b",
         "active_tab_text": "#ffffff",
-        "add_button_background": "#000000",
+        "add_button_background": "#f71414",
         "add_button_text": "#ffffff",
         "added_label": "Added",
-        "card_gap": 18,
+        "card_gap": 24,
         "card_radius": 10,
         "header_gap": 24,
-        "tabs_gap": 30,
+        "tabs_gap": 28,
         "padding_top": 40,
         "padding_bottom": 40,
         "padding_inline": 40,
@@ -461,35 +466,30 @@
         "image_xNyrca": {
           "type": "image",
           "settings": {
-            "image_desktop": "shopify://shop_images/3_9c44253e-19d0-4347-a795-a04e96e1d0b6.webp",
             "image_url": ""
           }
         },
         "image_Vbb8Qt": {
           "type": "image",
           "settings": {
-            "image_desktop": "shopify://shop_images/5_49c7ee17-9a7e-4296-88dd-bdad2e6428dd.webp",
             "image_url": ""
           }
         },
         "image_b7tqH9": {
           "type": "image",
           "settings": {
-            "image_desktop": "shopify://shop_images/Rectangle_7.webp",
             "image_url": ""
           }
         },
         "image_Ddq34R": {
           "type": "image",
           "settings": {
-            "image_desktop": "shopify://shop_images/18_9250820b-5b9b-4dd1-aa5d-919925c9cb79.webp",
             "image_url": ""
           }
         },
         "image_q3wznX": {
           "type": "image",
           "settings": {
-            "image_desktop": "shopify://shop_images/29_eb74efe0-4646-4b15-8909-e67baee4bcac.webp",
             "image_url": ""
           }
         }
@@ -502,6 +502,7 @@
         "image_Ddq34R",
         "image_q3wznX"
       ],
+      "disabled": true,
       "name": "❤️ Square: Media Gallery",
       "settings": {
         "heading": "Gallery",
@@ -529,9 +530,8 @@
         "testimonial_TjKy8E": {
           "type": "testimonial",
           "settings": {
-            "image": "shopify://shop_images/25_2ffb7db3-5ae7-4f1b-be3b-d397bc617427_png.webp",
+            "image": "shopify://shop_images/9418dcff-48bc-4c2a-afba-e1e2eacbcaf7_1.png",
             "quote": "<p><strong>“I absolutely love Maple’s collar. The colours are even prettier in person, and her name looks so cute on her. It feels like it was made just for her.”</strong></p>",
-            "avatar": "shopify://shop_images/woman-looking-down.jpg",
             "customer_name": "Antiga Murad",
             "show_verified": true,
             "verified_label": "Dog parent",
@@ -545,7 +545,6 @@
           "type": "testimonial",
           "settings": {
             "quote": "<p>“The personalization is what sold me. Toby’s collar fits comfortably, feels well made, and we get compliments on it every time we go for a walk.</p>",
-            "avatar": "shopify://shop_images/mystery-date.jpg",
             "customer_name": "Jessica R.",
             "show_verified": true,
             "verified_label": "Dog parent",
@@ -559,7 +558,6 @@
           "type": "testimonial",
           "settings": {
             "quote": "<p>“Such a fun way to show off her personality. I loved choosing the collar and letter colours, and the finished result looks adorable on Judy.”</p>",
-            "avatar": "shopify://shop_images/proud-canadian-woman.jpg",
             "customer_name": "Emily C.",
             "show_verified": true,
             "verified_label": "Pet parent",
