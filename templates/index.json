@@ -66,7 +66,6 @@
       ],
       "settings": {
         "image": "shopify://shop_images/ChatGPT_Image_Sep_4_2026_at_08_57_20_PM.png",
-        "mobile_image": "shopify://shop_images/ChatGPT_Image_Sep_4_2026_at_08_53_47_PM.png",
         "media_background": "#ffffff",
         "image_fit": "cover",
         "image_position": "center center",
@@ -148,7 +147,7 @@
         "show_heading": true,
         "heading": "Hot This Week",
         "show_tabs": true,
-        "best_sellers_collection": "frontpage",
+        "best_sellers_collection": "best-selling-collar-charm-sets",
         "best_sellers_label": "Best Sellers",
         "new_arrivals_collection": "new-arrivals",
         "new_arrivals_label": "New Arrivals",
@@ -357,8 +356,8 @@
         "text": "<p>Drag the handle to compare the look before and after.</p>",
         "button_label": "Shop now",
         "button_link": "",
-        "before_image": "shopify://shop_images/7e3d4b90-1203-4bad-a312-1da6eee025ba_1_aa195e6d-52f0-4b3c-9b60-af4418677cc2.jpg",
-        "after_image": "shopify://shop_images/7e3d4b90-1203-4bad-a312-1da6eee025ba_2.jpg",
+        "before_image": "shopify://shop_images/7e3d4b90-1203-4bad-a312-1da6eee025ba_2.jpg",
+        "after_image": "shopify://shop_images/7e3d4b90-1203-4bad-a312-1da6eee025ba_1_aa195e6d-52f0-4b3c-9b60-af4418677cc2.jpg",
         "initial_position": 45,
         "show_product": true,
         "product": "personalized-name-pet-collar-mint-green",
@@ -434,7 +433,7 @@
         "tab_text": "#190303",
         "active_tab_background": "#e50b0b",
         "active_tab_text": "#ffffff",
-        "add_button_background": "#F71414",
+        "add_button_background": "#f71414",
         "add_button_text": "#ffffff",
         "added_label": "Added",
         "card_gap": 24,
@@ -462,35 +461,30 @@
         "image_xNyrca": {
           "type": "image",
           "settings": {
-            "image_desktop": "shopify://shop_images/3_9c44253e-19d0-4347-a795-a04e96e1d0b6.webp",
             "image_url": ""
           }
         },
         "image_Vbb8Qt": {
           "type": "image",
           "settings": {
-            "image_desktop": "shopify://shop_images/5_49c7ee17-9a7e-4296-88dd-bdad2e6428dd.webp",
             "image_url": ""
           }
         },
         "image_b7tqH9": {
           "type": "image",
           "settings": {
-            "image_desktop": "shopify://shop_images/Rectangle_7.webp",
             "image_url": ""
           }
         },
         "image_Ddq34R": {
           "type": "image",
           "settings": {
-            "image_desktop": "shopify://shop_images/18_9250820b-5b9b-4dd1-aa5d-919925c9cb79.webp",
             "image_url": ""
           }
         },
         "image_q3wznX": {
           "type": "image",
           "settings": {
-            "image_desktop": "shopify://shop_images/29_eb74efe0-4646-4b15-8909-e67baee4bcac.webp",
             "image_url": ""
           }
         }
@@ -531,9 +525,7 @@
         "testimonial_TjKy8E": {
           "type": "testimonial",
           "settings": {
-            "image": "shopify://shop_images/25_2ffb7db3-5ae7-4f1b-be3b-d397bc617427_png.webp",
             "quote": "<p><strong>“I absolutely love Maple’s collar. The colours are even prettier in person, and her name looks so cute on her. It feels like it was made just for her.”</strong></p>",
-            "avatar": "shopify://shop_images/woman-looking-down.jpg",
             "customer_name": "Antiga Murad",
             "show_verified": true,
             "verified_label": "Dog parent",
@@ -547,7 +539,6 @@
           "type": "testimonial",
           "settings": {
             "quote": "<p>“The personalization is what sold me. Toby’s collar fits comfortably, feels well made, and we get compliments on it every time we go for a walk.</p>",
-            "avatar": "shopify://shop_images/mystery-date.jpg",
             "customer_name": "Jessica R.",
             "show_verified": true,
             "verified_label": "Dog parent",
@@ -561,7 +552,6 @@
           "type": "testimonial",
           "settings": {
             "quote": "<p>“Such a fun way to show off her personality. I loved choosing the collar and letter colours, and the finished result looks adorable on Judy.”</p>",
-            "avatar": "shopify://shop_images/proud-canadian-woman.jpg",
             "customer_name": "Emily C.",
             "show_verified": true,
             "verified_label": "Pet parent",
