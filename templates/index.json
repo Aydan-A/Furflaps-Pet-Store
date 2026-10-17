@@ -235,7 +235,7 @@
               "personalized-name-pet-collar-sky-blue",
               "personalized-name-pet-collar-yellow"
             ],
-            "collection": "collars",
+            "collection": "pet-collar-accessories",
             "products_to_show": 8,
             "max_selections": 4,
             "selection_required": true,
