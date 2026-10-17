@@ -378,7 +378,7 @@
           "type": "tab",
           "settings": {
             "label": "Collars",
-            "collection": "collars",
+            "collection": "personalized-pet-collars",
             "option_name": "Size"
           }
         },
