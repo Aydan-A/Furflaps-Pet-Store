@@ -155,6 +155,9 @@
                     if color_metafield.type == 'list.metaobject_reference'
                       assign color_objects = color_metafield.value
                     endif
+                    capture color_fallback_map
+                      render 'swatch-fallback-map', product: product
+                    endcapture
 
                     # An empty swatch slot would still hold its gap on the row,
                     # so a card showing a size control renders no slot at all.
@@ -261,25 +264,10 @@
                         <div class="product-feature-tabs__color">
                           {%- if card_option_is_color -%}
                             {%- for color_name in card_option.values -%}
-                              {%- liquid
-                                assign swatch_style = blank
-                                if color_name.swatch.color
-                                  assign swatch_style = 'background-color: rgb(' | append: color_name.swatch.color.rgb | append: ');'
-                                elsif color_name.swatch.image
-                                  assign swatch_url = color_name.swatch.image | image_url: width: 60
-                                  assign swatch_style = 'background-image: url(' | append: swatch_url | append: ');'
-                                endif
-                                if swatch_style == blank and color_objects != blank
-                                  assign wanted_color = color_name | downcase | strip
-                                  for color_object in color_objects
-                                    assign object_label = color_object.label.value | default: color_object.system.handle | replace: '-', ' ' | downcase | strip
-                                    if object_label == wanted_color and color_object.color.value != blank
-                                      assign swatch_style = 'background-color: ' | append: color_object.color.value | append: ';'
-                                      break
-                                    endif
-                                  endfor
-                                endif
-                              -%}
+                              {%- capture swatch_style -%}
+                                {%- render 'ff-swatch-style', value: color_name, map: color_fallback_map -%}
+                              {%- endcapture -%}
+                              {%- assign swatch_style = swatch_style | strip -%}
                               <span class="product-feature-tabs__swatch"{% if swatch_style != blank %} style="{{ swatch_style }}"{% endif %} aria-hidden="true"></span>
                             {%- endfor -%}
                             {%- if card_option.values.size == 1 -%}

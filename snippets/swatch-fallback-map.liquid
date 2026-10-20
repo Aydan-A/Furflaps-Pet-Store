@@ -20,8 +20,16 @@
     {%- render 'swatch-fallback-map', product: product -%}
   {%- endcapture -%}
 {% endcomment %}
-{%- for entry in product.metafields.custom.color.value -%}
+{%- comment -%}
+  custom.colour is an older spelling some products still carry. An entry with
+  no label is matched by its handle, so "sky-blue" answers to "Sky Blue".
+{%- endcomment -%}
+{%- assign color_entries = product.metafields.custom.color.value | default: product.metafields.custom.colour.value -%}
+{%- for entry in color_entries -%}
   {%- capture entry_label %}{{ entry.label }}{% endcapture -%}
+  {%- if entry_label == blank -%}
+    {%- assign entry_label = entry.system.handle | replace: '-', ' ' -%}
+  {%- endif -%}
   {%- capture entry_color %}{{ entry.color }}{% endcapture -%}
   {%- assign entry_label = entry_label | strip | downcase -%}
   {%- assign entry_color = entry_color | strip -%}
