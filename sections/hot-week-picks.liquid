@@ -28,11 +28,11 @@
     --hot-description-color: {{ section.settings.description_color }};
     --hot-description-size: {{ section.settings.description_size }}px;
     --hot-description-lines: {{ section.settings.description_lines }};
-    --hot-compare-price-color: {{ section.settings.compare_price_color }};
-    --hot-discount-pill-background: {{ section.settings.discount_pill_background }};
-    --hot-discount-pill-text: {{ section.settings.discount_pill_text }};
-    --hot-badge-background: {{ section.settings.badge_background }};
-    --hot-badge-text: {{ section.settings.badge_text_color }};
+    --hot-compare-price-color: var(--ff-compare-price-color);
+    --hot-discount-pill-background: var(--ff-discount-background);
+    --hot-discount-pill-text: var(--ff-discount-text);
+    --hot-badge-background: var(--ff-badge-background);
+    --hot-badge-text: var(--ff-badge-text);
     --hot-margin-top: {{ section.settings.margin_top }}px;
     --hot-margin-bottom: {{ section.settings.margin_bottom }}px;
     --hot-mobile-margin-top: {{ section.settings.mobile_margin_top }}px;
@@ -281,14 +281,9 @@
     { "type": "checkbox", "id": "show_metafield_badge", "label": "Show New / Pre-order product badge", "default": false },
     { "type": "paragraph", "content": "Uses the product metafield custom.card_badge automatically." },
     { "type": "range", "id": "badge_offset", "label": "Badge inset", "min": 4, "max": 24, "step": 1, "unit": "px", "default": 10 },
-    { "type": "color", "id": "badge_background", "label": "Badge background", "default": "#7961D7" },
-    { "type": "color", "id": "badge_text_color", "label": "Badge text", "default": "#FFFFFF" },
 
     { "type": "header", "content": "Discount badge" },
     { "type": "checkbox", "id": "show_discount", "label": "Show discount badge (auto-calculated)", "default": true },
-    { "type": "color", "id": "compare_price_color", "label": "Compare-at price text", "default": "#8A93A0" },
-    { "type": "color", "id": "discount_pill_background", "label": "Discount pill background", "default": "#00B878" },
-    { "type": "color", "id": "discount_pill_text", "label": "Discount pill text", "default": "#FFFFFF" },
 
     { "type": "header", "content": "Typography" },
     { "type": "font_picker", "id": "heading_font", "label": "Heading font", "default": "assistant_n7" },
