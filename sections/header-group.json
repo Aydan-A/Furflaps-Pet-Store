@@ -12,7 +12,7 @@
   "type": "header",
   "sections": {
     "announcement-bar": {
-      "type": "announcement-bar",
+      "type": "ff-announcement-bar",
       "blocks": {
         "announcement-bar-0": {
           "type": "announcement",
