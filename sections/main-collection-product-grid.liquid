@@ -85,11 +85,11 @@
     --cg-image-background: {{ section.settings.image_background }};
     --cg-title-size: {{ section.settings.title_size }}px;
     --cg-price-size: {{ section.settings.price_size }}px;
-    --cg-compare-price-color: {{ section.settings.compare_price_color }};
-    --cg-discount-background: {{ section.settings.discount_pill_background }};
-    --cg-discount-text: {{ section.settings.discount_pill_text }};
-    --cg-badge-background: {{ section.settings.badge_background }};
-    --cg-badge-text: {{ section.settings.badge_text_color }};
+    --cg-compare-price-color: var(--ff-compare-price-color);
+    --cg-discount-background: var(--ff-discount-background);
+    --cg-discount-text: var(--ff-discount-text);
+    --cg-badge-background: var(--ff-badge-background);
+    --cg-badge-text: var(--ff-badge-text);
     --cg-badge-offset: {{ section.settings.badge_offset }}px;
     --cg-action-height: {{ section.settings.action_height }}px;
     --cg-swatch-size: {{ section.settings.swatch_size }}px;
@@ -609,18 +609,6 @@
       "info": "Uses the product's custom.card_badge metafield."
     },
     {
-      "type": "color",
-      "id": "badge_background",
-      "default": "#7961d7",
-      "label": "Custom badge background"
-    },
-    {
-      "type": "color",
-      "id": "badge_text_color",
-      "default": "#ffffff",
-      "label": "Custom badge text"
-    },
-    {
       "type": "range",
       "id": "badge_offset",
       "min": 4,
@@ -635,24 +623,6 @@
       "id": "show_discount",
       "default": true,
       "label": "Show discount pill next to the price"
-    },
-    {
-      "type": "color",
-      "id": "compare_price_color",
-      "default": "#8a93a0",
-      "label": "Compare-at price colour"
-    },
-    {
-      "type": "color",
-      "id": "discount_pill_background",
-      "default": "#ff0000",
-      "label": "Discount pill background"
-    },
-    {
-      "type": "color",
-      "id": "discount_pill_text",
-      "default": "#ffffff",
-      "label": "Discount pill text"
     },
     {
       "type": "header",
