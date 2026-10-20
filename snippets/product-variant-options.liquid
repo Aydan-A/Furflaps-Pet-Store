@@ -6,6 +6,8 @@
   - option: {Object} current product_option object.
   - block: {Object} block object.
   - picker_type: {String} type of picker to dispay
+  - color_fallback_map: {String} optional lookup from `swatch-fallback-map`,
+    used for products whose option values carry no native swatch.
 
 
   Usage:
@@ -21,6 +23,13 @@
 -%}
 
 {%- for value in option.values -%}
+  {%- capture value_name %}{{ value }}{% endcapture -%}
+  {%- capture fallback_color -%}
+    {%- if color_fallback_map != blank -%}
+      {%- render 'swatch-fallback-color', map: color_fallback_map, name: value_name -%}
+    {%- endif -%}
+  {%- endcapture -%}
+
   {%- liquid
     assign swatch_focal_point = null
     if value.swatch.image
@@ -29,6 +38,8 @@
       assign swatch_focal_point = value.swatch.image.presentation.focal_point
     elsif value.swatch.color
       assign swatch_value = 'rgb(' | append: value.swatch.color.rgb | append: ')'
+    elsif fallback_color != blank
+      assign swatch_value = fallback_color
     else
       assign swatch_value = null
     endif
@@ -73,6 +84,7 @@
       name: input_name,
       value: escaped_value,
       swatch: value.swatch,
+      fallback_color: fallback_color,
       product_form_id: product_form_id,
       checked: value.selected,
       visually_disabled: option_disabled,

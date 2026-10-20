@@ -28,11 +28,11 @@
     --hot-description-color: {{ section.settings.description_color }};
     --hot-description-size: {{ section.settings.description_size }}px;
     --hot-description-lines: {{ section.settings.description_lines }};
-    --hot-compare-price-color: {{ section.settings.compare_price_color }};
-    --hot-discount-pill-background: {{ section.settings.discount_pill_background }};
-    --hot-discount-pill-text: {{ section.settings.discount_pill_text }};
-    --hot-badge-background: {{ section.settings.badge_background }};
-    --hot-badge-text: {{ section.settings.badge_text_color }};
+    --hot-compare-price-color: var(--ff-compare-price-color);
+    --hot-discount-pill-background: var(--ff-discount-background);
+    --hot-discount-pill-text: var(--ff-discount-text);
+    --hot-badge-background: var(--ff-badge-background);
+    --hot-badge-text: var(--ff-badge-text);
     --hot-margin-top: {{ section.settings.margin_top }}px;
     --hot-margin-bottom: {{ section.settings.margin_bottom }}px;
     --hot-mobile-margin-top: {{ section.settings.mobile_margin_top }}px;
@@ -162,8 +162,21 @@
         tabindex="0"
         {% unless panel_is_active or section.settings.show_tabs == false %}hidden{% endunless %}
       >
+        {%- liquid
+          # A row only shows the next card peeking past the edge when there is
+          # a next card. Below the mobile column count the row still fills the
+          # width, so a short collection does not end in a stray gap.
+          assign shown_count = tab_collection.products_count
+          if shown_count > section.settings.products_to_show
+            assign shown_count = section.settings.products_to_show
+          endif
+          assign mobile_columns = section.settings.columns_mobile | plus: 0
+          if mobile_columns < 1
+            assign mobile_columns = 1
+          endif
+        -%}
         {%- if tab_collection != blank and tab_collection.products_count > 0 -%}
-          <ul class="hot-week-picks__products" role="list">
+          <ul class="hot-week-picks__products{% if shown_count > mobile_columns %} hot-week-picks__products--peek{% endif %}" role="list">
             {%- for product in tab_collection.products limit: section.settings.products_to_show -%}
               <li class="hot-week-picks__product">
                 {% render 'hot-week-picks-card',
@@ -174,6 +187,14 @@
               </li>
             {%- endfor -%}
           </ul>
+          {%- comment -%}
+            Phone-only swipe affordance; the scroll arrows are hidden at that
+            width. Hidden until the script measures a row that actually scrolls,
+            and decorative, so it is out of the accessibility tree entirely.
+          {%- endcomment -%}
+          <div class="hot-week-picks__progress" data-progress aria-hidden="true" hidden>
+            <span></span>
+          </div>
         {%- else -%}
           <div class="hot-week-picks__empty">
             {%- if request.design_mode -%}
@@ -260,14 +281,9 @@
     { "type": "checkbox", "id": "show_metafield_badge", "label": "Show New / Pre-order product badge", "default": false },
     { "type": "paragraph", "content": "Uses the product metafield custom.card_badge automatically." },
     { "type": "range", "id": "badge_offset", "label": "Badge inset", "min": 4, "max": 24, "step": 1, "unit": "px", "default": 10 },
-    { "type": "color", "id": "badge_background", "label": "Badge background", "default": "#7961D7" },
-    { "type": "color", "id": "badge_text_color", "label": "Badge text", "default": "#FFFFFF" },
 
     { "type": "header", "content": "Discount badge" },
     { "type": "checkbox", "id": "show_discount", "label": "Show discount badge (auto-calculated)", "default": true },
-    { "type": "color", "id": "compare_price_color", "label": "Compare-at price text", "default": "#8A93A0" },
-    { "type": "color", "id": "discount_pill_background", "label": "Discount pill background", "default": "#00B878" },
-    { "type": "color", "id": "discount_pill_text", "label": "Discount pill text", "default": "#FFFFFF" },
 
     { "type": "header", "content": "Typography" },
     { "type": "font_picker", "id": "heading_font", "label": "Heading font", "default": "assistant_n7" },
@@ -287,7 +303,7 @@
 
     { "type": "header", "content": "Colour swatches" },
     { "type": "checkbox", "id": "show_swatches", "label": "Show colour swatches", "default": true },
-    { "type": "text", "id": "color_option_name", "label": "Colour option name", "default": "Color", "info": "Must match the product option name exactly. Only values set up as swatches in Shopify are shown." },
+    { "type": "text", "id": "color_option_name", "label": "Colour option name", "default": "Color", "info": "Must match the product option name. Values without a Shopify swatch fall back to the product's custom.color colours." },
     { "type": "range", "id": "swatches_to_show", "label": "Swatches to show", "min": 2, "max": 8, "step": 1, "default": 4 },
     { "type": "range", "id": "swatch_size", "label": "Swatch size", "min": 10, "max": 24, "step": 2, "unit": "px", "default": 14 },
 
