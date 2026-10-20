@@ -150,31 +150,13 @@
             {%- liquid
               assign swatch_style = ''
               if is_swatch
-                if value.swatch.color
-                  assign swatch_style = 'background-color: rgb(' | append: value.swatch.color.rgb | append: ');'
-                elsif value.swatch.image
-                  assign swatch_url = value.swatch.image | image_url: width: 60
-                  assign swatch_style = 'background-image: url(' | append: swatch_url | append: ');'
-                else
-                  # No swatch set on the option value in Shopify: fall back to
-                  # the photo of the variant wearing that colour, so a colour
-                  # always reads as a swatch and never as a word.
-                  for product_variant in product.variants
-                    case option.position
-                      when 1
-                        assign candidate_value = product_variant.option1
-                      when 2
-                        assign candidate_value = product_variant.option2
-                      else
-                        assign candidate_value = product_variant.option3
-                    endcase
-                    if candidate_value == value and product_variant.featured_media != blank
-                      assign swatch_url = product_variant.featured_media | image_url: width: 60
-                      assign swatch_style = 'background-image: url(' | append: swatch_url | append: ');'
-                      break
-                    endif
-                  endfor
-                endif
+                # No swatch set on the option value in Shopify: fall back to
+                # the photo of the variant wearing that colour, so a colour
+                # always reads as a swatch and never as a word.
+                capture swatch_style
+                  render 'ff-swatch-style', value: value, option: option, product: product, variant_photo: true
+                endcapture
+                assign swatch_style = swatch_style | strip
               endif
             -%}
             <button
