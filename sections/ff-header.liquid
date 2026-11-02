@@ -107,6 +107,7 @@
     --header-search-radius: {{ section.settings.search_border_radius | default: 0 }}px;
     --header-search-border-width: {{ section.settings.search_border_thickness | default: 1 }}px;
     --header-content-max-width: {% if section.settings.content_width == 'full' %}none{% else %}var(--page-width){% endif %};
+    --header-height: {{ section.settings.header_height }}px;
     --header-side-padding: {{ section.settings.header_side_padding | default: 24 }}px;
     --header-row-gap: {{ section.settings.header_row_gap | default: 12 }}px;
     --header-group-gap: {{ section.settings.header_group_gap | default: 24 }}px;
@@ -838,6 +839,17 @@
     {
       "type": "header",
       "content": "Bar style"
+    },
+    {
+      "type": "range",
+      "id": "header_height",
+      "min": 40,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "label": "Header height (desktop)",
+      "info": "Height of the logo row. The logo shrinks to fit; the padding settings below then only apply on mobile.",
+      "default": 72
     },
     {
       "type": "checkbox",

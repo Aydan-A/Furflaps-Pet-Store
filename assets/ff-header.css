@@ -307,3 +307,32 @@
   width: calc(var(--header-icon-size, 2rem) * 1.8);
   height: calc(var(--header-icon-size, 2rem) * 1.8);
 }
+
+/* Header height (setting, desktop): the logo row is exactly this tall and the
+   logo scales down to fit inside it, leaving 0.8rem above and below. */
+@media screen and (min-width: 990px) {
+  .header.header {
+    padding-top: 0;
+    padding-bottom: 0;
+    grid-template-rows: minmax(var(--header-height, 7.2rem), auto);
+    align-items: center;
+  }
+
+  .header.header--inline-search:not(.drawer-menu):not(.header--split-menu) {
+    grid-template-rows: var(--header-height, 7.2rem) auto;
+    padding-bottom: 1.2rem;
+  }
+
+  .header .header__heading-link {
+    padding-block: 0;
+  }
+
+  .header .header__heading-logo-wrapper {
+    width: auto;
+  }
+
+  .header .header__heading-logo {
+    width: auto;
+    max-height: calc(var(--header-height, 7.2rem) - 1.6rem);
+  }
+}
