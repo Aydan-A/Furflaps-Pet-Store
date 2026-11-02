@@ -5,13 +5,23 @@
 {% comment %}
   Renders a standard dropdown style menu for the header.
 
+  Accepts (optional, for the split menu either side of a centred logo):
+  - link_offset: {Number} skip this many top-level links
+  - link_limit: {Number} render at most this many top-level links
+  - nav_class: {String} extra class on the <nav>
+
   Usage:
   {% render 'ff-header-dropdown-menu' %}
+  {% render 'ff-header-dropdown-menu', link_offset: 5, link_limit: 2, nav_class: 'header__inline-menu--right' %}
 {% endcomment %}
+{%- liquid
+  assign link_offset = link_offset | default: 0
+  assign link_limit = link_limit | default: 50
+-%}
 
-<nav class="header__inline-menu">
+<nav class="header__inline-menu{% if nav_class != blank %} {{ nav_class }}{% endif %}">
   <ul class="list-menu list-menu--inline" role="list">
-    {%- for link in section.settings.menu.links -%}
+    {%- for link in section.settings.menu.links offset: link_offset limit: link_limit -%}
       <li>
         {%- if link.links != blank -%}
           <header-menu>

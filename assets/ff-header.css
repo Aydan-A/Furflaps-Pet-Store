@@ -189,6 +189,58 @@
   }
 }
 
+@media screen and (min-width: 990px) {
+  /*
+    Split menu: links | logo | links ... icons, all on one row, with the logo
+    in the middle of the header. The right-hand links and the icons share the
+    right column, one at each end.
+  */
+  .header.header--split-menu {
+    grid-template-areas: 'navigation heading right';
+    grid-template-columns: 1fr auto 1fr;
+    column-gap: var(--header-group-gap, 2.4rem);
+    row-gap: 0;
+  }
+
+  .header.header--split-menu .header__inline-menu {
+    grid-area: navigation;
+    justify-self: end;
+    align-self: center;
+    margin: 0;
+    padding: 0;
+    border: 0;
+  }
+
+  .header.header--split-menu .header__inline-menu--right {
+    grid-area: right;
+    justify-self: start;
+  }
+
+  .header.header--split-menu .header__heading,
+  .header.header--split-menu .header__heading-link {
+    justify-self: center;
+  }
+
+  .header.header--split-menu .header__icons {
+    grid-area: right;
+    justify-self: end;
+  }
+
+  .header.header--split-menu .list-menu--inline {
+    flex-wrap: nowrap;
+  }
+
+  /* Search is an icon at the right with account and cart, also when the logo
+     is top-center, where Dawn would put it at the far left. */
+  .header.header--split-menu > .header__search {
+    display: none;
+  }
+
+  .header.header--split-menu .header__icons .header__search {
+    display: inline-flex;
+  }
+}
+
 @media screen and (min-width: 990px) and (max-width: 1199px) {
   .header--inline-search:not(.drawer-menu) {
     column-gap: max(1.2rem, calc(var(--header-group-gap, 2.4rem) * 0.65));

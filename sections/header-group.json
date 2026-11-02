@@ -73,6 +73,7 @@
         "nav_letter_spacing": 0,
         "nav_font_size": 18,
         "nav_alignment": "center",
+        "menu_links_right": 2,
         "nav_accent_color": "#cc2b2b",
         "nav_accent_link": "",
         "search_bg_color": "#ffffff",

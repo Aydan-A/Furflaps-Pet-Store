@@ -207,6 +207,22 @@
     assign show_inline_search = true
   endif
 
+  # Split menu: with a centred logo and a dropdown menu, the last links of the
+  # menu move to the right of the logo, all on one row, with search, account
+  # and cart as icons at the far right.
+  assign split_right = 0
+  assign logo_centered = false
+  if section.settings.logo_position == 'middle-center' or section.settings.logo_position == 'top-center'
+    assign logo_centered = true
+  endif
+  if logo_centered and section.settings.menu != blank and section.settings.menu_type_desktop == 'dropdown'
+    assign split_right = section.settings.menu_links_right | at_most: section.settings.menu.links.size
+  endif
+  assign split_left = section.settings.menu.links.size | minus: split_right
+  if split_right > 0
+    assign show_inline_search = false
+  endif
+
   if section.settings.sticky_header_type != 'none'
     assign header_tag = 'sticky-header'
   endif
@@ -230,7 +246,7 @@
       assign localization_forms = true
     endif
   -%}
-  <header class="header header--{{ section.settings.logo_position }} header--mobile-{{ section.settings.mobile_logo_position }} page-width{% if section.settings.menu_type_desktop == 'drawer' %} drawer-menu{% endif %}{% if section.settings.menu != blank %} header--has-menu{% endif %}{% if has_app_block %} header--has-app{% endif %}{% if social_links %} header--has-social{% endif %}{% if shop.customer_accounts_enabled %} header--has-account{% endif %}{% if localization_forms %} header--has-localizations{% endif %}{% if show_inline_search %} header--inline-search{% endif %}">
+  <header class="header header--{{ section.settings.logo_position }} header--mobile-{{ section.settings.mobile_logo_position }} page-width{% if section.settings.menu_type_desktop == 'drawer' %} drawer-menu{% endif %}{% if section.settings.menu != blank %} header--has-menu{% endif %}{% if has_app_block %} header--has-app{% endif %}{% if social_links %} header--has-social{% endif %}{% if shop.customer_accounts_enabled %} header--has-account{% endif %}{% if localization_forms %} header--has-localizations{% endif %}{% if show_inline_search %} header--inline-search{% endif %}{% if split_right > 0 %} header--split-menu{% endif %}">
     {%- liquid
       if section.settings.menu != blank
         render 'header-drawer'
@@ -284,7 +300,11 @@
     {%- liquid
       if section.settings.menu != blank
         if section.settings.menu_type_desktop == 'dropdown'
-          render 'ff-header-dropdown-menu'
+          if split_right > 0
+            render 'ff-header-dropdown-menu', link_limit: split_left
+          else
+            render 'ff-header-dropdown-menu'
+          endif
         elsif section.settings.menu_type_desktop != 'drawer'
           render 'header-mega-menu'
         endif
@@ -325,6 +345,14 @@
       {%- if request.page_type == 'index' -%}
         </h1>
       {%- endif -%}
+    {%- endif -%}
+
+    {%- if split_right > 0 -%}
+      {%- render 'ff-header-dropdown-menu',
+        link_offset: split_left,
+        link_limit: split_right,
+        nav_class: 'header__inline-menu--right'
+      -%}
     {%- endif -%}
 
     <div class="header__icons{% if section.settings.enable_country_selector or section.settings.enable_language_selector %} header__icons--localization header-localization{% endif %}">
@@ -721,6 +749,16 @@
       ],
       "default": "center",
       "label": "Menu alignment"
+    },
+    {
+      "type": "range",
+      "id": "menu_links_right",
+      "min": 0,
+      "max": 4,
+      "step": 1,
+      "label": "Menu links right of the logo",
+      "info": "With a centred logo and the dropdown menu: the last links of the menu sit to the right of the logo, on one row, and search becomes an icon beside account and cart. 0 keeps the menu on its own row.",
+      "default": 0
     },
     {
       "type": "color",
