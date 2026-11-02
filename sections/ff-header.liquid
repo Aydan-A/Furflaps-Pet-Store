@@ -348,6 +348,8 @@
     {%- endif -%}
 
     {%- if split_right > 0 -%}
+      {%- comment -%} Right-hand links and the icons travel together at the right edge. {%- endcomment -%}
+      <div class="header__end">
       {%- render 'ff-header-dropdown-menu',
         link_offset: split_left,
         link_limit: split_right,
@@ -446,6 +448,9 @@
         {%- endif -%}
       </a>
     </div>
+    {%- if split_right > 0 -%}
+      </div>
+    {%- endif -%}
   </header>
 </{{ header_tag }}>
 
