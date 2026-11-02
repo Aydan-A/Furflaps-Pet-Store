@@ -62,7 +62,7 @@
     "header": {
       "type": "ff-header",
       "settings": {
-        "logo_position": "top-center",
+        "logo_position": "middle-center",
         "mobile_logo_position": "left",
         "show_brand_name": true,
         "brand_name_font": "serif",
@@ -76,6 +76,7 @@
         "menu_links_right": 2,
         "nav_accent_color": "#cc2b2b",
         "nav_accent_link": "",
+        "show_inline_search": true,
         "search_bg_color": "#ffffff",
         "search_max_width": 680,
         "search_placeholder": "Search products",
