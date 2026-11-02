@@ -271,7 +271,7 @@
     {%- liquid
       if section.settings.menu != blank
         if section.settings.menu_type_desktop == 'dropdown'
-          render 'header-dropdown-menu'
+          render 'ff-header-dropdown-menu'
         elsif section.settings.menu_type_desktop != 'drawer'
           render 'header-mega-menu'
         endif
@@ -696,8 +696,13 @@
       "type": "color",
       "id": "nav_accent_color",
       "default": "#CC2B2B",
-      "label": "\"Sale\" link color",
-      "info": "Applied to any top-level menu item titled \"Sale\""
+      "label": "Highlighted link color"
+    },
+    {
+      "type": "url",
+      "id": "nav_accent_link",
+      "label": "Highlighted link",
+      "info": "A top-level menu link shown in the highlight color, on the dropdown menu. Leave empty to highlight the link titled \"Sale\"."
     },
     {
       "type": "header",
