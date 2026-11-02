@@ -350,6 +350,7 @@
     },
     "before_after_comparison_H4KUmY": {
       "type": "before-after-comparison",
+      "disabled": true,
       "name": "Before/after comparison",
       "settings": {
         "heading": "See the difference",
