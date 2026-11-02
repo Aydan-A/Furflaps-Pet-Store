@@ -199,6 +199,14 @@
 {% liquid
   assign header_tag = 'div'
 
+  # The always-open search bar sits in the first row next to the logo,
+  # whichever logo position is chosen. A desktop drawer menu keeps Dawn's
+  # search icon instead, since that layout has no room for the bar.
+  assign show_inline_search = false
+  if section.settings.show_inline_search and section.settings.menu_type_desktop != 'drawer'
+    assign show_inline_search = true
+  endif
+
   if section.settings.sticky_header_type != 'none'
     assign header_tag = 'sticky-header'
   endif
@@ -222,7 +230,7 @@
       assign localization_forms = true
     endif
   -%}
-  <header class="header header--{{ section.settings.logo_position }} header--mobile-{{ section.settings.mobile_logo_position }} page-width{% if section.settings.menu_type_desktop == 'drawer' %} drawer-menu{% endif %}{% if section.settings.menu != blank %} header--has-menu{% endif %}{% if has_app_block %} header--has-app{% endif %}{% if social_links %} header--has-social{% endif %}{% if shop.customer_accounts_enabled %} header--has-account{% endif %}{% if localization_forms %} header--has-localizations{% endif %}">
+  <header class="header header--{{ section.settings.logo_position }} header--mobile-{{ section.settings.mobile_logo_position }} page-width{% if section.settings.menu_type_desktop == 'drawer' %} drawer-menu{% endif %}{% if section.settings.menu != blank %} header--has-menu{% endif %}{% if has_app_block %} header--has-app{% endif %}{% if social_links %} header--has-social{% endif %}{% if shop.customer_accounts_enabled %} header--has-account{% endif %}{% if localization_forms %} header--has-localizations{% endif %}{% if show_inline_search %} header--inline-search{% endif %}">
     {%- liquid
       if section.settings.menu != blank
         render 'header-drawer'
@@ -269,7 +277,7 @@
       {%- endif -%}
     {%- endif -%}
 
-    {%- if section.settings.logo_position == 'middle-left' -%}
+    {%- if show_inline_search -%}
       {%- render 'header-search-inline', input_id: 'Header-Search-Inline' -%}
     {%- endif -%}
 
@@ -343,7 +351,7 @@
           </localization-form>
         {%- endif -%}
       </div>
-      <div class="header__mobile-search{% if section.settings.logo_position == 'middle-left' %} large-up-hide{% endif %}">
+      <div class="header__mobile-search{% if show_inline_search %} large-up-hide{% endif %}">
         {% render 'header-search', input_id: 'Search-In-Modal' %}
       </div>
 
@@ -729,6 +737,13 @@
     {
       "type": "header",
       "content": "Search bar"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_inline_search",
+      "default": true,
+      "label": "Show search bar on desktop",
+      "info": "Sits beside the logo in every logo position. Not shown with the desktop drawer menu."
     },
     {
       "type": "color",

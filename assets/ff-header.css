@@ -40,8 +40,12 @@
     padding-right: var(--header-side-padding, 2.4rem);
   }
 
-  /* Logo, inline search and icons on the first row; the menu on its own row. */
-  .header--middle-left {
+  /*
+    One desktop layout for every logo position: logo, search bar and icons on
+    the first row, the menu on its own row below. The logo position only
+    decides where the logo sits in that first row.
+  */
+  .header--inline-search:not(.drawer-menu) {
     grid-template-areas:
       'heading search icons'
       'navigation navigation navigation';
@@ -50,13 +54,40 @@
     row-gap: var(--header-row-gap, 1.2rem);
   }
 
-  .header--middle-left .header__search-inline {
+  .header--inline-search.header--top-center:not(.drawer-menu),
+  .header--inline-search.header--middle-center:not(.drawer-menu) {
+    grid-template-areas:
+      'search heading icons'
+      'navigation navigation navigation';
+    grid-template-columns: 1fr auto 1fr;
+  }
+
+  .header--inline-search:not(.drawer-menu):not(.header--has-menu) {
+    grid-template-areas: 'heading search icons';
+  }
+
+  .header--inline-search.header--top-center:not(.drawer-menu):not(.header--has-menu),
+  .header--inline-search.header--middle-center:not(.drawer-menu):not(.header--has-menu) {
+    grid-template-areas: 'search heading icons';
+  }
+
+  /* The bar replaces Dawn's search icon on desktop. */
+  .header.header--inline-search > .header__search {
+    display: none;
+  }
+
+  .header--inline-search .header__search-inline {
     grid-area: search;
     justify-self: stretch;
     align-self: center;
     width: 100%;
     max-width: var(--header-search-max-width, 58rem);
     margin-inline: auto;
+  }
+
+  .header--inline-search.header--top-center .header__search-inline,
+  .header--inline-search.header--middle-center .header__search-inline {
+    margin-inline: 0 auto;
   }
 
   .header__search-inline .field:before,
@@ -119,35 +150,38 @@
     border-radius: var(--header-search-radius, var(--inputs-radius));
   }
 
-  .header--middle-left .header__icons {
+  /* Icons, logo and menu look the same in every logo position. */
+  .header .header__icons {
     gap: var(--header-icon-gap, 0.4rem);
     align-items: center;
     padding-right: 0;
   }
 
-  .header--middle-left .header__icon .icon {
+  .header .header__icon .icon {
     width: var(--header-icon-size, 2rem);
     height: var(--header-icon-size, 2rem);
   }
 
-  .header--middle-left .header__icon--cart .icon {
+  .header .header__icon--cart .icon {
     width: calc(var(--header-icon-size, 2rem) * 2);
     height: calc(var(--header-icon-size, 2rem) * 2);
   }
 
-  .header--middle-left .header__heading-link {
+  .header .header__heading-link {
     gap: 1rem;
   }
 
-  .header--middle-left .header__inline-menu {
+  .header.header--inline-search .header__inline-menu {
     justify-self: stretch;
+    margin-top: 0;
+    margin-left: 0;
     padding-top: 1.2rem;
     border-top: 0.1rem solid rgba(var(--color-foreground), 0.08);
     display: flex;
     justify-content: var(--header-nav-justify, center);
   }
 
-  .header--middle-left .header__menu-item {
+  .header .header__inline-menu .header__menu-item {
     padding-top: 0.4rem;
     padding-bottom: 0.4rem;
     padding-left: calc(var(--header-nav-gap, 2.4rem) / 2);
@@ -156,7 +190,7 @@
 }
 
 @media screen and (min-width: 990px) and (max-width: 1199px) {
-  .header--middle-left {
+  .header--inline-search:not(.drawer-menu) {
     column-gap: max(1.2rem, calc(var(--header-group-gap, 2.4rem) * 0.65));
   }
 }
