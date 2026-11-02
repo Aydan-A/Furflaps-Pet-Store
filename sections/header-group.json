@@ -63,7 +63,7 @@
       "type": "ff-header",
       "settings": {
         "logo_position": "top-center",
-        "mobile_logo_position": "center",
+        "mobile_logo_position": "left",
         "show_brand_name": true,
         "brand_name_font": "serif",
         "brand_name_font_size": 25,
