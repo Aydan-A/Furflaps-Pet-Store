@@ -157,15 +157,18 @@
     padding-left: calc(var(--header-nav-gap, 2.4rem) / 2);
     padding-right: calc(var(--header-nav-gap, 2.4rem) / 2);
   }
-
-  .header--middle-left .header__menu-item--accent,
-  .header--middle-left .header__menu-item--accent .header__active-menu-item {
-    color: var(--header-nav-accent, #cc2b2b);
-  }
 }
 
 @media screen and (min-width: 990px) and (max-width: 1199px) {
   .header--middle-left {
     column-gap: max(1.2rem, calc(var(--header-group-gap, 2.4rem) * 0.65));
   }
+}
+
+/* The highlighted menu link (header setting "Highlighted link"), in every logo
+   position, not only middle-left. */
+.header__inline-menu .header__menu-item--accent,
+.header__inline-menu .header__menu-item--accent:hover,
+.header__inline-menu .header__menu-item--accent .header__active-menu-item {
+  color: var(--header-nav-accent, #cc2b2b);
 }
