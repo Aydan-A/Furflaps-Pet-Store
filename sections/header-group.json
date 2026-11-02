@@ -60,7 +60,7 @@
     "header": {
       "type": "ff-header",
       "settings": {
-        "logo_position": "middle-left",
+        "logo_position": "middle-center",
         "mobile_logo_position": "left",
         "show_brand_name": true,
         "brand_name_font": "almarai_n4",
