@@ -1,0 +1,171 @@
+/*
+  Furflaps header. Overrides Dawn's base.css, which stays stock.
+  Loaded first in sections/ff-header.liquid, ahead of Dawn's menu and search
+  stylesheets, so those keep winning ties exactly as they did when these
+  rules lived inside base.css.
+*/
+
+.header__heading-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.header__brand-name {
+  font-family: var(--header-brand-font-family, var(--font-heading-family));
+  font-style: var(--header-brand-font-style, var(--font-heading-style));
+  font-weight: var(--header-brand-font-weight, 700);
+  font-size: var(--header-brand-font-size, 2rem);
+  letter-spacing: 0.06rem;
+  line-height: 1;
+  color: rgb(var(--color-foreground));
+  white-space: nowrap;
+}
+
+.header__brand-name--uppercase {
+  text-transform: uppercase;
+  letter-spacing: 0.1rem;
+}
+
+/* Dawn hangs the cart icon 1.2rem into the gutter; the mobile rules in
+   ff-header.liquid hang the whole icon group instead. */
+.header__icon--cart {
+  margin-right: 0;
+}
+
+@media screen and (min-width: 990px) {
+  .header:not(.drawer-menu).page-width {
+    max-width: var(--header-content-max-width, var(--page-width));
+    padding-left: var(--header-side-padding, 2.4rem);
+    padding-right: var(--header-side-padding, 2.4rem);
+  }
+
+  /* Logo, inline search and icons on the first row; the menu on its own row. */
+  .header--middle-left {
+    grid-template-areas:
+      'heading search icons'
+      'navigation navigation navigation';
+    grid-template-columns: auto minmax(28rem, 1fr) auto;
+    column-gap: var(--header-group-gap, 2.4rem);
+    row-gap: var(--header-row-gap, 1.2rem);
+  }
+
+  .header--middle-left .header__search-inline {
+    grid-area: search;
+    justify-self: stretch;
+    align-self: center;
+    width: 100%;
+    max-width: var(--header-search-max-width, 58rem);
+    margin-inline: auto;
+  }
+
+  .header__search-inline .field:before,
+  .header__search-inline .field:after {
+    content: none;
+  }
+
+  .header__search-inline .field {
+    margin: 0;
+  }
+
+  .header__search-inline .search-modal__form {
+    width: 100%;
+  }
+
+  .header__search-inline .field__input {
+    background-color: var(--header-search-bg, rgb(var(--color-background)));
+    border-radius: var(--header-search-radius, var(--inputs-radius));
+    border: var(--header-search-border-width, var(--inputs-border-width)) solid
+      rgba(var(--color-foreground), var(--inputs-border-opacity));
+    margin: 0;
+    box-shadow: none;
+    outline: none;
+    height: 4.8rem;
+    min-height: 4.8rem;
+    padding: 0.8rem 5.6rem 0.8rem 1.8rem;
+  }
+
+  .header__search-inline .field__input::placeholder {
+    color: rgba(var(--color-foreground), 0.65);
+    opacity: 1;
+  }
+
+  .header__search-inline .search__button,
+  .header__search-inline .reset__button {
+    top: 50%;
+    transform: translateY(-50%);
+    width: 4.4rem;
+    height: 4.4rem;
+  }
+
+  .header__search-inline .search__button {
+    right: 0;
+  }
+
+  .header__search-inline .reset__button {
+    right: 4.4rem;
+  }
+
+  .header__search-inline .field__input:focus,
+  .header__search-inline .field__input:not(:placeholder-shown),
+  .header__search-inline .field__input:-webkit-autofill {
+    padding: 0.8rem 9.8rem 0.8rem 1.8rem;
+  }
+
+  .header__search-inline .field__input:focus,
+  .header__search-inline .field__input:focus-visible {
+    box-shadow: none;
+    outline: none;
+    border-radius: var(--header-search-radius, var(--inputs-radius));
+  }
+
+  .header--middle-left .header__icons {
+    gap: var(--header-icon-gap, 0.4rem);
+    align-items: center;
+    padding-right: 0;
+  }
+
+  .header--middle-left .header__icon .icon {
+    width: var(--header-icon-size, 2rem);
+    height: var(--header-icon-size, 2rem);
+  }
+
+  .header--middle-left .header__icon--cart .icon {
+    width: calc(var(--header-icon-size, 2rem) * 2);
+    height: calc(var(--header-icon-size, 2rem) * 2);
+  }
+
+  .header--middle-left .header__heading-link {
+    gap: 1rem;
+  }
+
+  .header--middle-left .header__inline-menu {
+    justify-self: stretch;
+    padding-top: 1.2rem;
+    border-top: 0.1rem solid rgba(var(--color-foreground), 0.08);
+    display: flex;
+    justify-content: var(--header-nav-justify, center);
+  }
+
+  .header--middle-left .header__menu-item {
+    text-transform: uppercase;
+    letter-spacing: 0.08rem;
+    font-size: var(--header-nav-font-size, 1.3rem);
+    font-weight: 600;
+    padding-top: 0.4rem;
+    padding-bottom: 0.4rem;
+    padding-left: calc(var(--header-nav-gap, 2.4rem) / 2);
+    padding-right: calc(var(--header-nav-gap, 2.4rem) / 2);
+  }
+
+  .header--middle-left .header__menu-item--accent,
+  .header--middle-left .header__menu-item--accent .header__active-menu-item {
+    color: var(--header-nav-accent, #cc2b2b);
+  }
+}
+
+@media screen and (min-width: 990px) and (max-width: 1199px) {
+  .header--middle-left {
+    column-gap: max(1.2rem, calc(var(--header-group-gap, 2.4rem) * 0.65));
+  }
+}
