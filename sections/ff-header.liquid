@@ -207,12 +207,15 @@
     assign show_inline_search = true
   endif
 
-  # Logo "Middle center" is the split menu: the first links at the left edge,
-  # the logo in the middle, the last links and the icons at the right edge,
-  # all on one row. "Top center" stays the classic layout, logo on top and the
-  # whole menu on the row below. The split needs the dropdown menu.
+  # Split menu: with a centred logo and a dropdown menu, the last links of the
+  # menu move to the right of the logo, all on one row, with search, account
+  # and cart as icons at the far right.
   assign split_right = 0
-  if section.settings.logo_position == 'middle-center' and section.settings.menu != blank and section.settings.menu_type_desktop == 'dropdown'
+  assign logo_centered = false
+  if section.settings.logo_position == 'middle-center' or section.settings.logo_position == 'top-center'
+    assign logo_centered = true
+  endif
+  if logo_centered and section.settings.menu != blank and section.settings.menu_type_desktop == 'dropdown'
     assign split_right = section.settings.menu_links_right | at_most: section.settings.menu.links.size
   endif
   assign split_left = section.settings.menu.links.size | minus: split_right
@@ -229,7 +232,7 @@
   {% if header_tag == 'sticky-header' %}
     data-sticky-type="{{ section.settings.sticky_header_type }}"
   {% endif %}
-  class="header-wrapper color-{{ section.settings.color_scheme }} gradient{% if section.settings.show_line_separator and section.settings.floating_bar == false %} header-wrapper--border-bottom{% endif %}"
+  class="header-wrapper color-{{ section.settings.color_scheme }} gradient{% if section.settings.show_line_separator %} header-wrapper--border-bottom{% endif %}"
 >
   {%- liquid
     assign social_links = false
@@ -243,7 +246,7 @@
       assign localization_forms = true
     endif
   -%}
-  <header class="header header--{{ section.settings.logo_position }} header--mobile-{{ section.settings.mobile_logo_position }} page-width{% if section.settings.menu_type_desktop == 'drawer' %} drawer-menu{% endif %}{% if section.settings.menu != blank %} header--has-menu{% endif %}{% if has_app_block %} header--has-app{% endif %}{% if social_links %} header--has-social{% endif %}{% if shop.customer_accounts_enabled %} header--has-account{% endif %}{% if localization_forms %} header--has-localizations{% endif %}{% if show_inline_search %} header--inline-search{% endif %}{% if split_right > 0 %} header--split-menu{% endif %}{% if section.settings.floating_bar %} header--floating color-{{ section.settings.bar_color_scheme }} gradient{% endif %}{% if section.settings.icon_style == 'circle' %} header--icon-circles{% endif %}">
+  <header class="header header--{{ section.settings.logo_position }} header--mobile-{{ section.settings.mobile_logo_position }} page-width{% if section.settings.menu_type_desktop == 'drawer' %} drawer-menu{% endif %}{% if section.settings.menu != blank %} header--has-menu{% endif %}{% if has_app_block %} header--has-app{% endif %}{% if social_links %} header--has-social{% endif %}{% if shop.customer_accounts_enabled %} header--has-account{% endif %}{% if localization_forms %} header--has-localizations{% endif %}{% if show_inline_search %} header--inline-search{% endif %}{% if split_right > 0 %} header--split-menu{% endif %}">
     {%- liquid
       if section.settings.menu != blank
         render 'header-drawer'
@@ -755,11 +758,11 @@
     {
       "type": "range",
       "id": "menu_links_right",
-      "min": 1,
+      "min": 0,
       "max": 4,
       "step": 1,
       "label": "Menu links right of the logo",
-      "info": "For logo position \"Middle center\" with the dropdown menu: how many of the last menu links sit on the right, next to the icons.",
+      "info": "With a centred logo and the dropdown menu: the last links of the menu sit to the right of the logo, on one row, and search becomes an icon beside account and cart. 0 keeps the menu on its own row.",
       "default": 0
     },
     {
@@ -826,34 +829,6 @@
       "unit": "px",
       "label": "Border thickness",
       "default": 1
-    },
-    {
-      "type": "header",
-      "content": "Bar style"
-    },
-    {
-      "type": "checkbox",
-      "id": "floating_bar",
-      "default": false,
-      "label": "Floating bar",
-      "info": "Sets the header in a rounded bar, inset from the page edges."
-    },
-    {
-      "type": "color_scheme",
-      "id": "bar_color_scheme",
-      "label": "Bar color scheme",
-      "default": "scheme-1",
-      "visible_if": "{{ section.settings.floating_bar }}"
-    },
-    {
-      "type": "select",
-      "id": "icon_style",
-      "label": "Icon style",
-      "options": [
-        { "value": "plain", "label": "Plain" },
-        { "value": "circle", "label": "In circles" }
-      ],
-      "default": "plain"
     },
     {
       "type": "header",
