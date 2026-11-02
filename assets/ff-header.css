@@ -231,8 +231,7 @@
     flex-wrap: nowrap;
   }
 
-  /* Search is an icon at the right with account and cart, also when the logo
-     is top-center, where Dawn would put it at the far left. */
+  /* Search is an icon at the right with account and cart. */
   .header.header--split-menu > .header__search {
     display: none;
   }

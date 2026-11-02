@@ -207,15 +207,12 @@
     assign show_inline_search = true
   endif
 
-  # Split menu: with a centred logo and a dropdown menu, the last links of the
-  # menu move to the right of the logo, all on one row, with search, account
-  # and cart as icons at the far right.
+  # Logo "Middle center" is the split menu: the first links at the left edge,
+  # the logo in the middle, the last links and the icons at the right edge,
+  # all on one row. "Top center" stays the classic layout, logo on top and the
+  # whole menu on the row below. The split needs the dropdown menu.
   assign split_right = 0
-  assign logo_centered = false
-  if section.settings.logo_position == 'middle-center' or section.settings.logo_position == 'top-center'
-    assign logo_centered = true
-  endif
-  if logo_centered and section.settings.menu != blank and section.settings.menu_type_desktop == 'dropdown'
+  if section.settings.logo_position == 'middle-center' and section.settings.menu != blank and section.settings.menu_type_desktop == 'dropdown'
     assign split_right = section.settings.menu_links_right | at_most: section.settings.menu.links.size
   endif
   assign split_left = section.settings.menu.links.size | minus: split_right
@@ -758,11 +755,11 @@
     {
       "type": "range",
       "id": "menu_links_right",
-      "min": 0,
+      "min": 1,
       "max": 4,
       "step": 1,
       "label": "Menu links right of the logo",
-      "info": "With a centred logo and the dropdown menu: the last links of the menu sit to the right of the logo, on one row, and search becomes an icon beside account and cart. 0 keeps the menu on its own row.",
+      "info": "For logo position \"Middle center\" with the dropdown menu: how many of the last menu links sit on the right, next to the icons.",
       "default": 0
     },
     {
