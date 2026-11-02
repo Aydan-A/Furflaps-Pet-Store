@@ -26,30 +26,13 @@
             "button_text_color": "#ffffff",
             "button_border_color": "#cc302a"
           }
-        },
-        "family": {
-          "type": "slide",
-          "disabled": true,
-          "settings": {
-            "heading": "Made for every family member",
-            "description": "<p>Find practical, playful products chosen to make daily care feel simple.</p>",
-            "button_label": "Browse essentials",
-            "button_link": "shopify://collections/all",
-            "background_color": "#cfe2ef",
-            "heading_color": "#ffffff",
-            "text_color": "#ffffff",
-            "button_background": "#cc302a",
-            "button_text_color": "#ffffff",
-            "button_border_color": "#cc302a"
-          }
         }
       },
       "block_order": [
-        "care",
-        "family"
+        "care"
       ],
       "settings": {
-        "image": "shopify://shop_images/Unknown-3.png",
+        "image": "shopify://shop_images/Unknown-2.png",
         "media_background": "#ffffff",
         "image_fit": "cover",
         "image_position": "center center",
