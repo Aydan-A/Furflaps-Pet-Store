@@ -148,10 +148,6 @@
   }
 
   .header--middle-left .header__menu-item {
-    text-transform: uppercase;
-    letter-spacing: 0.08rem;
-    font-size: var(--header-nav-font-size, 1.3rem);
-    font-weight: 600;
     padding-top: 0.4rem;
     padding-bottom: 0.4rem;
     padding-left: calc(var(--header-nav-gap, 2.4rem) / 2);
@@ -171,4 +167,15 @@
 .header__inline-menu .header__menu-item--accent:hover,
 .header__inline-menu .header__menu-item--accent .header__active-menu-item {
   color: var(--header-nav-accent, #cc2b2b);
+}
+
+/* Menu typography, in every logo position: the header's "Menu font", size and
+   letter spacing, set in capitals. */
+.header__inline-menu .header__menu-item {
+  font-family: var(--header-nav-font-family, var(--font-body-family));
+  font-style: var(--header-nav-font-style, normal);
+  font-weight: var(--header-nav-font-weight, 600);
+  font-size: var(--header-nav-font-size, 1.3rem);
+  letter-spacing: var(--header-nav-letter-spacing, 0);
+  text-transform: uppercase;
 }

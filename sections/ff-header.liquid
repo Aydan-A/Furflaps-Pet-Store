@@ -87,6 +87,7 @@
 
 {%- style -%}
   {{ section.settings.brand_name_font | font_face: font_display: 'swap' }}
+  {{ section.settings.nav_font | font_face: font_display: 'swap' }}
 
   .header {
     padding: {{ section.settings.padding_top | times: 0.5 | round: 0 }}px 3rem {{ section.settings.padding_bottom | times: 0.5 | round: 0 }}px 3rem;
@@ -96,6 +97,10 @@
     --header-nav-gap: {{ section.settings.nav_link_gap | default: 24 }}px;
     --header-nav-font-size: {{ section.settings.nav_font_size | default: 13 }}px;
     --header-nav-justify: {% case section.settings.nav_alignment %}{% when 'left' %}flex-start{% when 'right' %}flex-end{% else %}center{% endcase %};
+    --header-nav-font-family: {{ section.settings.nav_font.family }}, {{ section.settings.nav_font.fallback_families }};
+    --header-nav-font-style: {{ section.settings.nav_font.style }};
+    --header-nav-font-weight: {{ section.settings.nav_font.weight }};
+    --header-nav-letter-spacing: {{ section.settings.nav_letter_spacing | divided_by: 100.0 }}em;
     --header-nav-accent: {{ section.settings.nav_accent_color | default: '#CC2B2B' }};
     --header-search-bg: {{ section.settings.search_bg_color | default: '#FFFFFF' }};
     --header-search-max-width: {{ section.settings.search_max_width | default: 520 }}px;
@@ -663,10 +668,27 @@
       "default": 32
     },
     {
+      "type": "font_picker",
+      "id": "nav_font",
+      "default": "archivo_n8",
+      "label": "Menu font",
+      "info": "Pick the family and its weight here."
+    },
+    {
+      "type": "range",
+      "id": "nav_letter_spacing",
+      "min": -5,
+      "max": 15,
+      "step": 1,
+      "unit": "%",
+      "label": "Menu letter spacing",
+      "default": 0
+    },
+    {
       "type": "range",
       "id": "nav_font_size",
       "min": 10,
-      "max": 18,
+      "max": 26,
       "step": 1,
       "unit": "px",
       "label": "Link font size",
