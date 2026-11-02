@@ -371,9 +371,9 @@
         </a>
       {%- endif -%}
 
-      {%- if section.settings.show_wishlist_icon -%}
+      {%- if section.settings.show_wishlist_icon and section.settings.wishlist_url != blank -%}
         <a
-          href="{{ section.settings.wishlist_url | default: '#' }}"
+          href="{{ section.settings.wishlist_url }}"
           class="header__icon header__icon--wishlist link focus-inset{% if section.settings.menu != blank %} small-hide{% endif %}"
         >
           <span class="svg-wrapper">{{ 'icon-heart.svg' | inline_asset_content }}</span>
@@ -388,24 +388,22 @@
         {%- endcase -%}
       {%- endfor -%}
 
-      {%- if section.settings.show_cart_icon -%}
-        <a href="{{ routes.cart_url }}" class="header__icon header__icon--cart link focus-inset" id="cart-icon-bubble">
-          {% if cart == empty %}
-            <span class="svg-wrapper">{{ 'icon-cart-empty.svg' | inline_asset_content }}</span>
-          {% else %}
-            <span class="svg-wrapper">{{ 'icon-cart.svg' | inline_asset_content }}</span>
-          {% endif %}
-          <span class="visually-hidden">{{ 'templates.cart.cart' | t }}</span>
-          {%- if cart != empty -%}
-            <div class="cart-count-bubble">
-              {%- if cart.item_count < 100 -%}
-                <span aria-hidden="true">{{ cart.item_count }}</span>
-              {%- endif -%}
-              <span class="visually-hidden">{{ 'sections.header.cart_count' | t: count: cart.item_count }}</span>
-            </div>
-          {%- endif -%}
-        </a>
-      {%- endif -%}
+      <a href="{{ routes.cart_url }}" class="header__icon header__icon--cart link focus-inset" id="cart-icon-bubble">
+        {% if cart == empty %}
+          <span class="svg-wrapper">{{ 'icon-cart-empty.svg' | inline_asset_content }}</span>
+        {% else %}
+          <span class="svg-wrapper">{{ 'icon-cart.svg' | inline_asset_content }}</span>
+        {% endif %}
+        <span class="visually-hidden">{{ 'templates.cart.cart' | t }}</span>
+        {%- if cart != empty -%}
+          <div class="cart-count-bubble">
+            {%- if cart.item_count < 100 -%}
+              <span aria-hidden="true">{{ cart.item_count }}</span>
+            {%- endif -%}
+            <span class="visually-hidden">{{ 'sections.header.cart_count' | t: count: cart.item_count }}</span>
+          </div>
+        {%- endif -%}
+      </a>
     </div>
   </header>
 </{{ header_tag }}>
@@ -817,13 +815,7 @@
       "type": "url",
       "id": "wishlist_url",
       "label": "Wishlist link",
-      "info": "Leave blank until a wishlist app/page is set up"
-    },
-    {
-      "type": "checkbox",
-      "id": "show_cart_icon",
-      "default": true,
-      "label": "Show cart icon"
+      "info": "The icon only shows once this link is set."
     },
     {
       "type": "range",

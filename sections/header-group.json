@@ -82,7 +82,6 @@
         "show_account_icon": true,
         "show_wishlist_icon": false,
         "wishlist_url": "",
-        "show_cart_icon": true,
         "icon_size": 22,
         "icon_gap": 6,
         "menu": "main-menu",
