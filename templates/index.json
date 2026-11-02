@@ -97,7 +97,7 @@
         "button_font_size": 16,
         "mobile_button_font_size": 15,
         "button_font_weight": "600",
-        "show_button_icon": false,
+        "show_button_icon": true,
         "button_icon_gap": 8,
         "button_icon_size": 16,
         "show_pagination": true,
