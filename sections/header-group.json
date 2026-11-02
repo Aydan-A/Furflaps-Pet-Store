@@ -58,7 +58,7 @@
       }
     },
     "header": {
-      "type": "header",
+      "type": "ff-header",
       "settings": {
         "logo_position": "middle-left",
         "mobile_logo_position": "left",
