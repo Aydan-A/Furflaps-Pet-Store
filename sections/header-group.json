@@ -45,7 +45,7 @@
         "use_custom_colors": true,
         "background_color": "#e2abab",
         "text_color": "#ffffff",
-        "show_line_separator": true,
+        "show_line_separator": false,
         "font_source": "heading",
         "message_font_size": 16,
         "message_font_weight": "400",
