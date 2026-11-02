@@ -48,7 +48,7 @@
         "show_line_separator": false,
         "font_source": "heading",
         "message_font_size": 16,
-        "message_font_weight": "400",
+        "message_font_weight": "500",
         "message_vertical_padding": 4,
         "content_gap": 4,
         "show_link_arrow": true,
