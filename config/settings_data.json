@@ -10,7 +10,7 @@
 {
   "current": {
     "logo": "shopify://shop_images/logo_furflaps.png",
-    "logo_width": 48,
+    "logo_width": 70,
     "type_header_font": "serif",
     "heading_scale": 100,
     "type_body_font": "ovo_n4",
@@ -179,7 +179,7 @@
       },
       "scheme-4": {
         "settings": {
-          "background": "#121212",
+          "background": "#CC302A",
           "background_gradient": "",
           "text": "#ffffff",
           "button": "#ffffff",
@@ -207,17 +207,6 @@
           "button": "#121212",
           "button_label": "#ffffff",
           "secondary_button_label": "#121212",
-          "shadow": "#121212"
-        }
-      },
-      "scheme-furflaps-red": {
-        "settings": {
-          "background": "#9e2b25",
-          "background_gradient": "",
-          "text": "#f6efe6",
-          "button": "#f6efe6",
-          "button_label": "#9e2b25",
-          "secondary_button_label": "#f6efe6",
           "shadow": "#121212"
         }
       }
