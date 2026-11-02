@@ -735,6 +735,7 @@
     {
       "type": "select",
       "id": "nav_alignment",
+      "visible_if": "{{ section.settings.logo_position != 'middle-center' or section.settings.menu_type_desktop != 'dropdown' }}",
       "options": [
         {
           "value": "left",
@@ -755,6 +756,7 @@
     {
       "type": "range",
       "id": "menu_links_right",
+      "visible_if": "{{ section.settings.logo_position == 'middle-center' and section.settings.menu_type_desktop == 'dropdown' }}",
       "min": 1,
       "max": 4,
       "step": 1,
@@ -781,6 +783,7 @@
     {
       "type": "checkbox",
       "id": "show_inline_search",
+      "visible_if": "{{ section.settings.logo_position != 'middle-center' or section.settings.menu_type_desktop != 'dropdown' }}",
       "default": true,
       "label": "Show search bar on desktop",
       "info": "Sits beside the logo in every logo position. Not shown with the desktop drawer menu."
@@ -788,12 +791,14 @@
     {
       "type": "color",
       "id": "search_bg_color",
+      "visible_if": "{{ section.settings.show_inline_search and section.settings.logo_position != 'middle-center' }}",
       "default": "#FFFFFF",
       "label": "Background color"
     },
     {
       "type": "range",
       "id": "search_max_width",
+      "visible_if": "{{ section.settings.show_inline_search and section.settings.logo_position != 'middle-center' }}",
       "min": 280,
       "max": 800,
       "step": 20,
@@ -804,12 +809,14 @@
     {
       "type": "text",
       "id": "search_placeholder",
+      "visible_if": "{{ section.settings.show_inline_search and section.settings.logo_position != 'middle-center' }}",
       "default": "Search products",
       "label": "Placeholder text"
     },
     {
       "type": "range",
       "id": "search_border_radius",
+      "visible_if": "{{ section.settings.show_inline_search and section.settings.logo_position != 'middle-center' }}",
       "min": 0,
       "max": 30,
       "step": 2,
@@ -820,6 +827,7 @@
     {
       "type": "range",
       "id": "search_border_thickness",
+      "visible_if": "{{ section.settings.show_inline_search and section.settings.logo_position != 'middle-center' }}",
       "min": 0,
       "max": 4,
       "step": 1,
@@ -882,12 +890,13 @@
       "max": 48,
       "step": 2,
       "unit": "px",
-      "label": "Side padding",
+      "label": "Side padding (desktop)",
       "default": 24
     },
     {
       "type": "range",
       "id": "header_row_gap",
+      "visible_if": "{{ section.settings.logo_position != 'middle-center' or section.settings.menu_type_desktop != 'dropdown' }}",
       "min": 4,
       "max": 32,
       "step": 2,
@@ -902,7 +911,7 @@
       "max": 48,
       "step": 2,
       "unit": "px",
-      "label": "Spacing between brand, search and actions",
+      "label": "Spacing between brand, search and actions (desktop)",
       "default": 24
     },
     {
@@ -924,6 +933,7 @@
     {
       "type": "url",
       "id": "wishlist_url",
+      "visible_if": "{{ section.settings.show_wishlist_icon }}",
       "label": "Wishlist link",
       "info": "The icon only shows once this link is set."
     },
@@ -934,7 +944,7 @@
       "max": 28,
       "step": 1,
       "unit": "px",
-      "label": "Icon size",
+      "label": "Icon size (desktop)",
       "default": 20
     },
     {
@@ -944,7 +954,7 @@
       "max": 24,
       "step": 2,
       "unit": "px",
-      "label": "Icon spacing",
+      "label": "Icon spacing (desktop)",
       "default": 4
     },
     {
@@ -1000,6 +1010,7 @@
     {
       "type": "checkbox",
       "id": "show_line_separator",
+      "visible_if": "{{ section.settings.floating_bar == false }}",
       "default": true,
       "label": "t:sections.header.settings.show_line_separator.label"
     },

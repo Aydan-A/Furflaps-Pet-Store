@@ -289,21 +289,21 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 3.6rem;
-  height: 3.6rem;
+  width: calc(var(--header-icon-size, 2rem) * 1.8);
+  height: calc(var(--header-icon-size, 2rem) * 1.8);
   border-radius: 50%;
   background: rgb(var(--color-foreground));
   color: rgb(var(--color-background));
 }
 
 .header.header--icon-circles .header__icons .header__icon .svg-wrapper .icon {
-  width: 1.8rem;
-  height: 1.8rem;
+  width: calc(var(--header-icon-size, 2rem) * 0.9);
+  height: calc(var(--header-icon-size, 2rem) * 0.9);
 }
 
 /* Dawn's cart glyph carries its own padding, so it is drawn twice the size to
    match the other icons. */
 .header.header--icon-circles .header__icons .header__icon--cart .svg-wrapper .icon {
-  width: 3.6rem;
-  height: 3.6rem;
+  width: calc(var(--header-icon-size, 2rem) * 1.8);
+  height: calc(var(--header-icon-size, 2rem) * 1.8);
 }
