@@ -18,7 +18,7 @@
           "type": "announcement",
           "settings": {
             "prefix": "",
-            "text": "MYSTERY GIFT ON YOUR FIRST ORDER",
+            "text": "MYSTERY GIFT ON YOUR FIRST ORDER 🎁",
             "link": ""
           }
         },
@@ -37,7 +37,7 @@
       ],
       "settings": {
         "content_width": "page",
-        "side_padding": 32,
+        "side_padding": 16,
         "show_navigation": true,
         "auto_rotate": true,
         "change_slides_speed": 4,
@@ -49,8 +49,8 @@
         "font_source": "heading",
         "message_font_size": 16,
         "message_font_weight": "400",
-        "message_vertical_padding": 7,
-        "content_gap": 8,
+        "message_vertical_padding": 4,
+        "content_gap": 4,
         "show_link_arrow": true,
         "show_social": false,
         "enable_country_selector": false,
