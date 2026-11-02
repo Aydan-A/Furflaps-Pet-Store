@@ -129,3 +129,12 @@
     display: none;
   }
 }
+
+/* Floating header: the bar takes the same inset and rounded corners, so its
+   left and right edges line up with the header bar below it. */
+body:has(.section-header .header--floating) .utility-bar {
+  width: calc(100% - 2 * var(--header-floating-inset, 1.2rem));
+  margin: var(--header-floating-inset, 1.2rem) auto 0;
+  border-radius: var(--header-floating-radius, 1.2rem);
+  overflow: hidden;
+}
