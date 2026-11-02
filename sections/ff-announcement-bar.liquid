@@ -1,3 +1,9 @@
+{% comment %}
+  Furflaps announcement bar: a copy of Dawn's announcement-bar, customised for this store and
+  used by sections/header-group.json. Dawn's own file is kept untouched so a Dawn upgrade can
+  replace it without overwriting this one.
+{% endcomment %}
+{{ 'ff-announcement-bar.css' | asset_url | stylesheet_tag }}
 {{ 'component-slideshow.css' | asset_url | stylesheet_tag }}
 {{ 'component-slider.css' | asset_url | stylesheet_tag }}
 
@@ -70,7 +76,52 @@
     {%- if section.settings.show_social and social_icons -%}
       {%- render 'social-icons' -%}
     {%- endif -%}
-    {%- if section.blocks.size == 1 -%}
+    {%- if section.settings.display_mode == 'ticker' and section.blocks.size > 0 -%}
+      {%- comment -%}
+        A continuous ticker. The messages are drawn once for screen readers,
+        then repeated (hidden from them) so the strip is always wider than the
+        screen and loops without a gap: the track slides left by exactly one
+        copy, which looks identical to where it started.
+      {%- endcomment -%}
+      {%- capture ticker_messages -%}
+        {%- for block in section.blocks -%}
+          {%- if block.settings.text != blank -%}
+            <li class="announcement-ticker__item" {{ block.shopify_attributes }}>
+              {%- if block.settings.link != blank -%}
+                <a href="{{ block.settings.link }}" class="announcement-bar__link link link--text focus-inset">
+              {%- endif -%}
+              <p class="announcement-bar__message{% if section.settings.font_source == 'heading' %} h5{% endif %}">
+                {%- if block.settings.prefix != blank -%}
+                  <span class="announcement-bar__prefix">{{ block.settings.prefix | escape }}</span>
+                {%- endif -%}
+                <span class="announcement-bar__text">{{ block.settings.text | escape }}</span>
+              </p>
+              {%- if block.settings.link != blank -%}
+                </a>
+              {%- endif -%}
+            </li>
+            <li class="announcement-ticker__dot" aria-hidden="true"></li>
+          {%- endif -%}
+        {%- endfor -%}
+      {%- endcapture -%}
+      <div
+        class="announcement-bar announcement-ticker"
+        role="region"
+        aria-label="{{ 'sections.announcements.announcement_bar' | t }}"
+        style="--ticker-duration: {{ section.settings.ticker_speed }}s;"
+      >
+        <div class="announcement-ticker__track">
+          <ul class="announcement-ticker__group" role="list">
+            {{- ticker_messages -}}
+          </ul>
+          {%- for i in (1..7) -%}
+            <ul class="announcement-ticker__group" role="list" aria-hidden="true" inert>
+              {{- ticker_messages -}}
+            </ul>
+          {%- endfor -%}
+        </div>
+      </div>
+    {%- elsif section.blocks.size == 1 -%}
       <div
         class="announcement-bar{% if section.settings.show_social %} announcement-bar--one-announcement{% endif %}"
         role="region"
@@ -215,7 +266,7 @@
 
 {% schema %}
 {
-  "name": "t:sections.announcement-bar.name",
+  "name": "Furflaps announcement bar",
   "max_blocks": 12,
   "class": "announcement-bar-section",
   "enabled_on": {
@@ -253,7 +304,30 @@
       "default": 32
     },
     {
+      "type": "select",
+      "id": "display_mode",
+      "label": "Display",
+      "options": [
+        { "value": "ticker", "label": "Scrolling ticker" },
+        { "value": "slider", "label": "One message at a time" }
+      ],
+      "default": "slider"
+    },
+    {
+      "type": "range",
+      "id": "ticker_speed",
+      "min": 5,
+      "max": 60,
+      "step": 1,
+      "unit": "s",
+      "label": "Ticker speed",
+      "info": "Time for all messages to pass once. Lower is faster.",
+      "default": 20,
+      "visible_if": "{{ section.settings.display_mode == 'ticker' }}"
+    },
+    {
       "type": "checkbox",
+      "visible_if": "{{ section.settings.display_mode == 'slider' }}",
       "id": "show_navigation",
       "default": true,
       "label": "Show previous and next buttons",
@@ -265,12 +339,14 @@
     },
     {
       "type": "checkbox",
+      "visible_if": "{{ section.settings.display_mode == 'slider' }}",
       "id": "auto_rotate",
       "label": "t:sections.announcement-bar.settings.auto_rotate.label",
       "default": false
     },
     {
       "type": "range",
+      "visible_if": "{{ section.settings.display_mode == 'slider' }}",
       "id": "change_slides_speed",
       "min": 3,
       "max": 10,
@@ -452,7 +528,7 @@
   ],
   "presets": [
     {
-      "name": "t:sections.announcement-bar.presets.name",
+      "name": "Furflaps announcement bar",
       "blocks": [
         {
           "type": "announcement"

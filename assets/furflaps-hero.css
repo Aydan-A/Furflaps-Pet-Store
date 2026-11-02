@@ -232,6 +232,85 @@
   fill: currentColor;
 }
 
+/* Layout "Text over one full image": the image fills the whole section and
+   the slides sit on top of it, with a shade from the text side. */
+.furflaps-hero--full .furflaps-hero__grid {
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0;
+}
+
+.furflaps-hero--full .furflaps-hero__media,
+.furflaps-hero--full .furflaps-hero__content {
+  grid-area: 1 / 1;
+}
+
+.furflaps-hero--full .furflaps-hero__content {
+  z-index: 1;
+  background: linear-gradient(
+    90deg,
+    rgba(0, 0, 0, var(--ff-overlay-opacity)) 0%,
+    rgba(0, 0, 0, calc(var(--ff-overlay-opacity) * 0.6)) 45%,
+    rgba(0, 0, 0, 0) 75%
+  );
+}
+
+.furflaps-hero--full.furflaps-hero--text-right .furflaps-hero__content {
+  background: linear-gradient(
+    270deg,
+    rgba(0, 0, 0, var(--ff-overlay-opacity)) 0%,
+    rgba(0, 0, 0, calc(var(--ff-overlay-opacity) * 0.6)) 45%,
+    rgba(0, 0, 0, 0) 75%
+  );
+}
+
+.furflaps-hero--full.furflaps-hero--text-center .furflaps-hero__content {
+  background: rgba(0, 0, 0, calc(var(--ff-overlay-opacity) * 0.7));
+}
+
+.furflaps-hero--full .furflaps-hero__slide {
+  background: transparent;
+}
+
+.furflaps-hero--uppercase .furflaps-hero__heading {
+  text-transform: uppercase;
+}
+
+/* Tablets keep the two-panel layout, but the desktop section ratio gives the
+   content panel less height than the desktop type needs at this width, and the
+   panel clips what does not fit. Here the panel takes its height from its own
+   content and the type steps between the two sizes the section already has,
+   so nothing is cut off. Desktop (990px and up) is untouched. */
+@media screen and (min-width: 750px) and (max-width: 989px) {
+  .furflaps-hero__grid {
+    aspect-ratio: auto;
+  }
+
+  /* The desktop setting is the ceiling and 4vw the fluid value, so the padding
+     never grows past what the merchant set however the two are configured. */
+  .furflaps-hero__slide {
+    padding: min(var(--ff-content-padding-vertical), max(2.4rem, 4vw))
+      min(var(--ff-content-padding-horizontal), max(2rem, 4vw));
+  }
+
+  /* The dots overlay the foot of the panel. With the panel now sized by its
+     content there is no slack left for them to sit in, so a slide that has
+     pagination reserves their offset - the same clearance the phone layout's
+     larger bottom padding already leaves. */
+  .furflaps-hero__content:has(.furflaps-hero__pagination) .furflaps-hero__slide {
+    padding-bottom: calc(
+      var(--ff-pagination-offset-vertical) + var(--ff-indicator-height) + 0.4rem
+    );
+  }
+
+  .furflaps-hero__heading {
+    font-size: clamp(var(--ff-mobile-heading-size), 4.6vw, var(--ff-heading-size));
+  }
+
+  .furflaps-hero__description {
+    font-size: clamp(var(--ff-mobile-body-size), 2vw, var(--ff-body-size));
+  }
+}
+
 @media screen and (max-width: 749px) {
   .furflaps-hero {
     padding: var(--ff-mobile-section-padding-top) var(--ff-mobile-section-padding-inline) var(--ff-mobile-section-padding-bottom);
@@ -304,5 +383,19 @@
 
   .furflaps-hero__button {
     transition: none;
+  }
+}
+
+/* Full-image layout below desktop: the section takes its height from the
+   image ratio, and grows when the text needs more room. */
+@media screen and (max-width: 989px) {
+  .furflaps-hero--full .furflaps-hero__grid {
+    grid-template-columns: minmax(0, 1fr);
+    aspect-ratio: var(--ff-mobile-media-ratio);
+  }
+
+  .furflaps-hero--full .furflaps-hero__media {
+    aspect-ratio: auto;
+    order: 0;
   }
 }

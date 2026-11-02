@@ -32,32 +32,33 @@
     endif
   endif
 
-  assign color_option = null
-  if section.settings.show_swatches
-    assign target_option_name = section.settings.color_option_name | downcase
-    for option in product.options_with_values
-      assign option_name = option.name | downcase
-      if option_name == target_option_name
-        assign color_option = option
-        break
-      endif
-    endfor
-  endif
-
-  assign swatch_total = 0
-  if color_option
-    for value in color_option.values
-      if value.swatch != blank
-        assign swatch_total = swatch_total | plus: 1
-      endif
-    endfor
-  endif
-
   assign discount_final = blank
   if section.settings.show_discount and product.compare_at_price > product.price
     assign discount_pct = product.compare_at_price | minus: product.price | times: 100 | divided_by: product.compare_at_price
     assign discount_final = discount_pct | append: '% off'
   endif
+
+  # The card's width is set by the column count for the breakpoint, so the
+  # sizes hint is derived from the same settings rather than a fixed guess.
+  # A single full-width card was being told it was 72vw, which loaded an image
+  # too small for it on a phone.
+  assign hot_columns_mobile = section.settings.columns_mobile | plus: 0
+  if hot_columns_mobile < 1
+    assign hot_columns_mobile = 1
+  endif
+  assign hot_columns_tablet = section.settings.columns_tablet | plus: 0
+  if hot_columns_tablet < 1
+    assign hot_columns_tablet = 1
+  endif
+  assign hot_mobile_vw = 90 | divided_by: hot_columns_mobile
+  assign hot_tablet_vw = 92 | divided_by: hot_columns_tablet
+  capture hot_card_sizes
+    echo '(min-width: 990px) 25vw, (min-width: 750px) '
+    echo hot_tablet_vw
+    echo 'vw, '
+    echo hot_mobile_vw
+    echo 'vw'
+  endcapture
 
   assign money_price = blank
   assign money_compare_price = blank
@@ -92,7 +93,7 @@
           | image_tag:
             class: 'hot-card__image',
             widths: '240, 360, 480, 640, 750, 900',
-            sizes: '(min-width: 990px) 25vw, (min-width: 750px) 38vw, 72vw',
+            sizes: hot_card_sizes,
             loading: lazy_load
         }}
       {%- else -%}
@@ -154,23 +155,13 @@
   </div>
 
   <div class="hot-card__info">
-    {%- if swatch_total > 0 -%}
-      {%- assign swatches_shown = 0 -%}
-      <ul class="hot-card__swatches" role="list" aria-label="{{ color_option.name | escape }}">
-        {%- for value in color_option.values -%}
-          {%- if value.swatch != blank and swatches_shown < section.settings.swatches_to_show -%}
-            <li class="hot-card__swatch" title="{{ value | escape }}">
-              <span class="visually-hidden">{{ value }}</span>
-              {% render 'swatch', swatch: value.swatch %}
-            </li>
-            {%- assign swatches_shown = swatches_shown | plus: 1 -%}
-          {%- endif -%}
-        {%- endfor -%}
-        {%- assign swatches_remaining = swatch_total | minus: swatches_shown -%}
-        {%- if swatches_remaining > 0 -%}
-          <li class="hot-card__swatch-more">+{{ swatches_remaining }}</li>
-        {%- endif -%}
-      </ul>
+    {%- if section.settings.show_swatches -%}
+      {% render 'ff-swatch-list',
+        product: product,
+        option_name: section.settings.color_option_name,
+        max_swatches: section.settings.swatches_to_show,
+        class_prefix: 'hot-card'
+      %}
     {%- endif -%}
 
     <h3 class="hot-card__title">

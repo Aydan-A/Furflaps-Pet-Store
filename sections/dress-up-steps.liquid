@@ -252,6 +252,19 @@
                   %}
                 {%- endfor -%}
               </div>
+
+              {%- if is_carousel -%}
+                {%- comment -%}
+                  Phone-only swipe cue: the arrows above are hidden at that
+                  width and the track becomes a touch scroller, with nothing
+                  else to say the row carries on past the edge. Hidden until the
+                  script measures a track that actually scrolls, and decorative,
+                  so it stays out of the accessibility tree.
+                {%- endcomment -%}
+                <div class="ds-progress" data-dress-progress aria-hidden="true" hidden>
+                  <span></span>
+                </div>
+              {%- endif -%}
             {%- elsif request.design_mode -%}
               <p class="ds-step__empty">Choose products or a collection for this step in the Theme Editor.</p>
             {%- endif -%}

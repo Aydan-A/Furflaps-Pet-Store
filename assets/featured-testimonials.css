@@ -78,6 +78,15 @@
 .featured-testimonials__arrow:focus-visible { outline: .2rem solid currentColor; outline-offset: .2rem; }
 .featured-testimonials__empty { padding: 8rem 2rem; text-align: center; }
 
+@media screen and (min-width: 750px) and (max-width: 989px) {
+  /* The media column is at its narrowest here - a fixed share of a tablet - and
+     three columns left the product name a few characters wide. The action drops
+     under the name, which is the same shape the card takes on a phone. */
+  .featured-testimonials__product-card { grid-template-columns: 4.6rem minmax(0, 1fr); gap: .8rem; }
+  .featured-testimonials__product-image { width: 4.6rem; height: 4.6rem; }
+  .featured-testimonials__shop-button.button { grid-column: 1 / -1; width: 100%; }
+}
+
 @media screen and (max-width: 989px) {
   .featured-testimonials__slide { height: auto; min-height: min(var(--ft-desktop-height), 52rem); }
   .featured-testimonials__content { padding: 3.6rem 3.2rem; }
@@ -97,8 +106,11 @@
   .featured-testimonials__eyebrow { margin-bottom: 2rem; }
   .featured-testimonials__quote { font-size: var(--ft-mobile-quote-size); }
   .featured-testimonials__footer { align-items: flex-start; flex-direction: column; gap: 2.4rem; }
-  .featured-testimonials__navigation { width: 100%; justify-content: flex-end; }
+  .featured-testimonials__navigation { width: 100%; gap: .4rem; justify-content: flex-end; }
   .featured-testimonials__progress { width: auto; max-width: 10rem; flex: 1 1 auto; }
+  /* The chevrons themselves stay the same size; the hit area around them grows
+     to a thumb's worth, and the negative block margin keeps the row's height. */
+  .featured-testimonials__arrow { width: 4.4rem; height: 4.4rem; margin-block: -0.8rem; }
   .featured-testimonials__product-card { grid-template-columns: 4.6rem minmax(0, 1fr) auto; gap: .8rem; }
   .featured-testimonials__product-image { width: 4.6rem; height: 4.6rem; }
   .featured-testimonials__shop-button.button { min-height: 3.6rem; padding-inline: 1.4rem; }

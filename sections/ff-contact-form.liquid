@@ -1,4 +1,9 @@
 {% comment %}
+  Furflaps contact form: a copy of Dawn's contact-form, customised for this store and
+  used by templates/page.contact.json. Dawn's own file is kept untouched so a Dawn upgrade can
+  replace it without overwriting this one.
+{% endcomment %}
+{% comment %}
   Contact form — "Submit a Request" layout.
   Uses Shopify's built-in 'contact' form tag so submissions keep going to the
   store's contact email. Every label, placeholder and style is editable in the
@@ -326,7 +331,7 @@
 
 {% schema %}
 {
-  "name": "t:sections.contact-form.name",
+  "name": "Furflaps contact form",
   "tag": "section",
   "class": "section",
   "disabled_on": {
@@ -493,7 +498,7 @@
   ],
   "presets": [
     {
-      "name": "t:sections.contact-form.presets.name"
+      "name": "Furflaps contact form"
     }
   ]
 }
