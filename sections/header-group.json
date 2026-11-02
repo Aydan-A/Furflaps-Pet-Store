@@ -14,16 +14,25 @@
     "announcement-bar": {
       "type": "announcement-bar",
       "blocks": {
+        "announcement_UGeKmg": {
+          "type": "announcement",
+          "settings": {
+            "prefix": "",
+            "text": "Mystery gift on your first order",
+            "link": ""
+          }
+        },
         "announcement-bar-0": {
           "type": "announcement",
           "settings": {
             "prefix": "",
-            "text": "Free shipping across Canada on orders $50+",
+            "text": "FREE SHIPPING ACROSS CANADA ON ORDER +50$",
             "link": ""
           }
         }
       },
       "block_order": [
+        "announcement_UGeKmg",
         "announcement-bar-0"
       ],
       "settings": {
