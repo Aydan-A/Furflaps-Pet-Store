@@ -229,7 +229,7 @@
   {% if header_tag == 'sticky-header' %}
     data-sticky-type="{{ section.settings.sticky_header_type }}"
   {% endif %}
-  class="header-wrapper color-{{ section.settings.color_scheme }} gradient{% if section.settings.show_line_separator %} header-wrapper--border-bottom{% endif %}"
+  class="header-wrapper color-{{ section.settings.color_scheme }} gradient{% if section.settings.show_line_separator and section.settings.floating_bar == false %} header-wrapper--border-bottom{% endif %}"
 >
   {%- liquid
     assign social_links = false
@@ -243,7 +243,7 @@
       assign localization_forms = true
     endif
   -%}
-  <header class="header header--{{ section.settings.logo_position }} header--mobile-{{ section.settings.mobile_logo_position }} page-width{% if section.settings.menu_type_desktop == 'drawer' %} drawer-menu{% endif %}{% if section.settings.menu != blank %} header--has-menu{% endif %}{% if has_app_block %} header--has-app{% endif %}{% if social_links %} header--has-social{% endif %}{% if shop.customer_accounts_enabled %} header--has-account{% endif %}{% if localization_forms %} header--has-localizations{% endif %}{% if show_inline_search %} header--inline-search{% endif %}{% if split_right > 0 %} header--split-menu{% endif %}">
+  <header class="header header--{{ section.settings.logo_position }} header--mobile-{{ section.settings.mobile_logo_position }} page-width{% if section.settings.menu_type_desktop == 'drawer' %} drawer-menu{% endif %}{% if section.settings.menu != blank %} header--has-menu{% endif %}{% if has_app_block %} header--has-app{% endif %}{% if social_links %} header--has-social{% endif %}{% if shop.customer_accounts_enabled %} header--has-account{% endif %}{% if localization_forms %} header--has-localizations{% endif %}{% if show_inline_search %} header--inline-search{% endif %}{% if split_right > 0 %} header--split-menu{% endif %}{% if section.settings.floating_bar %} header--floating color-{{ section.settings.bar_color_scheme }} gradient{% endif %}{% if section.settings.icon_style == 'circle' %} header--icon-circles{% endif %}">
     {%- liquid
       if section.settings.menu != blank
         render 'header-drawer'
@@ -826,6 +826,34 @@
       "unit": "px",
       "label": "Border thickness",
       "default": 1
+    },
+    {
+      "type": "header",
+      "content": "Bar style"
+    },
+    {
+      "type": "checkbox",
+      "id": "floating_bar",
+      "default": false,
+      "label": "Floating bar",
+      "info": "Sets the header in a rounded bar, inset from the page edges."
+    },
+    {
+      "type": "color_scheme",
+      "id": "bar_color_scheme",
+      "label": "Bar color scheme",
+      "default": "scheme-1",
+      "visible_if": "{{ section.settings.floating_bar }}"
+    },
+    {
+      "type": "select",
+      "id": "icon_style",
+      "label": "Icon style",
+      "options": [
+        { "value": "plain", "label": "Plain" },
+        { "value": "circle", "label": "In circles" }
+      ],
+      "default": "plain"
     },
     {
       "type": "header",

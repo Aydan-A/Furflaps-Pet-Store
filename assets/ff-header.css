@@ -273,3 +273,37 @@
   letter-spacing: var(--header-nav-letter-spacing, 0);
   text-transform: uppercase;
 }
+
+/* Floating bar (header setting): the header sits in a rounded bar of its own
+   colour scheme, inset from the page edges. */
+.header.header--floating {
+  width: calc(100% - 2 * var(--header-floating-inset, 1.2rem));
+  margin: var(--header-floating-inset, 1.2rem) auto;
+  border-radius: var(--header-floating-radius, 1.2rem);
+}
+
+/* Icons in circles (header setting "Icon style"): each icon on a disc of the
+   text colour, the glyph in the background colour. */
+.header.header--icon-circles .header__icons .header__icon .svg-wrapper,
+.header.header--icon-circles .header__icons account-icon .svg-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 3.6rem;
+  height: 3.6rem;
+  border-radius: 50%;
+  background: rgb(var(--color-foreground));
+  color: rgb(var(--color-background));
+}
+
+.header.header--icon-circles .header__icons .header__icon .svg-wrapper .icon {
+  width: 1.8rem;
+  height: 1.8rem;
+}
+
+/* Dawn's cart glyph carries its own padding, so it is drawn twice the size to
+   match the other icons. */
+.header.header--icon-circles .header__icons .header__icon--cart .svg-wrapper .icon {
+  width: 3.6rem;
+  height: 3.6rem;
+}
