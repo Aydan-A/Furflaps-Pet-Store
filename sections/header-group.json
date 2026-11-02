@@ -38,6 +38,8 @@
       "settings": {
         "content_width": "page",
         "side_padding": 16,
+        "display_mode": "ticker",
+        "ticker_speed": 20,
         "show_navigation": true,
         "auto_rotate": true,
         "change_slides_speed": 4,

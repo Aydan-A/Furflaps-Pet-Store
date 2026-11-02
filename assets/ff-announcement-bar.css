@@ -62,3 +62,70 @@
 .announcement-bar__text {
   display: inline-block;
 }
+
+/* Scrolling ticker (Display: "Scrolling ticker"). */
+.announcement-ticker {
+  display: block;
+  overflow: hidden;
+}
+
+.announcement-ticker__track {
+  display: flex;
+  width: max-content;
+  animation: ff-announcement-ticker var(--ticker-duration, 20s) linear infinite;
+}
+
+.announcement-ticker:hover .announcement-ticker__track,
+.announcement-ticker:focus-within .announcement-ticker__track {
+  animation-play-state: paused;
+}
+
+.announcement-ticker__group {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.announcement-ticker__item {
+  white-space: nowrap;
+}
+
+.announcement-ticker__item .announcement-bar__link {
+  height: auto;
+}
+
+.announcement-ticker__dot {
+  flex-shrink: 0;
+  width: 0.5rem;
+  height: 0.5rem;
+  margin: 0 var(--announcement-ticker-gap, 2.4rem);
+  border-radius: 50%;
+  background: currentColor;
+}
+
+@keyframes ff-announcement-ticker {
+  to {
+    transform: translateX(-12.5%); /* one of the eight identical copies */
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .announcement-ticker__track {
+    animation: none;
+    width: auto;
+    justify-content: center;
+  }
+
+  .announcement-ticker__group {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .announcement-ticker__group[aria-hidden='true'],
+  .announcement-ticker__group > .announcement-ticker__dot:last-child {
+    display: none;
+  }
+}
