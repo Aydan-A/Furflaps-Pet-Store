@@ -36,7 +36,7 @@
         "announcement-bar-0"
       ],
       "settings": {
-        "content_width": "page",
+        "content_width": "full",
         "side_padding": 16,
         "display_mode": "ticker",
         "ticker_speed": 20,
@@ -74,7 +74,7 @@
         "nav_font_size": 14,
         "nav_alignment": "center",
         "menu_links_right": 1,
-        "nav_accent_color": "#ffffff",
+        "nav_accent_color": "#cc302a",
         "nav_accent_link": "",
         "show_inline_search": true,
         "search_bg_color": "#cc302a",
@@ -82,7 +82,6 @@
         "search_placeholder": "Search products",
         "search_border_radius": 24,
         "search_border_thickness": 1,
-        "header_height": 60,
         "floating_bar": true,
         "bar_color_scheme": "scheme-4",
         "icon_style": "plain",
