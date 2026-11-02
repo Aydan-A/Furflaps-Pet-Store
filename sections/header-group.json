@@ -14,34 +14,43 @@
     "announcement-bar": {
       "type": "ff-announcement-bar",
       "blocks": {
+        "announcement_UGeKmg": {
+          "type": "announcement",
+          "settings": {
+            "prefix": "",
+            "text": "MYSTERY GIFT ON YOUR FIRST ORDER 🎁",
+            "link": ""
+          }
+        },
         "announcement-bar-0": {
           "type": "announcement",
           "settings": {
             "prefix": "",
-            "text": "Free shipping across Canada on orders $50+",
+            "text": "FREE SHIPPING ACROSS CANADA ON ORDER +50$ 📦",
             "link": ""
           }
         }
       },
       "block_order": [
+        "announcement_UGeKmg",
         "announcement-bar-0"
       ],
       "settings": {
-        "content_width": "full",
-        "side_padding": 32,
+        "content_width": "page",
+        "side_padding": 16,
         "show_navigation": true,
         "auto_rotate": true,
-        "change_slides_speed": 5,
+        "change_slides_speed": 4,
         "color_scheme": "scheme-2",
-        "use_custom_colors": false,
-        "background_color": "#e6eef1",
-        "text_color": "#121212",
-        "show_line_separator": true,
+        "use_custom_colors": true,
+        "background_color": "#e2abab",
+        "text_color": "#ffffff",
+        "show_line_separator": false,
         "font_source": "heading",
         "message_font_size": 16,
-        "message_font_weight": "400",
-        "message_vertical_padding": 7,
-        "content_gap": 8,
+        "message_font_weight": "500",
+        "message_vertical_padding": 4,
+        "content_gap": 4,
         "show_link_arrow": true,
         "show_social": false,
         "enable_country_selector": false,
