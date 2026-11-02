@@ -27,21 +27,6 @@
             "button_border_color": "#cc302a"
           }
         },
-        "play": {
-          "type": "slide",
-          "settings": {
-            "heading": "Accessories as unique as they are.",
-            "description": "<p>Discover thoughtful accessories and everyday essentials selected for happier, healthier pets.</p>",
-            "button_label": "Explore new arrivals",
-            "button_link": "shopify://collections/icons",
-            "background_color": "#e8e0d5",
-            "heading_color": "#ffffff",
-            "text_color": "#ffffff",
-            "button_background": "#cc302a",
-            "button_text_color": "#ffffff",
-            "button_border_color": "#cc302a"
-          }
-        },
         "family": {
           "type": "slide",
           "disabled": true,
@@ -61,21 +46,22 @@
       },
       "block_order": [
         "care",
-        "play",
         "family"
       ],
       "settings": {
-        "image": "shopify://shop_images/ChatGPT_Image_Sep_4_2026_at_08_57_20_PM.png",
+        "image": "shopify://shop_images/Unknown-3.png",
         "media_background": "#ffffff",
         "image_fit": "cover",
         "image_position": "center center",
+        "layout": "full",
+        "overlay_opacity": 0,
         "desktop_section_ratio": "3 / 1",
         "content_width": 52,
         "panel_gap": 16,
         "panel_radius": 0,
-        "content_max_width": 560,
-        "content_padding_vertical": 44,
-        "content_padding_horizontal": 120,
+        "content_max_width": 670,
+        "content_padding_vertical": 20,
+        "content_padding_horizontal": 44,
         "content_position": "center",
         "content_alignment": "left",
         "mobile_media_ratio": "1 / 1",
@@ -88,10 +74,11 @@
         "mobile_button_spacing": 20,
         "mobile_panel_order": "content_first",
         "heading_font": "oswald_n5",
-        "heading_size": 64,
+        "heading_size": 56,
         "mobile_heading_size": 38,
         "heading_weight": "500",
         "heading_line_height": 105,
+        "heading_uppercase": true,
         "heading_letter_spacing": 5,
         "body_font": "assistant_n4",
         "body_size": 18,
@@ -137,10 +124,7 @@
         "mobile_padding_bottom": 0,
         "accessibility_label": "Featured promotions",
         "pagination_label": "Choose a promotion",
-        "pagination_item_label": "Go to promotion",
-        "layout": "full",
-        "overlay_opacity": 25,
-        "heading_uppercase": true
+        "pagination_item_label": "Go to promotion"
       }
     },
     "hot_week_picks_PyhcEc": {
