@@ -685,98 +685,6 @@
         "show_on_desktop": true,
         "show_on_mobile": true
       }
-    },
-    "tsapb_ce7789ea_DTmRqH": {
-      "type": "tsapb-ce7789ea",
-      "blocks": {
-        "icon_L7cUHk": {
-          "type": "icon",
-          "settings": {
-            "icon_type": "icon",
-            "icon": "star",
-            "font_awesome": "",
-            "icon_image_corner_radius": 0,
-            "icon_title": "Made Just for Your Pet",
-            "icon_description": "Personalize their collar with their name, colors, letters, and charms."
-          }
-        },
-        "icon_dPL3cQ": {
-          "type": "icon",
-          "settings": {
-            "icon_type": "icon",
-            "icon": "magic",
-            "font_awesome": "",
-            "icon_image_corner_radius": 0,
-            "icon_title": "Soft for Everyday Wear",
-            "icon_description": "Comfortable and lightweight for walks, naps, playtime, and zoomies."
-          }
-        },
-        "icon_zqC3i3": {
-          "type": "icon",
-          "settings": {
-            "icon_type": "icon",
-            "icon": "pencil_ruler",
-            "font_awesome": "",
-            "icon_image_corner_radius": 0,
-            "icon_title": "Key Benefit",
-            "icon_description": "Describe how the benefit brings value"
-          }
-        },
-        "icon_6paUJ3": {
-          "type": "icon",
-          "settings": {
-            "icon_type": "icon",
-            "icon": "box",
-            "font_awesome": "",
-            "icon_image_corner_radius": 0,
-            "icon_title": "Key Benefit",
-            "icon_description": "Describe how the benefit brings value"
-          }
-        }
-      },
-      "block_order": [
-        "icon_L7cUHk",
-        "icon_dPL3cQ",
-        "icon_zqC3i3",
-        "icon_6paUJ3"
-      ],
-      "disabled": true,
-      "name": "❤️ Square: Value Icons",
-      "settings": {
-        "icon_color": "#222222",
-        "icon_size": 48,
-        "icon_title_size": "20",
-        "icon_title_color": "#ff4b22",
-        "icon_description_size": "14",
-        "icon_description_color": "#ff4b22",
-        "icons_per_row_desktop": 4,
-        "icons_mobile_layout": "2",
-        "space_between_icons": 24,
-        "space_between_rows": 64,
-        "space_between_rows_mobile": 40,
-        "heading": "",
-        "heading_size": "32",
-        "heading_style": "regular",
-        "heading_alignment": "center",
-        "heading_color": "#ff4b22",
-        "section_background_style": "color",
-        "section_background": "#fde6de",
-        "section_background_gradient": "linear-gradient(to right, #fed951, #ff46c7)",
-        "section_background_animation": false,
-        "overlay_color": "#222222",
-        "overlay_opacity": 0,
-        "section_width": 100,
-        "section_max_width": "",
-        "spacing_type": "desktop",
-        "padding_top": 40,
-        "padding_bottom": 40,
-        "margin_top": 0,
-        "margin_bottom": 0,
-        "padding_top_mobile": 20,
-        "padding_bottom_mobile": 20,
-        "margin_top_mobile": 0,
-        "margin_bottom_mobile": 0
-      }
     }
   },
   "order": [
@@ -787,7 +695,6 @@
     "product_feature_tabs_EpMe6d",
     "tsapb_eebdb509_yHUxkA",
     "featured_testimonials_GdmtJw",
-    "feature_highlights_iY7VnD",
-    "tsapb_ce7789ea_DTmRqH"
+    "feature_highlights_iY7VnD"
   ]
 }
