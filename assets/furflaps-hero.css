@@ -232,6 +232,49 @@
   fill: currentColor;
 }
 
+/* Layout "Text over one full image": the image fills the whole section and
+   the slides sit on top of it, with a shade from the text side. */
+.furflaps-hero--full .furflaps-hero__grid {
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0;
+}
+
+.furflaps-hero--full .furflaps-hero__media,
+.furflaps-hero--full .furflaps-hero__content {
+  grid-area: 1 / 1;
+}
+
+.furflaps-hero--full .furflaps-hero__content {
+  z-index: 1;
+  background: linear-gradient(
+    90deg,
+    rgba(0, 0, 0, var(--ff-overlay-opacity)) 0%,
+    rgba(0, 0, 0, calc(var(--ff-overlay-opacity) * 0.6)) 45%,
+    rgba(0, 0, 0, 0) 75%
+  );
+}
+
+.furflaps-hero--full.furflaps-hero--text-right .furflaps-hero__content {
+  background: linear-gradient(
+    270deg,
+    rgba(0, 0, 0, var(--ff-overlay-opacity)) 0%,
+    rgba(0, 0, 0, calc(var(--ff-overlay-opacity) * 0.6)) 45%,
+    rgba(0, 0, 0, 0) 75%
+  );
+}
+
+.furflaps-hero--full.furflaps-hero--text-center .furflaps-hero__content {
+  background: rgba(0, 0, 0, calc(var(--ff-overlay-opacity) * 0.7));
+}
+
+.furflaps-hero--full .furflaps-hero__slide {
+  background: transparent;
+}
+
+.furflaps-hero--uppercase .furflaps-hero__heading {
+  text-transform: uppercase;
+}
+
 /* Tablets keep the two-panel layout, but the desktop section ratio gives the
    content panel less height than the desktop type needs at this width, and the
    panel clips what does not fit. Here the panel takes its height from its own
@@ -340,5 +383,19 @@
 
   .furflaps-hero__button {
     transition: none;
+  }
+}
+
+/* Full-image layout below desktop: the section takes its height from the
+   image ratio, and grows when the text needs more room. */
+@media screen and (max-width: 989px) {
+  .furflaps-hero--full .furflaps-hero__grid {
+    grid-template-columns: minmax(0, 1fr);
+    aspect-ratio: var(--ff-mobile-media-ratio);
+  }
+
+  .furflaps-hero--full .furflaps-hero__media {
+    aspect-ratio: auto;
+    order: 0;
   }
 }
