@@ -17,7 +17,7 @@
     --announcement-ticker-gap: {{ section.settings.ticker_gap | default: 24 }}px;
     --announcement-letter-spacing: {{ section.settings.letter_spacing | divided_by: 100.0 }}em;
     --announcement-text-transform: {% if section.settings.uppercase %}uppercase{% else %}none{% endif %};
-    {%- if section.settings.dot_color != blank %}
+    {%- if section.settings.dot_color != blank and section.settings.dot_color.alpha > 0 %}
     --announcement-dot-color: {{ section.settings.dot_color }};
     {%- endif %}
     --announcement-content-max-width: {% if section.settings.content_width == 'full' %}none{% else %}var(--page-width){% endif %};
@@ -354,7 +354,7 @@
       "type": "color",
       "id": "dot_color",
       "label": "Dot color",
-      "info": "Leave empty to use the text color.",
+      "default": "#FFFFFF",
       "visible_if": "{{ section.settings.display_mode == 'ticker' and section.settings.show_ticker_dots }}"
     },
     {
