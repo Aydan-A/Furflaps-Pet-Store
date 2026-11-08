@@ -169,11 +169,15 @@
     {
       "type": "select", "id": "image_position", "label": "Desktop focal point", "default": "center center",
       "options": [
-        { "value": "left center", "label": "Left" },
+        { "value": "left top", "label": "Top left" },
+        { "value": "center top", "label": "Top center" },
+        { "value": "right top", "label": "Top right" },
+        { "value": "left center", "label": "Center left" },
         { "value": "center center", "label": "Center" },
-        { "value": "right center", "label": "Right" },
-        { "value": "center top", "label": "Top" },
-        { "value": "center bottom", "label": "Bottom" }
+        { "value": "right center", "label": "Center right" },
+        { "value": "left bottom", "label": "Bottom left" },
+        { "value": "center bottom", "label": "Bottom center" },
+        { "value": "right bottom", "label": "Bottom right" }
       ]
     },
     {
@@ -192,11 +196,11 @@
     },
     { "type": "header", "content": "Height" },
     {
-      "type": "range", "id": "desktop_height", "label": "Desktop height", "min": 25, "max": 80, "step": 1, "unit": "%", "default": 50,
+      "type": "range", "id": "desktop_height", "label": "Desktop height", "min": 25, "max": 100, "step": 1, "unit": "%", "default": 50,
       "info": "Height as a share of the section width. 50% = half as tall as it is wide."
     },
     {
-      "type": "range", "id": "mobile_height", "label": "Mobile height", "min": 60, "max": 180, "step": 5, "unit": "%", "default": 100,
+      "type": "range", "id": "mobile_height", "label": "Mobile height", "min": 60, "max": 200, "step": 5, "unit": "%", "default": 100,
       "info": "Height as a share of the screen width. 100% = square."
     },
     { "type": "header", "content": "Content" },
