@@ -100,8 +100,8 @@
 
 .announcement-ticker__dot {
   flex-shrink: 0;
-  width: 0.3rem;
-  height: 0.3rem;
+  width: 0.4rem;
+  height: 0.4rem;
   margin: 0 var(--announcement-ticker-gap, 2.4rem);
   border-radius: 50%;
   background: var(--announcement-dot-color, currentColor);
