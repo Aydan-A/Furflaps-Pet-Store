@@ -1,26 +1,46 @@
+/* Furflaps hero: one full-width image with the slides layered on top.
+   Height is set as a share of the width (desktop / mobile settings), and the
+   section grows past it if the text ever needs more room. */
 .furflaps-hero {
   display: block;
-  padding: var(--ff-section-padding-top) var(--ff-section-padding-inline) var(--ff-section-padding-bottom);
 }
 
 .furflaps-hero__grid {
   display: grid;
-  grid-template-columns: minmax(0, var(--ff-content-ratio)) minmax(0, var(--ff-media-ratio));
-  gap: var(--ff-panel-gap);
-  align-items: stretch;
-  aspect-ratio: var(--ff-desktop-section-ratio);
+  grid-template-columns: minmax(0, 1fr);
+  aspect-ratio: 100 / var(--ff-desktop-height);
 }
 
 .furflaps-hero__content,
 .furflaps-hero__media {
+  grid-area: 1 / 1;
   min-width: 0;
-  border-radius: var(--ff-panel-radius);
   overflow: hidden;
 }
 
 .furflaps-hero__content {
   position: relative;
+  z-index: 1;
   display: grid;
+  background: linear-gradient(
+    90deg,
+    rgba(0, 0, 0, var(--ff-overlay-opacity)) 0%,
+    rgba(0, 0, 0, calc(var(--ff-overlay-opacity) * 0.6)) 45%,
+    rgba(0, 0, 0, 0) 75%
+  );
+}
+
+.furflaps-hero--text-right .furflaps-hero__content {
+  background: linear-gradient(
+    270deg,
+    rgba(0, 0, 0, var(--ff-overlay-opacity)) 0%,
+    rgba(0, 0, 0, calc(var(--ff-overlay-opacity) * 0.6)) 45%,
+    rgba(0, 0, 0, 0) 75%
+  );
+}
+
+.furflaps-hero--text-center .furflaps-hero__content {
+  background: rgba(0, 0, 0, calc(var(--ff-overlay-opacity) * 0.7));
 }
 
 .furflaps-hero__track {
@@ -45,7 +65,6 @@
   min-width: 0;
   padding: var(--ff-content-padding-vertical) var(--ff-content-padding-horizontal);
   color: var(--ff-slide-text);
-  background: var(--ff-slide-background);
   scroll-snap-align: start;
   scroll-snap-stop: always;
 }
@@ -100,8 +119,12 @@
   font-size: var(--ff-heading-size);
   font-style: var(--ff-heading-font-style);
   font-weight: var(--ff-heading-weight);
-  letter-spacing: var(--ff-heading-letter-spacing);
-  line-height: var(--ff-heading-line-height);
+  letter-spacing: 0.05rem;
+  line-height: 1.05;
+}
+
+.furflaps-hero--uppercase .furflaps-hero__heading {
+  text-transform: uppercase;
 }
 
 .furflaps-hero__description {
@@ -111,8 +134,7 @@
   font-size: var(--ff-body-size);
   font-style: var(--ff-body-font-style);
   font-weight: var(--ff-body-weight);
-  letter-spacing: var(--ff-body-letter-spacing);
-  line-height: var(--ff-body-line-height);
+  line-height: 1.4;
 }
 
 .furflaps-hero__description p {
@@ -128,16 +150,16 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: var(--ff-button-icon-gap);
-  min-height: var(--ff-button-height);
-  padding: 0 var(--ff-button-padding);
-  border: var(--ff-button-border-width) solid var(--ff-slide-button-border);
+  gap: 0.8rem;
+  min-height: 4.4rem;
+  padding: 0 2.6rem;
+  border: 0;
   border-radius: var(--ff-button-radius);
   color: var(--ff-slide-button-text);
   background: var(--ff-slide-button-background);
   font-family: var(--ff-body-font-family);
-  font-size: var(--ff-button-font-size);
-  font-weight: var(--ff-button-font-weight);
+  font-size: 1.6rem;
+  font-weight: 600;
   line-height: 1;
   text-decoration: none;
   box-shadow: 0 0.6rem 1.6rem rgba(0, 0, 0, 0.12);
@@ -154,41 +176,28 @@
 }
 
 .furflaps-hero__button-icon {
-  width: var(--ff-button-icon-size);
-  height: var(--ff-button-icon-size);
+  width: 1.6rem;
+  height: 1.6rem;
 }
 
 .furflaps-hero__pagination {
   grid-area: 1 / 1;
   align-self: end;
+  justify-self: center;
   z-index: 2;
-  margin-bottom: var(--ff-pagination-offset-vertical);
+  margin-bottom: 2.4rem;
   display: flex;
-  gap: var(--ff-indicator-gap);
+  gap: 0.8rem;
   pointer-events: none;
 }
 
-.furflaps-hero__pagination--left {
-  justify-self: start;
-  margin-left: var(--ff-pagination-offset-horizontal);
-}
-
-.furflaps-hero__pagination--center {
-  justify-self: center;
-}
-
-.furflaps-hero__pagination--right {
-  justify-self: end;
-  margin-right: var(--ff-pagination-offset-horizontal);
-}
-
 .furflaps-hero__indicator {
-  width: var(--ff-indicator-width);
-  height: var(--ff-indicator-height);
+  width: 3rem;
+  height: 0.6rem;
   padding: 0;
-  border: var(--ff-indicator-border-width) solid var(--ff-indicator-border);
-  border-radius: var(--ff-indicator-radius);
-  background: var(--ff-indicator-background);
+  border: 1px solid #ffffff;
+  border-radius: 0.6rem;
+  background: #ffffff;
   cursor: pointer;
   pointer-events: auto;
 }
@@ -206,7 +215,7 @@
 
 .furflaps-hero__media {
   position: relative;
-  background: var(--ff-media-background);
+  background: #ffffff;
 }
 
 .furflaps-hero__media picture {
@@ -217,89 +226,26 @@
 
 .furflaps-hero__image,
 .furflaps-hero__placeholder {
+  display: block;
   width: 100%;
   height: 100%;
 }
 
 .furflaps-hero__image {
-  display: block;
-  object-fit: var(--ff-image-fit);
+  object-fit: cover;
   object-position: var(--ff-image-position);
 }
 
 .furflaps-hero__placeholder {
-  display: block;
   fill: currentColor;
 }
 
-/* Layout "Text over one full image": the image fills the whole section and
-   the slides sit on top of it, with a shade from the text side. */
-.furflaps-hero--full .furflaps-hero__grid {
-  grid-template-columns: minmax(0, 1fr);
-  gap: 0;
-}
-
-.furflaps-hero--full .furflaps-hero__media,
-.furflaps-hero--full .furflaps-hero__content {
-  grid-area: 1 / 1;
-}
-
-.furflaps-hero--full .furflaps-hero__content {
-  z-index: 1;
-  background: linear-gradient(
-    90deg,
-    rgba(0, 0, 0, var(--ff-overlay-opacity)) 0%,
-    rgba(0, 0, 0, calc(var(--ff-overlay-opacity) * 0.6)) 45%,
-    rgba(0, 0, 0, 0) 75%
-  );
-}
-
-.furflaps-hero--full.furflaps-hero--text-right .furflaps-hero__content {
-  background: linear-gradient(
-    270deg,
-    rgba(0, 0, 0, var(--ff-overlay-opacity)) 0%,
-    rgba(0, 0, 0, calc(var(--ff-overlay-opacity) * 0.6)) 45%,
-    rgba(0, 0, 0, 0) 75%
-  );
-}
-
-.furflaps-hero--full.furflaps-hero--text-center .furflaps-hero__content {
-  background: rgba(0, 0, 0, calc(var(--ff-overlay-opacity) * 0.7));
-}
-
-.furflaps-hero--full .furflaps-hero__slide {
-  background: transparent;
-}
-
-.furflaps-hero--uppercase .furflaps-hero__heading {
-  text-transform: uppercase;
-}
-
-/* Tablets keep the two-panel layout, but the desktop section ratio gives the
-   content panel less height than the desktop type needs at this width, and the
-   panel clips what does not fit. Here the panel takes its height from its own
-   content and the type steps between the two sizes the section already has,
-   so nothing is cut off. Desktop (990px and up) is untouched. */
+/* Tablets: the desktop height can leave too little room for desktop-size
+   type, so the type and padding scale between the mobile and desktop values. */
 @media screen and (min-width: 750px) and (max-width: 989px) {
-  .furflaps-hero__grid {
-    aspect-ratio: auto;
-  }
-
-  /* The desktop setting is the ceiling and 4vw the fluid value, so the padding
-     never grows past what the merchant set however the two are configured. */
   .furflaps-hero__slide {
     padding: min(var(--ff-content-padding-vertical), max(2.4rem, 4vw))
       min(var(--ff-content-padding-horizontal), max(2rem, 4vw));
-  }
-
-  /* The dots overlay the foot of the panel. With the panel now sized by its
-     content there is no slack left for them to sit in, so a slide that has
-     pagination reserves their offset - the same clearance the phone layout's
-     larger bottom padding already leaves. */
-  .furflaps-hero__content:has(.furflaps-hero__pagination) .furflaps-hero__slide {
-    padding-bottom: calc(
-      var(--ff-pagination-offset-vertical) + var(--ff-indicator-height) + 0.4rem
-    );
   }
 
   .furflaps-hero__heading {
@@ -312,28 +258,8 @@
 }
 
 @media screen and (max-width: 749px) {
-  .furflaps-hero {
-    padding: var(--ff-mobile-section-padding-top) var(--ff-mobile-section-padding-inline) var(--ff-mobile-section-padding-bottom);
-  }
-
   .furflaps-hero__grid {
-    grid-template-columns: minmax(0, 1fr);
-    gap: var(--ff-mobile-panel-gap);
-    aspect-ratio: auto;
-  }
-
-  .furflaps-hero__content,
-  .furflaps-hero__media {
-    min-height: 0;
-    border-radius: var(--ff-mobile-panel-radius);
-  }
-
-  .furflaps-hero__media {
-    aspect-ratio: var(--ff-mobile-media-ratio);
-  }
-
-  .furflaps-hero__grid--media-first .furflaps-hero__media {
-    order: -1;
+    aspect-ratio: 100 / var(--ff-mobile-height);
   }
 
   .furflaps-hero__slide {
@@ -341,15 +267,7 @@
   }
 
   .furflaps-hero__pagination {
-    margin-bottom: var(--ff-mobile-pagination-offset-vertical);
-  }
-
-  .furflaps-hero__pagination--left {
-    margin-left: var(--ff-mobile-pagination-offset-horizontal);
-  }
-
-  .furflaps-hero__pagination--right {
-    margin-right: var(--ff-mobile-pagination-offset-horizontal);
+    margin-bottom: 2rem;
   }
 
   .furflaps-hero__heading {
@@ -357,18 +275,13 @@
   }
 
   .furflaps-hero__description {
-    margin-top: var(--ff-mobile-description-spacing);
     font-size: var(--ff-mobile-body-size);
   }
 
-  .furflaps-hero__actions {
-    margin-top: var(--ff-mobile-button-spacing);
-  }
-
   .furflaps-hero__button {
-    min-height: var(--ff-mobile-button-height);
-    padding-inline: var(--ff-mobile-button-padding);
-    font-size: var(--ff-mobile-button-font-size);
+    min-height: 4.6rem;
+    padding-inline: 2.4rem;
+    font-size: 1.5rem;
   }
 
   .furflaps-hero__image {
@@ -383,19 +296,5 @@
 
   .furflaps-hero__button {
     transition: none;
-  }
-}
-
-/* Full-image layout below desktop: the section takes its height from the
-   image ratio, and grows when the text needs more room. */
-@media screen and (max-width: 989px) {
-  .furflaps-hero--full .furflaps-hero__grid {
-    grid-template-columns: minmax(0, 1fr);
-    aspect-ratio: var(--ff-mobile-media-ratio);
-  }
-
-  .furflaps-hero--full .furflaps-hero__media {
-    aspect-ratio: auto;
-    order: 0;
   }
 }
