@@ -42,7 +42,7 @@
         "content_width": 50,
         "panel_gap": 16,
         "panel_radius": 16,
-        "content_max_width": 670,
+        "content_max_width": 560,
         "content_padding_vertical": 20,
         "content_padding_horizontal": 44,
         "content_position": "center",
