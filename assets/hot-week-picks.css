@@ -244,6 +244,7 @@
   aspect-ratio: var(--hot-image-ratio);
   border-radius: var(--hot-card-radius);
   background: var(--hot-image-background);
+  border: 1px solid #e1e6ea;
   color: inherit;
 }
 
