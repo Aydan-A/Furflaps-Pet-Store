@@ -275,11 +275,17 @@
 }
 
 /* Floating bar (header setting): the header sits in a rounded bar of its own
-   colour scheme, inset from the page edges. */
+   colour scheme, inset from the page edges. Inset, gap and radius come from the
+   header settings. */
 .header.header--floating {
   width: calc(100% - 2 * var(--header-floating-inset, 1.2rem));
   margin: var(--header-floating-inset, 1.2rem) auto;
   border-radius: var(--header-floating-radius, 1.2rem);
+}
+
+/* Under an announcement bar the gap between the two is its own setting. */
+.announcement-bar-section ~ .section-header .header.header--floating {
+  margin-top: var(--header-floating-gap, 0.8rem);
 }
 
 /* Icons in circles (header setting "Icon style"): each icon on a disc of the
@@ -308,22 +314,37 @@
   height: calc(var(--header-icon-size, 2rem) * 1.8);
 }
 
-/* Header height (setting, desktop): the logo row is exactly this tall,
-   independent of the logo, which keeps its own size from Theme settings. */
+/* Header height (settings): the logo row is exactly this tall, on desktop and
+   mobile. The logo keeps its width from Theme settings > Logo but is scaled
+   down when it would be taller than the row. */
+.header.header {
+  padding-top: 0;
+  padding-bottom: 0;
+  min-height: var(--ff-header-row-height-mobile, 5.6rem);
+}
+
+.header .header__heading-link {
+  padding-block: 0;
+}
+
+.header .header__heading-logo {
+  max-height: calc(var(--ff-header-row-height-mobile, 5.6rem) - 1.2rem);
+  object-fit: contain;
+}
+
 @media screen and (min-width: 990px) {
   .header.header {
-    padding-top: 0;
-    padding-bottom: 0;
-    grid-template-rows: var(--header-height, 5.6rem);
+    min-height: 0;
+    grid-template-rows: var(--ff-header-row-height, 6.4rem);
     align-items: center;
   }
 
   .header.header--inline-search:not(.drawer-menu):not(.header--split-menu) {
-    grid-template-rows: var(--header-height, 5.6rem) auto;
+    grid-template-rows: var(--ff-header-row-height, 6.4rem) auto;
     padding-bottom: 1.2rem;
   }
 
-  .header .header__heading-link {
-    padding-block: 0;
+  .header .header__heading-logo {
+    max-height: calc(var(--ff-header-row-height, 6.4rem) - 1.6rem);
   }
 }

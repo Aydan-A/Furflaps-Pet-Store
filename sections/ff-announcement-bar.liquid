@@ -14,6 +14,12 @@
     --announcement-padding: {{ section.settings.message_vertical_padding | default: 7 }}px;
     --announcement-side-padding: {{ section.settings.side_padding | default: 32 }}px;
     --announcement-content-gap: {{ section.settings.content_gap | default: 8 }}px;
+    --announcement-ticker-gap: {{ section.settings.ticker_gap | default: 24 }}px;
+    --announcement-letter-spacing: {{ section.settings.letter_spacing | divided_by: 100.0 }}em;
+    --announcement-text-transform: {% if section.settings.uppercase %}uppercase{% else %}none{% endif %};
+    {%- if section.settings.dot_color != blank %}
+    --announcement-dot-color: {{ section.settings.dot_color }};
+    {%- endif %}
     --announcement-content-max-width: {% if section.settings.content_width == 'full' %}none{% else %}var(--page-width){% endif %};
   }
 
@@ -70,7 +76,7 @@
 {% endif %}
 
 <div
-  class="utility-bar color-{{ section.settings.color_scheme }} gradient{% if section.settings.use_custom_colors %} utility-bar--custom-colors{% endif %}{% if section.settings.show_line_separator and section.blocks.size > 0 %} utility-bar--bottom-border{% elsif section.settings.show_line_separator and section.settings.show_social and social_icons%} utility-bar--bottom-border-social-only{% endif %}{% if section.settings.enable_country_selector or section.settings.enable_language_selector %} header-localization{% endif %}"
+  class="utility-bar color-{{ section.settings.color_scheme }} gradient{% if section.settings.font_source == 'menu' %} announcement-bar--menu-font{% endif %}{% if section.settings.use_custom_colors %} utility-bar--custom-colors{% endif %}{% if section.settings.show_line_separator and section.blocks.size > 0 %} utility-bar--bottom-border{% elsif section.settings.show_line_separator and section.settings.show_social and social_icons%} utility-bar--bottom-border-social-only{% endif %}{% if section.settings.enable_country_selector or section.settings.enable_language_selector %} header-localization{% endif %}"
 >
   <div class="page-width utility-bar__grid{% if announcement_bar and language_country_selector or section.settings.show_social and social_icons %} utility-bar__grid--3-col{% elsif language_country_selector or section.settings.show_social and social_icons %} utility-bar__grid--2-col{% endif %}">
     {%- if section.settings.show_social and social_icons -%}
@@ -105,7 +111,7 @@
         {%- endfor -%}
       {%- endcapture -%}
       <div
-        class="announcement-bar announcement-ticker"
+        class="announcement-bar announcement-ticker{% unless section.settings.show_ticker_dots %} announcement-ticker--no-dots{% endunless %}"
         role="region"
         aria-label="{{ 'sections.announcements.announcement_bar' | t }}"
         style="--ticker-duration: {{ section.settings.ticker_speed }}s;"
@@ -296,11 +302,12 @@
     {
       "type": "range",
       "id": "side_padding",
-      "min": 16,
+      "min": 0,
       "max": 64,
       "step": 4,
       "unit": "px",
       "label": "Desktop side spacing",
+      "info": "With the floating header, match the header's side padding to line the text up.",
       "default": 32
     },
     {
@@ -324,6 +331,31 @@
       "info": "Time for all messages to pass once. Lower is faster.",
       "default": 20,
       "visible_if": "{{ section.settings.display_mode == 'ticker' }}"
+    },
+    {
+      "type": "range",
+      "id": "ticker_gap",
+      "min": 8,
+      "max": 80,
+      "step": 2,
+      "unit": "px",
+      "label": "Space between messages",
+      "default": 24,
+      "visible_if": "{{ section.settings.display_mode == 'ticker' }}"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_ticker_dots",
+      "default": true,
+      "label": "Show dots between messages",
+      "visible_if": "{{ section.settings.display_mode == 'ticker' }}"
+    },
+    {
+      "type": "color",
+      "id": "dot_color",
+      "label": "Dot color",
+      "info": "Leave empty to use the text color.",
+      "visible_if": "{{ section.settings.display_mode == 'ticker' and section.settings.show_ticker_dots }}"
     },
     {
       "type": "checkbox",
@@ -406,6 +438,10 @@
         {
           "value": "heading",
           "label": "Heading font"
+        },
+        {
+          "value": "menu",
+          "label": "Header menu font"
         }
       ],
       "default": "body",
@@ -446,13 +482,30 @@
       "label": "Font weight"
     },
     {
+      "type": "checkbox",
+      "id": "uppercase",
+      "default": false,
+      "label": "Uppercase"
+    },
+    {
+      "type": "range",
+      "id": "letter_spacing",
+      "min": -5,
+      "max": 20,
+      "step": 1,
+      "unit": "%",
+      "label": "Letter spacing",
+      "default": 0
+    },
+    {
       "type": "range",
       "id": "message_vertical_padding",
-      "min": 4,
-      "max": 16,
+      "min": 2,
+      "max": 24,
       "step": 1,
       "unit": "px",
       "label": "Vertical padding",
+      "info": "Sets the bar's height.",
       "default": 7
     },
     {

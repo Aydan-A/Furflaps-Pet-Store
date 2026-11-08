@@ -89,10 +89,6 @@
   {{ section.settings.brand_name_font | font_face: font_display: 'swap' }}
   {{ section.settings.nav_font | font_face: font_display: 'swap' }}
 
-  .header {
-    padding: {{ section.settings.padding_top | times: 0.5 | round: 0 }}px 3rem {{ section.settings.padding_bottom | times: 0.5 | round: 0 }}px 3rem;
-  }
-
   :root {
     --header-nav-gap: {{ section.settings.nav_link_gap | default: 24 }}px;
     --header-nav-font-size: {{ section.settings.nav_font_size | default: 13 }}px;
@@ -107,7 +103,13 @@
     --header-search-radius: {{ section.settings.search_border_radius | default: 0 }}px;
     --header-search-border-width: {{ section.settings.search_border_thickness | default: 1 }}px;
     --header-content-max-width: {% if section.settings.content_width == 'full' %}none{% else %}var(--page-width){% endif %};
-    --header-height: {{ section.settings.header_height }}px;
+    /* Not --header-height: Dawn's sticky-header script overwrites that one with
+       the measured section height, which is why the slider used to do nothing. */
+    --ff-header-row-height: {{ section.settings.header_height | default: 64 }}px;
+    --ff-header-row-height-mobile: {{ section.settings.header_height_mobile | default: 56 }}px;
+    --header-floating-inset: {{ section.settings.floating_inset | default: 0 }}px;
+    --header-floating-gap: {{ section.settings.floating_gap | default: 0 }}px;
+    --header-floating-radius: {{ section.settings.floating_radius | default: 0 }}px;
     --header-side-padding: {{ section.settings.header_side_padding | default: 24 }}px;
     --header-row-gap: {{ section.settings.header_row_gap | default: 12 }}px;
     --header-group-gap: {{ section.settings.header_group_gap | default: 24 }}px;
@@ -130,13 +132,6 @@
     }
   }
 
-  @media screen and (min-width: 990px) {
-    .header {
-      padding-top: {{ section.settings.padding_top }}px;
-      padding-bottom: {{ section.settings.padding_bottom }}px;
-    }
-  }
-
   /* Phones: the 3rem gutter above is a desktop measure, and the brand name is
      set to never wrap. Together they made the logo, name and icons wider than
      a 320-390px viewport, so the whole page scrolled sideways. The gutter drops
@@ -145,6 +140,7 @@
   @media screen and (max-width: 749px) {
     .header {
       padding-inline: 1.5rem;
+      padding-block: 0;
       column-gap: 0.4rem;
     }
 
@@ -843,12 +839,22 @@
     {
       "type": "range",
       "id": "header_height",
-      "min": 40,
+      "min": 44,
       "max": 120,
-      "step": 4,
+      "step": 2,
       "unit": "px",
       "label": "Header height (desktop)",
-      "info": "Height of the bar's logo row, set on its own: the logo keeps the size from Theme settings > Logo. On desktop this replaces the top and bottom padding below.",
+      "info": "Height of the logo row. A logo taller than this is scaled down to fit.",
+      "default": 64
+    },
+    {
+      "type": "range",
+      "id": "header_height_mobile",
+      "min": 44,
+      "max": 96,
+      "step": 2,
+      "unit": "px",
+      "label": "Header height (mobile)",
       "default": 56
     },
     {
@@ -856,7 +862,7 @@
       "id": "floating_bar",
       "default": false,
       "label": "Floating bar",
-      "info": "Sets the header in a rounded bar, inset from the page edges."
+      "info": "Sets the header in a rounded bar, inset from the page edges. The announcement bar takes the same inset and corners."
     },
     {
       "type": "color_scheme",
@@ -864,6 +870,40 @@
       "label": "Bar color scheme",
       "default": "scheme-1",
       "visible_if": "{{ section.settings.floating_bar }}"
+    },
+    {
+      "type": "range",
+      "id": "floating_inset",
+      "visible_if": "{{ section.settings.floating_bar }}",
+      "min": 0,
+      "max": 32,
+      "step": 2,
+      "unit": "px",
+      "label": "Space around the bar",
+      "info": "Gap to the page edges, above the announcement bar and below the header.",
+      "default": 12
+    },
+    {
+      "type": "range",
+      "id": "floating_gap",
+      "visible_if": "{{ section.settings.floating_bar }}",
+      "min": 0,
+      "max": 32,
+      "step": 2,
+      "unit": "px",
+      "label": "Gap between announcement bar and header",
+      "default": 8
+    },
+    {
+      "type": "range",
+      "id": "floating_radius",
+      "visible_if": "{{ section.settings.floating_bar }}",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "label": "Corner radius",
+      "default": 12
     },
     {
       "type": "select",
@@ -1080,30 +1120,6 @@
       "unit": "px",
       "label": "t:sections.header.settings.margin_bottom.label",
       "default": 0
-    },
-    {
-      "type": "header",
-      "content": "t:sections.all.padding.section_padding_heading"
-    },
-    {
-      "type": "range",
-      "id": "padding_top",
-      "min": 0,
-      "max": 36,
-      "step": 4,
-      "unit": "px",
-      "label": "t:sections.all.padding.padding_top",
-      "default": 20
-    },
-    {
-      "type": "range",
-      "id": "padding_bottom",
-      "min": 0,
-      "max": 36,
-      "step": 4,
-      "unit": "px",
-      "label": "t:sections.all.padding.padding_bottom",
-      "default": 20
     }
   ],
   "blocks": [

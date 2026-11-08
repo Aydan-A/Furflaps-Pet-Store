@@ -25,13 +25,6 @@
 }
 
 @media screen and (min-width: 990px) {
-  /* Line the bar up with the header's content width and side padding. */
-  body:has(.section-header .header:not(.drawer-menu)) .utility-bar .page-width {
-    max-width: var(--header-content-max-width, var(--page-width));
-    padding-left: var(--header-side-padding, 2.4rem);
-    padding-right: var(--header-side-padding, 2.4rem);
-  }
-
   .announcement-bar-slider {
     width: 100%;
   }
@@ -52,10 +45,18 @@
   justify-content: center;
   gap: var(--announcement-content-gap, 0.8rem);
   padding: var(--announcement-padding, 0.7rem) 0;
-  min-height: 2.8rem;
+  min-height: 0;
   font-size: var(--announcement-font-size, 1.2rem);
   font-weight: var(--announcement-font-weight, 500);
+  letter-spacing: var(--announcement-letter-spacing, 0.1rem);
+  text-transform: var(--announcement-text-transform, none);
   line-height: 1.35;
+}
+
+/* Font "Header menu font": the same family as the header links. */
+.announcement-bar--menu-font .announcement-bar__message {
+  font-family: var(--header-nav-font-family, var(--font-body-family));
+  font-style: var(--header-nav-font-style, normal);
 }
 
 .announcement-bar__prefix,
@@ -103,7 +104,12 @@
   height: 0.5rem;
   margin: 0 var(--announcement-ticker-gap, 2.4rem);
   border-radius: 50%;
-  background: currentColor;
+  background: var(--announcement-dot-color, currentColor);
+}
+
+.announcement-ticker--no-dots .announcement-ticker__dot {
+  width: 0;
+  margin: 0 calc(var(--announcement-ticker-gap, 2.4rem) / 2);
 }
 
 @keyframes ff-announcement-ticker {
