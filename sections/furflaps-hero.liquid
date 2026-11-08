@@ -28,7 +28,7 @@
     --ff-mobile-section-padding-top: {{ section.settings.mobile_padding_top }}px;
     --ff-mobile-section-padding-inline: {{ section.settings.mobile_padding_inline }}px;
     --ff-mobile-section-padding-bottom: {{ section.settings.mobile_padding_bottom }}px;
-    --ff-desktop-section-ratio: {{ section.settings.desktop_section_ratio }};
+    --ff-section-height: {{ section.settings.section_height }}px;
     --ff-mobile-media-ratio: {{ section.settings.mobile_media_ratio }};
     --ff-content-ratio: {{ section.settings.content_width }}fr;
     --ff-media-ratio: {{ 100 | minus: section.settings.content_width }}fr;
@@ -249,14 +249,7 @@
       "visible_if": "{{ section.settings.layout == 'full' }}"
     },
     { "type": "header", "content": "Desktop layout" },
-    {
-      "type": "select", "id": "desktop_section_ratio", "label": "Section ratio", "default": "11 / 4",
-      "options": [
-        { "value": "3 / 1", "label": "Compact" },
-        { "value": "11 / 4", "label": "Standard" },
-        { "value": "16 / 9", "label": "Tall" }
-      ]
-    },
+    { "type": "range", "id": "section_height", "label": "Section height", "min": 240, "max": 900, "step": 10, "unit": "px", "default": 480 },
     { "type": "range", "id": "content_width", "visible_if": "{{ section.settings.layout == 'split' }}", "label": "Content panel width", "min": 30, "max": 70, "step": 1, "unit": "%", "default": 50 },
     { "type": "range", "id": "panel_gap", "visible_if": "{{ section.settings.layout == 'split' }}", "label": "Panel gap", "min": 0, "max": 40, "step": 1, "unit": "px", "default": 16 },
     { "type": "range", "id": "panel_radius", "label": "Panel corner radius", "min": 0, "max": 60, "step": 1, "unit": "px", "default": 16 },
@@ -391,10 +384,10 @@
     { "type": "color", "id": "indicator_active_color", "label": "Active indicator color", "default": "#111111" },
     { "type": "header", "content": "Section spacing" },
     { "type": "range", "id": "padding_top", "label": "Desktop top padding", "min": 0, "max": 100, "step": 2, "unit": "px", "default": 0 },
-    { "type": "range", "id": "padding_inline", "label": "Desktop side padding", "min": 0, "max": 100, "step": 2, "unit": "px", "default": 0 },
+    { "type": "range", "id": "padding_inline", "label": "Desktop side padding", "min": 0, "max": 100, "step": 2, "unit": "px", "default": 12 },
     { "type": "range", "id": "padding_bottom", "label": "Desktop bottom padding", "min": 0, "max": 100, "step": 2, "unit": "px", "default": 0 },
     { "type": "range", "id": "mobile_padding_top", "label": "Mobile top padding", "min": 0, "max": 80, "step": 2, "unit": "px", "default": 0 },
-    { "type": "range", "id": "mobile_padding_inline", "label": "Mobile side padding", "min": 0, "max": 60, "step": 2, "unit": "px", "default": 0 },
+    { "type": "range", "id": "mobile_padding_inline", "label": "Mobile side padding", "min": 0, "max": 60, "step": 2, "unit": "px", "default": 8 },
     { "type": "range", "id": "mobile_padding_bottom", "label": "Mobile bottom padding", "min": 0, "max": 80, "step": 2, "unit": "px", "default": 0 },
     { "type": "header", "content": "Accessibility" },
     { "type": "text", "id": "accessibility_label", "label": "Slider label", "default": "Featured promotions" },
