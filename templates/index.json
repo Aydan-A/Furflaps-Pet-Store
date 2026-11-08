@@ -170,7 +170,7 @@
         "tab_gap": 4,
         "background_color": "#ffffff",
         "text_color": "#111111",
-        "image_background": "#f0f3f5",
+        "image_background": "#ffffff",
         "tab_text": "#111111",
         "tab_active_background": "#e5e7eb",
         "tab_active_text": "#111111",
