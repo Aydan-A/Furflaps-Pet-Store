@@ -145,7 +145,7 @@
         "show_metafield_badge": false,
         "badge_offset": 10,
         "show_discount": true,
-        "heading_font": "assistant_n7",
+        "heading_font": "sans_serif_n4",
         "heading_size": 32,
         "mobile_heading_size": 28,
         "heading_weight": "700",
