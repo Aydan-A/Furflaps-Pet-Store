@@ -52,7 +52,7 @@
         "text_color": "#ffffff",
         "show_line_separator": false,
         "font_source": "menu",
-        "message_font_size": 13,
+        "message_font_size": 12,
         "message_font_weight": "700",
         "uppercase": true,
         "letter_spacing": 0,
