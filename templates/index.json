@@ -15,7 +15,7 @@
         "care": {
           "type": "slide",
           "settings": {
-            "heading": "Made for them. Personalized by you.",
+            "heading": "Made for them. Personalizedby you.",
             "description": "<p>Personalized collars made for cats and dogs, with playful colours, custom names, and a style that's uniquely theirs.</p>",
             "button_label": "Shop Sale",
             "button_link": "shopify://collections/dog-leashes",
@@ -42,7 +42,7 @@
         "content_width": 50,
         "panel_gap": 16,
         "panel_radius": 16,
-        "content_max_width": 560,
+        "content_max_width": 640,
         "content_padding_vertical": 20,
         "content_padding_horizontal": 44,
         "content_position": "center",
@@ -59,7 +59,7 @@
         "heading_font": "archivo_black_n4",
         "heading_size": 42,
         "mobile_heading_size": 38,
-        "heading_weight": "700",
+        "heading_weight": "800",
         "heading_line_height": 105,
         "heading_uppercase": true,
         "heading_letter_spacing": -5,
