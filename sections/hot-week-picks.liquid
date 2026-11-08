@@ -17,6 +17,11 @@
 
 {%- style -%}
   {{ section.settings.heading_font | font_face: font_display: 'swap' }}
+  {%- if section.settings.custom_card_font -%}
+    {{ section.settings.card_font | font_face: font_display: 'swap' }}
+    {%- assign card_font_bold = section.settings.card_font | font_modify: 'weight', 'bold' -%}
+    {{ card_font_bold | font_face: font_display: 'swap' }}
+  {%- endif -%}
 
   #shopify-section-{{ section.id }} {
     --hot-section-background: {{ section.settings.background_color }};
@@ -51,7 +56,6 @@
     --hot-columns: {{ section.settings.columns_desktop }};
     --hot-columns-tablet: {{ section.settings.columns_tablet }};
     --hot-columns-mobile: {{ section.settings.columns_mobile }};
-    --hot-image-ratio: {{ section.settings.image_ratio }};
     --hot-image-fit: {{ section.settings.image_fit }};
     --hot-heading-font-family: {{ section.settings.heading_font.family }}, {{ section.settings.heading_font.fallback_families }};
     --hot-heading-font-style: {{ section.settings.heading_font.style }};
@@ -61,6 +65,22 @@
     --hot-heading-letter-spacing: {{ section.settings.heading_letter_spacing | divided_by: 10.0 }}px;
     --hot-product-title-size: {{ section.settings.product_title_size }}px;
     --hot-price-size: {{ section.settings.price_size }}px;
+    --hot-mobile-product-title-size: {{ section.settings.mobile_product_title_size }}px;
+    --hot-mobile-price-size: {{ section.settings.mobile_price_size }}px;
+    --hot-mobile-description-size: {{ section.settings.mobile_description_size }}px;
+    --hot-title-weight: {{ section.settings.product_title_weight }};
+    --hot-title-line-height: {{ section.settings.product_title_line_height | divided_by: 100.0 }};
+    --hot-title-letter-spacing: {{ section.settings.product_title_letter_spacing | divided_by: 10.0 }}px;
+    --hot-title-transform: {% if section.settings.product_title_uppercase %}uppercase{% else %}none{% endif %};
+    --hot-description-weight: {{ section.settings.description_weight }};
+    --hot-description-line-height: {{ section.settings.description_line_height | divided_by: 100.0 }};
+    --hot-price-weight: {{ section.settings.price_weight }};
+    {%- if section.settings.custom_card_font %}
+    --hot-card-font-family: {{ section.settings.card_font.family }}, {{ section.settings.card_font.fallback_families }};
+    --hot-card-font-style: {{ section.settings.card_font.style }};
+    {%- endif %}
+    --hot-card-height: {{ section.settings.card_height }}px;
+    --hot-mobile-card-height: {{ section.settings.mobile_card_height }}px;
     --hot-tab-font-size: {{ section.settings.tab_font_size }}px;
     --hot-tab-height: {{ section.settings.tab_height }}px;
     --hot-tab-padding: {{ section.settings.tab_padding }}px;
@@ -242,22 +262,46 @@
     { "type": "range", "id": "card_radius", "label": "Image corner radius", "min": 0, "max": 40, "step": 1, "unit": "px", "default": 16 },
     { "type": "range", "id": "card_content_spacing", "label": "Space below image", "min": 4, "max": 30, "step": 1, "unit": "px", "default": 12 },
     {
-      "type": "select", "id": "image_ratio", "label": "Image ratio", "default": "3 / 4",
-      "options": [
-        { "value": "1 / 1", "label": "Square" },
-        { "value": "4 / 5", "label": "Portrait" },
-        { "value": "3 / 4", "label": "Tall portrait" }
-      ]
-    },
-    {
       "type": "select", "id": "image_fit", "label": "Image fit", "default": "contain",
       "options": [
         { "value": "contain", "label": "Contain" },
         { "value": "cover", "label": "Cover" }
       ]
     },
-    { "type": "range", "id": "product_title_size", "label": "Product title size", "min": 11, "max": 24, "step": 1, "unit": "px", "default": 18 },
-    { "type": "range", "id": "price_size", "label": "Price size", "min": 11, "max": 24, "step": 1, "unit": "px", "default": 18 },
+    { "type": "range", "id": "card_height", "label": "Desktop card height", "min": 300, "max": 700, "step": 10, "unit": "px", "default": 420 },
+    { "type": "range", "id": "mobile_card_height", "label": "Mobile card height", "min": 300, "max": 700, "step": 10, "unit": "px", "default": 420 },
+    { "type": "paragraph", "content": "The image shrinks or grows to fill whatever height the text leaves." },
+
+    { "type": "header", "content": "Card text" },
+    { "type": "checkbox", "id": "custom_card_font", "label": "Use a custom card font", "default": false, "info": "Off = the theme body font." },
+    { "type": "font_picker", "id": "card_font", "label": "Card font", "default": "assistant_n4", "visible_if": "{{ section.settings.custom_card_font }}" },
+    { "type": "range", "id": "product_title_size", "label": "Product title size", "min": 11, "max": 32, "step": 1, "unit": "px", "default": 18 },
+    { "type": "range", "id": "mobile_product_title_size", "label": "Mobile product title size", "min": 11, "max": 28, "step": 1, "unit": "px", "default": 18 },
+    {
+      "type": "select", "id": "product_title_weight", "label": "Product title weight", "default": "700",
+      "options": [
+        { "value": "400", "label": "Regular" },
+        { "value": "500", "label": "Medium" },
+        { "value": "600", "label": "Semibold" },
+        { "value": "700", "label": "Bold" },
+        { "value": "800", "label": "Extra bold" }
+      ]
+    },
+    { "type": "range", "id": "product_title_line_height", "label": "Product title line height", "min": 100, "max": 180, "step": 5, "unit": "%", "default": 130 },
+    { "type": "range", "id": "product_title_letter_spacing", "label": "Product title letter spacing", "min": -10, "max": 20, "step": 1, "unit": "px", "default": 0, "info": "In tenths of a pixel." },
+    { "type": "checkbox", "id": "product_title_uppercase", "label": "Uppercase product title", "default": false },
+    { "type": "range", "id": "price_size", "label": "Price size", "min": 11, "max": 32, "step": 1, "unit": "px", "default": 18 },
+    { "type": "range", "id": "mobile_price_size", "label": "Mobile price size", "min": 11, "max": 28, "step": 1, "unit": "px", "default": 18 },
+    {
+      "type": "select", "id": "price_weight", "label": "Price weight", "default": "700",
+      "options": [
+        { "value": "400", "label": "Regular" },
+        { "value": "500", "label": "Medium" },
+        { "value": "600", "label": "Semibold" },
+        { "value": "700", "label": "Bold" },
+        { "value": "800", "label": "Extra bold" }
+      ]
+    },
 
     { "type": "header", "content": "Description" },
     { "type": "checkbox", "id": "show_description", "label": "Show description", "default": true },
@@ -274,7 +318,19 @@
     { "type": "text", "id": "description_metafield_key", "label": "Description metafield key", "default": "card_description" },
     { "type": "paragraph", "content": "Excerpts strip formatting and trim to the word count above. Use a metafield when you want per-product wording that differs from the full description." },
     { "type": "color", "id": "description_color", "label": "Description text", "default": "#6E7787" },
-    { "type": "range", "id": "description_size", "label": "Description size", "min": 10, "max": 18, "step": 1, "unit": "px", "default": 14 },
+    { "type": "range", "id": "description_size", "label": "Description size", "min": 10, "max": 24, "step": 1, "unit": "px", "default": 14 },
+    { "type": "range", "id": "mobile_description_size", "label": "Mobile description size", "min": 10, "max": 20, "step": 1, "unit": "px", "default": 14 },
+    {
+      "type": "select", "id": "description_weight", "label": "Description weight", "default": "400",
+      "options": [
+        { "value": "400", "label": "Regular" },
+        { "value": "500", "label": "Medium" },
+        { "value": "600", "label": "Semibold" },
+        { "value": "700", "label": "Bold" },
+        { "value": "800", "label": "Extra bold" }
+      ]
+    },
+    { "type": "range", "id": "description_line_height", "label": "Description line height", "min": 100, "max": 200, "step": 5, "unit": "%", "default": 145 },
     { "type": "range", "id": "description_lines", "label": "Description max lines", "min": 1, "max": 4, "step": 1, "default": 1 },
 
     { "type": "header", "content": "Badge" },
