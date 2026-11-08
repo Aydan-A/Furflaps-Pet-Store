@@ -8,6 +8,22 @@
 {{ 'component-slider.css' | asset_url | stylesheet_tag }}
 
 {%- style -%}
+  {%- comment -%}
+    The theme only loads the body font at 400 and 700 and the heading font at
+    one weight, so other weights picked below had nothing to render with.
+    Load the chosen weight for the body and heading fonts here (the header
+    section loads the menu font's weights).
+  {%- endcomment -%}
+  {%- assign ff_ann_weight = section.settings.message_font_weight | default: '500' | append: '' -%}
+  {%- if section.settings.font_source == 'heading' -%}
+    {%- assign ff_ann_font = settings.type_header_font | font_modify: 'weight', ff_ann_weight -%}
+  {%- elsif section.settings.font_source == 'body' -%}
+    {%- assign ff_ann_font = settings.type_body_font | font_modify: 'weight', ff_ann_weight -%}
+  {%- endif -%}
+  {%- if ff_ann_font -%}
+    {{ ff_ann_font | font_face: font_display: 'swap' }}
+  {%- endif %}
+
   #shopify-section-{{ section.id }} {
     --announcement-font-size: {{ section.settings.message_font_size | default: 12 }}px;
     --announcement-font-weight: {{ section.settings.message_font_weight | default: 500 }};

@@ -88,6 +88,17 @@
 {%- style -%}
   {{ section.settings.brand_name_font | font_face: font_display: 'swap' }}
   {{ section.settings.nav_font | font_face: font_display: 'swap' }}
+  {%- comment -%}
+    The announcement bar can use this font ("Header menu font") at its own
+    weight, so load the common weights too; a font_picker only loads one.
+  {%- endcomment -%}
+  {%- for w in (4..7) -%}
+    {%- assign nav_font_weight = w | times: 100 | append: '' -%}
+    {%- assign nav_font_variant = section.settings.nav_font | font_modify: 'weight', nav_font_weight -%}
+    {%- if nav_font_variant -%}
+      {{ nav_font_variant | font_face: font_display: 'swap' }}
+    {%- endif -%}
+  {%- endfor %}
 
   :root {
     --header-nav-gap: {{ section.settings.nav_link_gap | default: 24 }}px;
