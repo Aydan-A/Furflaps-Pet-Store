@@ -172,6 +172,10 @@
   width: 100%;
   color: inherit;
   text-decoration: none;
+  /* Whole card (image + text) sits on one rounded light-grey panel. */
+  background: var(--hot-image-background);
+  border-radius: var(--hot-card-radius);
+  overflow: hidden;
 }
 
 .hot-card__media-wrap {
@@ -242,9 +246,7 @@
   display: block;
   overflow: hidden;
   aspect-ratio: var(--hot-image-ratio);
-  border-radius: var(--hot-card-radius);
   background: var(--hot-image-background);
-  border: 1px solid #e1e6ea;
   color: inherit;
 }
 
@@ -277,7 +279,7 @@
   flex-direction: column;
   gap: 0.4rem;
   flex: 1 1 auto;
-  margin-top: var(--hot-card-content-spacing);
+  padding: var(--hot-card-content-spacing) 1.6rem 1.6rem;
 }
 
 .hot-card__swatches {
