@@ -302,8 +302,20 @@
   text-transform: var(--hot-title-transform);
 }
 
+/* Size tag and colour swatches share one row. */
+.hot-card__options {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.8rem 1.2rem;
+}
+
+.hot-card__options:empty {
+  display: none;
+}
+
 .hot-card__size {
-  align-self: flex-start;
+  flex: 0 0 auto;
   display: inline-flex;
   align-items: center;
   padding: 0.4rem 1.2rem;

@@ -142,6 +142,7 @@
       <a class="hot-card__link" href="{{ product.url }}" data-card-link>{{ product.title | escape }}</a>
     </h3>
 
+    <div class="hot-card__options">
     {%- comment -%}
       Size tag: the value of the first available variant's size option. The
       wanted name matches anywhere in the option name, so "Size" also finds
@@ -175,6 +176,7 @@
         group_id: color_group_id
       %}
     {%- endif -%}
+    </div>
 
     <div class="hot-card__prices">
       <span class="hot-card__price">{{ money_price }}</span>
