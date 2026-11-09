@@ -21,7 +21,7 @@
   background: var(--ds-background);
   color: var(--ds-text);
 }
-.dress-up-steps__inner { max-width: var(--ds-max-width); margin: 0 auto; }
+.dress-up-steps__inner { max-width: none; margin: 0 auto; }
 
 /* Section heading */
 .dress-up-steps__header { margin: 0 auto var(--ds-heading-gap); text-align: center; }

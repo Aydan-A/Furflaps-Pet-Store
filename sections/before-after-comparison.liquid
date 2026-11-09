@@ -30,19 +30,11 @@
   endif
 
   comment
-    Widths are expressed against the section's own container, not the viewport, so
-    the browser picks the same source in the Theme Editor iframe as on the
-    storefront. 160px is the page-width gutter pair plus the column gap; 0.6 is
-    the image column's share of the grid.
+    The container spans the viewport minus the 72px page-width gutters. 160px is
+    that gutter pair plus the column gap; 0.6 is the image column's share of the grid.
   endcomment
-  assign content_width = section.settings.content_width
-  assign media_width = content_width | minus: 160 | times: 0.6 | round
   capture media_sizes
-    echo '(min-width: '
-    echo content_width
-    echo 'px) '
-    echo media_width
-    echo 'px, (min-width: 750px) calc((100vw - 160px) * 0.6), calc(100vw - 30px)'
+    echo '(min-width: 750px) calc((100vw - 160px) * 0.6), calc(100vw - 30px)'
   endcapture
   assign media_widths = '375, 550, 750, 900, 1100, 1400, 1800, 2200'
 -%}
@@ -57,7 +49,6 @@
 
 {%- style -%}
   .section-{{ section.id }}-padding {
-    --bac-max-width: {{ section.settings.content_width }}px;
 
     padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
     padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
@@ -331,17 +322,6 @@
     },
 
     { "type": "header", "content": "Layout" },
-    {
-      "type": "range",
-      "id": "content_width",
-      "label": "Content width",
-      "info": "Maximum width of the section on desktop. Narrower screens scale down automatically.",
-      "min": 1000,
-      "max": 2000,
-      "step": 20,
-      "unit": "px",
-      "default": 1700
-    },
 
     { "type": "header", "content": "Section spacing" },
     {

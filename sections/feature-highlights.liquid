@@ -47,7 +47,7 @@
 
   #shopify-section-{{ section.id }} .feature-highlights__panel {
     width: 100%;
-    max-width: {% if section.settings.use_page_width %}var(--page-width){% else %}{{ section.settings.max_width }}px{% endif %};
+    max-width: none;
     margin-inline: auto;
     padding: var(--feature-highlights-panel-padding-top) clamp(2rem, 4vw, 6rem) var(--feature-highlights-panel-padding-bottom);
     overflow: hidden;
@@ -255,8 +255,6 @@
     { "type": "text_alignment", "id": "header_alignment", "label": "Header alignment", "default": "center" },
 
     { "type": "header", "content": "Layout" },
-    { "type": "checkbox", "id": "use_page_width", "label": "Use theme page width", "default": false },
-    { "type": "range", "id": "max_width", "label": "Maximum width", "min": 900, "max": 1800, "step": 20, "unit": "px", "default": 1600 },
     { "type": "range", "id": "columns_desktop", "label": "Desktop columns", "min": 2, "max": 4, "step": 1, "default": 3 },
     { "type": "select", "id": "columns_tablet", "label": "Tablet columns", "default": "3", "options": [{ "value": "1", "label": "1" }, { "value": "2", "label": "2" }, { "value": "3", "label": "3" }] },
     { "type": "select", "id": "columns_mobile", "label": "Mobile columns", "default": "1", "options": [{ "value": "1", "label": "1" }, { "value": "2", "label": "2" }] },

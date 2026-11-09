@@ -5,7 +5,7 @@
   background: var(--ft-section-bg);
 }
 
-.featured-testimonials__outer { max-width: var(--ft-max-width); margin: 0 auto; padding-inline: 0; }
+.featured-testimonials__outer { max-width: none; margin: 0 auto; padding-inline: 0; }
 .featured-testimonials__outer--full { max-width: none; }
 .featured-testimonials__frame { position: relative; overflow: hidden; border-radius: var(--ft-radius); background: var(--ft-panel-bg); }
 .featured-testimonials__slide { display: none; height: var(--ft-desktop-height); grid-template-columns: var(--ft-media-width) minmax(0, 1fr); }

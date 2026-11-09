@@ -32,8 +32,6 @@
     --ds-accent-text: {{ section.settings.accent_text | default: '#FFFFFF' }};
     --ds-number-background: {{ section.settings.number_background | default: '#050505' }};
     --ds-number-text: {{ section.settings.number_text | default: '#FFFFFF' }};
-
-    --ds-max-width: {{ section.settings.max_width | default: 1320 }}px;
     --ds-padding-top: {{ section.settings.padding_top | default: 32 }}px;
     --ds-padding-bottom: {{ section.settings.padding_bottom | default: 40 }}px;
     --ds-padding-inline: {{ section.settings.padding_inline | default: 72 }}px;
@@ -326,7 +324,6 @@
     { "type": "color", "id": "number_text", "label": "Step number text", "default": "#FFFFFF" },
 
     { "type": "header", "content": "Layout and spacing" },
-    { "type": "range", "id": "max_width", "label": "Content max width", "min": 900, "max": 1600, "step": 20, "unit": "px", "default": 1320 },
     { "type": "range", "id": "heading_gap", "label": "Space below heading", "min": 20, "max": 70, "step": 2, "unit": "px", "default": 38 },
     { "type": "range", "id": "padding_top", "label": "Desktop top padding", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 32 },
     { "type": "range", "id": "padding_bottom", "label": "Desktop bottom padding", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 40 },

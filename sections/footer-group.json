@@ -104,8 +104,6 @@
         "show_language_selector": true,
         "show_payment_icons": true,
         "show_powered_by": true,
-        "use_page_width": true,
-        "max_width": 1440,
         "desktop_side_padding": 72,
         "mobile_side_padding": 20,
         "row_gap": 40,

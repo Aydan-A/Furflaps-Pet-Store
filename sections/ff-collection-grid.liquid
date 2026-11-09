@@ -75,7 +75,6 @@
     --cg-column-gap-mobile: {{ column_gap_mobile }}px;
     --cg-row-gap-mobile: {{ row_gap_mobile }}px;
     --cg-block-gap: {{ section.settings.block_gap }}px;
-    --cg-content-width: {{ section.settings.content_width }}px;
     --cg-content-padding: {{ section.settings.content_padding }}px;
     --cg-content-padding-mobile: {{ content_padding_mobile }}px;
     --cg-sidebar-width: {{ section.settings.sidebar_width }}px;
@@ -345,17 +344,6 @@
       "unit": "px",
       "default": 28,
       "label": "Spacing between toolbar, grid and pagination"
-    },
-    {
-      "type": "range",
-      "id": "content_width",
-      "min": 1100,
-      "max": 1800,
-      "step": 20,
-      "unit": "px",
-      "default": 1400,
-      "label": "Maximum content width",
-      "info": "The grid shares this width with the filter sidebar, so it can run wider than the theme's page width without the cards turning narrow."
     },
     {
       "type": "range",

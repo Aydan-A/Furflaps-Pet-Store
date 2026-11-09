@@ -42,7 +42,7 @@
   }
 
   #shopify-section-{{ section.id }} .editorial-footer__inner {
-    max-width: {% if section.settings.use_page_width %}var(--page-width){% else %}{{ section.settings.max_width }}px{% endif %};
+    max-width: none;
     margin: 0 auto;
     padding-inline: {{ section.settings.mobile_side_padding }}px;
   }
@@ -549,8 +549,6 @@
     { "type": "checkbox", "id": "show_powered_by", "label": "Show “Powered by Shopify”", "default": true },
 
     { "type": "header", "content": "Layout" },
-    { "type": "checkbox", "id": "use_page_width", "label": "Use theme page width", "default": true },
-    { "type": "range", "id": "max_width", "label": "Maximum width", "min": 1000, "max": 1800, "step": 20, "unit": "px", "default": 1440 },
     { "type": "range", "id": "desktop_side_padding", "label": "Desktop side padding", "min": 20, "max": 100, "step": 4, "unit": "px", "default": 72 },
     { "type": "range", "id": "mobile_side_padding", "label": "Mobile side padding", "min": 12, "max": 40, "step": 2, "unit": "px", "default": 20 },
     { "type": "range", "id": "row_gap", "label": "Row spacing", "min": 24, "max": 80, "step": 4, "unit": "px", "default": 40 },

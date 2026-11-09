@@ -311,7 +311,6 @@
         "accent_text": "#ffffff",
         "number_background": "#050505",
         "number_text": "#ffffff",
-        "max_width": 1320,
         "heading_gap": 38,
         "padding_top": 32,
         "padding_bottom": 40,
@@ -335,7 +334,6 @@
         "initial_position": 45,
         "show_product": true,
         "product": "personalized-name-pet-collar-mint-green",
-        "content_width": 1700,
         "padding_top": 36,
         "padding_bottom": 36
       }
@@ -550,8 +548,6 @@
         "autoplay": false,
         "autoplay_speed": 5,
         "text_alignment": "left",
-        "use_page_width": true,
-        "max_width": 1200,
         "desktop_height": 560,
         "media_width": 38,
         "content_padding": 64,
@@ -621,8 +617,6 @@
         "intro_text": "",
         "section_heading_size": "h2",
         "header_alignment": "center",
-        "use_page_width": false,
-        "max_width": 1600,
         "columns_desktop": 3,
         "columns_tablet": "3",
         "columns_mobile": "1",

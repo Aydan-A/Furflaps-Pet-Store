@@ -13,7 +13,7 @@
 }
 
 .collection-grid__inner {
-  max-width: var(--cg-content-width);
+  max-width: none;
   margin: 0 auto;
   padding-inline: var(--cg-content-padding-mobile);
 }

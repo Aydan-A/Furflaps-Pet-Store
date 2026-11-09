@@ -27,7 +27,6 @@
         "column_gap": 12,
         "row_gap": 48,
         "block_gap": 28,
-        "content_width": 1400,
         "content_padding": 72,
         "color_scheme": "scheme-1",
         "enable_filtering": true,

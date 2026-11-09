@@ -9,15 +9,8 @@
   grow or shrink from the one Content width setting without redistributing its
   columns, padding, type or corners.
 
-  The container itself is the theme's .page-width - its centring, gutters and
-  box-sizing - with only the max-width overridden, so the section can run wider
-  than the rest of the storefront without a bespoke container. The double class
-  beats .page-width's own max-width regardless of stylesheet order.
+  The container is the theme's .page-width: full width with the shared 72px gutters.
 */
-.page-width.before-after-comparison__container {
-  max-width: var(--bac-max-width, var(--page-width));
-}
-
 .before-after-comparison {
   /* Matches the 14-18px corner language used by the store's other custom sections. */
   --bac-radius: 1.6rem;
