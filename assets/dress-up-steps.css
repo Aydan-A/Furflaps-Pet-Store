@@ -406,19 +406,22 @@
    card, and they wrap rather than scroll: on a narrow card the options sit
    directly under it and the quantity drops below, never cut off.
 
-   Size on the left, quantity on the right, each at its own width and lined up
-   with the card's edges. The row gap matches the
-   card's own gap, so image to options and options to quantity read the same. */
+   Size and quantity sit side by side, size first, as one pair on one row. The
+   row gap matches the card's own gap, so image to options and options to
+   quantity read the same. */
 .ds-card__controls {
   display: flex;
   padding-inline: .6rem;
   flex-wrap: wrap;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-start;
   gap: .8rem;
   visibility: hidden;
 }
 .ds-card--selected .ds-card__controls { visibility: visible; }
+/* The size tag and the stepper are small enough to share a row on any card
+   that carries a size, so they never split onto two lines. */
+.ds-card__controls:has(.ds-card__select) { flex-wrap: nowrap; }
 
 /* min-content, not 0: the options box refuses to shrink narrower than a single
    swatch, so a card too narrow for options and quantity side by side drops the
@@ -501,7 +504,6 @@
   display: flex;
   height: var(--ds-control-small);
   flex: 0 0 auto;
-  margin-inline-start: auto;
   padding-inline: .2rem;
   align-items: center;
   border-radius: var(--ds-radius-control);
