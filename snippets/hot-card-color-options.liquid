@@ -2,7 +2,8 @@
   Colour radio buttons on a Hot this week card. Choosing a colour swaps the
   card image to that colour's variant image and points the card links at the
   variant. Colours are drawn the same way as `ff-swatch-list`: a native swatch,
-  or the product's custom.color fallback; values with neither are skipped.
+  or the product's custom.color fallback, or finally a colour read from the
+  value's name (built-in list, then the CSS colour name).
 
   Accepts:
   - product: {Object} Product Liquid object
@@ -28,6 +29,9 @@
     assign current_variant = product.selected_or_first_available_variant
     assign current_value = current_variant.options[option_index]
   -%}
+  {%- liquid
+    assign named_color_pairs = 'lilac~#C8A2C8|lavender~#B9A7E0|purple~#8E6CC9|violet~#8F5BD6|mint~#A8E6CF|mint green~#98E4C1|green~#5DBB63|sage~#B2C8A8|olive~#8A8F4A|sky blue~#87CEEB|baby blue~#A9D6F5|light blue~#A9D6F5|blue~#3B7DDD|navy~#1F2F55|teal~#2A9D8F|turquoise~#40C9C6|yellow~#FFE15A|mustard~#E1AD01|gold~#D4AF37|orange~#F58A3C|peach~#FFC3A0|coral~#FF7F6B|red~#D64545|burgundy~#7A1E2C|pink~#F5A3C0|baby pink~#F8C8DC|hot pink~#FF5FA2|rose~#E8909C|brown~#8B5A3C|tan~#D2B48C|beige~#E8DCC4|cream~#F6EFD9|white~#FFFFFF|grey~#9AA0A6|gray~#9AA0A6|silver~#C0C0C0|black~#1A1A1A|rainbow~#E8909C' | split: '|'
+  -%}
   {%- capture color_fallback_map -%}
     {%- render 'swatch-fallback-map', product: product -%}
   {%- endcapture -%}
@@ -42,6 +46,24 @@
           {%- render 'swatch-fallback-color', map: color_fallback_map, name: value_name -%}
         {%- endif -%}
       {%- endcapture -%}
+      {%- liquid
+        # Last resort for values with neither a native swatch nor a custom.color
+        # entry: read the colour from the value's name ("mint-green" -> #98E4C1),
+        # then let the browser try it as a CSS colour name ("sky-blue" -> skyblue).
+        if value.swatch == blank and value_fallback == blank
+          assign name_key = value_name | strip | downcase | replace: '-', ' ' | replace: '_', ' '
+          for pair in named_color_pairs
+            assign pair_parts = pair | split: '~'
+            if pair_parts[0] == name_key
+              assign value_fallback = pair_parts[1]
+              break
+            endif
+          endfor
+          if value_fallback == blank
+            assign value_fallback = name_key | remove: ' '
+          endif
+        endif
+      -%}
       {%- if value.swatch != blank or value_fallback != blank -%}
         {%- assign swatch_total = swatch_total | plus: 1 -%}
         {%- if swatches_shown < max_swatches -%}
