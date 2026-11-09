@@ -32,6 +32,9 @@
     --ds-accent-text: {{ section.settings.accent_text | default: '#FFFFFF' }};
     --ds-number-background: {{ section.settings.number_background | default: '#050505' }};
     --ds-number-text: {{ section.settings.number_text | default: '#FFFFFF' }};
+    --ds-size-tag-background: {{ section.settings.size_tag_background | default: '#E4E1E1' }};
+    --ds-size-tag-text: {{ section.settings.size_tag_text | default: '#444141' }};
+    --ds-size-tag-border: {{ section.settings.size_tag_border | default: '#F3F2F2' }};
     --ds-padding-top: {{ section.settings.padding_top | default: 32 }}px;
     --ds-padding-bottom: {{ section.settings.padding_bottom | default: 40 }}px;
     --ds-padding-inline: {{ section.settings.padding_inline | default: 48 }}px;
@@ -319,6 +322,9 @@
     { "type": "color", "id": "accent_text", "label": "Accent text", "default": "#FFFFFF" },
     { "type": "color", "id": "number_background", "label": "Step number background", "default": "#050505" },
     { "type": "color", "id": "number_text", "label": "Step number text", "default": "#FFFFFF" },
+    { "type": "color", "id": "size_tag_background", "label": "Size dropdown background", "default": "#E4E1E1", "info": "The size dropdown is drawn as the size tag on Our Favourite Sets cards." },
+    { "type": "color", "id": "size_tag_text", "label": "Size dropdown text", "default": "#444141" },
+    { "type": "color", "id": "size_tag_border", "label": "Size dropdown border", "default": "#F3F2F2" },
 
     { "type": "header", "content": "Layout and spacing" },
     { "type": "range", "id": "heading_gap", "label": "Space below heading", "min": 20, "max": 70, "step": 2, "unit": "px", "default": 38 },

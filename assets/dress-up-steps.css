@@ -406,8 +406,8 @@
    card, and they wrap rather than scroll: on a narrow card the options sit
    directly under it and the quantity drops below, never cut off.
 
-   Size on the left takes the free width, quantity on the right keeps its own,
-   so the pair always spans the card edge to edge. The row gap matches the
+   Size on the left, quantity on the right, each at its own width and lined up
+   with the card's edges. The row gap matches the
    card's own gap, so image to options and options to quantity read the same. */
 .ds-card__controls {
   display: flex;
@@ -423,11 +423,10 @@
 /* min-content, not 0: the options box refuses to shrink narrower than a single
    swatch, so a card too narrow for options and quantity side by side drops the
    quantity onto its own line instead of squeezing the swatches out of sight.
-   It grows into the space the quantity leaves, so the size never sits short
-   of the stepper with a hole between them. */
+   */
 .ds-card__options {
   display: flex;
-  flex: 1 1 auto;
+  flex: 0 1 auto;
   min-width: min-content;
   flex-wrap: wrap;
   align-items: center;
@@ -466,38 +465,37 @@
 .ds-card__value--unavailable { opacity: .35; text-decoration: line-through; }
 .ds-card__value--swatch.ds-card__value--unavailable { text-decoration: none; }
 
-/* Size and quantity are peers on one row, so they share a height, a border, a
-   radius and a type size. The select also holds its width across values, so
-   picking Medium after Small does not shift the row. */
-.ds-card__select { position: relative; display: flex; flex: 1 1 auto; min-width: 0; align-items: center; }
+/* The size dropdown wears the size tag from the Our Favourite Sets cards: the
+   same pill, colours and small uppercase type, so a size reads the same in
+   both sections. It stays a real select, with a caret to say so, and it takes
+   the width of its value rather than stretching, as the tag does. */
+.ds-card__select { position: relative; display: inline-flex; flex: 0 1 auto; min-width: 0; align-items: center; }
 .ds-card__select-input {
-  width: 100%;
-  min-width: 9rem;
-  height: var(--ds-control-small);
-  padding: 0 2.8rem 0 1.2rem;
+  max-width: 100%;
+  padding: .4rem 2.6rem .4rem 1.2rem;
   appearance: none;
-  border: 0;
-  border-radius: var(--ds-radius-control);
-  background: var(--ds-surface);
-  box-shadow: inset 0 0 0 .1rem var(--ds-border);
-  color: inherit;
+  border: 1px solid var(--ds-size-tag-border);
+  border-radius: 999px;
+  background: var(--ds-size-tag-background);
+  color: var(--ds-size-tag-text);
   font-family: inherit;
-  font-size: 1.3rem;
+  font-size: 1.2rem;
   font-weight: 700;
-  line-height: 1;
+  line-height: 1.2;
+  letter-spacing: .04em;
+  text-transform: uppercase;
   cursor: pointer;
-  text-overflow: ellipsis;
 }
 .ds-card__select-input:focus-visible { outline: .2rem solid var(--ds-text); outline-offset: .2rem; }
 .ds-card__select-caret {
   position: absolute;
-  right: .9rem;
+  right: 1rem;
   display: grid;
   place-items: center;
-  color: var(--ds-muted);
+  color: var(--ds-size-tag-text);
   pointer-events: none;
 }
-.ds-card__select-caret svg { width: 1rem; height: .6rem; }
+.ds-card__select-caret svg { width: .9rem; height: .55rem; }
 
 .ds-card__quantity {
   display: flex;
