@@ -424,10 +424,10 @@
         "header_gap": 24,
         "tabs_gap": 28,
         "padding_top": 40,
-        "padding_bottom": 40,
+        "padding_bottom": 80,
         "padding_inline": 40,
         "mobile_padding_top": 32,
-        "mobile_padding_bottom": 32,
+        "mobile_padding_bottom": 56,
         "mobile_padding_inline": 16
       }
     },
