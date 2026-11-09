@@ -1,0 +1,115 @@
+{% comment %}
+  Colour radio buttons on a Hot this week card. Choosing a colour swaps the
+  card image to that colour's variant image and points the card links at the
+  variant. Colours are drawn the same way as `ff-swatch-list`: a native swatch,
+  or the product's custom.color fallback; values with neither are skipped.
+
+  Accepts:
+  - product: {Object} Product Liquid object
+  - option_name: {String} colour option name, matched case-insensitively (default: 'Color')
+  - max_swatches: {Number} radios to draw before a "+N" link
+  - group_id: {String} unique id for this card, used for the radio group name
+{% endcomment %}
+{%- liquid
+  assign target_option_name = option_name | default: 'Color' | downcase
+  assign color_option = null
+  for option in product.options_with_values
+    assign this_option_name = option.name | downcase
+    if this_option_name == target_option_name
+      assign color_option = option
+      break
+    endif
+  endfor
+-%}
+
+{%- if color_option -%}
+  {%- liquid
+    assign option_index = color_option.position | minus: 1
+    assign current_variant = product.selected_or_first_available_variant
+    assign current_value = current_variant.options[option_index]
+  -%}
+  {%- capture color_fallback_map -%}
+    {%- render 'swatch-fallback-map', product: product -%}
+  {%- endcapture -%}
+
+  {%- assign swatch_total = 0 -%}
+  {%- assign swatches_shown = 0 -%}
+  {%- capture radio_items -%}
+    {%- for value in color_option.values -%}
+      {%- capture value_name %}{{ value }}{% endcapture -%}
+      {%- capture value_fallback -%}
+        {%- if color_fallback_map != blank -%}
+          {%- render 'swatch-fallback-color', map: color_fallback_map, name: value_name -%}
+        {%- endif -%}
+      {%- endcapture -%}
+      {%- if value.swatch != blank or value_fallback != blank -%}
+        {%- assign swatch_total = swatch_total | plus: 1 -%}
+        {%- if swatches_shown < max_swatches -%}
+          {%- liquid
+            # Prefer an in-stock variant of this colour, else any variant of it.
+            assign value_variant = null
+            for variant in product.variants
+              if variant.options[option_index] == value_name
+                if value_variant == null
+                  assign value_variant = variant
+                endif
+                if variant.available
+                  assign value_variant = variant
+                  break
+                endif
+              endif
+            endfor
+
+            assign value_image = value_variant.featured_image | default: product.featured_image
+            assign value_src = ''
+            assign value_srcset = ''
+            if value_image
+              assign value_src = value_image | image_url: width: 900
+              for w in '240,360,480,640,750,900' | split: ','
+                assign w_num = w | plus: 0
+                if value_image.width >= w_num or w_num == 240
+                  assign w_url = value_image | image_url: width: w_num
+                  assign value_srcset = value_srcset | append: w_url | append: ' ' | append: w | append: 'w, '
+                endif
+              endfor
+              assign value_srcset = value_srcset | remove_last: ', '
+            endif
+
+            assign value_url = product.url
+            if value_variant
+              assign value_url = value_variant.url
+            endif
+            assign radio_id = group_id | append: '-' | append: forloop.index
+          -%}
+          <input
+            class="hot-card__color-input visually-hidden"
+            type="radio"
+            id="{{ radio_id }}"
+            name="{{ group_id }}"
+            value="{{ value | escape }}"
+            data-url="{{ value_url }}"
+            {% if value_variant %}data-variant-id="{{ value_variant.id }}" data-available="{{ value_variant.available }}"{% endif %}
+            {% if value_src != blank %}data-image-src="{{ value_src }}" data-image-srcset="{{ value_srcset }}"{% endif %}
+            {% if value_name == current_value %}checked{% endif %}
+          >
+          <label class="hot-card__color" for="{{ radio_id }}" title="{{ value | escape }}">
+            <span class="visually-hidden">{{ value }}</span>
+            {% render 'swatch', swatch: value.swatch, fallback_color: value_fallback %}
+          </label>
+          {%- assign swatches_shown = swatches_shown | plus: 1 -%}
+        {%- endif -%}
+      {%- endif -%}
+    {%- endfor -%}
+  {%- endcapture -%}
+
+  {%- if swatch_total > 0 -%}
+    <fieldset class="hot-card__colors" data-color-options>
+      <legend class="visually-hidden">{{ color_option.name | escape }}</legend>
+      {{- radio_items -}}
+      {%- assign swatches_remaining = swatch_total | minus: swatches_shown -%}
+      {%- if swatches_remaining > 0 -%}
+        <a class="hot-card__color-more" href="{{ product.url }}">+{{ swatches_remaining }}</a>
+      {%- endif -%}
+    </fieldset>
+  {%- endif -%}
+{%- endif -%}

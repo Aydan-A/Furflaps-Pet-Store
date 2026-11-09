@@ -13,6 +13,7 @@ if (!customElements.get('hot-week-picks')) {
       });
 
       this.arrows.forEach((arrow) => arrow.addEventListener('click', this.onArrowClick));
+      this.addEventListener('change', this.onColorChange);
       this.tracks.forEach((track) => track.addEventListener('scroll', this.onScroll, { passive: true }));
 
       if ('ResizeObserver' in window) {
@@ -31,7 +32,28 @@ if (!customElements.get('hot-week-picks')) {
       this.arrows?.forEach((arrow) => arrow.removeEventListener('click', this.onArrowClick));
       this.tracks?.forEach((track) => track.removeEventListener('scroll', this.onScroll));
       this.resizeObserver?.disconnect();
+      this.removeEventListener('change', this.onColorChange);
     }
+
+    // A colour radio swaps the card image and points its links at that variant.
+    onColorChange = (event) => {
+      const input = event.target;
+      if (!input.matches?.('.hot-card__color-input')) return;
+      const card = input.closest('.hot-week-picks__card');
+      if (!card) return;
+
+      const { imageSrc, imageSrcset, url } = input.dataset;
+      const image = card.querySelector('.hot-card__image');
+      if (image && imageSrc) {
+        if (imageSrcset) image.srcset = imageSrcset;
+        image.src = imageSrc;
+      }
+      if (url) {
+        card.querySelectorAll('[data-card-link]').forEach((link) => {
+          link.href = url;
+        });
+      }
+    };
 
     onTabClick = (event) => this.selectTab(event.currentTarget);
 
