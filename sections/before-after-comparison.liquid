@@ -30,11 +30,11 @@
   endif
 
   comment
-    The container spans the viewport minus the 72px page-width gutters. 160px is
+    The container spans the viewport minus the 48px page-width gutters. 112px is
     that gutter pair plus the column gap; 0.6 is the image column's share of the grid.
   endcomment
   capture media_sizes
-    echo '(min-width: 750px) calc((100vw - 160px) * 0.6), calc(100vw - 30px)'
+    echo '(min-width: 750px) calc((100vw - 112px) * 0.6), calc(100vw - 30px)'
   endcapture
   assign media_widths = '375, 550, 750, 900, 1100, 1400, 1800, 2200'
 -%}

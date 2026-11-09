@@ -104,7 +104,7 @@
         "show_language_selector": true,
         "show_payment_icons": true,
         "show_powered_by": true,
-        "desktop_side_padding": 72,
+        "desktop_side_padding": 48,
         "mobile_side_padding": 20,
         "row_gap": 40,
         "margin_top": 0,

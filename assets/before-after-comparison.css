@@ -9,7 +9,7 @@
   grow or shrink from the one Content width setting without redistributing its
   columns, padding, type or corners.
 
-  The container is the theme's .page-width: full width with the shared 72px gutters.
+  The container is the theme's .page-width: full width with the shared 48px gutters.
 */
 .before-after-comparison {
   /* Matches the 14-18px corner language used by the store's other custom sections. */

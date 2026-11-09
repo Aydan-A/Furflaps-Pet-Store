@@ -37,7 +37,7 @@
       ],
       "settings": {
         "content_width": "full",
-        "side_padding": 72,
+        "side_padding": 48,
         "display_mode": "ticker",
         "ticker_speed": 30,
         "ticker_gap": 24,
@@ -96,7 +96,7 @@
         "floating_radius": 12,
         "icon_style": "plain",
         "content_width": "full",
-        "header_side_padding": 72,
+        "header_side_padding": 48,
         "header_row_gap": 8,
         "header_group_gap": 24,
         "show_account_icon": true,

@@ -90,7 +90,7 @@
         "button_text_color_hover": "#ffffff",
         "padding_top": 72,
         "padding_bottom": 88,
-        "padding_inline": 72,
+        "padding_inline": 48,
         "mobile_padding_top": 40,
         "mobile_padding_bottom": 56,
         "mobile_padding_inline": 20
