@@ -97,7 +97,7 @@
 }
 
 @media screen and (max-width: 749px) {
-  .featured-testimonials { padding-inline: max(1.5rem, var(--ft-side-padding)); }
+  .featured-testimonials { padding-inline: clamp(1.5rem, var(--ft-side-padding), 2rem); }
   .featured-testimonials--hide-mobile { display: none; }
   .featured-testimonials__slide,
   .featured-testimonials__slide.is-active { min-height: 0; grid-template-columns: 1fr; }

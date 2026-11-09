@@ -32,17 +32,17 @@
   comment
     Widths are expressed against the section's own container, not the viewport, so
     the browser picks the same source in the Theme Editor iframe as on the
-    storefront. 116px is the page-width gutter pair plus the column gap; 0.6 is
+    storefront. 160px is the page-width gutter pair plus the column gap; 0.6 is
     the image column's share of the grid.
   endcomment
   assign content_width = section.settings.content_width
-  assign media_width = content_width | minus: 116 | times: 0.6 | round
+  assign media_width = content_width | minus: 160 | times: 0.6 | round
   capture media_sizes
     echo '(min-width: '
     echo content_width
     echo 'px) '
     echo media_width
-    echo 'px, (min-width: 750px) calc((100vw - 116px) * 0.6), calc(100vw - 30px)'
+    echo 'px, (min-width: 750px) calc((100vw - 160px) * 0.6), calc(100vw - 30px)'
   endcapture
   assign media_widths = '375, 550, 750, 900, 1100, 1400, 1800, 2200'
 -%}

@@ -28,7 +28,7 @@
     --announcement-font-size: {{ section.settings.message_font_size | default: 12 }}px;
     --announcement-font-weight: {{ section.settings.message_font_weight | default: 500 }};
     --announcement-padding: {{ section.settings.message_vertical_padding | default: 7 }}px;
-    --announcement-side-padding: {{ section.settings.side_padding | default: 32 }}px;
+    --announcement-side-padding: {{ section.settings.side_padding | default: 72 }}px;
     --announcement-content-gap: {{ section.settings.content_gap | default: 8 }}px;
     --announcement-ticker-gap: {{ section.settings.ticker_gap | default: 24 }}px;
     --announcement-letter-spacing: {{ section.settings.letter_spacing | divided_by: 100.0 }}em;
@@ -319,12 +319,12 @@
       "type": "range",
       "id": "side_padding",
       "min": 0,
-      "max": 64,
+      "max": 80,
       "step": 4,
       "unit": "px",
       "label": "Desktop side spacing",
       "info": "With the floating header, match the header's side padding to line the text up.",
-      "default": 32
+      "default": 72
     },
     {
       "type": "select",
