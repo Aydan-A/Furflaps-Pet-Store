@@ -420,10 +420,11 @@
   gap: 0.6rem;
 }
 
-.product-feature-tabs .hot-card__cart--labelled svg {
-  flex: 0 0 auto;
-  width: 1.8rem;
-  height: 1.8rem;
+/* Text only: the cart icon is hidden. The loading spinner is not a direct
+   child, so it still shows while the product is being added. */
+.product-feature-tabs .hot-card__cart--labelled > svg,
+.product-feature-tabs .hot-card__cart--labelled .hot-card__cart-icon > svg {
+  display: none;
 }
 
 .product-feature-tabs .hot-card__cart--labelled .loading__spinner {
