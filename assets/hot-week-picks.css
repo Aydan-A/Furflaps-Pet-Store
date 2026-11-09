@@ -172,10 +172,22 @@
   width: 100%;
   color: inherit;
   text-decoration: none;
+  /* Whole card (image + text) sits on one rounded light-grey panel. */
+  background: var(--hot-image-background);
+  border-radius: var(--hot-card-radius);
+  overflow: hidden;
+  /* Fixed card height: the text keeps its natural height and the image takes
+     whatever is left, so every card in the row lines up. */
+  height: var(--hot-card-height);
+  font-family: var(--hot-card-font-family, inherit);
+  font-style: var(--hot-card-font-style, inherit);
 }
 
 .hot-card__media-wrap {
   position: relative;
+  display: flex;
+  flex: 1 1 auto;
+  min-height: 0;
 }
 
 .hot-card__cart-form,
@@ -241,8 +253,8 @@
   position: relative;
   display: block;
   overflow: hidden;
-  aspect-ratio: var(--hot-image-ratio);
-  border-radius: var(--hot-card-radius);
+  flex: 1 1 auto;
+  min-height: 0;
   background: var(--hot-image-background);
   color: inherit;
 }
@@ -274,45 +286,36 @@
 .hot-card__info {
   display: flex;
   flex-direction: column;
-  gap: 0.4rem;
-  flex: 1 1 auto;
-  margin-top: var(--hot-card-content-spacing);
-}
-
-.hot-card__swatches {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-  margin: 0 0 0.4rem;
-  padding: 0;
-  list-style: none;
-}
-
-.hot-card__swatch {
-  display: block;
-  width: var(--hot-swatch-size);
-  height: var(--hot-swatch-size);
-}
-
-.hot-card__swatch .swatch {
-  display: block;
-  width: 100%;
-  height: 100%;
-  border-radius: 50%;
-}
-
-.hot-card__swatch-more {
-  font-size: calc(var(--hot-swatch-size) * 0.8);
-  line-height: 1;
-  color: var(--hot-description-color);
+  gap: var(--hot-info-gap, 1rem);
+  flex: 0 0 auto;
+  padding: var(--hot-card-content-spacing) 1.6rem 1.6rem;
 }
 
 .hot-card__title {
   margin: 0;
+  font-family: var(--hot-title-font-family, inherit);
+  font-style: var(--hot-title-font-style, inherit);
   font-size: var(--hot-product-title-size);
+  font-weight: var(--hot-title-weight);
+  line-height: var(--hot-title-line-height);
+  letter-spacing: var(--hot-title-letter-spacing);
+  text-transform: var(--hot-title-transform);
+}
+
+.hot-card__size {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  padding: 0.4rem 1.2rem;
+  border-radius: 999px;
+  background: var(--hot-size-tag-background);
+  border: 1px solid var(--hot-size-tag-border);
+  color: var(--hot-size-tag-text);
+  font-size: 1.2rem;
   font-weight: 700;
-  line-height: 1.3;
+  line-height: 1.2;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
 }
 
 .hot-card__link {
@@ -324,17 +327,61 @@
   text-decoration: underline;
 }
 
-.hot-card__description {
-  margin: 0;
-  font-size: var(--hot-description-size);
-  line-height: 1.45;
+.hot-card__colors {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.8rem;
+  margin: 0.2rem 0;
+  padding: 0;
+  border: 0;
+  min-width: 0;
+}
+
+.hot-card__color {
+  display: block;
+  box-sizing: border-box;
+  width: calc(var(--hot-swatch-size) + 1rem);
+  height: calc(var(--hot-swatch-size) + 1rem);
+  padding: 0.3rem;
+  border: 1.5px solid var(--hot-color-ring);
+  border-radius: 50%;
+  cursor: pointer;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
+}
+
+.hot-card__color .swatch {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+}
+
+.hot-card__color:hover {
+  border-color: var(--hot-color-ring-hover);
+}
+
+/* Selected: accent ring, a soft halo outside it and a tint in the gap. */
+.hot-card__color-input:checked + .hot-card__color {
+  border-color: var(--hot-color-ring-active);
+  background-color: color-mix(in srgb, var(--hot-color-ring-active) 14%, transparent);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--hot-color-ring-active) 22%, transparent);
+}
+
+.hot-card__color-input:focus-visible + .hot-card__color {
+  outline: 2px solid var(--hot-color-ring-active);
+  outline-offset: 2px;
+}
+
+.hot-card__color-more {
+  font-size: calc(var(--hot-swatch-size) * 0.8);
+  line-height: 1;
   color: var(--hot-description-color);
-  display: -webkit-box;
-  -webkit-line-clamp: var(--hot-description-lines);
-  line-clamp: var(--hot-description-lines);
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-  overflow-wrap: anywhere;
+  text-decoration: none;
+}
+
+.hot-card__color-more:hover {
+  text-decoration: underline;
 }
 
 .hot-card__prices {
@@ -344,12 +391,15 @@
   gap: 0.8rem;
   margin-top: auto;
   padding-top: 0.8rem;
+  font-family: var(--hot-price-font-family, inherit);
+  font-style: var(--hot-price-font-style, inherit);
   font-size: var(--hot-price-size);
+  letter-spacing: var(--hot-price-letter-spacing);
 }
 
 .hot-card__price {
   font-size: 1em;
-  font-weight: 700;
+  font-weight: var(--hot-price-weight);
 }
 
 .hot-card__price-was {
@@ -401,6 +451,18 @@
 
   .hot-week-picks__nav {
     display: none;
+  }
+
+  .hot-week-picks__card {
+    height: var(--hot-mobile-card-height);
+  }
+
+  .hot-card__title {
+    font-size: var(--hot-mobile-product-title-size);
+  }
+
+  .hot-card__prices {
+    font-size: var(--hot-mobile-price-size);
   }
 
   .hot-week-picks__products {

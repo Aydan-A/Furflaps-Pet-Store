@@ -4,6 +4,7 @@
   Accepts:
   - product: Product object
   - section: Section object
+  - tab_key: String, keeps radio group names unique when a product is in both tabs
   - lazy_load: Boolean
 {% endcomment %}
 
@@ -11,25 +12,6 @@
   assign custom_badge = blank
   if section.settings.show_metafield_badge
     assign custom_badge = product.metafields.custom.card_badge.value
-  endif
-
-  assign card_description = blank
-  if section.settings.show_description
-    assign description_source = section.settings.description_source
-
-    if description_source == 'metafield' or description_source == 'metafield_then_description'
-      if section.settings.description_metafield_namespace != blank and section.settings.description_metafield_key != blank
-        assign card_description = product.metafields[section.settings.description_metafield_namespace][section.settings.description_metafield_key].value
-      endif
-    endif
-
-    if card_description == blank and description_source != 'metafield'
-      assign card_description = product.description
-    endif
-
-    if card_description != blank
-      assign card_description = card_description | strip_html | strip | truncatewords: section.settings.description_words
-    endif
   endif
 
   assign discount_final = blank
@@ -81,7 +63,7 @@
 
 <div class="hot-week-picks__card">
   <div class="hot-card__media-wrap">
-    <a class="hot-card__media" href="{{ product.url }}" aria-label="{{ product.title | escape }}">
+    <a class="hot-card__media" href="{{ product.url }}" data-card-link aria-label="{{ product.title | escape }}">
       {%- if custom_badge != blank -%}
         <span class="hot-card__badge">{{ custom_badge | escape }}</span>
       {%- endif -%}
@@ -114,6 +96,7 @@
         <a
           class="hot-card__cart"
           href="{{ product.url }}"
+          data-card-link
           aria-label="{{ 'products.product.choose_options' | t }} — {{ product.title | escape }}"
         >
           {{- 'icon-cart.svg' | inline_asset_content -}}
@@ -155,21 +138,42 @@
   </div>
 
   <div class="hot-card__info">
+    <h3 class="hot-card__title">
+      <a class="hot-card__link" href="{{ product.url }}" data-card-link>{{ product.title | escape }}</a>
+    </h3>
+
+    {%- comment -%}
+      Size tag: the value of the first available variant's size option. The
+      wanted name matches anywhere in the option name, so "Size" also finds
+      "Collar Size". Products without a size option show no tag.
+    {%- endcomment -%}
+    {%- unless section.settings.show_size_tag == false -%}
+      {%- liquid
+        assign size_value = blank
+        assign size_wanted = section.settings.size_option_name | default: 'Size' | downcase | replace: ' ', ''
+        assign size_variant = product.selected_or_first_available_variant
+        for option in product.options_with_values
+          assign size_key = option.name | downcase | replace: ' ', ''
+          if size_key contains size_wanted
+            assign size_value = size_variant.options[forloop.index0]
+            assign size_value = size_value | split: '(' | first | strip
+            break
+          endif
+        endfor
+      -%}
+      {%- if size_value != blank -%}
+        <span class="hot-card__size">{{ size_value | escape }}</span>
+      {%- endif -%}
+    {%- endunless -%}
+
     {%- if section.settings.show_swatches -%}
-      {% render 'ff-swatch-list',
+      {%- assign color_group_id = 'HotColor-' | append: section.id | append: '-' | append: tab_key | append: '-' | append: product.id -%}
+      {% render 'hot-card-color-options',
         product: product,
         option_name: section.settings.color_option_name,
         max_swatches: section.settings.swatches_to_show,
-        class_prefix: 'hot-card'
+        group_id: color_group_id
       %}
-    {%- endif -%}
-
-    <h3 class="hot-card__title">
-      <a class="hot-card__link" href="{{ product.url }}">{{ product.title | escape }}</a>
-    </h3>
-
-    {%- if card_description != blank -%}
-      <p class="hot-card__description">{{ card_description | escape }}</p>
     {%- endif -%}
 
     <div class="hot-card__prices">
