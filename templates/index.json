@@ -347,8 +347,8 @@
         "initial_position": 45,
         "show_product": true,
         "product": "personalized-name-pet-collar-mint-green",
-        "padding_top": 36,
-        "padding_bottom": 36
+        "padding_top": 40,
+        "padding_bottom": 40
       }
     },
     "product_feature_tabs_EpMe6d": {
@@ -424,10 +424,10 @@
         "header_gap": 24,
         "tabs_gap": 28,
         "padding_top": 40,
-        "padding_bottom": 80,
+        "padding_bottom": 40,
         "padding_inline": 40,
-        "mobile_padding_top": 28,
-        "mobile_padding_bottom": 56,
+        "mobile_padding_top": 32,
+        "mobile_padding_bottom": 32,
         "mobile_padding_inline": 16
       }
     },
@@ -496,7 +496,7 @@
         "section_max_width": "",
         "vertical_padding": 40,
         "vertical_margin": 0,
-        "vertical_padding_mobile": 20,
+        "vertical_padding_mobile": 32,
         "vertical_margin_mobile": 0,
         "section_background": "",
         "images_border_color": ""
@@ -564,8 +564,8 @@
         "content_padding": 64,
         "corner_radius": 18,
         "side_padding": 20,
-        "padding_top": 32,
-        "padding_bottom": 32,
+        "padding_top": 40,
+        "padding_bottom": 40,
         "quote_size": 32,
         "mobile_quote_size": 26,
         "section_background": "#fbfbfb",
@@ -650,12 +650,12 @@
         "section_background": "#fde6de",
         "panel_background": "#fde6de",
         "text_color": "#ff4b22",
-        "padding_top": 14,
+        "padding_top": 40,
         "padding_bottom": 14,
         "padding_inline": 14,
         "panel_padding_top": 44,
         "panel_padding_bottom": 42,
-        "mobile_padding_top": 10,
+        "mobile_padding_top": 32,
         "mobile_padding_bottom": 10,
         "mobile_padding_inline": 10,
         "mobile_panel_padding_top": 36,
