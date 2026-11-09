@@ -481,8 +481,14 @@
   background-position: center;
   background-size: cover;
 }
-.ds-card__value--active { border-color: var(--ds-accent); box-shadow: inset 0 0 0 1px var(--ds-accent); }
-.ds-card__value--swatch.ds-card__value--active { box-shadow: none; }
+.ds-card__value--active:not(.ds-card__value--swatch) {
+  border-color: var(--ds-size-tag-active-border);
+  background: var(--ds-size-tag-active-background);
+  color: var(--ds-size-tag-active-text);
+  box-shadow: inset 0 0 0 1px var(--ds-size-tag-active-border);
+}
+/* A colour swatch keeps its own colour and shows selection with the accent. */
+.ds-card__value--swatch.ds-card__value--active { border-color: var(--ds-accent); box-shadow: none; }
 /* Sold-out values stay visible, so what is on offer is never a surprise. */
 .ds-card__value--unavailable { opacity: .35; text-decoration: line-through; }
 .ds-card__value--swatch.ds-card__value--unavailable { text-decoration: none; }
