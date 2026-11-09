@@ -158,6 +158,8 @@
         "heading_weight": "700",
         "heading_letter_spacing": -3,
         "tab_font_size": 13,
+        "show_size_tag": true,
+        "size_option_name": "Size",
         "show_swatches": true,
         "color_option_name": "Color",
         "swatches_to_show": 4,
