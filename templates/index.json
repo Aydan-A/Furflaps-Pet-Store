@@ -100,7 +100,7 @@
         "indicator_border_color": "#aab6a0",
         "indicator_active_color": "#7d0501",
         "padding_top": 0,
-        "padding_inline": 72,
+        "padding_inline": 10,
         "padding_bottom": 0,
         "mobile_padding_top": 0,
         "mobile_padding_inline": 10,
