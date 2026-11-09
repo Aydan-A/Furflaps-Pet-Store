@@ -393,9 +393,50 @@
    price, rather than over the image as on Our Favourite Sets. The media wrap
    stops being the positioning box, so the button anchors to the card. */
 .product-feature-tabs .hot-card__media-wrap { position: static; }
-.product-feature-tabs .hot-card__cart { right: 1.6rem; bottom: 1.6rem; }
-.product-feature-tabs .hot-card__prices { padding-right: calc(var(--hot-cart-size) + 1.2rem); }
+
+/* A full button - icon and text on a pill - instead of the round icon. */
+.product-feature-tabs .hot-card__cart--labelled {
+  right: 1.6rem;
+  bottom: 1.2rem;
+  width: auto;
+  height: 4rem;
+  gap: 0.6rem;
+  padding: 0 1.6rem;
+  border-radius: 999px;
+  font-size: 1.4rem;
+  font-weight: 700;
+  line-height: 1;
+  white-space: nowrap;
+  text-decoration: none;
+  box-shadow: none;
+  transition: transform 150ms ease, filter 150ms ease;
+}
+
+.product-feature-tabs .hot-card__cart--labelled:hover { transform: none; filter: brightness(0.92); }
+
+.product-feature-tabs .hot-card__cart--labelled .hot-card__cart-icon {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.product-feature-tabs .hot-card__cart--labelled svg {
+  flex: 0 0 auto;
+  width: 1.8rem;
+  height: 1.8rem;
+}
+
+.product-feature-tabs .hot-card__cart--labelled .loading__spinner {
+  width: 1.8rem;
+  height: 1.8rem;
+}
+
+/* The price keeps clear of the button. */
+.product-feature-tabs .hot-card__prices { padding-right: 14rem; }
 
 @media screen and (max-width: 749px) {
-  .product-feature-tabs .hot-card__prices { padding-right: calc(max(var(--hot-cart-size), 4.4rem) + 1.2rem); }
+  .product-feature-tabs .hot-card__cart--labelled {
+    width: auto;
+    height: 4.4rem;
+  }
 }

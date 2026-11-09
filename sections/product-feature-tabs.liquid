@@ -25,6 +25,8 @@
     endif
   endfor
   # theme-check-enable BlockIdUsage
+
+  assign cart_label = section.settings.cart_button_label | default: 'Add to cart'
 -%}
 
 {%- style -%}
@@ -96,8 +98,8 @@
     --hot-color-ring-hover: #8a93a3;
     --hot-color-ring-active: #2f6feb;
     --hot-cart-size: 40px;
-    --hot-cart-background: #ffffff;
-    --hot-cart-icon: #111111;
+    --hot-cart-background: {{ section.settings.add_button_background }};
+    --hot-cart-icon: {{ section.settings.add_button_text }};
   }
 {%- endstyle -%}
 
@@ -143,7 +145,8 @@
                       product: product,
                       section: section,
                       tab_key: block.id,
-                      lazy_load: 'lazy'
+                      lazy_load: 'lazy',
+                      cart_label: cart_label
                     %}
                   </li>
                 {%- endfor -%}
@@ -272,6 +275,9 @@
     { "type": "checkbox", "id": "show_discount", "label": "Show discount", "default": true },
     { "type": "checkbox", "id": "show_metafield_badge", "label": "Show card badge", "default": false, "info": "Uses the product's custom.card_badge metafield." },
     { "type": "checkbox", "id": "show_add_to_cart", "label": "Show add to cart button", "default": false },
+    { "type": "text", "id": "cart_button_label", "label": "Add to cart button text", "default": "Add to cart" },
+    { "type": "color", "id": "add_button_background", "label": "Add to cart background", "default": "#F71414" },
+    { "type": "color", "id": "add_button_text", "label": "Add to cart text", "default": "#FFFFFF" },
     { "type": "header", "content": "Layout and spacing" },
     { "type": "range", "id": "card_gap", "label": "Card gap", "min": 4, "max": 40, "step": 1, "unit": "px", "default": 12 },
     { "type": "range", "id": "card_radius", "label": "Card corner radius", "min": 0, "max": 40, "step": 1, "unit": "px", "default": 16 },
