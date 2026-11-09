@@ -1,4 +1,5 @@
 .product-feature-tabs {
+  display: block;
   background: var(--pft-background);
   color: var(--pft-text);
   padding-block: var(--pft-padding-top) var(--pft-padding-bottom);
