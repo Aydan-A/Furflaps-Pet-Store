@@ -406,9 +406,9 @@
    card, and they wrap rather than scroll: on a narrow card the options sit
    directly under it and the quantity drops below, never cut off.
 
-   Quantity holds the left edge and the size the right, each lined up with the
-   card's own edges. The row gap matches the card's own gap, so image to
-   options and options to quantity read the same. */
+   Size on the left takes the free width, quantity on the right keeps its own,
+   so the pair always spans the card edge to edge. The row gap matches the
+   card's own gap, so image to options and options to quantity read the same. */
 .ds-card__controls {
   display: flex;
   padding-inline: .6rem;
@@ -423,11 +423,11 @@
 /* min-content, not 0: the options box refuses to shrink narrower than a single
    swatch, so a card too narrow for options and quantity side by side drops the
    quantity onto its own line instead of squeezing the swatches out of sight.
-   The auto margin keeps it on the right, alone or wrapped onto its own line. */
+   It grows into the space the quantity leaves, so the size never sits short
+   of the stepper with a hole between them. */
 .ds-card__options {
   display: flex;
-  flex: 0 1 auto;
-  margin-inline-start: auto;
+  flex: 1 1 auto;
   min-width: min-content;
   flex-wrap: wrap;
   align-items: center;
@@ -469,7 +469,7 @@
 /* Size and quantity are peers on one row, so they share a height, a border, a
    radius and a type size. The select also holds its width across values, so
    picking Medium after Small does not shift the row. */
-.ds-card__select { position: relative; display: flex; flex: 0 1 auto; min-width: 0; align-items: center; }
+.ds-card__select { position: relative; display: flex; flex: 1 1 auto; min-width: 0; align-items: center; }
 .ds-card__select-input {
   width: 100%;
   min-width: 9rem;
@@ -503,6 +503,7 @@
   display: flex;
   height: var(--ds-control-small);
   flex: 0 0 auto;
+  margin-inline-start: auto;
   padding-inline: .2rem;
   align-items: center;
   border-radius: var(--ds-radius-control);
