@@ -22,6 +22,15 @@
     {%- assign card_font_bold = section.settings.card_font | font_modify: 'weight', 'bold' -%}
     {{ card_font_bold | font_face: font_display: 'swap' }}
   {%- endif -%}
+  {%- for el in 'title,description,price' | split: ',' -%}
+    {%- assign use_key = 'custom_' | append: el | append: '_font' -%}
+    {%- assign font_key = el | append: '_font' -%}
+    {%- if section.settings[use_key] -%}
+      {{ section.settings[font_key] | font_face: font_display: 'swap' }}
+      {%- assign el_font_bold = section.settings[font_key] | font_modify: 'weight', 'bold' -%}
+      {{ el_font_bold | font_face: font_display: 'swap' }}
+    {%- endif -%}
+  {%- endfor -%}
 
   #shopify-section-{{ section.id }} {
     --hot-section-background: {{ section.settings.background_color }};
@@ -79,6 +88,20 @@
     --hot-card-font-family: {{ section.settings.card_font.family }}, {{ section.settings.card_font.fallback_families }};
     --hot-card-font-style: {{ section.settings.card_font.style }};
     {%- endif %}
+    {%- if section.settings.custom_title_font %}
+    --hot-title-font-family: {{ section.settings.title_font.family }}, {{ section.settings.title_font.fallback_families }};
+    --hot-title-font-style: {{ section.settings.title_font.style }};
+    {%- endif %}
+    {%- if section.settings.custom_description_font %}
+    --hot-description-font-family: {{ section.settings.description_font.family }}, {{ section.settings.description_font.fallback_families }};
+    --hot-description-font-style: {{ section.settings.description_font.style }};
+    {%- endif %}
+    {%- if section.settings.custom_price_font %}
+    --hot-price-font-family: {{ section.settings.price_font.family }}, {{ section.settings.price_font.fallback_families }};
+    --hot-price-font-style: {{ section.settings.price_font.style }};
+    {%- endif %}
+    --hot-description-letter-spacing: {{ section.settings.description_letter_spacing | divided_by: 10.0 }}px;
+    --hot-price-letter-spacing: {{ section.settings.price_letter_spacing | divided_by: 10.0 }}px;
     --hot-card-height: {{ section.settings.card_height }}px;
     --hot-mobile-card-height: {{ section.settings.mobile_card_height }}px;
     --hot-tab-font-size: {{ section.settings.tab_font_size }}px;
@@ -268,13 +291,15 @@
         { "value": "cover", "label": "Cover" }
       ]
     },
-    { "type": "range", "id": "card_height", "label": "Desktop card height", "min": 300, "max": 700, "step": 10, "unit": "px", "default": 420 },
-    { "type": "range", "id": "mobile_card_height", "label": "Mobile card height", "min": 300, "max": 700, "step": 10, "unit": "px", "default": 420 },
+    { "type": "range", "id": "card_height", "label": "Desktop card height", "min": 300, "max": 700, "step": 4, "unit": "px", "default": 464 },
+    { "type": "range", "id": "mobile_card_height", "label": "Mobile card height", "min": 300, "max": 700, "step": 4, "unit": "px", "default": 464 },
     { "type": "paragraph", "content": "The image shrinks or grows to fill whatever height the text leaves." },
 
     { "type": "header", "content": "Card text" },
     { "type": "checkbox", "id": "custom_card_font", "label": "Use a custom card font", "default": false, "info": "Off = the theme body font." },
     { "type": "font_picker", "id": "card_font", "label": "Card font", "default": "assistant_n4", "visible_if": "{{ section.settings.custom_card_font }}" },
+    { "type": "checkbox", "id": "custom_title_font", "label": "Use a separate product title font", "default": false },
+    { "type": "font_picker", "id": "title_font", "label": "Product title font", "default": "assistant_n4", "visible_if": "{{ section.settings.custom_title_font }}" },
     { "type": "range", "id": "product_title_size", "label": "Product title size", "min": 11, "max": 32, "step": 1, "unit": "px", "default": 18 },
     { "type": "range", "id": "mobile_product_title_size", "label": "Mobile product title size", "min": 11, "max": 28, "step": 1, "unit": "px", "default": 18 },
     {
@@ -290,6 +315,8 @@
     { "type": "range", "id": "product_title_line_height", "label": "Product title line height", "min": 100, "max": 180, "step": 5, "unit": "%", "default": 130 },
     { "type": "range", "id": "product_title_letter_spacing", "label": "Product title letter spacing", "min": -10, "max": 20, "step": 1, "unit": "px", "default": 0, "info": "In tenths of a pixel." },
     { "type": "checkbox", "id": "product_title_uppercase", "label": "Uppercase product title", "default": false },
+    { "type": "checkbox", "id": "custom_price_font", "label": "Use a separate price font", "default": false },
+    { "type": "font_picker", "id": "price_font", "label": "Price font", "default": "assistant_n4", "visible_if": "{{ section.settings.custom_price_font }}" },
     { "type": "range", "id": "price_size", "label": "Price size", "min": 11, "max": 32, "step": 1, "unit": "px", "default": 18 },
     { "type": "range", "id": "mobile_price_size", "label": "Mobile price size", "min": 11, "max": 28, "step": 1, "unit": "px", "default": 18 },
     {
@@ -302,6 +329,7 @@
         { "value": "800", "label": "Extra bold" }
       ]
     },
+    { "type": "range", "id": "price_letter_spacing", "label": "Price letter spacing", "min": -10, "max": 20, "step": 1, "unit": "px", "default": 0, "info": "In tenths of a pixel." },
 
     { "type": "header", "content": "Description" },
     { "type": "checkbox", "id": "show_description", "label": "Show description", "default": true },
@@ -318,6 +346,8 @@
     { "type": "text", "id": "description_metafield_key", "label": "Description metafield key", "default": "card_description" },
     { "type": "paragraph", "content": "Excerpts strip formatting and trim to the word count above. Use a metafield when you want per-product wording that differs from the full description." },
     { "type": "color", "id": "description_color", "label": "Description text", "default": "#6E7787" },
+    { "type": "checkbox", "id": "custom_description_font", "label": "Use a separate description font", "default": false },
+    { "type": "font_picker", "id": "description_font", "label": "Description font", "default": "assistant_n4", "visible_if": "{{ section.settings.custom_description_font }}" },
     { "type": "range", "id": "description_size", "label": "Description size", "min": 10, "max": 24, "step": 1, "unit": "px", "default": 14 },
     { "type": "range", "id": "mobile_description_size", "label": "Mobile description size", "min": 10, "max": 20, "step": 1, "unit": "px", "default": 14 },
     {
@@ -331,6 +361,7 @@
       ]
     },
     { "type": "range", "id": "description_line_height", "label": "Description line height", "min": 100, "max": 200, "step": 5, "unit": "%", "default": 145 },
+    { "type": "range", "id": "description_letter_spacing", "label": "Description letter spacing", "min": -10, "max": 20, "step": 1, "unit": "px", "default": 0, "info": "In tenths of a pixel." },
     { "type": "range", "id": "description_lines", "label": "Description max lines", "min": 1, "max": 4, "step": 1, "default": 1 },
 
     { "type": "header", "content": "Badge" },

@@ -322,8 +322,8 @@
 
 .hot-card__title {
   margin: 0;
-  font-family: inherit;
-  font-style: inherit;
+  font-family: var(--hot-title-font-family, inherit);
+  font-style: var(--hot-title-font-style, inherit);
   font-size: var(--hot-product-title-size);
   font-weight: var(--hot-title-weight);
   line-height: var(--hot-title-line-height);
@@ -342,8 +342,11 @@
 
 .hot-card__description {
   margin: 0;
+  font-family: var(--hot-description-font-family, inherit);
+  font-style: var(--hot-description-font-style, inherit);
   font-size: var(--hot-description-size);
   font-weight: var(--hot-description-weight);
+  letter-spacing: var(--hot-description-letter-spacing);
   line-height: var(--hot-description-line-height);
   color: var(--hot-description-color);
   display: -webkit-box;
@@ -361,7 +364,10 @@
   gap: 0.8rem;
   margin-top: auto;
   padding-top: 0.8rem;
+  font-family: var(--hot-price-font-family, inherit);
+  font-style: var(--hot-price-font-style, inherit);
   font-size: var(--hot-price-size);
+  letter-spacing: var(--hot-price-letter-spacing);
 }
 
 .hot-card__price {
