@@ -462,4 +462,21 @@
   }
 
   .product-feature-tabs__item--beyond { display: none; }
+  .product-feature-tabs__panel.is-expanded .product-feature-tabs__item--beyond { display: flex; }
+}
+
+.product-feature-tabs__more {
+  display: flex;
+  justify-content: center;
+  margin-top: 2.8rem;
+}
+
+.product-feature-tabs__more-button {
+  min-width: 16rem;
+  border-radius: 999px;
+}
+
+/* Phones scroll the row sideways and already show every card. */
+@media screen and (max-width: 749px) {
+  .product-feature-tabs__more { display: none; }
 }
