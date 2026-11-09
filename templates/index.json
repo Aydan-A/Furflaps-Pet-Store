@@ -172,7 +172,7 @@
         "swatch_ring_hover_color": "#8a93a3",
         "swatch_ring_active_color": "#2f6feb",
         "description_color": "#a2a9b7",
-        "show_add_to_cart": true,
+        "show_add_to_cart": false,
         "cart_button_size": 40,
         "cart_button_background": "#ffffff",
         "cart_button_icon_color": "#111111",
