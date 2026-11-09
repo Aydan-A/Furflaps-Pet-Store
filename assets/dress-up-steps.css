@@ -430,10 +430,13 @@
   bottom: 0;
   z-index: 1;
   padding: .8rem;
-  flex-wrap: nowrap;
+  flex-wrap: wrap;
   justify-content: space-between;
 }
-.ds-card__controls:has(.ds-card__options) .ds-card__values { flex-wrap: nowrap; }
+/* Every size shows as its own tag. On a card too narrow for all of them in one
+   row, the tags wrap and the quantity drops onto its own line rather than any
+   size being cut off. */
+.ds-card__controls:has(.ds-card__options) .ds-card__values { flex-wrap: wrap; }
 
 /* min-content, not 0: the options box refuses to shrink narrower than a single
    swatch, so a card too narrow for options and quantity side by side drops the
@@ -452,7 +455,7 @@
    Sets cards: the same pill, colours and small uppercase type. */
 .ds-card__value {
   display: inline-grid;
-  padding: .4rem 1.2rem;
+  padding: .7rem 1.2rem;
   place-items: center;
   border: 1px solid var(--ds-size-tag-border);
   border-radius: 999px;
@@ -491,7 +494,7 @@
 .ds-card__select { position: relative; display: inline-flex; flex: 0 1 auto; min-width: 0; align-items: center; }
 .ds-card__select-input {
   max-width: 100%;
-  padding: .4rem 2.6rem .4rem 1.2rem;
+  padding: .7rem 2.6rem .7rem 1.2rem;
   appearance: none;
   border: 1px solid var(--ds-size-tag-border);
   border-radius: 999px;
