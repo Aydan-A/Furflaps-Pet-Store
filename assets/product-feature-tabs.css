@@ -432,8 +432,13 @@
   height: 1.8rem;
 }
 
-/* The price keeps clear of the button. */
-.product-feature-tabs .hot-card__prices { padding-right: 14rem; }
+/* The price keeps clear of the button. Its top space lifts the name, size tag
+   and colours: the card height is fixed and the text block sits on the card's
+   bottom edge, so a taller gap above the price moves everything above it up. */
+.product-feature-tabs .hot-card__prices {
+  padding-top: var(--pft-price-gap, 2.2rem);
+  padding-right: 14rem;
+}
 
 @media screen and (max-width: 749px) {
   .product-feature-tabs .hot-card__cart--labelled {
