@@ -211,13 +211,7 @@
           "type": "step",
           "settings": {
             "title": "Pick a collar",
-            "products": [
-              "personalized-name-pet-collar-lilac",
-              "personalized-name-pet-collar-mint-green",
-              "personalized-name-pet-collar-sky-blue",
-              "personalized-name-pet-collar-yellow"
-            ],
-            "collection": "pet-collar-accessories",
+            "collection": "personalized-pet-collars",
             "products_to_show": 8,
             "max_selections": 4,
             "selection_required": true,
@@ -241,8 +235,7 @@
           "type": "step",
           "settings": {
             "title": "Match it with letters",
-            "products": [],
-            "collection": "letters",
+            "collection": "letter-charms-for-pet-collars",
             "products_to_show": 0,
             "max_selections": 12,
             "selection_required": true,
@@ -266,8 +259,7 @@
           "type": "step",
           "settings": {
             "title": "Add fun extras",
-            "products": [],
-            "collection": "icons",
+            "collection": "icon-charms-for-pet-collars",
             "products_to_show": 8,
             "max_selections": 6,
             "selection_required": false,

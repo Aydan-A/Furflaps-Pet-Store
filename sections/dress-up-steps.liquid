@@ -93,11 +93,7 @@
             assign is_final = true
           endif
 
-          # Merchant-picked products win; the collection is the fallback.
-          assign step_products = block.settings.products
-          if step_products == blank and block.settings.collection != blank
-            assign step_products = block.settings.collection.products
-          endif
+          assign step_products = block.settings.collection.products
 
           assign product_limit = block.settings.products_to_show
           if product_limit == 0
@@ -144,6 +140,7 @@
         <section
           class="ds-step"
           data-dress-step
+          data-block-id="{{ block.id }}"
           data-index="{{ forloop.index0 }}"
           data-max="{{ max_picks }}"
           {% if block.settings.selection_required %}data-required{% endif %}
@@ -264,7 +261,7 @@
                 </div>
               {%- endif -%}
             {%- elsif request.design_mode -%}
-              <p class="ds-step__empty">Choose products or a collection for this step in the Theme Editor.</p>
+              <p class="ds-step__empty">Choose a collection for this step in the Theme Editor.</p>
             {%- endif -%}
           </div>
 
@@ -340,8 +337,7 @@
         { "type": "text", "id": "title", "label": "Title", "default": "Pick a collar you love" },
 
         { "type": "header", "content": "Products" },
-        { "type": "product_list", "id": "products", "label": "Products", "limit": 50, "info": "Pick, reorder or remove the cards shown in this step. Leave empty to use the collection below." },
-        { "type": "collection", "id": "collection", "label": "Fallback collection" },
+        { "type": "collection", "id": "collection", "label": "Collection", "info": "The step shows this collection's products, in the collection's own sort order." },
         { "type": "range", "id": "products_to_show", "label": "Products to show", "min": 0, "max": 50, "step": 1, "default": 0, "info": "0 shows every product, up to the 50 Shopify returns to a section." },
 
         { "type": "header", "content": "Choices" },

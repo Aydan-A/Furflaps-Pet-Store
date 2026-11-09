@@ -61,7 +61,13 @@ if (!customElements.get('dress-up-steps')) {
           step.track.addEventListener('scroll', step.onScroll, { passive: true });
         });
 
-        this.open(0);
+        // The Theme Editor rebuilds the section after every setting change.
+        // Reopen the step being edited, or a new collection lands in a closed
+        // panel and looks as if nothing was picked.
+        const editedIndex = window.Shopify?.designMode
+          ? this.steps.findIndex((step) => step.el.dataset.blockId === DressUpSteps.editedBlock)
+          : -1;
+        this.open(Math.max(0, editedIndex));
         this.render();
       }
 
@@ -387,6 +393,7 @@ if (!customElements.get('dress-up-steps')) {
       handleBlockSelect = (event) => {
         const step = this.stepFor(event.target);
         if (step) {
+          DressUpSteps.editedBlock = step.el.dataset.blockId;
           this.open(step.index);
           this.render();
         }
