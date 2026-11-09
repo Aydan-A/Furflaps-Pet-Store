@@ -388,3 +388,14 @@
   .product-feature-tabs__add-icon--check,
   .product-feature-tabs__add[data-pft-state='added'] .product-feature-tabs__add-icon--check { transform: none; }
 }
+
+/* Add to cart sits in the bottom-right corner of the whole card, beside the
+   price, rather than over the image as on Our Favourite Sets. The media wrap
+   stops being the positioning box, so the button anchors to the card. */
+.product-feature-tabs .hot-card__media-wrap { position: static; }
+.product-feature-tabs .hot-card__cart { right: 1.6rem; bottom: 1.6rem; }
+.product-feature-tabs .hot-card__prices { padding-right: calc(var(--hot-cart-size) + 1.2rem); }
+
+@media screen and (max-width: 749px) {
+  .product-feature-tabs .hot-card__prices { padding-right: calc(max(var(--hot-cart-size), 4.4rem) + 1.2rem); }
+}
