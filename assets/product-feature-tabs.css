@@ -474,6 +474,15 @@
 .product-feature-tabs__more-button {
   min-width: 16rem;
   border-radius: 999px;
+  border: 0;
+  box-shadow: none;
+}
+
+.product-feature-tabs__more-button::before,
+.product-feature-tabs__more-button::after,
+.product-feature-tabs__more-button:hover::after {
+  box-shadow: none;
+  border: 0;
 }
 
 /* Phones scroll the row sideways and already show every card. */
