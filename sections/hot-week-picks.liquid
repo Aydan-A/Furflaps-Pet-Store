@@ -105,6 +105,9 @@
     --hot-arrow-icon: {{ section.settings.arrow_icon_color }};
     --hot-arrow-border: {{ section.settings.arrow_border_color }};
     --hot-swatch-size: {{ section.settings.swatch_size }}px;
+    --hot-color-ring: {{ section.settings.swatch_ring_color }};
+    --hot-color-ring-hover: {{ section.settings.swatch_ring_hover_color }};
+    --hot-color-ring-active: {{ section.settings.swatch_ring_active_color }};
     --hot-cart-size: {{ section.settings.cart_button_size }}px;
     --hot-cart-background: {{ section.settings.cart_button_background }};
     --hot-cart-icon: {{ section.settings.cart_button_icon_color }};
@@ -352,6 +355,9 @@
     { "type": "text", "id": "color_option_name", "label": "Colour option name", "default": "Color", "info": "Must match the product option name. Values without a Shopify swatch fall back to the product's custom.color colours." },
     { "type": "range", "id": "swatches_to_show", "label": "Swatches to show", "min": 2, "max": 8, "step": 1, "default": 4 },
     { "type": "range", "id": "swatch_size", "label": "Swatch size", "min": 10, "max": 24, "step": 2, "unit": "px", "default": 14 },
+    { "type": "color", "id": "swatch_ring_color", "label": "Ring", "default": "#D5D9E0" },
+    { "type": "color", "id": "swatch_ring_hover_color", "label": "Ring on hover", "default": "#8A93A3" },
+    { "type": "color", "id": "swatch_ring_active_color", "label": "Selected ring", "default": "#2F6FEB" },
     { "type": "color", "id": "description_color", "label": "\"+N more\" text", "default": "#6E7787" },
 
     { "type": "header", "content": "Add to cart" },

@@ -157,7 +157,7 @@
         "show_swatches": true,
         "color_option_name": "Color",
         "swatches_to_show": 4,
-        "swatch_size": 14,
+        "swatch_size": 18,
         "show_add_to_cart": true,
         "cart_button_size": 40,
         "cart_button_background": "#ffffff",

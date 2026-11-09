@@ -315,7 +315,7 @@
   display: flex;
   align-items: center;
   flex-wrap: wrap;
-  gap: 0.6rem;
+  gap: 0.8rem;
   margin: 0.2rem 0;
   padding: 0;
   border: 0;
@@ -323,12 +323,15 @@
 }
 
 .hot-card__color {
-  position: relative;
   display: block;
-  width: var(--hot-swatch-size);
-  height: var(--hot-swatch-size);
+  box-sizing: border-box;
+  width: calc(var(--hot-swatch-size) + 1rem);
+  height: calc(var(--hot-swatch-size) + 1rem);
+  padding: 0.3rem;
+  border: 1.5px solid var(--hot-color-ring);
   border-radius: 50%;
   cursor: pointer;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
 }
 
 .hot-card__color .swatch {
@@ -338,28 +341,20 @@
   border-radius: 50%;
 }
 
-/* Selected ring sits outside the swatch so the colour itself stays full size. */
-.hot-card__color::after {
-  content: '';
-  position: absolute;
-  inset: -3px;
-  border: 1.5px solid transparent;
-  border-radius: 50%;
-  transition: border-color 0.15s ease;
-  pointer-events: none;
+.hot-card__color:hover {
+  border-color: var(--hot-color-ring-hover);
 }
 
-.hot-card__color:hover::after {
-  border-color: rgba(var(--color-foreground, 17, 17, 17), 0.35);
-}
-
-.hot-card__color-input:checked + .hot-card__color::after {
-  border-color: var(--hot-text-color);
+/* Selected: accent ring, a soft halo outside it and a tint in the gap. */
+.hot-card__color-input:checked + .hot-card__color {
+  border-color: var(--hot-color-ring-active);
+  background-color: color-mix(in srgb, var(--hot-color-ring-active) 14%, transparent);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--hot-color-ring-active) 22%, transparent);
 }
 
 .hot-card__color-input:focus-visible + .hot-card__color {
-  outline: 2px solid var(--hot-text-color);
-  outline-offset: 4px;
+  outline: 2px solid var(--hot-color-ring-active);
+  outline-offset: 2px;
 }
 
 .hot-card__color-more {
