@@ -406,17 +406,15 @@
    card, and they wrap rather than scroll: on a narrow card the options sit
    directly under it and the quantity drops below, never cut off.
 
-   Centred as a pair, not spread to the edges: the options take the width they
-   need and no more, so the size sits next to the quantity rather than at the
-   far side of the card from it, and the two read as one pair of controls. The
-   row gap matches the card's own gap, so image to options and options to
-   quantity read the same. */
+   Quantity holds the left edge and the size the right, each lined up with the
+   card's own edges. The row gap matches the card's own gap, so image to
+   options and options to quantity read the same. */
 .ds-card__controls {
   display: flex;
   padding-inline: .6rem;
   flex-wrap: wrap;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
   gap: .8rem;
   visibility: hidden;
 }
@@ -425,11 +423,11 @@
 /* min-content, not 0: the options box refuses to shrink narrower than a single
    swatch, so a card too narrow for options and quantity side by side drops the
    quantity onto its own line instead of squeezing the swatches out of sight.
-   It does not grow either - free space belongs on both sides of the pair, not
-   between the size and the stepper. */
+   The auto margin keeps it on the right, alone or wrapped onto its own line. */
 .ds-card__options {
   display: flex;
   flex: 0 1 auto;
+  margin-inline-start: auto;
   min-width: min-content;
   flex-wrap: wrap;
   align-items: center;

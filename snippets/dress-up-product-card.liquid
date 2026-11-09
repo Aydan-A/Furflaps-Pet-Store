@@ -180,14 +180,6 @@
   {%- if show_quantity and product.available -%}{%- assign has_quantity = true -%}{%- endif -%}
   {%- if option_controls contains 'data-dress-option' or has_quantity -%}
   <div class="ds-card__controls">
-    {%- comment -%}
-      Only wrap real controls: an empty options box would take the place of the
-      quantity stepper as the row's only child, and stop it centring.
-    {%- endcomment -%}
-    {%- if option_controls contains 'data-dress-option' -%}
-      <div class="ds-card__options">{{ option_controls }}</div>
-    {%- endif -%}
-
     {%- if show_quantity and product.available -%}
       <div class="ds-card__quantity" data-dress-quantity>
         <button
@@ -204,6 +196,14 @@
           aria-label="{{ 'products.product.quantity.increase' | t: product: product.title | escape }}"
         >+</button>
       </div>
+    {%- endif -%}
+
+    {%- comment -%}
+      Only wrap real controls: an empty options box would sit in the row with
+      nothing in it.
+    {%- endcomment -%}
+    {%- if option_controls contains 'data-dress-option' -%}
+      <div class="ds-card__options">{{ option_controls }}</div>
     {%- endif -%}
   </div>
   {%- endif -%}
