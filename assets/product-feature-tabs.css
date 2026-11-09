@@ -83,7 +83,7 @@
   list-style: none;
 }
 
-.product-feature-tabs__item { min-width: 0; scroll-snap-align: start; }
+.product-feature-tabs__item { display: flex; min-width: 0; scroll-snap-align: start; }
 .product-feature-tabs__card {
   display: flex;
   height: 100%;

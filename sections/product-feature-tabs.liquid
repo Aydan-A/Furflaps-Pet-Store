@@ -1,9 +1,14 @@
 {{ 'product-feature-tabs.css' | asset_url | stylesheet_tag }}
-<script src="{{ 'product-form.js' | asset_url }}" defer="defer"></script>
+{%- comment -%}The cards are the Our Favourite Sets cards, styled by its stylesheet.{%- endcomment -%}
+{%- if section.settings.show_swatches -%}
+  {{ 'component-swatch.css' | asset_url | stylesheet_tag }}
+{%- endif -%}
+{{ 'hot-week-picks.css' | asset_url | stylesheet_tag }}
+{%- if section.settings.show_add_to_cart -%}
+  <script src="{{ 'product-form.js' | asset_url }}" defer="defer"></script>
+{%- endif -%}
 
 {%- liquid
-  assign added_label = section.settings.added_label | default: 'Added'
-
   # 0 means every product, the way the dress-up steps read it. "limit: 0"
   # renders nothing, so it resolves to the 50 Shopify returns to a section.
   assign product_limit = section.settings.products_to_show | plus: 0
@@ -33,8 +38,6 @@
     --pft-tab-text: {{ section.settings.tab_text }};
     --pft-active-background: {{ section.settings.active_tab_background }};
     --pft-active-text: {{ section.settings.active_tab_text }};
-    --pft-add-background: {{ section.settings.add_button_background }};
-    --pft-add-text: {{ section.settings.add_button_text }};
     --pft-padding-top: {{ section.settings.padding_top }}px;
     --pft-padding-bottom: {{ section.settings.padding_bottom }}px;
     --pft-padding-inline: {{ section.settings.padding_inline }}px;
@@ -48,7 +51,6 @@
     --pft-columns: {{ section.settings.columns_desktop }};
     --pft-columns-tablet: {{ section.settings.columns_tablet }};
     --pft-columns-mobile: {{ section.settings.columns_mobile }};
-    --pft-image-ratio: {{ section.settings.image_ratio }};
     --pft-image-fit: {{ section.settings.image_fit }};
     --pft-alignment: {{ section.settings.alignment }};
     --pft-tabs-alignment: {{ section.settings.tabs_alignment }};
@@ -59,6 +61,43 @@
     --pft-tab-shell-radius: {{ section.settings.tab_shell_radius }}px;
     --pft-tab-shell-padding: {{ section.settings.tab_shell_padding }}px;
     --pft-tab-size: {{ section.settings.tab_font_size }}px;
+
+    /* Card look, matching the Our Favourite Sets cards. */
+    --hot-text-color: var(--pft-text);
+    --hot-image-background: {{ section.settings.card_background }};
+    --hot-description-color: #a2a9b7;
+    --hot-compare-price-color: var(--ff-compare-price-color);
+    --hot-discount-pill-background: var(--ff-discount-background);
+    --hot-discount-pill-text: var(--ff-discount-text);
+    --hot-badge-background: var(--ff-badge-background);
+    --hot-badge-text: var(--ff-badge-text);
+    --hot-badge-offset: 10px;
+    --hot-card-radius: {{ section.settings.card_radius }}px;
+    --hot-card-content-spacing: 12px;
+    --hot-info-gap: 10px;
+    --hot-card-height: {{ section.settings.card_height }}px;
+    --hot-mobile-card-height: {{ section.settings.mobile_card_height }}px;
+    --hot-image-fit: {{ section.settings.image_fit }};
+    --hot-product-title-size: 20px;
+    --hot-mobile-product-title-size: 18px;
+    --hot-title-weight: 700;
+    --hot-title-line-height: 1.65;
+    --hot-title-letter-spacing: 0px;
+    --hot-title-transform: none;
+    --hot-price-size: 16px;
+    --hot-mobile-price-size: 18px;
+    --hot-price-weight: 600;
+    --hot-price-letter-spacing: 0px;
+    --hot-size-tag-background: {{ section.settings.size_tag_background }};
+    --hot-size-tag-text: {{ section.settings.size_tag_text }};
+    --hot-size-tag-border: {{ section.settings.size_tag_border }};
+    --hot-swatch-size: 18px;
+    --hot-color-ring: #d5d9e0;
+    --hot-color-ring-hover: #8a93a3;
+    --hot-color-ring-active: #2f6feb;
+    --hot-cart-size: 40px;
+    --hot-cart-background: #ffffff;
+    --hot-cart-icon: #111111;
   }
 {%- endstyle -%}
 
@@ -94,258 +133,18 @@
             {%- if block.settings.collection != blank and block.settings.collection.products_count > 0 -%}
               <ul class="product-feature-tabs__grid" role="list">
                 {%- for product in block.settings.collection.products limit: product_limit -%}
-                  {%- liquid
-                    assign product_form_id = 'PftForm-' | append: section.id | append: '-' | append: block.id | append: '-' | append: forloop.index
-                    assign selected_variant = product.selected_or_first_available_variant
-                    if product.featured_media != blank
-                      for product_variant in product.variants
-                        if product_variant.featured_media.id == product.featured_media.id
-                          assign selected_variant = product_variant
-                          break
-                        endif
-                      endfor
-                    endif
-                    # Each card shows one of the product's own options under
-                    # its image, and the tab says which: the collars tab asks
-                    # for the size, the letters tab leaves it to the colour. A
-                    # wanted name matches anywhere in the option's name, so
-                    # "Size" finds the "Collar Size" these products use, and a
-                    # tab that names an option a product does not have falls
-                    # back to colour rather than leaving the row empty.
-                    assign card_option = blank
-                    assign wanted_option = block.settings.option_name | downcase | replace: ' ', ''
-                    if wanted_option != blank
-                      for product_option in product.options_with_values
-                        assign option_key = product_option.name | downcase | replace: ' ', ''
-                        if option_key contains wanted_option
-                          assign card_option = product_option
-                          break
-                        endif
-                      endfor
-                    endif
-
-                    if card_option == blank
-                      for product_option in product.options_with_values
-                        assign option_name = product_option.name | downcase
-                        if option_name contains 'color' or option_name contains 'colour'
-                          assign card_option = product_option
-                          break
-                        endif
-                      endfor
-                    endif
-
-                    # Colours are swatches; everything else is a control.
-                    assign card_option_is_color = false
-                    assign card_option_name = card_option.name | downcase
-                    if card_option_name contains 'color' or card_option_name contains 'colour'
-                      assign card_option_is_color = true
-                    endif
-
-                    # The hex behind a colour comes from the value's own
-                    # swatch, or from the custom.color metaobjects the store
-                    # keeps its palette in. A value with no colour recorded
-                    # anywhere renders as a plain chip rather than as a guessed
-                    # hex, which is what a hard-coded name-to-hex table amounts
-                    # to once the palette moves.
-                    assign color_objects = blank
-                    assign color_metafield = product.metafields.custom.color
-                    if color_metafield == blank
-                      assign color_metafield = product.metafields.custom.colour
-                    endif
-                    if color_metafield.type == 'list.metaobject_reference'
-                      assign color_objects = color_metafield.value
-                    endif
-                    capture color_fallback_map
-                      render 'swatch-fallback-map', product: product
-                    endcapture
-
-                    # An empty swatch slot would still hold its gap on the row,
-                    # so a card showing a size control renders no slot at all.
-                    assign show_swatches = false
-                    if card_option_is_color
-                      assign show_swatches = true
-                    elsif card_option == blank and color_objects != blank
-                      assign show_swatches = true
-                    endif
-
-                    assign quantity_min = selected_variant.quantity_rule.min | default: 1
-                    assign quantity_step = selected_variant.quantity_rule.increment | default: 1
-                    assign quantity_max = selected_variant.quantity_rule.max
-                  -%}
+                  {%- comment -%}
+                    The same card as Our Favourite Sets, so the two rows read as
+                    one design. tab_key keeps the colour radio names unique when
+                    a product sits in more than one tab.
+                  {%- endcomment -%}
                   <li class="product-feature-tabs__item">
-                    <article class="product-feature-tabs__card">
-                      <a class="product-feature-tabs__card-link" href="{{ product.url }}" aria-label="{{ product.title | escape }}">
-                        <div class="product-feature-tabs__media">
-                          {%- if product.featured_media -%}
-                            {{ product.featured_media | image_url: width: 1000 | image_tag: class: 'product-feature-tabs__image', widths: '240, 360, 480, 640, 800, 1000', sizes: '(min-width: 990px) 25vw, (min-width: 750px) 40vw, 78vw', loading: 'lazy' }}
-                          {%- else -%}
-                            {{ 'product-apparel-1' | placeholder_svg_tag: 'product-feature-tabs__placeholder' }}
-                          {%- endif -%}
-                        </div>
-                      </a>
-                      <div class="product-feature-tabs__details">
-                        {%- comment -%}
-                          A size is written out in full - "S ( 25-35 cm)" -
-                          because the measurement is the point of it, and three
-                          of those will not fit a card's width as buttons. The
-                          select carries one at a time, so the size stays whole,
-                          stays on the quantity's line, and is something a
-                          customer can actually choose before adding.
-
-                          Each value carries the id of the variant that has it
-                          and keeps everything else about the card - the colour
-                          its photo shows - so choosing a size never silently
-                          changes the colour, and the script has no variant
-                          matching to do.
-                        {%- endcomment -%}
-                        {%- if card_option != blank and card_option_is_color == false -%}
-                          {%- assign option_index = card_option.position | minus: 1 -%}
-                          <div class="product-feature-tabs__option-field">
-                            <label class="visually-hidden" for="{{ product_form_id }}-option">
-                              {{- product.title | escape }} — {{ card_option.name | escape -}}
-                            </label>
-                            <select class="product-feature-tabs__option-select" id="{{ product_form_id }}-option" data-pft-option>
-                              {%- for option_value in card_option.values -%}
-                                {%- liquid
-                                  assign value_variant = blank
-                                  for product_variant in product.variants
-                                    if product_variant.options[option_index] != option_value
-                                      continue
-                                    endif
-                                    assign keeps_rest = true
-                                    for other_option in product.options_with_values
-                                      assign other_index = forloop.index0
-                                      if other_index == option_index
-                                        continue
-                                      endif
-                                      if product_variant.options[other_index] != selected_variant.options[other_index]
-                                        assign keeps_rest = false
-                                        break
-                                      endif
-                                    endfor
-                                    if keeps_rest
-                                      assign value_variant = product_variant
-                                      break
-                                    endif
-                                  endfor
-
-                                  # A product whose options do not combine into
-                                  # every pairing still gets a variant for the
-                                  # value, rather than an option that adds
-                                  # nothing.
-                                  if value_variant == blank
-                                    for product_variant in product.variants
-                                      if product_variant.options[option_index] == option_value
-                                        assign value_variant = product_variant
-                                        break
-                                      endif
-                                    endfor
-                                  endif
-                                -%}
-                                {%- if value_variant != blank -%}
-                                  <option
-                                    value="{{ value_variant.id }}"
-                                    data-available="{{ value_variant.available }}"
-                                    {% if value_variant.id == selected_variant.id %}selected{% endif %}
-                                    {% unless value_variant.available %}disabled{% endunless %}
-                                  >
-                                    {{- option_value | escape -}}
-                                    {%- unless value_variant.available %} ({{ 'products.product.sold_out' | t }}){% endunless -%}
-                                  </option>
-                                {%- endif -%}
-                              {%- endfor -%}
-                            </select>
-                            <span class="product-feature-tabs__option-caret" aria-hidden="true">
-                              <svg viewBox="0 0 10 6" focusable="false"><path d="M1 1l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                            </span>
-                          </div>
-                        {%- endif -%}
-                        {%- if show_swatches -%}
-                        <div class="product-feature-tabs__color">
-                          {%- if card_option_is_color -%}
-                            {%- for color_name in card_option.values -%}
-                              {%- capture swatch_style -%}
-                                {%- render 'ff-swatch-style', value: color_name, map: color_fallback_map -%}
-                              {%- endcapture -%}
-                              {%- assign swatch_style = swatch_style | strip -%}
-                              <span class="product-feature-tabs__swatch"{% if swatch_style != blank %} style="{{ swatch_style }}"{% endif %} aria-hidden="true"></span>
-                            {%- endfor -%}
-                            {%- if card_option.values.size == 1 -%}
-                              <span>{{ card_option.values | first | escape }}</span>
-                            {%- else -%}
-                              <span class="visually-hidden">{{ card_option.values | join: ', ' | escape }}</span>
-                            {%- endif -%}
-                          {%- else -%}
-                            {%- for color_object in color_objects -%}
-                              {%- assign object_label = color_object.label.value | default: color_object.system.handle | replace: '-', ' ' -%}
-                              <span
-                                class="product-feature-tabs__swatch"
-                                {% if color_object.color.value != blank %}style="background-color: {{ color_object.color.value }};"{% endif %}
-                                aria-hidden="true"
-                              ></span>
-                              <span class="visually-hidden">{{ object_label | escape }}</span>
-                            {%- endfor -%}
-                          {%- endif -%}
-                        </div>
-                        {%- endif -%}
-                        <div
-                          class="product-feature-tabs__quantity"
-                          data-pft-quantity
-                          data-min="{{ quantity_min }}"
-                          data-step="{{ quantity_step }}"
-                          {% if quantity_max != blank %}data-max="{{ quantity_max }}"{% endif %}
-                        >
-                          <button class="product-feature-tabs__quantity-button" type="button" data-pft-quantity-change="-1" aria-label="Decrease quantity for {{ product.title | escape }}">&minus;</button>
-                          <output class="product-feature-tabs__quantity-value" aria-live="polite">{{ quantity_min }}</output>
-                          <button class="product-feature-tabs__quantity-button" type="button" data-pft-quantity-change="1" aria-label="Increase quantity for {{ product.title | escape }}">+</button>
-                        </div>
-                      </div>
-                      <product-form class="product-feature-tabs__product-form" data-section-id="{{ section.id }}">
-                        {%- form 'product', product, id: product_form_id, class: 'product-feature-tabs__form', novalidate: 'novalidate', data-type: 'add-to-cart-form' -%}
-                          <input type="hidden" name="id" value="{{ selected_variant.id }}" class="product-variant-id">
-                          <input type="hidden" name="quantity" value="{{ quantity_min }}">
-                          <button
-                            class="product-feature-tabs__add"
-                            type="submit"
-                            name="add"
-                            data-pft-add
-                            {% unless selected_variant.available %}disabled{% endunless %}
-                          >
-                            {%- comment -%}
-                              Two stacked faces: the default one carries the accessible name, the
-                              success one is hidden from assistive tech so the label never changes.
-                            {%- endcomment -%}
-                            <span class="product-feature-tabs__add-faces">
-                              <span class="product-feature-tabs__add-face">
-                                {%- if selected_variant.available -%}
-                                  <span class="product-feature-tabs__add-stage" aria-hidden="true">
-                                    <span class="product-feature-tabs__add-icon product-feature-tabs__add-icon--drop">
-                                      {{- 'icon-box.svg' | inline_asset_content -}}
-                                    </span>
-                                    <span class="product-feature-tabs__add-icon product-feature-tabs__add-icon--cart">
-                                      {{- 'icon-cart.svg' | inline_asset_content -}}
-                                    </span>
-                                  </span>
-                                {%- endif -%}
-                                <span class="product-feature-tabs__add-label">{% if selected_variant.available %}{{ 'products.product.add_to_cart' | t }}{% else %}{{ 'products.product.sold_out' | t }}{% endif %}</span>
-                              </span>
-                              {%- if selected_variant.available -%}
-                                <span class="product-feature-tabs__add-face product-feature-tabs__add-face--success" aria-hidden="true">
-                                  <span class="product-feature-tabs__add-icon product-feature-tabs__add-icon--check">
-                                    {{- 'icon-checkmark.svg' | inline_asset_content -}}
-                                  </span>
-                                  <span class="product-feature-tabs__add-label">{{ added_label | escape }}</span>
-                                </span>
-                              {%- endif -%}
-                            </span>
-                            {%- render 'loading-spinner' -%}
-                          </button>
-                          <div class="product-form__error-message-wrapper" role="alert" hidden>
-                            <span class="product-form__error-message"></span>
-                          </div>
-                        {%- endform -%}
-                      </product-form>
-                    </article>
+                    {% render 'hot-week-picks-card',
+                      product: product,
+                      section: section,
+                      tab_key: block.id,
+                      lazy_load: 'lazy'
+                    %}
                   </li>
                 {%- endfor -%}
               </ul>
@@ -374,139 +173,31 @@
         this.panels = [...this.querySelectorAll('[role="tabpanel"]')];
         this.addEventListener('click', this.onClick);
         this.addEventListener('keydown', this.onKeydown);
-        this.addEventListener('change', this.onChange);
-
-        // Capture phase so we see the submit before product-form.js flips aria-disabled.
-        this.addEventListener('submit', this.onSubmit, true);
-        this.addTimers = new WeakMap();
-        if (document.readyState === 'loading') {
-          document.addEventListener('DOMContentLoaded', this.subscribeToCart, { once: true });
-        } else {
-          this.subscribeToCart();
-        }
+        this.addEventListener('change', this.onColorChange);
       }
       disconnectedCallback() {
         this.removeEventListener('click', this.onClick);
         this.removeEventListener('keydown', this.onKeydown);
-        this.removeEventListener('change', this.onChange);
-        this.removeEventListener('submit', this.onSubmit, true);
-        document.removeEventListener('DOMContentLoaded', this.subscribeToCart);
-        this.cartSubscriptions?.forEach((unsubscribe) => unsubscribe());
-        this.cartSubscriptions = null;
+        this.removeEventListener('change', this.onColorChange);
       }
-
-      subscribeToCart = () => {
-        if (typeof subscribe !== 'function' || typeof PUB_SUB_EVENTS === 'undefined' || this.cartSubscriptions) return;
-        this.cartSubscriptions = [
-          subscribe(PUB_SUB_EVENTS.cartUpdate, (payload) => {
-            if (!this.pendingAdd || payload?.source !== 'product-form') return;
-            const { button, variantId } = this.pendingAdd;
-            if (payload.productVariantId && String(payload.productVariantId) !== String(variantId)) return;
-            this.pendingAdd = null;
-            this.playAdded(button);
-          }),
-          subscribe(PUB_SUB_EVENTS.cartError, () => { this.pendingAdd = null; }),
-        ];
-      };
-
-      onSubmit = (event) => {
-        const button = event.target.querySelector?.('[data-pft-add]');
-        // product-form.js ignores submits while a request is in flight; mirror that guard.
-        if (!button || button.disabled || button.getAttribute('aria-disabled') === 'true') return;
-        this.resetAddButton(button);
-        this.pendingAdd = { button, variantId: event.target.querySelector('[name="id"]')?.value };
-        // A dropped request never reports back, so don't leave a stale button waiting to animate.
-        clearTimeout(this.pendingAddTimer);
-        this.pendingAddTimer = setTimeout(() => { this.pendingAdd = null; }, 15000);
-      };
-
-      resetAddButton(button) {
-        const timers = this.addTimers.get(button);
-        if (timers) timers.forEach((timer) => clearTimeout(timer));
-        this.addTimers.delete(button);
-        button.removeAttribute('data-pft-state');
-      }
-
-      // Dawn opens the drawer a frame after the response, which would cover the
-      // button mid-animation. Hold it back until the product has landed.
-      deferCartDrawer(delay) {
-        const drawer = document.querySelector('cart-drawer');
-        if (!drawer || this.drawerDeferred || typeof drawer.open !== 'function') return;
-        const open = drawer.open;
-        let queued = null;
-        this.drawerDeferred = true;
-        drawer.open = (...args) => { queued = args; };
-        setTimeout(() => {
-          delete drawer.open;
-          this.drawerDeferred = false;
-          if (queued) open.apply(drawer, queued);
-        }, delay);
-      }
-
-      playAdded(button) {
-        if (!button.isConnected) return;
-        this.resetAddButton(button);
-        const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-        // Patch synchronously: renderContents schedules the open before our next frame.
-        if (!reduceMotion) this.deferCartDrawer(700);
-
-        // Runs on the next frame so the loading spinner is already hidden when we measure.
-        requestAnimationFrame(() => {
-          if (!button.isConnected) return;
-          const face = button.querySelector('.product-feature-tabs__add-face');
-          const label = face?.querySelector('.product-feature-tabs__add-label');
-          const stage = button.querySelector('.product-feature-tabs__add-stage');
-          if (!face || !label || !stage) return;
-
-          if (!reduceMotion) {
-            // Slide the cart into the middle of the button by half the space the text leaves behind.
-            const styles = getComputedStyle(face);
-            const gap = parseFloat(styles.columnGap) || 0;
-            const direction = styles.direction === 'rtl' ? -1 : 1;
-            button.style.setProperty('--pft-add-shift', `${(direction * (label.offsetWidth + gap)) / 2}px`);
-          }
-
-          button.dataset.pftState = reduceMotion ? 'added' : 'dropping';
-          const timers = [];
-          if (!reduceMotion) {
-            timers.push(setTimeout(() => { button.dataset.pftState = 'added'; }, 620));
-          }
-          timers.push(setTimeout(() => this.resetAddButton(button), reduceMotion ? 1200 : 1620));
-          this.addTimers.set(button, timers);
-        });
-      }
-      onClick = (event) => {
-        const quantityButton = event.target.closest('[data-pft-quantity-change]');
-        if (quantityButton) {
-          const quantity = quantityButton.closest('[data-pft-quantity]');
-          const output = quantity.querySelector('.product-feature-tabs__quantity-value');
-          const minimum = Number(quantity.dataset.min || 0);
-          const maximum = quantity.dataset.max ? Number(quantity.dataset.max) : Infinity;
-          const step = Number(quantity.dataset.step || 1);
-          const direction = Number(quantityButton.dataset.pftQuantityChange);
-          output.value = Math.min(maximum, Math.max(minimum, Number(output.value) + direction * step));
-          const quantityInput = quantity.closest('.product-feature-tabs__card').querySelector('[name="quantity"]');
-          if (quantityInput) quantityInput.value = output.value;
-          return;
+      // A colour radio swaps the card image and points its links at that
+      // variant, the same as on the Our Favourite Sets cards.
+      onColorChange = (event) => {
+        const input = event.target;
+        if (!input.matches?.('.hot-card__color-input')) return;
+        const card = input.closest('.hot-week-picks__card');
+        if (!card) return;
+        const { imageSrc, imageSrcset, url } = input.dataset;
+        const image = card.querySelector('.hot-card__image');
+        if (image && imageSrc) {
+          if (imageSrcset) image.srcset = imageSrcset;
+          image.src = imageSrc;
         }
+        if (url) card.querySelectorAll('[data-card-link]').forEach((link) => { link.href = url; });
+      };
+      onClick = (event) => {
         const tab = event.target.closest('[role="tab"]');
         if (tab) this.select(tab);
-      };
-
-      // Each option already carries its own variant id, so choosing a size is
-      // a matter of moving that id onto the form the button submits.
-      onChange = (event) => {
-        const select = event.target.closest('[data-pft-option]');
-        if (!select) return;
-        const card = select.closest('.product-feature-tabs__card');
-        const variantInput = card?.querySelector('.product-variant-id');
-        if (variantInput) variantInput.value = select.value;
-
-        // A sold-out size is disabled and cannot be chosen, but a variant can
-        // sell out between the page rendering and the customer picking it.
-        const button = card?.querySelector('[data-pft-add]');
-        const chosen = select.selectedOptions[0];
-        if (button && chosen) button.disabled = chosen.dataset.available === 'false';
       };
       onKeydown = (event) => {
         const tab = event.target.closest('[role="tab"]');
@@ -546,7 +237,8 @@
     { "type": "range", "id": "columns_desktop", "label": "Desktop products visible", "min": 2, "max": 6, "step": 1, "default": 4 },
     { "type": "range", "id": "columns_tablet", "label": "Tablet products visible", "min": 1, "max": 4, "step": 0.5, "default": 2.5 },
     { "type": "range", "id": "columns_mobile", "label": "Mobile products visible", "min": 1, "max": 2, "step": 0.1, "default": 1.2 },
-    { "type": "select", "id": "image_ratio", "label": "Image ratio", "default": "4 / 5", "options": [{ "value": "1 / 1", "label": "Square" }, { "value": "4 / 5", "label": "Portrait" }, { "value": "3 / 4", "label": "Tall portrait" }] },
+    { "type": "range", "id": "card_height", "label": "Desktop card height", "min": 300, "max": 700, "step": 4, "unit": "px", "default": 464 },
+    { "type": "range", "id": "mobile_card_height", "label": "Mobile card height", "min": 300, "max": 700, "step": 4, "unit": "px", "default": 464 },
     { "type": "select", "id": "image_fit", "label": "Image fit", "default": "contain", "options": [{ "value": "contain", "label": "Contain" }, { "value": "cover", "label": "Cover" }] },
     { "type": "header", "content": "Tabs" },
     { "type": "text", "id": "tabs_label", "label": "Tabs accessibility label", "default": "Product categories" },
@@ -568,13 +260,21 @@
     { "type": "color", "id": "tab_text", "label": "Inactive tab text", "default": "#222222" },
     { "type": "color", "id": "active_tab_background", "label": "Active tab background", "default": "#1D1D1D" },
     { "type": "color", "id": "active_tab_text", "label": "Active tab text", "default": "#FFFFFF" },
-    { "type": "color", "id": "add_button_background", "label": "Add to cart background", "default": "#1D1D1D" },
-    { "type": "color", "id": "add_button_text", "label": "Add to cart text", "default": "#FFFFFF" },
-    { "type": "header", "content": "Add to cart button" },
-    { "type": "text", "id": "added_label", "label": "Added confirmation label", "default": "Added", "info": "Shown for a moment after an item is added to the cart." },
+    { "type": "header", "content": "Card" },
+    { "type": "checkbox", "id": "show_size_tag", "label": "Show size tag", "default": true },
+    { "type": "text", "id": "size_option_name", "label": "Size option name", "default": "Size", "info": "Matches anywhere in the option name, so Size finds Collar Size." },
+    { "type": "color", "id": "size_tag_background", "label": "Size tag background", "default": "#E4E1E1" },
+    { "type": "color", "id": "size_tag_text", "label": "Size tag text", "default": "#444141" },
+    { "type": "color", "id": "size_tag_border", "label": "Size tag border", "default": "#F3F2F2" },
+    { "type": "checkbox", "id": "show_swatches", "label": "Show colour swatches", "default": true },
+    { "type": "text", "id": "color_option_name", "label": "Colour option name", "default": "Color" },
+    { "type": "range", "id": "swatches_to_show", "label": "Swatches to show", "min": 1, "max": 10, "step": 1, "default": 4 },
+    { "type": "checkbox", "id": "show_discount", "label": "Show discount", "default": true },
+    { "type": "checkbox", "id": "show_metafield_badge", "label": "Show card badge", "default": false, "info": "Uses the product's custom.card_badge metafield." },
+    { "type": "checkbox", "id": "show_add_to_cart", "label": "Show add to cart button", "default": false },
     { "type": "header", "content": "Layout and spacing" },
-    { "type": "range", "id": "card_gap", "label": "Card gap", "min": 4, "max": 40, "step": 1, "unit": "px", "default": 18 },
-    { "type": "range", "id": "card_radius", "label": "Card corner radius", "min": 0, "max": 40, "step": 1, "unit": "px", "default": 10 },
+    { "type": "range", "id": "card_gap", "label": "Card gap", "min": 4, "max": 40, "step": 1, "unit": "px", "default": 12 },
+    { "type": "range", "id": "card_radius", "label": "Card corner radius", "min": 0, "max": 40, "step": 1, "unit": "px", "default": 16 },
     { "type": "range", "id": "header_gap", "label": "Space below header", "min": 0, "max": 60, "step": 2, "unit": "px", "default": 24 },
     { "type": "range", "id": "tabs_gap", "label": "Space below tabs", "min": 8, "max": 60, "step": 2, "unit": "px", "default": 30 },
     { "type": "range", "id": "padding_top", "label": "Desktop top padding", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 40 },
@@ -592,7 +292,7 @@
       "settings": [
         { "type": "text", "id": "label", "label": "Tab label" },
         { "type": "collection", "id": "collection", "label": "Collection" },
-        { "type": "text", "id": "option_name", "label": "Option shown on the card", "info": "For example: Size. The name matches anywhere in the product's own option name, so Size finds Collar Size. Leave empty to show the product's colours." }
+        { "type": "text", "id": "option_name", "label": "Option shown on the card", "info": "No longer used: cards show the size tag and colours set under Card." }
       ]
     }
   ],
