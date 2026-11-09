@@ -65,7 +65,8 @@
             assign value_srcset = ''
             if value_image
               assign value_src = value_image | image_url: width: 900
-              for w in '240,360,480,640,750,900' | split: ','
+              assign srcset_widths = '240,360,480,640,750,900' | split: ','
+              for w in srcset_widths
                 assign w_num = w | plus: 0
                 if value_image.width >= w_num or w_num == 240
                   assign w_url = value_image | image_url: width: w_num

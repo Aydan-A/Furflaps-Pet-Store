@@ -22,7 +22,8 @@
     {%- assign card_font_bold = section.settings.card_font | font_modify: 'weight', 'bold' -%}
     {{ card_font_bold | font_face: font_display: 'swap' }}
   {%- endif -%}
-  {%- for el in 'title,price' | split: ',' -%}
+  {%- assign font_elements = 'title,price' | split: ',' -%}
+  {%- for el in font_elements -%}
     {%- assign use_key = 'custom_' | append: el | append: '_font' -%}
     {%- assign font_key = el | append: '_font' -%}
     {%- if section.settings[use_key] -%}
