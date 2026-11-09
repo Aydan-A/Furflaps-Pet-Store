@@ -302,6 +302,21 @@
   text-transform: var(--hot-title-transform);
 }
 
+.hot-card__size {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  padding: 0.4rem 1.2rem;
+  border-radius: 999px;
+  background: #f3ebdd;
+  color: #4a3b2e;
+  font-size: 1.2rem;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
 .hot-card__link {
   color: inherit;
   text-decoration: none;

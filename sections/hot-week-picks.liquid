@@ -350,6 +350,10 @@
     { "type": "range", "id": "heading_letter_spacing", "label": "Heading letter spacing", "min": -10, "max": 10, "step": 1, "unit": "px", "default": -3 },
     { "type": "range", "id": "tab_font_size", "label": "Tab font size", "min": 11, "max": 20, "step": 1, "unit": "px", "default": 13 },
 
+    { "type": "header", "content": "Size tag" },
+    { "type": "checkbox", "id": "show_size_tag", "label": "Show size tag", "default": true, "info": "Shown under the product title. Uses the first available variant's size." },
+    { "type": "text", "id": "size_option_name", "label": "Size option name", "default": "Size", "info": "Matches any option whose name contains this, e.g. \"Collar Size\"." },
+
     { "type": "header", "content": "Colour swatches" },
     { "type": "checkbox", "id": "show_swatches", "label": "Show colour options", "default": true, "info": "Shown under the product title as radio buttons. Choosing a colour switches the card image and link to that variant." },
     { "type": "text", "id": "color_option_name", "label": "Colour option name", "default": "Color", "info": "Must match the product option name. Values without a Shopify swatch fall back to the product's custom.color colours." },
