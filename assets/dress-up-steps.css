@@ -431,7 +431,9 @@
   z-index: 1;
   padding: .8rem;
   flex-wrap: wrap;
-  justify-content: space-between;
+  justify-content: flex-start;
+  column-gap: var(--ds-options-quantity-gap, .8rem);
+  row-gap: .8rem;
 }
 /* Every size shows as its own tag. On a card too narrow for all of them in one
    row, the tags wrap and the quantity drops onto its own line rather than any
