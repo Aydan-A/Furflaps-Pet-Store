@@ -10,8 +10,10 @@
   padding-block: var(--hot-padding-top) var(--hot-padding-bottom);
 }
 
+/* Full width, as on the UI-Edits theme: the side padding setting alone sets
+   where the cards start and end, not the theme's page width. */
 .hot-week-picks__inner {
-  max-width: var(--page-width);
+  max-width: none;
   margin: 0 auto;
   padding-inline: var(--hot-padding-inline);
 }
