@@ -419,9 +419,21 @@
   visibility: hidden;
 }
 .ds-card--selected .ds-card__controls { visibility: visible; }
-/* The size tag and the stepper are small enough to share a row on any card
-   that carries a size, so they never split onto two lines. */
-.ds-card__controls:has(.ds-card__select) { flex-wrap: nowrap; }
+/* On a card with options, such as the collar sizes, the sizes and the stepper
+   sit on the photo, one row along its bottom edge: sizes on the left, quantity
+   on the right. Out of the flow, they cost the card no height at all. The
+   photo is the card's first child and nothing follows the controls, so the
+   card's bottom is the photo's bottom. */
+.ds-card__controls:has(.ds-card__options) {
+  position: absolute;
+  inset-inline: 0;
+  bottom: 0;
+  z-index: 1;
+  padding: .8rem;
+  flex-wrap: nowrap;
+  justify-content: space-between;
+}
+.ds-card__controls:has(.ds-card__options) .ds-card__values { flex-wrap: nowrap; }
 
 /* min-content, not 0: the options box refuses to shrink narrower than a single
    swatch, so a card too narrow for options and quantity side by side drops the
