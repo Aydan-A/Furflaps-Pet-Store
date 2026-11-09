@@ -60,6 +60,10 @@
     --hot-card-gap: {{ section.settings.card_gap }}px;
     --hot-card-radius: {{ section.settings.card_radius }}px;
     --hot-card-content-spacing: {{ section.settings.card_content_spacing }}px;
+    --hot-info-gap: {{ section.settings.info_gap | default: 10 }}px;
+    --hot-size-tag-background: {{ section.settings.size_tag_background | default: '#e9dcc6' }};
+    --hot-size-tag-text: {{ section.settings.size_tag_text | default: '#4a3b2e' }};
+    --hot-size-tag-border: {{ section.settings.size_tag_border | default: '#d9c6a8' }};
     --hot-badge-offset: {{ section.settings.badge_offset }}px;
     --hot-columns: {{ section.settings.columns_desktop }};
     --hot-columns-tablet: {{ section.settings.columns_tablet }};
@@ -279,6 +283,7 @@
     { "type": "range", "id": "card_gap", "label": "Card gap", "min": 4, "max": 40, "step": 2, "unit": "px", "default": 12 },
     { "type": "range", "id": "card_radius", "label": "Image corner radius", "min": 0, "max": 40, "step": 1, "unit": "px", "default": 16 },
     { "type": "range", "id": "card_content_spacing", "label": "Space below image", "min": 4, "max": 30, "step": 1, "unit": "px", "default": 12 },
+    { "type": "range", "id": "info_gap", "label": "Space between title, size and colours", "min": 0, "max": 24, "step": 1, "unit": "px", "default": 10 },
     {
       "type": "select", "id": "image_fit", "label": "Image fit", "default": "contain",
       "options": [
@@ -353,6 +358,9 @@
     { "type": "header", "content": "Size tag" },
     { "type": "checkbox", "id": "show_size_tag", "label": "Show size tag", "default": true, "info": "Shown under the product title. Uses the first available variant's size." },
     { "type": "text", "id": "size_option_name", "label": "Size option name", "default": "Size", "info": "Matches any option whose name contains this, e.g. \"Collar Size\"." },
+    { "type": "color", "id": "size_tag_background", "label": "Size tag background", "default": "#E9DCC6" },
+    { "type": "color", "id": "size_tag_text", "label": "Size tag text", "default": "#4A3B2E" },
+    { "type": "color", "id": "size_tag_border", "label": "Size tag border", "default": "#D9C6A8" },
 
     { "type": "header", "content": "Colour swatches" },
     { "type": "checkbox", "id": "show_swatches", "label": "Show colour options", "default": true, "info": "Shown under the product title as radio buttons. Choosing a colour switches the card image and link to that variant." },
