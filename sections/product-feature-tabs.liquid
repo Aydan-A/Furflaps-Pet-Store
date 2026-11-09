@@ -27,6 +27,11 @@
   # theme-check-enable BlockIdUsage
 
   assign cart_label = section.settings.cart_button_label | default: 'Add to cart'
+
+  # Desktop shows a grid of rows x columns; tablet and phone keep the
+  # sideways row. Products past the grid are only hidden on desktop.
+  assign desktop_rows = section.settings.rows_desktop | default: 1 | plus: 0
+  assign desktop_slots = section.settings.columns_desktop | times: desktop_rows
 -%}
 
 {%- style -%}
@@ -134,14 +139,14 @@
         {%- if block.type == 'tab' -%}
           <div class="product-feature-tabs__panel" id="PftPanel-{{ section.id }}-{{ block.id }}" role="tabpanel" aria-labelledby="PftTab-{{ section.id }}-{{ block.id }}" tabindex="0" {% unless block.id == first_tab_id %}hidden{% endunless %}>
             {%- if block.settings.collection != blank and block.settings.collection.products_count > 0 -%}
-              <ul class="product-feature-tabs__grid" role="list">
+              <ul class="product-feature-tabs__grid{% if desktop_rows > 1 %} product-feature-tabs__grid--rows{% endif %}" role="list">
                 {%- for product in block.settings.collection.products limit: product_limit -%}
                   {%- comment -%}
                     The same card as Our Favourite Sets, so the two rows read as
                     one design. tab_key keeps the colour radio names unique when
                     a product sits in more than one tab.
                   {%- endcomment -%}
-                  <li class="product-feature-tabs__item">
+                  <li class="product-feature-tabs__item{% if desktop_rows > 1 and forloop.index > desktop_slots %} product-feature-tabs__item--beyond{% endif %}">
                     {% render 'hot-week-picks-card',
                       product: product,
                       section: section,
@@ -239,6 +244,7 @@
     { "type": "header", "content": "Products" },
     { "type": "range", "id": "products_to_show", "label": "Products per tab", "min": 0, "max": 50, "step": 1, "default": 8, "info": "0 shows every product, up to the 50 Shopify returns to a section. A collection with more than a row of products scrolls sideways." },
     { "type": "range", "id": "columns_desktop", "label": "Desktop products visible", "min": 2, "max": 6, "step": 1, "default": 4 },
+    { "type": "range", "id": "rows_desktop", "label": "Desktop rows", "min": 1, "max": 4, "step": 1, "default": 2, "info": "With more than one row, desktop shows a grid of rows x products visible instead of a sideways scrolling row. Tablet and mobile still scroll sideways." },
     { "type": "range", "id": "columns_tablet", "label": "Tablet products visible", "min": 1, "max": 4, "step": 0.5, "default": 2.5 },
     { "type": "range", "id": "columns_mobile", "label": "Mobile products visible", "min": 1, "max": 2, "step": 0.1, "default": 1.2 },
     { "type": "range", "id": "card_height", "label": "Desktop card height", "min": 300, "max": 700, "step": 4, "unit": "px", "default": 464 },
