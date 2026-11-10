@@ -554,25 +554,11 @@
             "button_label": "Shop",
             "button_link": ""
           }
-        },
-        "testimonial_j9Wxjq": {
-          "type": "testimonial",
-          "settings": {
-            "quote": "<p>“Such a fun way to show off her personality. I loved choosing the collar and letter colours, and the finished result looks adorable on Judy.”</p>",
-            "customer_name": "Emily C.",
-            "show_verified": true,
-            "verified_label": "Pet parent",
-            "product": "",
-            "product_title": "",
-            "button_label": "Shop",
-            "button_link": ""
-          }
         }
       },
       "block_order": [
         "testimonial_TjKy8E",
-        "testimonial_afNCYF",
-        "testimonial_j9Wxjq"
+        "testimonial_afNCYF"
       ],
       "name": "Featured testimonials",
       "settings": {
