@@ -259,6 +259,10 @@
 }
 .ds-field__input::placeholder { color: var(--ds-muted); font-weight: 500; }
 .ds-field__input[aria-invalid='true'] { border-color: var(--ds-accent); }
+/* Match letters sits to the right of the name it reads. It keeps its width and
+   the input gives way, so on a phone the button never wraps under the field. */
+.ds-field__match { flex: 0 0 auto; background: var(--ds-surface); }
+.ds-field__match[aria-disabled='true'] { opacity: .45; cursor: not-allowed; }
 
 .ds-step__arrows { display: flex; margin-left: auto; gap: .8rem; }
 
@@ -597,7 +601,7 @@
   .ds-step__title { font-size: var(--ds-mobile-step-title-size); }
   .ds-step__toggle { flex: 1 1 100%; }
   .ds-step__pill { max-width: 100%; margin-left: 3.8rem; }
-  .ds-field__input { width: 100%; }
+  .ds-field__input { width: 100%; min-width: 0; }
   .ds-step--open .ds-step__actions { flex: 1 1 100%; margin-left: 3.8rem; justify-content: space-between; }
 
   .ds-step__toolbar { flex-wrap: wrap; }

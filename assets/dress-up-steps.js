@@ -32,6 +32,7 @@ if (!customElements.get('dress-up-steps')) {
             checkoutButton: el.querySelector('[data-dress-checkout]'),
             errorEl: el.querySelector('[data-dress-error]'),
             textInput: el.querySelector('[data-dress-text]'),
+            matchButton: el.querySelector('[data-dress-match]'),
             arrows: Array.from(el.querySelectorAll('[data-dress-scroll]')),
             required: el.hasAttribute('data-required'),
             isFinal: el.hasAttribute('data-final'),
@@ -45,10 +46,12 @@ if (!customElements.get('dress-up-steps')) {
         this.removeEventListener('click', this.handleClick);
         this.removeEventListener('change', this.handleChange);
         this.removeEventListener('input', this.handleInput);
+        this.removeEventListener('keydown', this.handleKeydown);
         window.removeEventListener('resize', this.handleResize);
         this.addEventListener('click', this.handleClick);
         this.addEventListener('change', this.handleChange);
         this.addEventListener('input', this.handleInput);
+        this.addEventListener('keydown', this.handleKeydown);
         window.addEventListener('resize', this.handleResize);
 
         if (window.Shopify?.designMode) {
@@ -75,6 +78,7 @@ if (!customElements.get('dress-up-steps')) {
         this.removeEventListener('click', this.handleClick);
         this.removeEventListener('change', this.handleChange);
         this.removeEventListener('input', this.handleInput);
+        this.removeEventListener('keydown', this.handleKeydown);
         this.removeEventListener('shopify:block:select', this.handleBlockSelect);
         window.removeEventListener('resize', this.handleResize);
         this.steps.forEach((step) => step.track?.removeEventListener('scroll', step.onScroll));
@@ -184,6 +188,7 @@ if (!customElements.get('dress-up-steps')) {
           if (step.priceEl) step.priceEl.textContent = money;
           step.toggle?.setAttribute('aria-disabled', String(!this.canOpen(step.index)));
           if (step.saveButton) step.saveButton.setAttribute('aria-disabled', String(!this.isValid(step)));
+          if (step.matchButton) step.matchButton.setAttribute('aria-disabled', String(!this.textFor(step)));
           if (step.checkoutButton) step.checkoutButton.setAttribute('aria-disabled', String(!ready));
 
           this.renderPill(step, isOpen, selections);
@@ -357,6 +362,9 @@ if (!customElements.get('dress-up-steps')) {
         const pick = target('[data-dress-pick]');
         if (pick) return this.onPick(this.cardFor(pick));
 
+        const match = target('[data-dress-match]');
+        if (match) return this.onMatch(this.stepFor(match));
+
         const option = target('[data-dress-option]');
         if (option) return this.onOption(this.cardFor(option), option);
 
@@ -384,6 +392,15 @@ if (!customElements.get('dress-up-steps')) {
         this.invalidateFrom(step.index);
         this.clearError(step);
         this.render();
+      };
+
+      // Enter in the name field does what the button beside it does.
+      handleKeydown = (event) => {
+        if (event.key !== 'Enter' || !event.target.matches('[data-dress-text]')) return;
+        const step = this.stepFor(event.target);
+        if (!step.matchButton) return;
+        event.preventDefault();
+        this.onMatch(step);
       };
 
       // How many cards fit changes with the viewport, and with it whether the
@@ -443,6 +460,68 @@ if (!customElements.get('dress-up-steps')) {
 
         this.clearError(step);
         this.invalidateFrom(step.index);
+        this.render();
+      }
+
+      // The letter a card stands for, read from a title such as "A - Letter
+      // Charm". Anything else, such as a collar, stands for no letter.
+      letterFor(card) {
+        const match = (card.title || '').match(/^\s*([\p{L}\p{N}])\s*(?:[-–—]|$)/u);
+        return match ? this.normalizeLetter(match[1]) : '';
+      }
+
+      // Accents fold onto their base letter, so "Zoé" finds the E charm.
+      normalizeLetter(char) {
+        return char.normalize('NFD').replace(/\p{M}/gu, '').toUpperCase();
+      }
+
+      // Replaces the step's picks with one card per letter of the typed name,
+      // in the name's order. A repeated letter raises that card's quantity
+      // rather than taking a second slot, so "Bella" is four picks with two Ls.
+      // Each card keeps whatever colour it already shows.
+      onMatch(step) {
+        const text = this.textFor(step);
+        if (!text) {
+          step.textInput.setAttribute('aria-invalid', 'true');
+          step.textInput.focus();
+          return;
+        }
+
+        const cardsByLetter = new Map();
+        step.cards.forEach((card) => {
+          const letter = this.letterFor(card);
+          if (letter && !card.pickButton?.disabled && !cardsByLetter.has(letter)) cardsByLetter.set(letter, card);
+        });
+
+        const counts = new Map();
+        const missing = [];
+        Array.from(text).forEach((char) => {
+          if (!/[\p{L}\p{N}]/u.test(char)) return;
+          const letter = this.normalizeLetter(char);
+          const card = cardsByLetter.get(letter);
+          if (!card) {
+            if (!missing.includes(char.toUpperCase())) missing.push(char.toUpperCase());
+            return;
+          }
+          counts.set(card, (counts.get(card) || 0) + 1);
+        });
+
+        if (counts.size > step.max) {
+          return this.showError(step, (this.dataset.limitMessage || '').replace('{max}', step.max));
+        }
+
+        step.cards.forEach((card) => (card.selected = false));
+        counts.forEach((quantity, card) => {
+          card.selected = true;
+          card.order = ++this.pickCounter;
+          card.quantity = quantity;
+        });
+
+        this.clearError(step);
+        this.invalidateFrom(step.index);
+        if (missing.length) {
+          this.showError(step, (this.dataset.missingLettersMessage || '').replace('{letters}', missing.join(', ')));
+        }
         this.render();
       }
 
