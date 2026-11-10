@@ -184,20 +184,20 @@
       </div>
     {%- endif -%}
 
-    {%- if settings_card.show_swatches -%}
-      {% render 'ff-swatch-list',
-        product: product,
-        option_name: settings_card.color_option_name,
-        max_swatches: settings_card.swatches_to_show,
-        class_prefix: 'cg-card'
-      %}
-    {%- endif -%}
-
     {%- comment -%}
-      Price and action are pinned to the bottom of the card together so the
-      buttons sit on one line across the whole row, whatever the titles do.
+      Swatches, price and action are pinned to the bottom of the card together
+      so they sit on one line across the whole row, whatever the titles do.
     {%- endcomment -%}
     <div class="cg-card__foot">
+      {%- if settings_card.show_swatches -%}
+        {% render 'ff-swatch-list',
+          product: product,
+          option_name: settings_card.color_option_name,
+          max_swatches: settings_card.swatches_to_show,
+          class_prefix: 'cg-card'
+        %}
+      {%- endif -%}
+
       <div class="cg-card__prices">
         <span class="cg-card__price{% if on_sale %} cg-card__price--sale{% endif %}">
           {%- if on_sale -%}

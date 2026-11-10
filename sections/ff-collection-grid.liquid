@@ -63,6 +63,14 @@
   assign column_gap_mobile = section.settings.column_gap | times: 0.7 | round: 0
   assign row_gap_mobile = section.settings.row_gap | times: 0.7 | round: 0
   assign content_padding_mobile = section.settings.content_padding | times: 0.5 | round: 0
+
+  comment
+    A filled frame has nothing to inset; a fitted image gets breathing room.
+  endcomment
+  assign image_inset = section.settings.image_padding | append: '%'
+  if section.settings.image_fit == 'cover'
+    assign image_inset = '0px'
+  endif
 -%}
 
 {%- style -%}
@@ -86,6 +94,7 @@
     --cg-card-content-spacing: {{ section.settings.card_content_spacing }}px;
     --cg-image-ratio: {{ image_ratio }};
     --cg-image-fit: {{ section.settings.image_fit }};
+    --cg-image-inset: {{ image_inset }};
     --cg-image-background: {{ section.settings.image_background }};
     --cg-title-size: {{ section.settings.title_size }}px;
     --cg-price-size: {{ section.settings.price_size }}px;
@@ -493,6 +502,17 @@
         { "value": "contain", "label": "Fit whole image" },
         { "value": "cover", "label": "Fill the frame" }
       ]
+    },
+    {
+      "type": "range",
+      "id": "image_padding",
+      "min": 0,
+      "max": 20,
+      "step": 1,
+      "unit": "%",
+      "default": 8,
+      "label": "Space around the product",
+      "info": "Only applies to \"Fit whole image\"."
     },
     {
       "type": "color",
