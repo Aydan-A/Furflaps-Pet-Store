@@ -228,7 +228,8 @@
             "personalization_label": "Name",
             "personalization_placeholder": "Enter a name",
             "personalization_max_chars": 12,
-            "personalization_required": true
+            "personalization_required": true,
+            "match_label": "Match letters"
           }
         },
         "step_G9XGPD": {
@@ -252,7 +253,8 @@
             "personalization_label": "Name",
             "personalization_placeholder": "Enter a name",
             "personalization_max_chars": 12,
-            "personalization_required": false
+            "personalization_required": false,
+            "match_label": "Match letters"
           }
         },
         "step_33GmAx": {
@@ -276,7 +278,8 @@
             "personalization_label": "Name",
             "personalization_placeholder": "Enter a name",
             "personalization_max_chars": 12,
-            "personalization_required": true
+            "personalization_required": true,
+            "match_label": "Match letters"
           }
         }
       },
@@ -294,6 +297,7 @@
         "error_message": "Almost there! Make a pick here and we'll keep going.",
         "locked_message": "Let's finish the step above first, then this one opens up.",
         "limit_message": "You can pick up to {max} here. Remove one to swap it out.",
+        "missing_letters_message": "We don't have a charm for {letters} yet, so the other letters are picked.",
         "cards_per_row": 4,
         "card_gap": 24,
         "image_ratio": "4 / 5",
@@ -313,15 +317,15 @@
         "card_background": "#ffffff",
         "image_background": "#ffffff",
         "border_color": "#e2e2e2",
-        "accent": "#DF1212",
-        "accent_text": "#FFFFFF",
+        "accent": "#df1212",
+        "accent_text": "#ffffff",
         "number_background": "#050505",
         "number_text": "#ffffff",
-        "size_tag_background": "#FFFFFF",
+        "size_tag_background": "#ffffff",
         "size_tag_text": "#444141",
         "size_tag_border": "#ececec",
-        "size_tag_active_background": "#FFE9E8",
-        "size_tag_active_text": "#DF1212",
+        "size_tag_active_background": "#ffe9e8",
+        "size_tag_active_text": "#df1212",
         "size_tag_active_border": "#f96d4b",
         "options_quantity_gap": 8,
         "heading_gap": 38,
@@ -387,7 +391,6 @@
       "name": "Product feature tabs",
       "settings": {
         "show_header": true,
-        "show_add_to_cart": true,
         "heading": "<strong>Shop by Collections</strong>",
         "text": "",
         "heading_size": "h1",
@@ -396,10 +399,15 @@
         "button_link": "",
         "button_style": "primary",
         "products_to_show": 16,
-        "rows_desktop": 2,
         "columns_desktop": 4,
+        "rows_desktop": 2,
+        "show_more_button": true,
+        "show_more_label": "Show more",
+        "show_less_label": "Show less",
         "columns_tablet": 2.5,
         "columns_mobile": 1.2,
+        "card_height": 464,
+        "mobile_card_height": 464,
         "image_fit": "contain",
         "tabs_label": "Product categories",
         "tabs_alignment": "center",
@@ -419,6 +427,21 @@
         "tab_text": "#190303",
         "active_tab_background": "#e50b0b",
         "active_tab_text": "#ffffff",
+        "show_size_tag": true,
+        "size_option_name": "Size",
+        "size_tag_background": "#e4e1e1",
+        "size_tag_text": "#444141",
+        "size_tag_border": "#f3f2f2",
+        "show_swatches": true,
+        "color_option_name": "Color",
+        "swatches_to_show": 4,
+        "price_gap": 22,
+        "show_discount": true,
+        "show_metafield_badge": false,
+        "show_add_to_cart": true,
+        "cart_button_label": "Add to cart",
+        "add_button_background": "#f71414",
+        "add_button_text": "#ffffff",
         "card_gap": 12,
         "card_radius": 16,
         "header_gap": 24,
@@ -513,7 +536,7 @@
             "customer_name": "Antiga Murad",
             "show_verified": true,
             "verified_label": "Dog parent",
-            "product": "personalized-name-pet-collar",
+            "product": "personalized-dog-collar-leash-set-purple",
             "product_title": "",
             "button_label": "Shop",
             "button_link": ""
