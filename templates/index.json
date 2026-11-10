@@ -623,6 +623,7 @@
           "type": "highlight",
           "settings": {
             "show_item": true,
+            "image": "shopify://shop_images/pets.png",
             "title": "Delivered Across Canada",
             "text": "<p>Your custom FurFlaps collar, delivered to your door.</p>",
             "button_label": "",
