@@ -251,7 +251,7 @@
             "image_ratio": "1 / 1",
             "enable_personalization": true,
             "personalization_label": "Name",
-            "personalization_placeholder": "Enter a name",
+            "personalization_placeholder": "Enter your pet name",
             "personalization_max_chars": 12,
             "personalization_required": false,
             "match_label": "Match letters"
