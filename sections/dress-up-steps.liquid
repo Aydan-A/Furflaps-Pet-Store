@@ -76,6 +76,7 @@
   data-error-message="{{ section.settings.error_message | escape }}"
   data-locked-message="{{ section.settings.locked_message | escape }}"
   data-limit-message="{{ section.settings.limit_message | escape }}"
+  data-missing-letters-message="{{ section.settings.missing_letters_message | escape }}"
 >
   <div class="dress-up-steps__inner">
     {%- if section.settings.eyebrow != blank or section.settings.heading != blank -%}
@@ -196,6 +197,21 @@
                   data-property="{{ property_label | escape }}"
                   {% if block.settings.personalization_required %}data-text-required{% endif %}
                 >
+                {%- comment -%}
+                  Picks the card for every letter of the typed name, so a
+                  customer does not hunt the alphabet one tile at a time.
+                {%- endcomment -%}
+                {%- if block.settings.match_label != blank -%}
+                  <button
+                    class="ds-button ds-button--ghost ds-field__match"
+                    type="button"
+                    aria-controls="{{ panel_id }}"
+                    aria-disabled="true"
+                    data-dress-match
+                  >
+                    {{- block.settings.match_label | escape -}}
+                  </button>
+                {%- endif -%}
               </div>
             {%- endif -%}
 
@@ -297,6 +313,7 @@
     { "type": "text", "id": "error_message", "label": "Incomplete step message", "default": "Almost there! Make a pick here and we'll keep going." },
     { "type": "text", "id": "locked_message", "label": "Locked step message", "default": "Let's finish the step above first, then this one opens up." },
     { "type": "text", "id": "limit_message", "label": "Selection limit message", "default": "You can pick up to {max} here. Remove one to swap it out.", "info": "Shown when a customer picks more than a step allows. {max} is replaced with that step's own limit." },
+    { "type": "text", "id": "missing_letters_message", "label": "Missing letters message", "default": "We don't have a charm for {letters} yet, so the other letters are picked.", "info": "Shown after Match letters when the name holds a letter with no card, or one that is sold out. {letters} is replaced with those letters." },
 
     { "type": "header", "content": "Product cards" },
     { "type": "range", "id": "cards_per_row", "label": "Cards in view", "min": 2, "max": 8, "step": 1, "default": 4, "info": "Default for every step. Each step can override it. Cards always fit whole — a step never shows a half card." },
@@ -376,7 +393,8 @@
         { "type": "text", "id": "personalization_label", "label": "Field label", "default": "Name", "info": "Also the line item property name shown in the cart and on orders." },
         { "type": "text", "id": "personalization_placeholder", "label": "Field placeholder", "default": "Enter a name" },
         { "type": "range", "id": "personalization_max_chars", "label": "Maximum characters", "min": 3, "max": 40, "step": 1, "default": 12 },
-        { "type": "checkbox", "id": "personalization_required", "label": "Required to continue", "default": true }
+        { "type": "checkbox", "id": "personalization_required", "label": "Required to continue", "default": true },
+        { "type": "text", "id": "match_label", "label": "Match button label", "default": "Match letters", "info": "Button beside the field that picks the card for each letter of the name. Cards are matched by a title such as \"A - Letter Charm\". Leave empty to hide the button." }
       ]
     }
   ],
