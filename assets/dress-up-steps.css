@@ -259,9 +259,27 @@
 }
 .ds-field__input::placeholder { color: var(--ds-muted); font-weight: 500; }
 .ds-field__input[aria-invalid='true'] { border-color: var(--ds-accent); }
-/* Match letters sits to the right of the name it reads. It keeps its width and
-   the input gives way, so on a phone the button never wraps under the field. */
-.ds-field__match { flex: 0 0 auto; background: var(--ds-surface); }
+/* Match letters is a round arrow inside the right end of the name field. The
+   input keeps room for it on the right, so a long name never runs under it. */
+.ds-field__control { position: relative; display: flex; min-width: 0; }
+.ds-field__control .ds-field__input { padding-right: calc(var(--ds-control-height) + .4rem); }
+.ds-field__match {
+  position: absolute;
+  top: .4rem;
+  right: .4rem;
+  display: grid;
+  width: calc(var(--ds-control-height) - .8rem);
+  height: calc(var(--ds-control-height) - .8rem);
+  padding: 0;
+  place-items: center;
+  border: 0;
+  border-radius: 50%;
+  background: var(--ds-accent);
+  color: var(--ds-text);
+  cursor: pointer;
+}
+.ds-field__match svg { width: 1.8rem; height: 1.8rem; }
+.ds-field__match:hover:not([aria-disabled='true']) { opacity: .88; }
 .ds-field__match[aria-disabled='true'] { opacity: .45; cursor: not-allowed; }
 
 .ds-step__arrows { display: flex; margin-left: auto; gap: .8rem; }
@@ -580,7 +598,8 @@
 .ds-arrow:focus-visible,
 .ds-card__value:focus-visible,
 .ds-card__quantity-button:focus-visible,
-.ds-field__input:focus-visible { outline: .2rem solid var(--ds-text); outline-offset: .3rem; }
+.ds-field__input:focus-visible,
+.ds-field__match:focus-visible { outline: .2rem solid var(--ds-text); outline-offset: .3rem; }
 .ds-card__pick:focus-visible { outline: .2rem solid var(--ds-text); outline-offset: .2rem; }
 
 /* ---------- Responsive ---------- */
@@ -612,6 +631,7 @@
   .ds-step__title { font-size: var(--ds-mobile-step-title-size); }
   .ds-step__toggle { flex: 1 1 100%; }
   .ds-step__pill { max-width: 100%; margin-left: 3.8rem; }
+  .ds-field__control { flex: 1 1 auto; }
   .ds-field__input { width: 100%; min-width: 0; }
   .ds-step--open .ds-step__actions { flex: 1 1 100%; margin-left: 3.8rem; justify-content: space-between; }
 
