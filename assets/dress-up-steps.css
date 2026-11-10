@@ -184,6 +184,13 @@
   opacity: .45;
   cursor: not-allowed;
 }
+/* Save and continue greys out like the Match letters arrow until the step is
+   ready, then turns the accent. */
+.ds-button--primary[data-dress-save][aria-disabled='true'] {
+  background: color-mix(in srgb, var(--ds-muted) 55%, #FFFFFF);
+  color: #FFFFFF;
+  opacity: 1;
+}
 .ds-button__icon svg { width: 1.8rem; height: 1.8rem; }
 .ds-button.is-loading { pointer-events: none; }
 .ds-button__spinner {
