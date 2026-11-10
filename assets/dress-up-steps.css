@@ -613,9 +613,11 @@
 .ds-arrow:focus-visible,
 .ds-card__value:focus-visible,
 .ds-card__quantity-button:focus-visible,
-.ds-field__input:focus-visible,
 .ds-field__match:focus-visible { outline: .2rem solid var(--ds-text); outline-offset: .3rem; }
 .ds-card__pick:focus-visible { outline: .2rem solid var(--ds-text); outline-offset: .2rem; }
+/* The name field shows its caret while typing, with no focus ring around it. */
+.ds-field__input:focus,
+.ds-field__input:focus-visible { outline: none; box-shadow: none; }
 
 /* ---------- Responsive ---------- */
 
