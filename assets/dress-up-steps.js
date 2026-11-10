@@ -463,11 +463,10 @@ if (!customElements.get('dress-up-steps')) {
         this.render();
       }
 
-      // The letter a card stands for, read from a title such as "A - Letter
-      // Charm". Anything else, such as a collar, stands for no letter.
+      // The letter a card stands for, from the product's one-character tag.
+      // Anything else, such as a collar, has no such tag and no letter.
       letterFor(card) {
-        const match = (card.title || '').match(/^\s*([\p{L}\p{N}])\s*(?:[-–—]|$)/u);
-        return match ? this.normalizeLetter(match[1]) : '';
+        return card.el.dataset.letter ? this.normalizeLetter(card.el.dataset.letter) : '';
       }
 
       // Accents fold onto their base letter, so "Zoé" finds the E charm.

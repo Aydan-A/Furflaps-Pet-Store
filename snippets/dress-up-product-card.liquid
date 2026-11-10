@@ -23,6 +23,16 @@
 {%- liquid
   assign variant = product.selected_or_first_available_variant
   assign card_id = 'DressCard-' | append: section.id | append: '-' | append: block.id | append: '-' | append: index
+
+  # A letter charm carries its letter as a one-character tag, "A" on the A
+  # charm. Match letters reads it to pick the card for each letter of a name.
+  assign card_letter = ''
+  for tag in product.tags
+    if tag.size == 1
+      assign card_letter = tag | upcase
+      break
+    endif
+  endfor
 -%}
 
 {%- capture variants_json -%}
@@ -45,6 +55,7 @@
   data-dress-card
   data-product-id="{{ product.id }}"
   data-product-title="{{ product.title | escape }}"
+  {% if card_letter != blank %}data-letter="{{ card_letter | escape }}"{% endif %}
   data-selected-options="{{ variant.options | json | escape }}"
   data-default-image="{{ product.featured_media | image_url: width: 800 | escape }}"
 >
