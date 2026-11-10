@@ -584,10 +584,10 @@
         "panel_background": "#e8f3f2",
         "text_color": "#111111",
         "accent_color": "#111111",
-        "card_background": "linear-gradient(90deg, rgba(132, 63, 75, 0.92), rgba(135, 96, 72, 0.88) 100%)",
-        "card_text_color": "#ffffff",
-        "button_background": "#ffffff",
-        "button_text_color": "#111111",
+        "card_background": "#ffffff",
+        "card_text_color": "#111111",
+        "button_background": "#111111",
+        "button_text_color": "#ffffff",
         "show_on_desktop": true,
         "show_on_mobile": true
       }
