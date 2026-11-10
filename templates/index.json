@@ -599,7 +599,7 @@
           "type": "highlight",
           "settings": {
             "show_item": true,
-            "image": "shopify://shop_images/pet-care.png",
+            "image": "shopify://shop_images/pet-care_1.png",
             "title": "Made Just for Your Pet",
             "text": "<p>Personalize their collar with their name, colors, letters, and charms.</p>",
             "button_label": "",
