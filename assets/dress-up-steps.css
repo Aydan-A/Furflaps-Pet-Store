@@ -275,12 +275,17 @@
   border: 0;
   border-radius: 50%;
   background: var(--ds-accent);
-  color: var(--ds-text);
+  color: var(--ds-accent-text);
   cursor: pointer;
+  transition: background-color 150ms ease;
 }
 .ds-field__match svg { width: 1.8rem; height: 1.8rem; }
 .ds-field__match:hover:not([aria-disabled='true']) { opacity: .88; }
-.ds-field__match[aria-disabled='true'] { opacity: .45; cursor: not-allowed; }
+/* Grey until there is a name to match, then the accent. */
+.ds-field__match[aria-disabled='true'] {
+  background: color-mix(in srgb, var(--ds-muted) 55%, #FFFFFF);
+  cursor: not-allowed;
+}
 
 .ds-step__arrows { display: flex; margin-left: auto; gap: .8rem; }
 
