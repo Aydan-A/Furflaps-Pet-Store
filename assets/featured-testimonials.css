@@ -22,10 +22,10 @@
   --ft-card-inset: clamp(1.6rem, 2vw, 2.4rem);
   position: absolute;
   z-index: 2;
+  right: var(--ft-card-inset);
   bottom: var(--ft-card-inset);
   left: var(--ft-card-inset);
   display: grid;
-  max-width: calc(100% - var(--ft-card-inset) * 2);
   grid-template-columns: 5.2rem minmax(0, 1fr) auto;
   align-items: center;
   gap: 1.2rem;
