@@ -251,7 +251,7 @@
             "image_ratio": "1 / 1",
             "enable_personalization": true,
             "personalization_label": "Name",
-            "personalization_placeholder": "Enter your pet name",
+            "personalization_placeholder": "Enter a name",
             "personalization_max_chars": 12,
             "personalization_required": false,
             "match_label": "Match letters"
@@ -528,24 +528,12 @@
     "featured_testimonials_GdmtJw": {
       "type": "featured-testimonials",
       "blocks": {
-        "testimonial_TjKy8E": {
-          "type": "testimonial",
-          "settings": {
-            "image": "shopify://shop_images/9418dcff-48bc-4c2a-afba-e1e2eacbcaf7_1.png",
-            "quote": "<p><strong>“</strong>The colours, the little letters, the whole thing. I'm genuinely so happy with how it turned out. It just looks like it belongs on her.<strong>”</strong></p>",
-            "customer_name": "Antiga Murad",
-            "show_verified": true,
-            "verified_label": "Dog parent",
-            "product": "personalized-dog-collar-leash-set-purple",
-            "product_title": "",
-            "button_label": "Shop",
-            "button_link": ""
-          }
-        },
         "testimonial_afNCYF": {
           "type": "testimonial",
           "settings": {
-            "quote": "<p>“The personalization is what sold me. Toby’s collar fits comfortably, feels well made, and we get compliments on it every time we go for a walk.</p>",
+            "image": "shopify://shop_images/18_9250820b-5b9b-4dd1-aa5d-919925c9cb79.webp",
+            "quote": "<p>\"Okay, I wasn't expecting to love a dog collar this much lol. The little letters with her name are honestly the cutest thing. She gets compliments every time we go out, and now I kinda want one in every colour.\"</p>",
+            "avatar": "shopify://shop_images/woman-in-sari-on-beach.jpg",
             "customer_name": "Jessica R.",
             "show_verified": true,
             "verified_label": "Dog parent",
@@ -554,15 +542,30 @@
             "button_label": "Shop",
             "button_link": ""
           }
+        },
+        "testimonial_TjKy8E": {
+          "type": "testimonial",
+          "settings": {
+            "image": "shopify://shop_images/9418dcff-48bc-4c2a-afba-e1e2eacbcaf7_1.png",
+            "quote": "<p><strong>“</strong>The colours, the little letters, the whole thing. I'm genuinely so happy with how it turned out. It just looks like it belongs on her.<strong>”</strong></p>",
+            "avatar": "shopify://shop_images/woman-looking-away.jpg",
+            "customer_name": "Antiga Murad",
+            "show_verified": true,
+            "verified_label": "Dog parent",
+            "product": "personalized-dog-collar-leash-set-purple",
+            "product_title": "",
+            "button_label": "Shop",
+            "button_link": ""
+          }
         }
       },
       "block_order": [
-        "testimonial_TjKy8E",
-        "testimonial_afNCYF"
+        "testimonial_afNCYF",
+        "testimonial_TjKy8E"
       ],
       "name": "Featured testimonials",
       "settings": {
-        "eyebrow": "OUR FAVORITE PRODUCTS",
+        "eyebrow": "The Furflaps Club",
         "show_product_card": true,
         "show_navigation": true,
         "autoplay": false,
