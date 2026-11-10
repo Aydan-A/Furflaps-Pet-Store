@@ -611,6 +611,7 @@
           "type": "highlight",
           "settings": {
             "show_item": true,
+            "image": "shopify://shop_images/dog.png",
             "title": "Soft for Everyday Wear",
             "text": "<p>Comfortable and lightweight for walks, naps, playtime.</p>",
             "button_label": "",
