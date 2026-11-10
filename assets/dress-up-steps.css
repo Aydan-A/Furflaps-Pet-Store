@@ -332,6 +332,9 @@
   margin: -.4rem;
   overflow: hidden;
   scroll-snap-type: x mandatory;
+  /* Snap cards to the inside of that padding, not the clipped edge, or the
+     first card scrolls .4rem left and loses the left side of its ring. */
+  scroll-padding-inline: .4rem;
   scroll-behavior: smooth;
   overscroll-behavior-inline: contain;
 }
