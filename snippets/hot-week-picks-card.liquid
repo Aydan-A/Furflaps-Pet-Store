@@ -64,6 +64,15 @@
 -%}
 
 <div class="hot-week-picks__card">
+  {%- if product.variants.size > 1 -%}
+    <script type="application/json" data-card-variants>
+      [
+        {%- for variant in product.variants -%}
+          {"options": {{ variant.options | json }}, "url": {{ variant.url | json }}}{% unless forloop.last %},{% endunless %}
+        {%- endfor -%}
+      ]
+    </script>
+  {%- endif -%}
   <div class="hot-card__media-wrap">
     <a class="hot-card__media" href="{{ product.url }}" data-card-link aria-label="{{ product.title | escape }}">
       {%- if custom_badge != blank -%}
@@ -148,26 +157,58 @@
     </h3>
 
     {%- comment -%}
-      Size tag: the value of the first available variant's size option. The
+      Size tags: one per size the product comes in, each a radio, so every
+      size is in view and the one picked is what the card's links open. The
       wanted name matches anywhere in the option name, so "Size" also finds
-      "Collar Size". Products without a size option show no tag.
+      "Collar Size". Products without a size option show no tags.
     {%- endcomment -%}
     {%- unless section.settings.show_size_tag == false -%}
       {%- liquid
-        assign size_value = blank
+        assign size_option = blank
         assign size_wanted = section.settings.size_option_name | default: 'Size' | downcase | replace: ' ', ''
-        assign size_variant = product.selected_or_first_available_variant
         for option in product.options_with_values
           assign size_key = option.name | downcase | replace: ' ', ''
           if size_key contains size_wanted
-            assign size_value = size_variant.options[forloop.index0]
-            assign size_value = size_value | split: '(' | first | strip
+            assign size_option = option
             break
           endif
         endfor
       -%}
-      {%- if size_value != blank -%}
-        <span class="hot-card__size">{{ size_value | escape }}</span>
+      {%- if size_option != blank -%}
+        {%- liquid
+          assign size_index = size_option.position | minus: 1
+          assign size_current = product.selected_or_first_available_variant.options[size_index]
+          assign size_group_id = 'HotSize-' | append: section.id | append: '-' | append: tab_key | append: '-' | append: product.id
+        -%}
+        <fieldset class="hot-card__sizes" data-size-options>
+          <legend class="visually-hidden">{{ size_option.name | escape }}</legend>
+          {%- for value in size_option.values -%}
+            {%- liquid
+              assign size_name = value | append: ''
+              assign size_available = false
+              for variant in product.variants
+                if variant.options[size_index] == size_name and variant.available
+                  assign size_available = true
+                  break
+                endif
+              endfor
+              assign size_radio_id = size_group_id | append: '-' | append: forloop.index
+            -%}
+            <input
+              class="hot-card__size-input visually-hidden"
+              type="radio"
+              id="{{ size_radio_id }}"
+              name="{{ size_group_id }}"
+              value="{{ size_name | escape }}"
+              {% if size_name == size_current %}checked{% endif %}
+              {% unless size_available %}disabled{% endunless %}
+            >
+            <label class="hot-card__size" for="{{ size_radio_id }}">
+              {{- size_name | escape -}}
+              {%- unless size_available %}<span class="visually-hidden"> ({{ 'products.product.sold_out' | t }})</span>{% endunless -%}
+            </label>
+          {%- endfor -%}
+        </fieldset>
       {%- endif -%}
     {%- endunless -%}
 

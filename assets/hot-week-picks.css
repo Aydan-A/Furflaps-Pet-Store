@@ -302,8 +302,17 @@
   text-transform: var(--hot-title-transform);
 }
 
+.hot-card__sizes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  min-width: 0;
+}
+
 .hot-card__size {
-  align-self: flex-start;
   display: inline-flex;
   align-items: center;
   padding: 0.4rem 1.2rem;
@@ -316,6 +325,30 @@
   line-height: 1.2;
   letter-spacing: 0.04em;
   text-transform: uppercase;
+  cursor: pointer;
+  transition: border-color 0.15s ease, background-color 0.15s ease, color 0.15s ease;
+}
+
+.hot-card__size:hover {
+  border-color: var(--hot-size-tag-text);
+}
+
+/* Picked size: the tag inverts, so it reads as chosen without a new colour. */
+.hot-card__size-input:checked + .hot-card__size {
+  background: var(--hot-size-tag-text);
+  border-color: var(--hot-size-tag-text);
+  color: var(--hot-size-tag-background);
+}
+
+.hot-card__size-input:disabled + .hot-card__size {
+  cursor: not-allowed;
+  opacity: 0.45;
+  text-decoration: line-through;
+}
+
+.hot-card__size-input:focus-visible + .hot-card__size {
+  outline: 2px solid var(--hot-color-ring-active);
+  outline-offset: 2px;
 }
 
 .hot-card__link {

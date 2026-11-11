@@ -35,19 +35,32 @@ if (!customElements.get('hot-week-picks')) {
       this.removeEventListener('change', this.onColorChange);
     }
 
-    // A colour radio swaps the card image and points its links at that variant.
+    // A colour or size radio points the card links at the variant with both
+    // picks; a colour radio also swaps the image to that colour.
     onColorChange = (event) => {
       const input = event.target;
-      if (!input.matches?.('.hot-card__color-input')) return;
+      const isColor = input.matches?.('.hot-card__color-input');
+      if (!isColor && !input.matches?.('.hot-card__size-input')) return;
       const card = input.closest('.hot-week-picks__card');
       if (!card) return;
 
-      const { imageSrc, imageSrcset, url } = input.dataset;
+      const { imageSrc, imageSrcset } = input.dataset;
       const image = card.querySelector('.hot-card__image');
-      if (image && imageSrc) {
+      if (isColor && image && imageSrc) {
         if (imageSrcset) image.srcset = imageSrcset;
         image.src = imageSrc;
       }
+
+      const picked = Array.from(
+        card.querySelectorAll('.hot-card__color-input:checked, .hot-card__size-input:checked'),
+        (radio) => radio.value
+      );
+      let variants = [];
+      try {
+        variants = JSON.parse(card.querySelector('[data-card-variants]')?.textContent || '[]');
+      } catch (error) {}
+      const match = variants.find((variant) => picked.every((value) => variant.options.includes(value)));
+      const url = match?.url || (isColor ? input.dataset.url : null);
       if (url) {
         card.querySelectorAll('[data-card-link]').forEach((link) => {
           link.href = url;
