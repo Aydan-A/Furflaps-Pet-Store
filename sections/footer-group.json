@@ -78,7 +78,7 @@
       "settings": {
         "show_on_desktop": true,
         "show_on_mobile": true,
-        "show_newsletter": true,
+        "show_newsletter": false,
         "heading": "Subscribe today & get 10% off &nbsp;your first purchase",
         "heading_size": 32,
         "mobile_heading_size": 26,
