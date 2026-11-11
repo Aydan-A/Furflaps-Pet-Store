@@ -23,6 +23,16 @@
 {%- liquid
   assign variant = product.selected_or_first_available_variant
   assign card_id = 'DressCard-' | append: section.id | append: '-' | append: block.id | append: '-' | append: index
+
+  # A letter charm carries its letter as a one-character tag, "A" on the A
+  # charm. Match letters reads it to pick the card for each letter of a name.
+  assign card_letter = ''
+  for tag in product.tags
+    if tag.size == 1
+      assign card_letter = tag | upcase
+      break
+    endif
+  endfor
 -%}
 
 {%- capture variants_json -%}
@@ -45,6 +55,7 @@
   data-dress-card
   data-product-id="{{ product.id }}"
   data-product-title="{{ product.title | escape }}"
+  {% if card_letter != blank %}data-letter="{{ card_letter | escape }}"{% endif %}
   data-selected-options="{{ variant.options | json | escape }}"
   data-default-image="{{ product.featured_media | image_url: width: 800 | escape }}"
 >
@@ -150,31 +161,13 @@
             {%- liquid
               assign swatch_style = ''
               if is_swatch
-                if value.swatch.color
-                  assign swatch_style = 'background-color: rgb(' | append: value.swatch.color.rgb | append: ');'
-                elsif value.swatch.image
-                  assign swatch_url = value.swatch.image | image_url: width: 60
-                  assign swatch_style = 'background-image: url(' | append: swatch_url | append: ');'
-                else
-                  # No swatch set on the option value in Shopify: fall back to
-                  # the photo of the variant wearing that colour, so a colour
-                  # always reads as a swatch and never as a word.
-                  for product_variant in product.variants
-                    case option.position
-                      when 1
-                        assign candidate_value = product_variant.option1
-                      when 2
-                        assign candidate_value = product_variant.option2
-                      else
-                        assign candidate_value = product_variant.option3
-                    endcase
-                    if candidate_value == value and product_variant.featured_media != blank
-                      assign swatch_url = product_variant.featured_media | image_url: width: 60
-                      assign swatch_style = 'background-image: url(' | append: swatch_url | append: ');'
-                      break
-                    endif
-                  endfor
-                endif
+                # No swatch set on the option value in Shopify: fall back to
+                # the photo of the variant wearing that colour, so a colour
+                # always reads as a swatch and never as a word.
+                capture swatch_style
+                  render 'ff-swatch-style', value: value, option: option, product: product, variant_photo: true
+                endcapture
+                assign swatch_style = swatch_style | strip
               endif
             -%}
             <button
@@ -199,8 +192,8 @@
   {%- if option_controls contains 'data-dress-option' or has_quantity -%}
   <div class="ds-card__controls">
     {%- comment -%}
-      Only wrap real controls: an empty options box would take the place of the
-      quantity stepper as the row's only child, and stop it centring.
+      Only wrap real controls: an empty options box would sit in the row with
+      nothing in it.
     {%- endcomment -%}
     {%- if option_controls contains 'data-dress-option' -%}
       <div class="ds-card__options">{{ option_controls }}</div>

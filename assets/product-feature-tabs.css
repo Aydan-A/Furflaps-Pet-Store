@@ -371,6 +371,9 @@
   .product-feature-tabs__inner { padding-inline: var(--pft-mobile-padding-inline); }
   .product-feature-tabs__grid { --pft-columns: var(--pft-columns-mobile); }
   .product-feature-tabs__tabs-wrap { justify-content: flex-start; margin-inline: calc(-1 * var(--pft-mobile-padding-inline)); padding-inline: var(--pft-mobile-padding-inline); }
+  /* A little more of the card's width goes to the stepper on touch, which the
+     option select can spare - it already truncates a long size to one line. */
+  .product-feature-tabs__quantity-button { width: 3.4rem; height: 3.4rem; }
 }
 
 @media (prefers-reduced-motion: reduce) {

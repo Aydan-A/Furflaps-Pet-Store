@@ -22,6 +22,7 @@ if (!customElements.get('dress-up-steps')) {
             index,
             panel: el.querySelector('[data-dress-panel]'),
             track: el.querySelector('[data-dress-track]'),
+            progress: el.querySelector('[data-dress-progress]'),
             toggle: el.querySelector('[data-dress-toggle]'),
             pill: el.querySelector('[data-dress-pill]'),
             pillText: el.querySelector('[data-dress-pill-text]'),
@@ -31,6 +32,7 @@ if (!customElements.get('dress-up-steps')) {
             checkoutButton: el.querySelector('[data-dress-checkout]'),
             errorEl: el.querySelector('[data-dress-error]'),
             textInput: el.querySelector('[data-dress-text]'),
+            matchButton: el.querySelector('[data-dress-match]'),
             arrows: Array.from(el.querySelectorAll('[data-dress-scroll]')),
             required: el.hasAttribute('data-required'),
             isFinal: el.hasAttribute('data-final'),
@@ -44,10 +46,12 @@ if (!customElements.get('dress-up-steps')) {
         this.removeEventListener('click', this.handleClick);
         this.removeEventListener('change', this.handleChange);
         this.removeEventListener('input', this.handleInput);
+        this.removeEventListener('keydown', this.handleKeydown);
         window.removeEventListener('resize', this.handleResize);
         this.addEventListener('click', this.handleClick);
         this.addEventListener('change', this.handleChange);
         this.addEventListener('input', this.handleInput);
+        this.addEventListener('keydown', this.handleKeydown);
         window.addEventListener('resize', this.handleResize);
 
         if (window.Shopify?.designMode) {
@@ -60,7 +64,13 @@ if (!customElements.get('dress-up-steps')) {
           step.track.addEventListener('scroll', step.onScroll, { passive: true });
         });
 
-        this.open(0);
+        // The Theme Editor rebuilds the section after every setting change.
+        // Reopen the step being edited, or a new collection lands in a closed
+        // panel and looks as if nothing was picked.
+        const editedIndex = window.Shopify?.designMode
+          ? this.steps.findIndex((step) => step.el.dataset.blockId === DressUpSteps.editedBlock)
+          : -1;
+        this.open(Math.max(0, editedIndex));
         this.render();
       }
 
@@ -68,6 +78,7 @@ if (!customElements.get('dress-up-steps')) {
         this.removeEventListener('click', this.handleClick);
         this.removeEventListener('change', this.handleChange);
         this.removeEventListener('input', this.handleInput);
+        this.removeEventListener('keydown', this.handleKeydown);
         this.removeEventListener('shopify:block:select', this.handleBlockSelect);
         window.removeEventListener('resize', this.handleResize);
         this.steps.forEach((step) => step.track?.removeEventListener('scroll', step.onScroll));
@@ -177,6 +188,7 @@ if (!customElements.get('dress-up-steps')) {
           if (step.priceEl) step.priceEl.textContent = money;
           step.toggle?.setAttribute('aria-disabled', String(!this.canOpen(step.index)));
           if (step.saveButton) step.saveButton.setAttribute('aria-disabled', String(!this.isValid(step)));
+          if (step.matchButton) step.matchButton.setAttribute('aria-disabled', String(!this.textFor(step)));
           if (step.checkoutButton) step.checkoutButton.setAttribute('aria-disabled', String(!ready));
 
           this.renderPill(step, isOpen, selections);
@@ -250,7 +262,26 @@ if (!customElements.get('dress-up-steps')) {
         }
       }
 
+      // The phone-only scroll cue is driven by the same scroll, open and resize
+      // events as the arrows, so it is rendered from here rather than wiring up
+      // a second set of listeners for it.
+      renderProgress(step) {
+        if (!step.progress || !step.track) return;
+
+        const maxScroll = step.track.scrollWidth - step.track.clientWidth;
+        step.progress.hidden = maxScroll <= 1;
+        if (step.progress.hidden) return;
+
+        // The thumb is as long a share of the bar as the visible part of the
+        // track is of its full width, and slides across the rest as it scrolls.
+        const visible = step.track.clientWidth / step.track.scrollWidth;
+        const travelled = step.track.scrollLeft / maxScroll;
+        step.progress.style.setProperty('--ds-progress-size', `${(visible * 100).toFixed(2)}%`);
+        step.progress.style.setProperty('--ds-progress-offset', `${(travelled * (1 - visible) * 100).toFixed(2)}%`);
+      }
+
       renderArrows(step) {
+        this.renderProgress(step);
         if (!step.arrows.length || !step.track) return;
         const maxScroll = step.track.scrollWidth - step.track.clientWidth - 1;
         const scrollable = maxScroll > 0;
@@ -331,6 +362,9 @@ if (!customElements.get('dress-up-steps')) {
         const pick = target('[data-dress-pick]');
         if (pick) return this.onPick(this.cardFor(pick));
 
+        const match = target('[data-dress-match]');
+        if (match) return this.onMatch(this.stepFor(match));
+
         const option = target('[data-dress-option]');
         if (option) return this.onOption(this.cardFor(option), option);
 
@@ -360,6 +394,15 @@ if (!customElements.get('dress-up-steps')) {
         this.render();
       };
 
+      // Enter in the name field does what the button beside it does.
+      handleKeydown = (event) => {
+        if (event.key !== 'Enter' || !event.target.matches('[data-dress-text]')) return;
+        const step = this.stepFor(event.target);
+        if (!step.matchButton) return;
+        event.preventDefault();
+        this.onMatch(step);
+      };
+
       // How many cards fit changes with the viewport, and with it whether the
       // arrows have anywhere left to go.
       handleResize = () => this.steps.forEach((step) => this.renderArrows(step));
@@ -367,6 +410,7 @@ if (!customElements.get('dress-up-steps')) {
       handleBlockSelect = (event) => {
         const step = this.stepFor(event.target);
         if (step) {
+          DressUpSteps.editedBlock = step.el.dataset.blockId;
           this.open(step.index);
           this.render();
         }
@@ -416,6 +460,67 @@ if (!customElements.get('dress-up-steps')) {
 
         this.clearError(step);
         this.invalidateFrom(step.index);
+        this.render();
+      }
+
+      // The letter a card stands for, from the product's one-character tag.
+      // Anything else, such as a collar, has no such tag and no letter.
+      letterFor(card) {
+        return card.el.dataset.letter ? this.normalizeLetter(card.el.dataset.letter) : '';
+      }
+
+      // Accents fold onto their base letter, so "Zoé" finds the E charm.
+      normalizeLetter(char) {
+        return char.normalize('NFD').replace(/\p{M}/gu, '').toUpperCase();
+      }
+
+      // Replaces the step's picks with one card per letter of the typed name,
+      // in the name's order. A repeated letter raises that card's quantity
+      // rather than taking a second slot, so "Bella" is four picks with two Ls.
+      // Each card keeps whatever colour it already shows.
+      onMatch(step) {
+        const text = this.textFor(step);
+        if (!text) {
+          step.textInput.setAttribute('aria-invalid', 'true');
+          step.textInput.focus();
+          return;
+        }
+
+        const cardsByLetter = new Map();
+        step.cards.forEach((card) => {
+          const letter = this.letterFor(card);
+          if (letter && !card.pickButton?.disabled && !cardsByLetter.has(letter)) cardsByLetter.set(letter, card);
+        });
+
+        const counts = new Map();
+        const missing = [];
+        Array.from(text).forEach((char) => {
+          if (!/[\p{L}\p{N}]/u.test(char)) return;
+          const letter = this.normalizeLetter(char);
+          const card = cardsByLetter.get(letter);
+          if (!card) {
+            if (!missing.includes(char.toUpperCase())) missing.push(char.toUpperCase());
+            return;
+          }
+          counts.set(card, (counts.get(card) || 0) + 1);
+        });
+
+        if (counts.size > step.max) {
+          return this.showError(step, (this.dataset.limitMessage || '').replace('{max}', step.max));
+        }
+
+        step.cards.forEach((card) => (card.selected = false));
+        counts.forEach((quantity, card) => {
+          card.selected = true;
+          card.order = ++this.pickCounter;
+          card.quantity = quantity;
+        });
+
+        this.clearError(step);
+        this.invalidateFrom(step.index);
+        if (missing.length) {
+          this.showError(step, (this.dataset.missingLettersMessage || '').replace('{letters}', missing.join(', ')));
+        }
         this.render();
       }
 

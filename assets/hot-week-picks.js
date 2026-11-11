@@ -13,14 +13,15 @@ if (!customElements.get('hot-week-picks')) {
       });
 
       this.arrows.forEach((arrow) => arrow.addEventListener('click', this.onArrowClick));
+      this.addEventListener('change', this.onColorChange);
       this.tracks.forEach((track) => track.addEventListener('scroll', this.onScroll, { passive: true }));
 
       if ('ResizeObserver' in window) {
-        this.resizeObserver = new ResizeObserver(() => this.updateArrows());
+        this.resizeObserver = new ResizeObserver(() => this.update());
         this.tracks.forEach((track) => this.resizeObserver.observe(track));
       }
 
-      this.updateArrows();
+      this.update();
     }
 
     disconnectedCallback() {
@@ -31,11 +32,35 @@ if (!customElements.get('hot-week-picks')) {
       this.arrows?.forEach((arrow) => arrow.removeEventListener('click', this.onArrowClick));
       this.tracks?.forEach((track) => track.removeEventListener('scroll', this.onScroll));
       this.resizeObserver?.disconnect();
+      this.removeEventListener('change', this.onColorChange);
     }
+
+    // A colour radio swaps the card image and points its links at that variant.
+    onColorChange = (event) => {
+      const input = event.target;
+      if (!input.matches?.('.hot-card__color-input')) return;
+      const card = input.closest('.hot-week-picks__card');
+      if (!card) return;
+
+      const { imageSrc, imageSrcset, url } = input.dataset;
+      const image = card.querySelector('.hot-card__image');
+      if (image && imageSrc) {
+        if (imageSrcset) image.srcset = imageSrcset;
+        image.src = imageSrc;
+      }
+      if (url) {
+        card.querySelectorAll('[data-card-link]').forEach((link) => {
+          link.href = url;
+        });
+      }
+    };
 
     onTabClick = (event) => this.selectTab(event.currentTarget);
 
-    onScroll = () => this.updateArrows();
+    onScroll = (event) => {
+      this.updateProgress(event.currentTarget);
+      this.updateArrows();
+    };
 
     onArrowClick = (event) => {
       const track = this.activeTrack();
@@ -66,6 +91,29 @@ if (!customElements.get('hot-week-picks')) {
       return this.activePanel()?.querySelector('.hot-week-picks__products') || null;
     }
 
+    // Both panels keep their own row and their own bar, so each is measured on
+    // its own rather than only whichever tab happens to be open.
+    update() {
+      this.tracks.forEach((track) => this.updateProgress(track));
+      this.updateArrows();
+    }
+
+    // The thumb is as long a share of the bar as the visible part of the row is
+    // of its full width, and slides across the remainder as the row scrolls.
+    updateProgress(track) {
+      const bar = track?.parentElement?.querySelector('[data-progress]');
+      if (!bar) return;
+
+      const maxScroll = track.scrollWidth - track.clientWidth;
+      bar.hidden = maxScroll <= 1;
+      if (bar.hidden) return;
+
+      const visible = track.clientWidth / track.scrollWidth;
+      const travelled = track.scrollLeft / maxScroll;
+      bar.style.setProperty('--hot-progress-size', `${(visible * 100).toFixed(2)}%`);
+      bar.style.setProperty('--hot-progress-offset', `${(travelled * (1 - visible) * 100).toFixed(2)}%`);
+    }
+
     updateArrows() {
       if (!this.nav) return;
       const track = this.activeTrack();
@@ -91,7 +139,8 @@ if (!customElements.get('hot-week-picks')) {
         panel.hidden = panel.id !== selectedTab.getAttribute('aria-controls');
       });
       if (moveFocus) selectedTab.focus();
-      this.updateArrows();
+      // A hidden panel measures as zero, so the newly shown row is remeasured.
+      this.update();
     }
   }
 

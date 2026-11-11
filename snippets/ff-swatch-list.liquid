@@ -1,0 +1,75 @@
+{% comment %}
+  The row of colour swatches on a product card, shared by every Furflaps card
+  so they agree on which colours a product shows.
+
+  A value is drawn when it has a native swatch (shopify.color-pattern) or,
+  failing that, a colour in the product's custom.color metaobjects — the
+  fallback that charms rely on, see `swatch-fallback-map`. Values with
+  neither are skipped rather than drawn as blank chips. Renders nothing when
+  the product has no matching option or no drawable value.
+
+  Accepts:
+  - product: {Object} Product Liquid object
+  - option_name: {String} name of the colour option, matched case-insensitively (default: 'Color')
+  - max_swatches: {Number} swatches to draw before a "+N" count
+  - class_prefix: {String} BEM block for the markup, e.g. 'cg-card' gives
+    cg-card__swatches / cg-card__swatch / cg-card__swatch-more
+
+  Usage:
+  {% render 'ff-swatch-list',
+    product: product,
+    option_name: section.settings.color_option_name,
+    max_swatches: section.settings.swatches_to_show,
+    class_prefix: 'cg-card'
+  %}
+{% endcomment %}
+{%- liquid
+  assign target_option_name = option_name | default: 'Color' | downcase
+  assign color_option = null
+  for option in product.options_with_values
+    assign this_option_name = option.name | downcase
+    if this_option_name == target_option_name
+      assign color_option = option
+      break
+    endif
+  endfor
+-%}
+
+{%- if color_option -%}
+  {%- capture color_fallback_map -%}
+    {%- render 'swatch-fallback-map', product: product -%}
+  {%- endcapture -%}
+
+  {%- assign swatch_total = 0 -%}
+  {%- assign swatches_shown = 0 -%}
+  {%- capture swatch_items -%}
+    {%- for value in color_option.values -%}
+      {%- capture value_name %}{{ value }}{% endcapture -%}
+      {%- capture value_fallback -%}
+        {%- if color_fallback_map != blank -%}
+          {%- render 'swatch-fallback-color', map: color_fallback_map, name: value_name -%}
+        {%- endif -%}
+      {%- endcapture -%}
+      {%- if value.swatch != blank or value_fallback != blank -%}
+        {%- assign swatch_total = swatch_total | plus: 1 -%}
+        {%- if swatches_shown < max_swatches -%}
+          <li class="{{ class_prefix }}__swatch" title="{{ value | escape }}">
+            <span class="visually-hidden">{{ value }}</span>
+            {% render 'swatch', swatch: value.swatch, fallback_color: value_fallback %}
+          </li>
+          {%- assign swatches_shown = swatches_shown | plus: 1 -%}
+        {%- endif -%}
+      {%- endif -%}
+    {%- endfor -%}
+  {%- endcapture -%}
+
+  {%- if swatch_total > 0 -%}
+    <ul class="{{ class_prefix }}__swatches" role="list" aria-label="{{ color_option.name | escape }}">
+      {{- swatch_items -}}
+      {%- assign swatches_remaining = swatch_total | minus: swatches_shown -%}
+      {%- if swatches_remaining > 0 -%}
+        <li class="{{ class_prefix }}__swatch-more">+{{ swatches_remaining }}</li>
+      {%- endif -%}
+    </ul>
+  {%- endif -%}
+{%- endif -%}

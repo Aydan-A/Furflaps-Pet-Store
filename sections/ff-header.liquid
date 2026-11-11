@@ -1,3 +1,12 @@
+{% comment %}
+  Furflaps header: a copy of Dawn's header section, customised for this store
+  (inline search, brand name, wishlist, Sale accent) and used by
+  sections/header-group.json. Dawn's own file is kept untouched so a Dawn
+  upgrade can replace it without overwriting this one. Keep the
+  "section-header" class and the #cart-icon-bubble link: Dawn's sticky-header,
+  predictive-search and cart scripts look them up.
+{% endcomment %}
+{{ 'ff-header.css' | asset_url | stylesheet_tag }}
 <link rel="stylesheet" href="{{ 'component-list-menu.css' | asset_url }}" media="print" onload="this.media='all'">
 <link rel="stylesheet" href="{{ 'component-search.css' | asset_url }}" media="print" onload="this.media='all'">
 <link rel="stylesheet" href="{{ 'component-menu-drawer.css' | asset_url }}" media="print" onload="this.media='all'">
@@ -78,6 +87,7 @@
 
 {%- style -%}
   {{ section.settings.brand_name_font | font_face: font_display: 'swap' }}
+  {{ section.settings.nav_font | font_face: font_display: 'swap' }}
 
   .header {
     padding: {{ section.settings.padding_top | times: 0.5 | round: 0 }}px 3rem {{ section.settings.padding_bottom | times: 0.5 | round: 0 }}px 3rem;
@@ -87,12 +97,17 @@
     --header-nav-gap: {{ section.settings.nav_link_gap | default: 24 }}px;
     --header-nav-font-size: {{ section.settings.nav_font_size | default: 13 }}px;
     --header-nav-justify: {% case section.settings.nav_alignment %}{% when 'left' %}flex-start{% when 'right' %}flex-end{% else %}center{% endcase %};
+    --header-nav-font-family: {{ section.settings.nav_font.family }}, {{ section.settings.nav_font.fallback_families }};
+    --header-nav-font-style: {{ section.settings.nav_font.style }};
+    --header-nav-font-weight: {{ section.settings.nav_font.weight }};
+    --header-nav-letter-spacing: {{ section.settings.nav_letter_spacing | divided_by: 100.0 }}em;
     --header-nav-accent: {{ section.settings.nav_accent_color | default: '#CC2B2B' }};
     --header-search-bg: {{ section.settings.search_bg_color | default: '#FFFFFF' }};
     --header-search-max-width: {{ section.settings.search_max_width | default: 520 }}px;
     --header-search-radius: {{ section.settings.search_border_radius | default: 0 }}px;
     --header-search-border-width: {{ section.settings.search_border_thickness | default: 1 }}px;
     --header-content-max-width: {% if section.settings.content_width == 'full' %}none{% else %}var(--page-width){% endif %};
+    --header-height: {{ section.settings.header_height }}px;
     --header-side-padding: {{ section.settings.header_side_padding | default: 24 }}px;
     --header-row-gap: {{ section.settings.header_row_gap | default: 12 }}px;
     --header-group-gap: {{ section.settings.header_group_gap | default: 24 }}px;
@@ -121,6 +136,55 @@
       padding-bottom: {{ section.settings.padding_bottom }}px;
     }
   }
+
+  /* Phones: the 3rem gutter above is a desktop measure, and the brand name is
+     set to never wrap. Together they made the logo, name and icons wider than
+     a 320-390px viewport, so the whole page scrolled sideways. The gutter drops
+     to the theme's own page gutter, the name scales with the viewport up to the
+     merchant's size, and every part of the row is allowed to shrink. */
+  @media screen and (max-width: 749px) {
+    .header {
+      padding-inline: 1.5rem;
+      column-gap: 0.4rem;
+    }
+
+    .header .header__heading,
+    .header .header__heading-link {
+      min-width: 0;
+    }
+
+    .header .header__heading-link {
+      gap: 0.6rem;
+      padding-inline: 0;
+    }
+
+    .header .header__heading-logo-wrapper {
+      width: auto;
+      flex: 0 1 auto;
+    }
+
+    /* max-width only ever shrinks, so the logo keeps its set width from about
+       390px up and gives a little back on the narrowest phones, where the row
+       has the least to share. */
+    .header .header__heading-logo {
+      max-width: min(100%, 18vw);
+    }
+
+    .header .header__brand-name {
+      min-width: 0;
+      overflow: hidden;
+      font-size: clamp(1.3rem, 4.6vw, var(--header-brand-font-size, 2rem));
+      text-overflow: ellipsis;
+    }
+
+    /* The icon buttons carry a 44px tap area around a ~20px glyph. Hanging that
+       overhang into the gutter, as the menu button already does on the left,
+       lines the glyphs up with the page gutter instead of sitting 3rem inside. */
+    .header .header__icons {
+      margin-right: -1.2rem;
+      padding-right: 0;
+    }
+  }
 {%- endstyle -%}
 
 <script src="{{ 'cart-notification.js' | asset_url }}" defer="defer"></script>
@@ -136,6 +200,27 @@
 {% liquid
   assign header_tag = 'div'
 
+  # The always-open search bar sits in the first row next to the logo,
+  # whichever logo position is chosen. A desktop drawer menu keeps Dawn's
+  # search icon instead, since that layout has no room for the bar.
+  assign show_inline_search = false
+  if section.settings.show_inline_search and section.settings.menu_type_desktop != 'drawer'
+    assign show_inline_search = true
+  endif
+
+  # Logo "Middle center" is the split menu: the first links at the left edge,
+  # the logo in the middle, the last links and the icons at the right edge,
+  # all on one row. "Top center" stays the classic layout, logo on top and the
+  # whole menu on the row below. The split needs the dropdown menu.
+  assign split_right = 0
+  if section.settings.logo_position == 'middle-center' and section.settings.menu != blank and section.settings.menu_type_desktop == 'dropdown'
+    assign split_right = section.settings.menu_links_right | at_most: section.settings.menu.links.size
+  endif
+  assign split_left = section.settings.menu.links.size | minus: split_right
+  if split_right > 0
+    assign show_inline_search = false
+  endif
+
   if section.settings.sticky_header_type != 'none'
     assign header_tag = 'sticky-header'
   endif
@@ -145,7 +230,7 @@
   {% if header_tag == 'sticky-header' %}
     data-sticky-type="{{ section.settings.sticky_header_type }}"
   {% endif %}
-  class="header-wrapper color-{{ section.settings.color_scheme }} gradient{% if section.settings.show_line_separator %} header-wrapper--border-bottom{% endif %}"
+  class="header-wrapper color-{{ section.settings.color_scheme }} gradient{% if section.settings.show_line_separator and section.settings.floating_bar == false %} header-wrapper--border-bottom{% endif %}"
 >
   {%- liquid
     assign social_links = false
@@ -159,7 +244,7 @@
       assign localization_forms = true
     endif
   -%}
-  <header class="header header--{{ section.settings.logo_position }} header--mobile-{{ section.settings.mobile_logo_position }} page-width{% if section.settings.menu_type_desktop == 'drawer' %} drawer-menu{% endif %}{% if section.settings.menu != blank %} header--has-menu{% endif %}{% if has_app_block %} header--has-app{% endif %}{% if social_links %} header--has-social{% endif %}{% if shop.customer_accounts_enabled %} header--has-account{% endif %}{% if localization_forms %} header--has-localizations{% endif %}">
+  <header class="header header--{{ section.settings.logo_position }} header--mobile-{{ section.settings.mobile_logo_position }} page-width{% if section.settings.menu_type_desktop == 'drawer' %} drawer-menu{% endif %}{% if section.settings.menu != blank %} header--has-menu{% endif %}{% if has_app_block %} header--has-app{% endif %}{% if social_links %} header--has-social{% endif %}{% if shop.customer_accounts_enabled %} header--has-account{% endif %}{% if localization_forms %} header--has-localizations{% endif %}{% if show_inline_search %} header--inline-search{% endif %}{% if split_right > 0 %} header--split-menu{% endif %}{% if section.settings.floating_bar %} header--floating color-{{ section.settings.bar_color_scheme }} gradient{% endif %}{% if section.settings.icon_style == 'circle' %} header--icon-circles{% endif %}">
     {%- liquid
       if section.settings.menu != blank
         render 'header-drawer'
@@ -206,14 +291,18 @@
       {%- endif -%}
     {%- endif -%}
 
-    {%- if section.settings.logo_position == 'middle-left' -%}
+    {%- if show_inline_search -%}
       {%- render 'header-search-inline', input_id: 'Header-Search-Inline' -%}
     {%- endif -%}
 
     {%- liquid
       if section.settings.menu != blank
         if section.settings.menu_type_desktop == 'dropdown'
-          render 'header-dropdown-menu'
+          if split_right > 0
+            render 'ff-header-dropdown-menu', link_limit: split_left
+          else
+            render 'ff-header-dropdown-menu'
+          endif
         elsif section.settings.menu_type_desktop != 'drawer'
           render 'header-mega-menu'
         endif
@@ -256,6 +345,16 @@
       {%- endif -%}
     {%- endif -%}
 
+    {%- if split_right > 0 -%}
+      {%- comment -%} Right-hand links and the icons travel together at the right edge. {%- endcomment -%}
+      <div class="header__end">
+      {%- render 'ff-header-dropdown-menu',
+        link_offset: split_left,
+        link_limit: split_right,
+        nav_class: 'header__inline-menu--right'
+      -%}
+    {%- endif -%}
+
     <div class="header__icons{% if section.settings.enable_country_selector or section.settings.enable_language_selector %} header__icons--localization header-localization{% endif %}">
       <div class="desktop-localization-wrapper">
         {%- if section.settings.enable_country_selector and localization.available_countries.size > 1 -%}
@@ -280,7 +379,7 @@
           </localization-form>
         {%- endif -%}
       </div>
-      <div class="header__mobile-search{% if section.settings.logo_position == 'middle-left' %} large-up-hide{% endif %}">
+      <div class="header__mobile-search{% if show_inline_search %} large-up-hide{% endif %}">
         {% render 'header-search', input_id: 'Search-In-Modal' %}
       </div>
 
@@ -313,9 +412,9 @@
         </a>
       {%- endif -%}
 
-      {%- if section.settings.show_wishlist_icon -%}
+      {%- if section.settings.show_wishlist_icon and section.settings.wishlist_url != blank -%}
         <a
-          href="{{ section.settings.wishlist_url | default: '#' }}"
+          href="{{ section.settings.wishlist_url }}"
           class="header__icon header__icon--wishlist link focus-inset{% if section.settings.menu != blank %} small-hide{% endif %}"
         >
           <span class="svg-wrapper">{{ 'icon-heart.svg' | inline_asset_content }}</span>
@@ -330,25 +429,26 @@
         {%- endcase -%}
       {%- endfor -%}
 
-      {%- if section.settings.show_cart_icon -%}
-        <a href="{{ routes.cart_url }}" class="header__icon header__icon--cart link focus-inset" id="cart-icon-bubble">
-          {% if cart == empty %}
-            <span class="svg-wrapper">{{ 'icon-cart-empty.svg' | inline_asset_content }}</span>
-          {% else %}
-            <span class="svg-wrapper">{{ 'icon-cart.svg' | inline_asset_content }}</span>
-          {% endif %}
-          <span class="visually-hidden">{{ 'templates.cart.cart' | t }}</span>
-          {%- if cart != empty -%}
-            <div class="cart-count-bubble">
-              {%- if cart.item_count < 100 -%}
-                <span aria-hidden="true">{{ cart.item_count }}</span>
-              {%- endif -%}
-              <span class="visually-hidden">{{ 'sections.header.cart_count' | t: count: cart.item_count }}</span>
-            </div>
-          {%- endif -%}
-        </a>
-      {%- endif -%}
+      <a href="{{ routes.cart_url }}" class="header__icon header__icon--cart link focus-inset" id="cart-icon-bubble">
+        {% if cart == empty %}
+          <span class="svg-wrapper">{{ 'icon-cart-empty.svg' | inline_asset_content }}</span>
+        {% else %}
+          <span class="svg-wrapper">{{ 'icon-cart.svg' | inline_asset_content }}</span>
+        {% endif %}
+        <span class="visually-hidden">{{ 'templates.cart.cart' | t }}</span>
+        {%- if cart != empty -%}
+          <div class="cart-count-bubble">
+            {%- if cart.item_count < 100 -%}
+              <span aria-hidden="true">{{ cart.item_count }}</span>
+            {%- endif -%}
+            <span class="visually-hidden">{{ 'sections.header.cart_count' | t: count: cart.item_count }}</span>
+          </div>
+        {%- endif -%}
+      </a>
     </div>
+    {%- if split_right > 0 -%}
+      </div>
+    {%- endif -%}
   </header>
 </{{ header_tag }}>
 
@@ -515,7 +615,7 @@
 
 {% schema %}
 {
-  "name": "t:sections.header.name",
+  "name": "Furflaps header",
   "class": "section-header",
   "max_blocks": 3,
   "settings": [
@@ -607,10 +707,27 @@
       "default": 32
     },
     {
+      "type": "font_picker",
+      "id": "nav_font",
+      "default": "archivo_n8",
+      "label": "Menu font",
+      "info": "Pick the family and its weight here."
+    },
+    {
+      "type": "range",
+      "id": "nav_letter_spacing",
+      "min": -5,
+      "max": 15,
+      "step": 1,
+      "unit": "%",
+      "label": "Menu letter spacing",
+      "default": 0
+    },
+    {
       "type": "range",
       "id": "nav_font_size",
       "min": 10,
-      "max": 18,
+      "max": 26,
       "step": 1,
       "unit": "px",
       "label": "Link font size",
@@ -619,6 +736,7 @@
     {
       "type": "select",
       "id": "nav_alignment",
+      "visible_if": "{{ section.settings.logo_position != 'middle-center' or section.settings.menu_type_desktop != 'dropdown' }}",
       "options": [
         {
           "value": "left",
@@ -637,25 +755,51 @@
       "label": "Menu alignment"
     },
     {
+      "type": "range",
+      "id": "menu_links_right",
+      "visible_if": "{{ section.settings.logo_position == 'middle-center' and section.settings.menu_type_desktop == 'dropdown' }}",
+      "min": 1,
+      "max": 4,
+      "step": 1,
+      "label": "Menu links right of the logo",
+      "info": "For logo position \"Middle center\" with the dropdown menu: how many of the last menu links sit on the right, next to the icons.",
+      "default": 2
+    },
+    {
       "type": "color",
       "id": "nav_accent_color",
       "default": "#CC2B2B",
-      "label": "\"Sale\" link color",
-      "info": "Applied to any top-level menu item titled \"Sale\""
+      "label": "Highlighted link color"
+    },
+    {
+      "type": "url",
+      "id": "nav_accent_link",
+      "label": "Highlighted link",
+      "info": "A top-level menu link shown in the highlight color, on the dropdown menu. Leave empty to highlight the link titled \"Sale\"."
     },
     {
       "type": "header",
       "content": "Search bar"
     },
     {
+      "type": "checkbox",
+      "id": "show_inline_search",
+      "visible_if": "{{ section.settings.logo_position != 'middle-center' or section.settings.menu_type_desktop != 'dropdown' }}",
+      "default": true,
+      "label": "Show search bar on desktop",
+      "info": "Sits beside the logo in every logo position. Not shown with the desktop drawer menu."
+    },
+    {
       "type": "color",
       "id": "search_bg_color",
+      "visible_if": "{{ section.settings.show_inline_search and section.settings.logo_position != 'middle-center' }}",
       "default": "#FFFFFF",
       "label": "Background color"
     },
     {
       "type": "range",
       "id": "search_max_width",
+      "visible_if": "{{ section.settings.show_inline_search and section.settings.logo_position != 'middle-center' }}",
       "min": 280,
       "max": 800,
       "step": 20,
@@ -666,12 +810,14 @@
     {
       "type": "text",
       "id": "search_placeholder",
+      "visible_if": "{{ section.settings.show_inline_search and section.settings.logo_position != 'middle-center' }}",
       "default": "Search products",
       "label": "Placeholder text"
     },
     {
       "type": "range",
       "id": "search_border_radius",
+      "visible_if": "{{ section.settings.show_inline_search and section.settings.logo_position != 'middle-center' }}",
       "min": 0,
       "max": 30,
       "step": 2,
@@ -682,12 +828,52 @@
     {
       "type": "range",
       "id": "search_border_thickness",
+      "visible_if": "{{ section.settings.show_inline_search and section.settings.logo_position != 'middle-center' }}",
       "min": 0,
       "max": 4,
       "step": 1,
       "unit": "px",
       "label": "Border thickness",
       "default": 1
+    },
+    {
+      "type": "header",
+      "content": "Bar style"
+    },
+    {
+      "type": "range",
+      "id": "header_height",
+      "min": 40,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "label": "Header height (desktop)",
+      "info": "Height of the bar's logo row, set on its own: the logo keeps the size from Theme settings > Logo. On desktop this replaces the top and bottom padding below.",
+      "default": 56
+    },
+    {
+      "type": "checkbox",
+      "id": "floating_bar",
+      "default": false,
+      "label": "Floating bar",
+      "info": "Sets the header in a rounded bar, inset from the page edges."
+    },
+    {
+      "type": "color_scheme",
+      "id": "bar_color_scheme",
+      "label": "Bar color scheme",
+      "default": "scheme-1",
+      "visible_if": "{{ section.settings.floating_bar }}"
+    },
+    {
+      "type": "select",
+      "id": "icon_style",
+      "label": "Icon style",
+      "options": [
+        { "value": "plain", "label": "Plain" },
+        { "value": "circle", "label": "In circles" }
+      ],
+      "default": "plain"
     },
     {
       "type": "header",
@@ -716,12 +902,13 @@
       "max": 48,
       "step": 2,
       "unit": "px",
-      "label": "Side padding",
+      "label": "Side padding (desktop)",
       "default": 24
     },
     {
       "type": "range",
       "id": "header_row_gap",
+      "visible_if": "{{ section.settings.logo_position != 'middle-center' or section.settings.menu_type_desktop != 'dropdown' }}",
       "min": 4,
       "max": 32,
       "step": 2,
@@ -736,7 +923,7 @@
       "max": 48,
       "step": 2,
       "unit": "px",
-      "label": "Spacing between brand, search and actions",
+      "label": "Spacing between brand, search and actions (desktop)",
       "default": 24
     },
     {
@@ -758,14 +945,9 @@
     {
       "type": "url",
       "id": "wishlist_url",
+      "visible_if": "{{ section.settings.show_wishlist_icon }}",
       "label": "Wishlist link",
-      "info": "Leave blank until a wishlist app/page is set up"
-    },
-    {
-      "type": "checkbox",
-      "id": "show_cart_icon",
-      "default": true,
-      "label": "Show cart icon"
+      "info": "The icon only shows once this link is set."
     },
     {
       "type": "range",
@@ -774,7 +956,7 @@
       "max": 28,
       "step": 1,
       "unit": "px",
-      "label": "Icon size",
+      "label": "Icon size (desktop)",
       "default": 20
     },
     {
@@ -784,7 +966,7 @@
       "max": 24,
       "step": 2,
       "unit": "px",
-      "label": "Icon spacing",
+      "label": "Icon spacing (desktop)",
       "default": 4
     },
     {
@@ -840,6 +1022,7 @@
     {
       "type": "checkbox",
       "id": "show_line_separator",
+      "visible_if": "{{ section.settings.floating_bar == false }}",
       "default": true,
       "label": "t:sections.header.settings.show_line_separator.label"
     },

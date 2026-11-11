@@ -1,13 +1,27 @@
 {% comment %}
+  Furflaps copy of Dawn's header-dropdown-menu, adding the highlighted menu
+  link. Rendered by sections/ff-header.liquid; Dawn's snippet stays stock.
+{% endcomment %}
+{% comment %}
   Renders a standard dropdown style menu for the header.
 
-  Usage:
-  {% render 'header-dropdown-menu' %}
-{% endcomment %}
+  Accepts (optional, for the split menu either side of a centred logo):
+  - link_offset: {Number} skip this many top-level links
+  - link_limit: {Number} render at most this many top-level links
+  - nav_class: {String} extra class on the <nav>
 
-<nav class="header__inline-menu">
+  Usage:
+  {% render 'ff-header-dropdown-menu' %}
+  {% render 'ff-header-dropdown-menu', link_offset: 5, link_limit: 2, nav_class: 'header__inline-menu--right' %}
+{% endcomment %}
+{%- liquid
+  assign link_offset = link_offset | default: 0
+  assign link_limit = link_limit | default: 50
+-%}
+
+<nav class="header__inline-menu{% if nav_class != blank %} {{ nav_class }}{% endif %}">
   <ul class="list-menu list-menu--inline" role="list">
-    {%- for link in section.settings.menu.links -%}
+    {%- for link in section.settings.menu.links offset: link_offset limit: link_limit -%}
       <li>
         {%- if link.links != blank -%}
           <header-menu>
@@ -81,10 +95,20 @@
           </header-menu>
         {%- else -%}
           {%- liquid
-            assign link_title_down = link.title | downcase
+            comment
+              The highlighted link is the one chosen in the header's "Highlighted
+              link" setting. With none chosen, a link titled "Sale" is used.
+            endcomment
             assign is_sale_link = false
-            if link_title_down == 'sale'
-              assign is_sale_link = true
+            if section.settings.nav_accent_link != blank
+              if link.url == section.settings.nav_accent_link
+                assign is_sale_link = true
+              endif
+            else
+              assign link_title_down = link.title | downcase | strip
+              if link_title_down == 'sale'
+                assign is_sale_link = true
+              endif
             endif
           -%}
           <a

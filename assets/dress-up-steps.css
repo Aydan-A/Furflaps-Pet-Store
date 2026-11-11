@@ -259,8 +259,42 @@
 }
 .ds-field__input::placeholder { color: var(--ds-muted); font-weight: 500; }
 .ds-field__input[aria-invalid='true'] { border-color: var(--ds-accent); }
+/* Match letters is a round arrow inside the right end of the name field. The
+   input keeps room for it on the right, so a long name never runs under it. */
+.ds-field__control { position: relative; display: flex; min-width: 0; }
+.ds-field__control .ds-field__input { padding-right: calc(var(--ds-control-height) + .4rem); }
+.ds-field__match {
+  position: absolute;
+  top: .4rem;
+  right: .4rem;
+  display: grid;
+  width: calc(var(--ds-control-height) - .8rem);
+  height: calc(var(--ds-control-height) - .8rem);
+  padding: 0;
+  place-items: center;
+  border: 0;
+  border-radius: 50%;
+  background: var(--ds-accent);
+  color: var(--ds-accent-text);
+  cursor: pointer;
+  transition: background-color 150ms ease;
+}
+.ds-field__match svg { width: 1.8rem; height: 1.8rem; }
+.ds-field__match:hover:not([aria-disabled='true']) { opacity: .88; }
+/* Grey until there is a name to match, then the accent. */
+.ds-field__match[aria-disabled='true'] {
+  background: color-mix(in srgb, var(--ds-muted) 55%, #FFFFFF);
+  cursor: not-allowed;
+}
 
 .ds-step__arrows { display: flex; margin-left: auto; gap: .8rem; }
+
+/* Swipe cue for the carousel. Desktop and tablet have the arrows to say the
+   track carries on; phones hide them, so the track gets a scrollbar of its own
+   instead - one that reports both how far along it is and how much of the row
+   is in view, which the arrows cannot. Decorative: the track is already
+   scrollable by touch and the arrows still drive it by keyboard. */
+.ds-progress { display: none; }
 .ds-arrow {
   display: grid;
   width: 3.6rem;
@@ -298,6 +332,9 @@
   margin: -.4rem;
   overflow: hidden;
   scroll-snap-type: x mandatory;
+  /* Snap cards to the inside of that padding, not the clipped edge, or the
+     first card scrolls .4rem left and loses the left side of its ring. */
+  scroll-padding-inline: .4rem;
   scroll-behavior: smooth;
   overscroll-behavior-inline: contain;
 }
@@ -308,6 +345,11 @@
    carousel's clip and give the page a horizontal scrollbar. */
 .ds-card {
   position: relative;
+  /* The card sizes its own overlay controls: a step of letter tiles and a step
+     of product photos sit side by side at the same breakpoint but are half the
+     width apart, so screen width cannot tell them apart. Safe on a card whose
+     inline size already comes from its flex basis rather than its contents. */
+  container-type: inline-size;
   display: flex;
   flex: 0 0 calc((100% - (var(--ds-visible) - 1) * var(--ds-gap)) / var(--ds-visible) - .02rem);
   min-width: 0;
@@ -360,6 +402,20 @@
   background: var(--ds-accent);
   color: var(--ds-accent-text);
 }
+/* At the size it takes on a product photo the tick covered a fifth of a letter
+   and crowded the glyph off centre. Ignored where container queries are
+   unsupported, which leaves the larger tick - cramped, never broken. */
+@container (max-width: 12rem) {
+  .ds-card__check {
+    top: .6rem;
+    right: .6rem;
+    width: 1.8rem;
+    height: 1.8rem;
+    border-radius: .5rem;
+  }
+  .ds-card__check svg { width: 1.1rem; height: 1.1rem; }
+}
+
 .ds-card__flag {
   position: absolute;
   bottom: 1rem;
@@ -380,9 +436,7 @@
    card, and they wrap rather than scroll: on a narrow card the options sit
    directly under it and the quantity drops below, never cut off.
 
-   Centred as a pair, not spread to the edges: the options take the width they
-   need and no more, so the size sits next to the quantity rather than at the
-   far side of the card from it, and the two read as one pair of controls. The
+   Size and quantity sit side by side, size first, as one pair on one row. The
    row gap matches the card's own gap, so image to options and options to
    quantity read the same. */
 .ds-card__controls {
@@ -390,17 +444,31 @@
   padding-inline: .6rem;
   flex-wrap: wrap;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   gap: .8rem;
   visibility: hidden;
 }
 .ds-card--selected .ds-card__controls { visibility: visible; }
+/* On a card with options, such as the collar sizes, the sizes and the stepper
+   sit on the photo, one row along its bottom edge: sizes on the left, quantity
+   on the right. Out of the flow, they cost the card no height at all. The
+   photo is the card's first child and nothing follows the controls, so the
+   card's bottom is the photo's bottom. */
+.ds-card__controls:has(.ds-card__options) {
+  position: absolute;
+  inset-inline: 0;
+  bottom: 0;
+  z-index: 1;
+  padding: .8rem;
+  flex-wrap: nowrap;
+  justify-content: space-between;
+}
+.ds-card__controls:has(.ds-card__options) .ds-card__values { flex-wrap: nowrap; }
 
 /* min-content, not 0: the options box refuses to shrink narrower than a single
    swatch, so a card too narrow for options and quantity side by side drops the
    quantity onto its own line instead of squeezing the swatches out of sight.
-   It does not grow either - free space belongs on both sides of the pair, not
-   between the size and the stepper. */
+   */
 .ds-card__options {
   display: flex;
   flex: 0 1 auto;
@@ -410,21 +478,22 @@
   gap: .6rem;
 }
 .ds-card__values { display: flex; flex-wrap: wrap; gap: .4rem; }
+/* Option values, such as the sizes, wear the size tag from the Our Favourite
+   Sets cards: the same pill, colours and small uppercase type. */
 .ds-card__value {
   display: inline-grid;
-  min-width: var(--ds-control-small);
-  height: var(--ds-control-small);
-  padding: 0 1.2rem;
+  padding: .4rem 1.2rem;
   place-items: center;
-  border: .2rem solid transparent;
-  border-radius: var(--ds-radius-control);
-  background: var(--ds-surface);
-  box-shadow: inset 0 0 0 .1rem var(--ds-border);
-  color: inherit;
+  border: 1px solid var(--ds-size-tag-border);
+  border-radius: 999px;
+  background: var(--ds-size-tag-background);
+  color: var(--ds-size-tag-text);
   font-family: inherit;
-  font-size: 1.3rem;
+  font-size: 1.2rem;
   font-weight: 700;
-  line-height: 1;
+  line-height: 1.2;
+  letter-spacing: .04em;
+  text-transform: uppercase;
   cursor: pointer;
 }
 .ds-card__value--swatch {
@@ -432,48 +501,50 @@
   min-width: 0;
   height: 2.2rem;
   padding: 0;
+  border: .2rem solid transparent;
+  box-shadow: inset 0 0 0 .1rem var(--ds-border);
   border-radius: 50%;
   background-clip: padding-box;
   background-position: center;
   background-size: cover;
 }
-.ds-card__value--active { border-color: var(--ds-accent); box-shadow: none; }
+.ds-card__value--active { border-color: var(--ds-accent); box-shadow: inset 0 0 0 1px var(--ds-accent); }
+.ds-card__value--swatch.ds-card__value--active { box-shadow: none; }
 /* Sold-out values stay visible, so what is on offer is never a surprise. */
 .ds-card__value--unavailable { opacity: .35; text-decoration: line-through; }
 .ds-card__value--swatch.ds-card__value--unavailable { text-decoration: none; }
 
-/* Size and quantity are peers on one row, so they share a height, a border, a
-   radius and a type size. The select also holds its width across values, so
-   picking Medium after Small does not shift the row. */
-.ds-card__select { position: relative; display: flex; flex: 0 1 auto; min-width: 0; align-items: center; }
+/* The size dropdown wears the size tag from the Our Favourite Sets cards: the
+   same pill, colours and small uppercase type, so a size reads the same in
+   both sections. It stays a real select, with a caret to say so, and it takes
+   the width of its value rather than stretching, as the tag does. */
+.ds-card__select { position: relative; display: inline-flex; flex: 0 1 auto; min-width: 0; align-items: center; }
 .ds-card__select-input {
-  width: 100%;
-  min-width: 9rem;
-  height: var(--ds-control-small);
-  padding: 0 2.8rem 0 1.2rem;
+  max-width: 100%;
+  padding: .4rem 2.6rem .4rem 1.2rem;
   appearance: none;
-  border: 0;
-  border-radius: var(--ds-radius-control);
-  background: var(--ds-surface);
-  box-shadow: inset 0 0 0 .1rem var(--ds-border);
-  color: inherit;
+  border: 1px solid var(--ds-size-tag-border);
+  border-radius: 999px;
+  background: var(--ds-size-tag-background);
+  color: var(--ds-size-tag-text);
   font-family: inherit;
-  font-size: 1.3rem;
+  font-size: 1.2rem;
   font-weight: 700;
-  line-height: 1;
+  line-height: 1.2;
+  letter-spacing: .04em;
+  text-transform: uppercase;
   cursor: pointer;
-  text-overflow: ellipsis;
 }
 .ds-card__select-input:focus-visible { outline: .2rem solid var(--ds-text); outline-offset: .2rem; }
 .ds-card__select-caret {
   position: absolute;
-  right: .9rem;
+  right: 1rem;
   display: grid;
   place-items: center;
-  color: var(--ds-muted);
+  color: var(--ds-size-tag-text);
   pointer-events: none;
 }
-.ds-card__select-caret svg { width: 1rem; height: .6rem; }
+.ds-card__select-caret svg { width: .9rem; height: .55rem; }
 
 .ds-card__quantity {
   display: flex;
@@ -500,6 +571,19 @@
   cursor: pointer;
 }
 .ds-card__quantity-button:hover:not(:disabled) { background: rgba(0, 0, 0, .06); }
+
+/* The stepper is sized for a product card. On a tile narrower than the stepper
+   itself it hung over the cards either side - 8px into each gap on a letter at
+   320px. Below that width it spans its own card instead and trades the fixed
+   button size for one that fits, staying above the 24px minimum. Measured
+   against the card rather than the screen: how narrow a card gets depends on
+   the step's own cards-in-view setting as much as on the viewport. */
+@container (max-width: 10.4rem) {
+  .ds-card__controls { padding-inline: 0; }
+  .ds-card__quantity { width: 100%; justify-content: space-between; padding-inline: .2rem; }
+  .ds-card__quantity-button { width: 2.8rem; height: 2.8rem; }
+  .ds-card__quantity-value { min-width: 1.2rem; }
+}
 /* One is the floor, so the control says so rather than going quietly nowhere. */
 .ds-card__quantity-button:disabled { color: var(--ds-border); cursor: not-allowed; }
 .ds-card__quantity-value { min-width: 2rem; font-size: 1.3rem; font-weight: 700; text-align: center; }
@@ -511,17 +595,27 @@
 .ds-arrow:focus-visible,
 .ds-card__value:focus-visible,
 .ds-card__quantity-button:focus-visible,
-.ds-field__input:focus-visible { outline: .2rem solid var(--ds-text); outline-offset: .3rem; }
+.ds-field__input:focus-visible,
+.ds-field__match:focus-visible { outline: .2rem solid var(--ds-text); outline-offset: .3rem; }
 .ds-card__pick:focus-visible { outline: .2rem solid var(--ds-text); outline-offset: .2rem; }
 
 /* ---------- Responsive ---------- */
 
+/* How many cards a step shows shrinks with the screen, but a step of small
+   square tiles and a step of large product cards should not land on the same
+   count: eight letters per row dropping straight to two made each letter the
+   size of a collar photo and turned the alphabet into a long sideways scroll.
+   The count now steps down from the step's own setting, floored so large cards
+   keep the counts they had and capped so a card never drops below the width its
+   size-and-quantity row needs. Subtraction rather than a fraction, so the count
+   is always whole and a step never shows a half card. A step set to 4 is
+   unchanged at every width; a step set to 8 keeps more of its tiles in view. */
 @media screen and (max-width: 989px) {
-  .ds-step { --ds-visible: min(var(--ds-per-row, 4), 3); }
+  .ds-step { --ds-visible: min(var(--ds-per-row, 4), clamp(3, calc(var(--ds-per-row, 4) - 4), 4)); }
 }
 
 @media screen and (max-width: 749px) {
-  .ds-step { --ds-visible: min(var(--ds-per-row, 4), 2); }
+  .ds-step { --ds-visible: min(var(--ds-per-row, 4), clamp(2, calc(var(--ds-per-row, 4) - 4), 3)); }
   .dress-up-steps {
     /* Room for a fingertip on the controls a customer actually taps. */
     --ds-control-small: 4rem;
@@ -534,7 +628,8 @@
   .ds-step__title { font-size: var(--ds-mobile-step-title-size); }
   .ds-step__toggle { flex: 1 1 100%; }
   .ds-step__pill { max-width: 100%; margin-left: 3.8rem; }
-  .ds-field__input { width: 100%; }
+  .ds-field__control { flex: 1 1 auto; }
+  .ds-field__input { width: 100%; min-width: 0; }
   .ds-step--open .ds-step__actions { flex: 1 1 100%; margin-left: 3.8rem; justify-content: space-between; }
 
   .ds-step__toolbar { flex-wrap: wrap; }
@@ -549,6 +644,57 @@
     scrollbar-width: none;
   }
   .ds-track[data-layout='carousel']::-webkit-scrollbar { display: none; }
+
+  /* Every card reserves room for the controls it only reveals once picked, so a
+     row keeps its height as selections change. Four across on a desktop that
+     reserve is a single control row; two or three across on a phone the options
+     and the quantity each need a line of their own, and the reserve becomes a
+     void most of a tile tall under every card in the grid. Here the controls
+     collapse instead and the picked card grows - and that is the card just
+     tapped, so the row changes exactly where the customer is already looking. */
+  .ds-card__controls { display: none; }
+  .ds-card--selected .ds-card__controls { display: flex; }
+
+  /* The price and the button are the step's own pair rather than two things at
+     opposite ends of the row: the button takes whatever width the price leaves,
+     which also makes the step's primary action the widest target in it. */
+  .ds-step--open .ds-step__actions { gap: 1.2rem; justify-content: flex-start; }
+  .ds-step--open .ds-step__actions .ds-button { flex: 1 1 auto; justify-content: center; }
+
+  .ds-progress {
+    position: relative;
+    display: block;
+    width: min(12rem, 40%);
+    height: .3rem;
+    margin: 1.6rem auto 0;
+    border-radius: var(--ds-radius-control);
+    background: color-mix(in srgb, currentColor 12%, transparent);
+  }
+
+  /* Beats the display: block above when the track fits and there is nothing to
+     report. */
+  .ds-progress[hidden] { display: none; }
+
+  .ds-progress span {
+    position: absolute;
+    inset-block: 0;
+    left: var(--ds-progress-offset, 0%);
+    width: var(--ds-progress-size, 100%);
+    border-radius: inherit;
+    background: color-mix(in srgb, currentColor 55%, transparent);
+  }
+}
+
+/* Below 480px a card narrower than half the step cannot hold a size select and
+   a quantity stepper side by side, so two is the floor - but only for the steps
+   that have a select. A step whose options are swatch or value buttons carries
+   nothing that wide, and holding it to two made a step of small square tiles as
+   coarse as a step of product photos: the alphabet showed two letters at a time
+   and ran several screens sideways. Where :has is unsupported the floor is
+   simply lost, which changes nothing - the rule above already resolves to two
+   for any step set to four or fewer, and only a step set higher reaches here. */
+@media screen and (max-width: 479px) {
+  .ds-step:has(.ds-card__select) { --ds-visible: min(var(--ds-per-row, 4), 2); }
 }
 
 @media (prefers-reduced-motion: reduce) {

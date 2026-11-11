@@ -12,33 +12,47 @@
   "type": "header",
   "sections": {
     "announcement-bar": {
-      "type": "announcement-bar",
+      "type": "ff-announcement-bar",
       "blocks": {
+        "announcement_UGeKmg": {
+          "type": "announcement",
+          "settings": {
+            "prefix": "",
+            "text": "MYSTERY GIFT ON YOUR FIRST ORDER 🎁",
+            "link": ""
+          }
+        },
         "announcement-bar-0": {
           "type": "announcement",
           "settings": {
             "prefix": "",
-            "text": "Free shipping across Canada on orders $50+",
+            "text": "FREE SHIPPING ACROSS CANADA ON ORDER +50$ 📦",
             "link": ""
           }
         }
       },
       "block_order": [
+        "announcement_UGeKmg",
         "announcement-bar-0"
       ],
       "settings": {
         "content_width": "full",
-        "side_padding": 32,
+        "side_padding": 16,
+        "display_mode": "ticker",
+        "ticker_speed": 20,
         "show_navigation": true,
         "auto_rotate": true,
-        "change_slides_speed": 5,
+        "change_slides_speed": 4,
         "color_scheme": "scheme-2",
+        "use_custom_colors": true,
+        "background_color": "#f2cac5",
+        "text_color": "#020202",
         "show_line_separator": true,
         "font_source": "heading",
         "message_font_size": 16,
-        "message_font_weight": "400",
-        "message_vertical_padding": 7,
-        "content_gap": 8,
+        "message_font_weight": "500",
+        "message_vertical_padding": 4,
+        "content_gap": 4,
         "show_link_arrow": true,
         "show_social": false,
         "enable_country_selector": false,
@@ -46,23 +60,32 @@
       }
     },
     "header": {
-      "type": "header",
+      "type": "ff-header",
       "settings": {
-        "logo_position": "middle-left",
+        "logo_position": "middle-center",
         "mobile_logo_position": "left",
-        "show_brand_name": true,
-        "brand_name_font": "almarai_n4",
-        "brand_name_font_size": 25,
+        "show_brand_name": false,
+        "brand_name_font": "serif",
+        "brand_name_font_size": 28,
         "brand_name_uppercase": true,
-        "nav_link_gap": 28,
-        "nav_font_size": 18,
+        "nav_link_gap": 20,
+        "nav_font": "archivo_n8",
+        "nav_letter_spacing": 0,
+        "nav_font_size": 14,
         "nav_alignment": "center",
-        "nav_accent_color": "#cc2b2b",
-        "search_bg_color": "#ffffff",
+        "menu_links_right": 1,
+        "nav_accent_color": "#ffffff",
+        "nav_accent_link": "",
+        "show_inline_search": true,
+        "search_bg_color": "#cc302a",
         "search_max_width": 680,
         "search_placeholder": "Search products",
         "search_border_radius": 24,
         "search_border_thickness": 1,
+        "header_height": 56,
+        "floating_bar": true,
+        "bar_color_scheme": "scheme-4",
+        "icon_style": "plain",
         "content_width": "full",
         "header_side_padding": 32,
         "header_row_gap": 8,
@@ -70,9 +93,8 @@
         "show_account_icon": true,
         "show_wishlist_icon": false,
         "wishlist_url": "",
-        "show_cart_icon": true,
-        "icon_size": 22,
-        "icon_gap": 6,
+        "icon_size": 20,
+        "icon_gap": 8,
         "menu": "main-menu",
         "menu_type_desktop": "dropdown",
         "sticky_header_type": "on-scroll-up",
@@ -83,8 +105,8 @@
         "enable_language_selector": true,
         "enable_customer_avatar": true,
         "margin_bottom": 0,
-        "padding_top": 8,
-        "padding_bottom": 8
+        "padding_top": 4,
+        "padding_bottom": 4
       }
     }
   },

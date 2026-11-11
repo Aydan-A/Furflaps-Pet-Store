@@ -1,0 +1,38 @@
+{% comment %}
+  Furflaps design tokens taken from Theme settings > Badges > "Furflaps
+  product cards", plus the New / Pre-order badge styles for Dawn's
+  `card-product`. Rendered once from layout/theme.liquid, so those colours
+  live in one place instead of in each section and in Dawn's stylesheets.
+{% endcomment %}
+{%- style -%}
+  :root {
+    --ff-badge-background: {{ settings.ff_badge_background }};
+    --ff-badge-text: {{ settings.ff_badge_text }};
+    --ff-preorder-badge-background: {{ settings.ff_preorder_badge_background }};
+    --ff-compare-price-color: {{ settings.ff_compare_price_color }};
+    --ff-discount-background: {{ settings.ff_discount_background }};
+    --ff-discount-text: {{ settings.ff_discount_text }};
+  }
+
+  .card__badge .badge--new,
+  .card__badge .badge--pre-order,
+  .card__badge .badge--preorder {
+    border: 0;
+    font-size: 1rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    line-height: 1;
+    padding: 0.7rem 1rem;
+    text-transform: uppercase;
+    color: var(--ff-badge-text);
+  }
+
+  .card__badge .badge--new {
+    background: var(--ff-badge-background);
+  }
+
+  .card__badge .badge--pre-order,
+  .card__badge .badge--preorder {
+    background: var(--ff-preorder-badge-background);
+  }
+{%- endstyle -%}

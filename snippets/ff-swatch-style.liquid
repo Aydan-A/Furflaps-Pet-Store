@@ -1,0 +1,59 @@
+{% comment %}
+  The inline style that paints one option value as a swatch, for cards that
+  draw their own swatch buttons instead of using `ff-swatch-list`.
+
+  Looks, in order, at the value's native swatch colour, its native swatch
+  image, the product's custom.color palette (when `map` is given), and the
+  photo of the variant wearing that value (when `variant_photo` is true).
+  Outputs nothing when none applies, so callers can render a text chip.
+
+  Accepts:
+  - value: {Object} product_option_value
+  - option: {Object} the product_option the value belongs to (needed for `variant_photo`)
+  - product: {Object} Product Liquid object (needed for `variant_photo`)
+  - map: {String} output of `swatch-fallback-map` (optional)
+  - variant_photo: {Boolean} fall back to the variant's featured image (optional)
+
+  Usage:
+  {%- capture swatch_style -%}
+    {%- render 'ff-swatch-style', value: value, map: color_fallback_map -%}
+  {%- endcapture -%}
+{% endcomment %}
+{%- liquid
+  if value.swatch.color
+    echo 'background-color: rgb(' | append: value.swatch.color.rgb | append: ');'
+  elsif value.swatch.image
+    assign swatch_url = value.swatch.image | image_url: width: 60
+    echo 'background-image: url(' | append: swatch_url | append: ');'
+  else
+    assign fallback_color = ''
+    if map != blank
+      capture value_name
+        echo value
+      endcapture
+      capture fallback_color
+        render 'swatch-fallback-color', map: map, name: value_name
+      endcapture
+    endif
+
+    if fallback_color != blank
+      echo 'background-color: ' | append: fallback_color | append: ';'
+    elsif variant_photo
+      for product_variant in product.variants
+        case option.position
+          when 1
+            assign candidate_value = product_variant.option1
+          when 2
+            assign candidate_value = product_variant.option2
+          else
+            assign candidate_value = product_variant.option3
+        endcase
+        if candidate_value == value and product_variant.featured_media != blank
+          assign swatch_url = product_variant.featured_media | image_url: width: 60
+          echo 'background-image: url(' | append: swatch_url | append: ');'
+          break
+        endif
+      endfor
+    endif
+  endif
+-%}

@@ -1263,6 +1263,50 @@
         "id": "sold_out_badge_color_scheme",
         "label": "t:settings_schema.badges.settings.sold_out_badge_color_scheme.label",
         "default": "scheme-3"
+      },
+      {
+        "type": "header",
+        "content": "Furflaps product cards"
+      },
+      {
+        "type": "paragraph",
+        "content": "Used by the collection grid, Hot this week and the New / Pre-order badges from the custom.card_badge metafield."
+      },
+      {
+        "type": "color",
+        "id": "ff_badge_background",
+        "label": "Badge background",
+        "default": "#7961D7"
+      },
+      {
+        "type": "color",
+        "id": "ff_badge_text",
+        "label": "Badge text",
+        "default": "#FFFFFF"
+      },
+      {
+        "type": "color",
+        "id": "ff_preorder_badge_background",
+        "label": "Pre-order badge background",
+        "default": "#FF5A3C"
+      },
+      {
+        "type": "color",
+        "id": "ff_compare_price_color",
+        "label": "Compare-at price text",
+        "default": "#8A93A0"
+      },
+      {
+        "type": "color",
+        "id": "ff_discount_background",
+        "label": "Discount pill background",
+        "default": "#FF0000"
+      },
+      {
+        "type": "color",
+        "id": "ff_discount_text",
+        "label": "Discount pill text",
+        "default": "#FFFFFF"
       }
     ]
   },

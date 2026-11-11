@@ -4,6 +4,7 @@
   Accepts:
   - product: Product object
   - section: Section object
+  - tab_key: String, keeps radio group names unique when a product is in both tabs
   - lazy_load: Boolean
 {% endcomment %}
 
@@ -13,51 +14,33 @@
     assign custom_badge = product.metafields.custom.card_badge.value
   endif
 
-  assign card_description = blank
-  if section.settings.show_description
-    assign description_source = section.settings.description_source
-
-    if description_source == 'metafield' or description_source == 'metafield_then_description'
-      if section.settings.description_metafield_namespace != blank and section.settings.description_metafield_key != blank
-        assign card_description = product.metafields[section.settings.description_metafield_namespace][section.settings.description_metafield_key].value
-      endif
-    endif
-
-    if card_description == blank and description_source != 'metafield'
-      assign card_description = product.description
-    endif
-
-    if card_description != blank
-      assign card_description = card_description | strip_html | strip | truncatewords: section.settings.description_words
-    endif
-  endif
-
-  assign color_option = null
-  if section.settings.show_swatches
-    assign target_option_name = section.settings.color_option_name | downcase
-    for option in product.options_with_values
-      assign option_name = option.name | downcase
-      if option_name == target_option_name
-        assign color_option = option
-        break
-      endif
-    endfor
-  endif
-
-  assign swatch_total = 0
-  if color_option
-    for value in color_option.values
-      if value.swatch != blank
-        assign swatch_total = swatch_total | plus: 1
-      endif
-    endfor
-  endif
-
   assign discount_final = blank
   if section.settings.show_discount and product.compare_at_price > product.price
     assign discount_pct = product.compare_at_price | minus: product.price | times: 100 | divided_by: product.compare_at_price
     assign discount_final = discount_pct | append: '% off'
   endif
+
+  # The card's width is set by the column count for the breakpoint, so the
+  # sizes hint is derived from the same settings rather than a fixed guess.
+  # A single full-width card was being told it was 72vw, which loaded an image
+  # too small for it on a phone.
+  assign hot_columns_mobile = section.settings.columns_mobile | plus: 0
+  if hot_columns_mobile < 1
+    assign hot_columns_mobile = 1
+  endif
+  assign hot_columns_tablet = section.settings.columns_tablet | plus: 0
+  if hot_columns_tablet < 1
+    assign hot_columns_tablet = 1
+  endif
+  assign hot_mobile_vw = 90 | divided_by: hot_columns_mobile
+  assign hot_tablet_vw = 92 | divided_by: hot_columns_tablet
+  capture hot_card_sizes
+    echo '(min-width: 990px) 25vw, (min-width: 750px) '
+    echo hot_tablet_vw
+    echo 'vw, '
+    echo hot_mobile_vw
+    echo 'vw'
+  endcapture
 
   assign money_price = blank
   assign money_compare_price = blank
@@ -80,7 +63,7 @@
 
 <div class="hot-week-picks__card">
   <div class="hot-card__media-wrap">
-    <a class="hot-card__media" href="{{ product.url }}" aria-label="{{ product.title | escape }}">
+    <a class="hot-card__media" href="{{ product.url }}" data-card-link aria-label="{{ product.title | escape }}">
       {%- if custom_badge != blank -%}
         <span class="hot-card__badge">{{ custom_badge | escape }}</span>
       {%- endif -%}
@@ -92,7 +75,7 @@
           | image_tag:
             class: 'hot-card__image',
             widths: '240, 360, 480, 640, 750, 900',
-            sizes: '(min-width: 990px) 25vw, (min-width: 750px) 38vw, 72vw',
+            sizes: hot_card_sizes,
             loading: lazy_load
         }}
       {%- else -%}
@@ -113,6 +96,7 @@
         <a
           class="hot-card__cart"
           href="{{ product.url }}"
+          data-card-link
           aria-label="{{ 'products.product.choose_options' | t }} — {{ product.title | escape }}"
         >
           {{- 'icon-cart.svg' | inline_asset_content -}}
@@ -154,31 +138,42 @@
   </div>
 
   <div class="hot-card__info">
-    {%- if swatch_total > 0 -%}
-      {%- assign swatches_shown = 0 -%}
-      <ul class="hot-card__swatches" role="list" aria-label="{{ color_option.name | escape }}">
-        {%- for value in color_option.values -%}
-          {%- if value.swatch != blank and swatches_shown < section.settings.swatches_to_show -%}
-            <li class="hot-card__swatch" title="{{ value | escape }}">
-              <span class="visually-hidden">{{ value }}</span>
-              {% render 'swatch', swatch: value.swatch %}
-            </li>
-            {%- assign swatches_shown = swatches_shown | plus: 1 -%}
-          {%- endif -%}
-        {%- endfor -%}
-        {%- assign swatches_remaining = swatch_total | minus: swatches_shown -%}
-        {%- if swatches_remaining > 0 -%}
-          <li class="hot-card__swatch-more">+{{ swatches_remaining }}</li>
-        {%- endif -%}
-      </ul>
-    {%- endif -%}
-
     <h3 class="hot-card__title">
-      <a class="hot-card__link" href="{{ product.url }}">{{ product.title | escape }}</a>
+      <a class="hot-card__link" href="{{ product.url }}" data-card-link>{{ product.title | escape }}</a>
     </h3>
 
-    {%- if card_description != blank -%}
-      <p class="hot-card__description">{{ card_description | escape }}</p>
+    {%- comment -%}
+      Size tag: the value of the first available variant's size option. The
+      wanted name matches anywhere in the option name, so "Size" also finds
+      "Collar Size". Products without a size option show no tag.
+    {%- endcomment -%}
+    {%- unless section.settings.show_size_tag == false -%}
+      {%- liquid
+        assign size_value = blank
+        assign size_wanted = section.settings.size_option_name | default: 'Size' | downcase | replace: ' ', ''
+        assign size_variant = product.selected_or_first_available_variant
+        for option in product.options_with_values
+          assign size_key = option.name | downcase | replace: ' ', ''
+          if size_key contains size_wanted
+            assign size_value = size_variant.options[forloop.index0]
+            assign size_value = size_value | split: '(' | first | strip
+            break
+          endif
+        endfor
+      -%}
+      {%- if size_value != blank -%}
+        <span class="hot-card__size">{{ size_value | escape }}</span>
+      {%- endif -%}
+    {%- endunless -%}
+
+    {%- if section.settings.show_swatches -%}
+      {%- assign color_group_id = 'HotColor-' | append: section.id | append: '-' | append: tab_key | append: '-' | append: product.id -%}
+      {% render 'hot-card-color-options',
+        product: product,
+        option_name: section.settings.color_option_name,
+        max_swatches: section.settings.swatches_to_show,
+        group_id: color_group_id
+      %}
     {%- endif -%}
 
     <div class="hot-card__prices">

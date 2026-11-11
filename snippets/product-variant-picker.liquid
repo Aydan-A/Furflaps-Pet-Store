@@ -8,6 +8,15 @@
   Usage:
   {% render 'product-variant-picker', product: product, block: block, product_form_id: product_form_id %}
 {% endcomment %}
+{%- comment -%}
+  Built once per product, never per variant: charms hold their colours in
+  custom.color because their category cannot carry shopify.color-pattern, so
+  their option values arrive with no native swatch. See `swatch-fallback-map`.
+{%- endcomment -%}
+{%- capture color_fallback_map -%}
+  {%- render 'swatch-fallback-map', product: product -%}
+{%- endcapture -%}
+
 {%- unless product.has_only_default_variant -%}
   <variant-selects
     id="variant-selects-{{ section.id }}"
@@ -26,12 +35,44 @@
         assign swatch_count = option.values | map: 'swatch' | compact | size
         assign picker_type = block.settings.picker_type
 
-        if swatch_count > 0 and block.settings.swatch_shape != 'none'
-          if block.settings.picker_type == 'dropdown'
-            assign picker_type = 'swatch_dropdown'
-          else
-            assign picker_type = 'swatch'
+        comment
+          Only stand in for the native swatches when every value resolves a
+          colour. A partial match would leave blank chips in the row, so the
+          option stays as text controls instead.
+        endcomment
+        assign fallback_count = 0
+        if swatch_count == 0 and color_fallback_map != blank
+          for value in option.values
+            capture value_name
+              echo value
+            endcapture
+            capture value_fallback
+              render 'swatch-fallback-color', map: color_fallback_map, name: value_name
+            endcapture
+            if value_fallback != blank
+              assign fallback_count = fallback_count | plus: 1
+            endif
+          endfor
+        endif
+
+        assign use_fallback_swatches = false
+        if fallback_count > 0 and fallback_count == option.values.size
+          assign use_fallback_swatches = true
+        endif
+
+        if swatch_count > 0 or use_fallback_swatches
+          if block.settings.swatch_shape != 'none'
+            if block.settings.picker_type == 'dropdown'
+              assign picker_type = 'swatch_dropdown'
+            else
+              assign picker_type = 'swatch'
+            endif
           endif
+        endif
+
+        assign option_fallback_map = ''
+        if use_fallback_swatches
+          assign option_fallback_map = color_fallback_map
         endif
       -%}
       {%- if picker_type == 'swatch' -%}
@@ -46,7 +87,8 @@
             product: product,
             option: option,
             block: block,
-            picker_type: picker_type
+            picker_type: picker_type,
+            color_fallback_map: option_fallback_map
           %}
         </fieldset>
       {%- elsif picker_type == 'button' -%}
@@ -56,7 +98,8 @@
             product: product,
             option: option,
             block: block,
-            picker_type: picker_type
+            picker_type: picker_type,
+            color_fallback_map: option_fallback_map
           %}
         </fieldset>
       {%- else -%}
@@ -66,11 +109,22 @@
           </label>
           <div class="select">
             {%- if picker_type == 'swatch_dropdown' -%}
+              {%- capture selected_value_name %}{{ option.selected_value }}{% endcapture -%}
+              {%- capture selected_fallback_color -%}
+                {%- render 'swatch-fallback-color',
+                  map: option_fallback_map,
+                  name: selected_value_name
+                -%}
+              {%- endcapture -%}
               <span
                 data-selected-value
                 class="dropdown-swatch"
               >
-                {% render 'swatch', swatch: option.selected_value.swatch, shape: block.settings.swatch_shape %}
+                {% render 'swatch',
+                  swatch: option.selected_value.swatch,
+                  shape: block.settings.swatch_shape,
+                  fallback_color: selected_fallback_color
+                %}
               </span>
             {%- endif -%}
             <select
@@ -83,7 +137,8 @@
                 product: product,
                 option: option,
                 block: block,
-                picker_type: picker_type
+                picker_type: picker_type,
+                color_fallback_map: option_fallback_map
               %}
             </select>
             <span class="svg-wrapper">

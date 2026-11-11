@@ -126,6 +126,14 @@
   /* Height follows the container width instead of a fixed pixel value, so the
      panel keeps its proportions at every content width. */
   aspect-ratio: 1 / 1;
+  /* The panel stretches to the grid row, and where the content panel is the
+     taller of the two, aspect-ratio resolves the *inline* size from that
+     stretched height instead: the media then grew past its own column - 58px
+     past the viewport at 768px, and far enough to scroll the page sideways at
+     1024px. A definite inline size leaves the ratio governing height only, and
+     is a no-op at every width where the media was already the taller panel. */
+  width: 100%;
+  min-width: 0;
   background-color: rgba(var(--color-foreground), 0.06);
   user-select: none;
   -webkit-user-select: none;
