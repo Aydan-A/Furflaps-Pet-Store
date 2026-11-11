@@ -326,20 +326,10 @@
   letter-spacing: 0.04em;
   text-transform: uppercase;
   cursor: pointer;
-  transition: border-color 0.15s ease, background-color 0.15s ease, color 0.15s ease;
 }
 
-.hot-card__size:hover {
-  border-color: var(--hot-size-tag-text);
-}
-
-/* Picked size: the tag inverts, so it reads as chosen without a new colour. */
-.hot-card__size-input:checked + .hot-card__size {
-  background: var(--hot-size-tag-text);
-  border-color: var(--hot-size-tag-text);
-  color: var(--hot-size-tag-background);
-}
-
+/* Every size keeps the one tag look; the picked size is told apart only by
+   what the card's links open, so the card's design does not change. */
 .hot-card__size-input:disabled + .hot-card__size {
   cursor: not-allowed;
   opacity: 0.45;
