@@ -336,8 +336,7 @@
   box-shadow: 0 0 0 2px color-mix(in srgb, var(--hot-color-ring-active) 22%, transparent);
 }
 
-.hot-card__size-input:disabled + .hot-card__size {
-  cursor: not-allowed;
+.hot-card__size--sold-out {
   opacity: 0.45;
   text-decoration: line-through;
 }

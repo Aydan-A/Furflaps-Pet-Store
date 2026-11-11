@@ -183,8 +183,10 @@
         <fieldset class="hot-card__sizes" data-size-options>
           <legend class="visually-hidden">{{ size_option.name | escape }}</legend>
           {%- for value in size_option.values -%}
+            {%- capture size_name %}{{ value }}{% endcapture -%}
             {%- liquid
-              assign size_name = value | append: ''
+              # Same lookup the colour swatches use. A sold-out size stays
+              # clickable, as a sold-out colour does, and opens its own page.
               assign size_available = false
               for variant in product.variants
                 if variant.options[size_index] == size_name and variant.available
@@ -201,9 +203,8 @@
               name="{{ size_group_id }}"
               value="{{ size_name | escape }}"
               {% if size_name == size_current %}checked{% endif %}
-              {% unless size_available %}disabled{% endunless %}
             >
-            <label class="hot-card__size" for="{{ size_radio_id }}">
+            <label class="hot-card__size{% unless size_available %} hot-card__size--sold-out{% endunless %}" for="{{ size_radio_id }}">
               {{- size_name | escape -}}
               {%- unless size_available %}<span class="visually-hidden"> ({{ 'products.product.sold_out' | t }})</span>{% endunless -%}
             </label>
