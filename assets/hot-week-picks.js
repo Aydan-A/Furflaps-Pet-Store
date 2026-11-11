@@ -61,6 +61,14 @@ if (!customElements.get('hot-week-picks')) {
       } catch (error) {}
       const match = variants.find((variant) => picked.every((value) => variant.options.includes(value)));
       const url = match?.url || (isColor ? input.dataset.url : null);
+      // The card's own Add to cart adds the picked pair; a sold-out pair
+      // leaves the button disabled.
+      const variantInput = card.querySelector('.product-variant-id');
+      if (match && variantInput) {
+        variantInput.value = match.id;
+        const submit = card.querySelector('.hot-card__cart[type="submit"]');
+        if (submit) submit.disabled = !match.available;
+      }
       if (url) {
         card.querySelectorAll('[data-card-link]').forEach((link) => {
           link.href = url;

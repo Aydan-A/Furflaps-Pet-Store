@@ -44,6 +44,27 @@
     echo 'vw'
   endcapture
 
+  # A product with several variants can go straight to the cart when the
+  # card's own size tags and colour swatches cover every one of its options,
+  # since the picked pair names exactly one variant. Otherwise the cart
+  # button opens the product page, where the rest can be chosen.
+  assign card_color_wanted = section.settings.color_option_name | default: 'Color' | downcase
+  assign card_size_wanted = section.settings.size_option_name | default: 'Size' | downcase | replace: ' ', ''
+  assign card_options_picked = 0
+  for option in product.options_with_values
+    assign option_key = option.name | downcase
+    assign option_key_compact = option_key | replace: ' ', ''
+    if section.settings.show_swatches and option_key == card_color_wanted
+      assign card_options_picked = card_options_picked | plus: 1
+    elsif section.settings.show_size_tag != false and option_key_compact contains card_size_wanted
+      assign card_options_picked = card_options_picked | plus: 1
+    endif
+  endfor
+  assign card_picks_variant = false
+  if product.variants.size == 1 or card_options_picked == product.options.size
+    assign card_picks_variant = true
+  endif
+
   assign money_price = blank
   assign money_compare_price = blank
   if settings.currency_code_enabled
@@ -68,7 +89,7 @@
     <script type="application/json" data-card-variants>
       [
         {%- for variant in product.variants -%}
-          {"options": {{ variant.options | json }}, "url": {{ variant.url | json }}}{% unless forloop.last %},{% endunless %}
+          {"id": {{ variant.id }}, "available": {{ variant.available | json }}, "options": {{ variant.options | json }}, "url": {{ variant.url | json }}}{% unless forloop.last %},{% endunless %}
         {%- endfor -%}
       ]
     </script>
@@ -100,10 +121,10 @@
           {{- 'icon-cart.svg' | inline_asset_content -}}
           {%- if cart_label != blank -%}<span class="hot-card__cart-label">{{ 'products.product.sold_out' | t }}</span>{%- endif -%}
         </span>
-      {%- elsif product.variants.size > 1 -%}
+      {%- elsif card_picks_variant == false -%}
         {%- comment -%}
-          Multiple variants need an option choice, so send shoppers to the product page
-          instead of guessing a variant.
+          Options the card has no picker for need choosing on the product page,
+          so send shoppers there instead of guessing a variant.
         {%- endcomment -%}
         <a
           class="hot-card__cart{% if cart_label != blank %} hot-card__cart--labelled{% endif %}"
@@ -115,7 +136,7 @@
           {%- if cart_label != blank -%}<span class="hot-card__cart-label" aria-hidden="true">{{ cart_label | escape }}</span>{%- endif -%}
         </a>
       {%- else -%}
-        {%- assign hot_form_id = 'HotAtc-' | append: section.id | append: '-' | append: product.id -%}
+        {%- assign hot_form_id = 'HotAtc-' | append: section.id | append: '-' | append: tab_key | append: '-' | append: product.id -%}
         <product-form class="hot-card__cart-form" data-section-id="{{ section.id }}">
           {%- form 'product', product, id: hot_form_id, class: 'form', novalidate: 'novalidate', data-type: 'add-to-cart-form' -%}
             <input

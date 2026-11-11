@@ -229,7 +229,8 @@
   outline-offset: 0.2rem;
 }
 
-.hot-card__cart--disabled {
+.hot-card__cart--disabled,
+.hot-card__cart:disabled {
   opacity: 0.4;
   cursor: default;
   box-shadow: none;
