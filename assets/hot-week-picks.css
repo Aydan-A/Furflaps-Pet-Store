@@ -326,10 +326,16 @@
   letter-spacing: 0.04em;
   text-transform: uppercase;
   cursor: pointer;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
 
-/* Every size keeps the one tag look; the picked size is told apart only by
-   what the card's links open, so the card's design does not change. */
+/* Picked size: the tag keeps its look and takes the same accent ring and
+   halo as the picked colour swatch below it. */
+.hot-card__size-input:checked + .hot-card__size {
+  border-color: var(--hot-color-ring-active);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--hot-color-ring-active) 22%, transparent);
+}
+
 .hot-card__size-input:disabled + .hot-card__size {
   cursor: not-allowed;
   opacity: 0.45;
