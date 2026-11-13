@@ -25,7 +25,7 @@
   endif
   assign wordmark_text = section.settings.wordmark_text | default: shop.name | upcase
   assign wordmark_chars = wordmark_text.size | at_least: 1
-  assign wordmark_size = 1800 | divided_by: wordmark_chars | at_most: 260
+  assign wordmark_size = 2760 | divided_by: wordmark_chars | at_most: 360
   assign wordmark_height = wordmark_size | times: 0.74 | round
   assign wordmark_baseline = wordmark_size | times: 0.72 | round
 
