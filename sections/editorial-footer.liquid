@@ -8,6 +8,26 @@
   if settings.social_facebook_link == blank and settings.social_instagram_link == blank and settings.social_youtube_link == blank and settings.social_tiktok_link == blank and settings.social_twitter_link == blank and settings.social_pinterest_link == blank and settings.social_snapchat_link == blank and settings.social_tumblr_link == blank and settings.social_vimeo_link == blank
     assign has_social_icons = false
   endif
+  assign show_social_row = false
+  if section.settings.show_social and has_social_icons
+    assign show_social_row = true
+  endif
+  assign handle_url = section.settings.social_url | default: settings.social_instagram_link
+
+  assign logo_alt = section.settings.logo.alt | default: shop.name
+  assign logo_sizes = section.settings.logo_width | append: 'px'
+
+  # The wordmark stands in for the logo, so it only shows when no logo is set.
+  # Its font size comes from the letter count so the word fills the width without squashing.
+  assign show_wordmark = false
+  if section.settings.show_wordmark and section.settings.logo == blank
+    assign show_wordmark = true
+  endif
+  assign wordmark_text = section.settings.wordmark_text | default: shop.name | upcase
+  assign wordmark_chars = wordmark_text.size | at_least: 1
+  assign wordmark_size = 1800 | divided_by: wordmark_chars | at_most: 260
+  assign wordmark_height = wordmark_size | times: 0.74 | round
+  assign wordmark_baseline = wordmark_size | times: 0.72 | round
 
   assign image_count = 0
   for block in section.blocks
@@ -28,6 +48,9 @@
     --editorial-footer-input-background: {{ section.settings.input_background }};
     --editorial-footer-input-text: {{ section.settings.input_text_color }};
     --editorial-footer-radius: {{ section.settings.image_radius }}px;
+    --editorial-footer-heading: {{ section.settings.menu_heading_color }};
+    --editorial-footer-icon: {{ section.settings.social_icon_color }};
+    --editorial-footer-wordmark: {{ section.settings.wordmark_color }};
   }
 
   #shopify-section-{{ section.id }} .editorial-footer {
@@ -151,15 +174,25 @@
   #shopify-section-{{ section.id }} .editorial-footer__main {
     display: grid;
     gap: 4rem;
-    padding-block: {{ section.settings.row_gap }}px;
+    padding-bottom: {{ section.settings.row_gap }}px;
+  }
+
+  #shopify-section-{{ section.id }} .editorial-footer__logo {
+    display: inline-block;
+    margin-bottom: 3.2rem;
+  }
+
+  #shopify-section-{{ section.id }} .editorial-footer__logo img {
+    display: block;
+    width: {{ section.settings.logo_width }}px;
+    max-width: 100%;
+    height: auto;
   }
 
   #shopify-section-{{ section.id }} .editorial-footer__menus {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 3.2rem 2rem;
-    padding: {{ section.settings.panel_padding }}px;
-    background: var(--editorial-footer-panel);
   }
 
   #shopify-section-{{ section.id }} .editorial-footer__menu-heading,
@@ -169,25 +202,29 @@
     line-height: 1.2;
   }
 
+  #shopify-section-{{ section.id }} .editorial-footer__menu-heading {
+    color: var(--editorial-footer-heading);
+    letter-spacing: 0.1rem;
+    text-transform: uppercase;
+  }
+
   #shopify-section-{{ section.id }} .editorial-footer__links {
     margin: 0;
     padding: 0;
     list-style: none;
   }
 
-  #shopify-section-{{ section.id }} .editorial-footer__links li + li {
-    margin-top: 0.7rem;
-  }
-
   #shopify-section-{{ section.id }} .editorial-footer__links a {
-    color: var(--editorial-footer-muted);
-    font-size: 1.3rem;
-    line-height: 1.4;
+    display: inline-flex;
+    min-height: 4.4rem;
+    align-items: center;
+    color: var(--editorial-footer-text);
+    font-size: 1.5rem;
+    line-height: 1.3;
     text-decoration: none;
   }
 
   #shopify-section-{{ section.id }} .editorial-footer__links a:hover {
-    color: var(--editorial-footer-text);
     text-decoration: underline;
     text-underline-offset: 0.3rem;
   }
@@ -219,12 +256,116 @@
     transform: scale(1.025);
   }
 
+  #shopify-section-{{ section.id }} .editorial-footer__gallery--polaroid {
+    display: flex;
+    justify-content: center;
+    padding: 1.6rem 0.8rem 2.4rem;
+  }
+
+  #shopify-section-{{ section.id }} .editorial-footer__gallery--polaroid .editorial-footer__gallery-item {
+    flex: 0 1 33%;
+    max-width: 21rem;
+    padding: 0.6rem 0.6rem 2.2rem;
+    background: #ffffff;
+    box-shadow: 0 0.8rem 2.4rem rgba(0, 0, 0, 0.6);
+    transform: rotate(-6deg);
+    transition: transform 300ms ease;
+  }
+
+  #shopify-section-{{ section.id }} .editorial-footer__gallery--polaroid .editorial-footer__gallery-item:nth-child(2) {
+    z-index: 1;
+    margin-inline: -0.4rem;
+    transform: translateY(-1.6rem) rotate(3deg);
+  }
+
+  #shopify-section-{{ section.id }} .editorial-footer__gallery--polaroid .editorial-footer__gallery-item:nth-child(3) {
+    transform: translateY(0.4rem) rotate(-2deg);
+  }
+
+  #shopify-section-{{ section.id }} .editorial-footer__gallery--polaroid .editorial-footer__gallery-item:nth-child(4) {
+    margin-left: -0.4rem;
+    transform: rotate(4deg);
+  }
+
+  #shopify-section-{{ section.id }} .editorial-footer__gallery--polaroid .editorial-footer__gallery-item:nth-child(5) {
+    transform: translateY(-0.8rem) rotate(-3deg);
+  }
+
+  #shopify-section-{{ section.id }} .editorial-footer__gallery--polaroid .editorial-footer__gallery-item:hover {
+    z-index: 2;
+    transform: rotate(0deg) scale(1.04);
+  }
+
+  #shopify-section-{{ section.id }} .editorial-footer__gallery--polaroid .editorial-footer__image-link,
+  #shopify-section-{{ section.id }} .editorial-footer__gallery--polaroid .editorial-footer__image-placeholder {
+    border-radius: 0;
+  }
+
+  #shopify-section-{{ section.id }} .editorial-footer__gallery--polaroid .editorial-footer__image-link:hover .editorial-footer__image {
+    transform: none;
+  }
+
+  #shopify-section-{{ section.id }} .editorial-footer__social-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.2rem 1.6rem;
+    align-items: center;
+    margin-top: 2.4rem;
+  }
+
   #shopify-section-{{ section.id }} .editorial-footer__handle {
-    display: inline-block;
-    margin-top: 1rem;
-    color: var(--editorial-footer-muted);
-    font-size: 1.3rem;
+    color: var(--editorial-footer-text);
+    font-size: 2rem;
     text-decoration: none;
+  }
+
+  #shopify-section-{{ section.id }} a.editorial-footer__handle[href]:hover {
+    text-decoration: underline;
+    text-underline-offset: 0.3rem;
+  }
+
+  #shopify-section-{{ section.id }} .editorial-footer__social-dot {
+    color: var(--editorial-footer-heading);
+  }
+
+  #shopify-section-{{ section.id }} .editorial-footer__social-row .list-social {
+    gap: 0.8rem;
+    justify-content: flex-start;
+    margin: 0;
+  }
+
+  #shopify-section-{{ section.id }} .editorial-footer__social-row .list-social__link {
+    width: 4.4rem;
+    height: 4.4rem;
+    justify-content: center;
+    padding: 0;
+    border-radius: 50%;
+    background: var(--editorial-footer-panel);
+    color: var(--editorial-footer-icon);
+  }
+
+  #shopify-section-{{ section.id }} .editorial-footer__social-row .list-social__item .icon {
+    width: 1.8rem;
+    height: 1.8rem;
+  }
+
+  #shopify-section-{{ section.id }} .editorial-footer__wordmark {
+    padding-bottom: {{ section.settings.row_gap }}px;
+  }
+
+  #shopify-section-{{ section.id }} .editorial-footer__wordmark svg {
+    display: block;
+    width: 100%;
+    height: auto;
+    overflow: visible;
+  }
+
+  #shopify-section-{{ section.id }} .editorial-footer__wordmark text {
+    fill: var(--editorial-footer-wordmark);
+    font-family: 'Bricolage Grotesque', var(--font-heading-family), sans-serif;
+    font-weight: 500;
+    font-stretch: 75%;
+    font-variation-settings: 'wdth' 75;
   }
 
   #shopify-section-{{ section.id }} .editorial-footer__utility {
@@ -232,17 +373,6 @@
     flex-direction: column;
     gap: 2.4rem;
     padding-bottom: 2.4rem;
-  }
-
-  #shopify-section-{{ section.id }} .editorial-footer__socials .list-social {
-    justify-content: {{ section.settings.utility_alignment }};
-  }
-
-  #shopify-section-{{ section.id }} .editorial-footer__socials .list-social__link {
-    margin: 0 0.4rem 0.4rem 0;
-    border-radius: 0.8rem;
-    background: var(--editorial-footer-panel);
-    color: var(--editorial-footer-text);
   }
 
   #shopify-section-{{ section.id }} .editorial-footer__legal {
@@ -331,6 +461,20 @@
 
     #shopify-section-{{ section.id }} .editorial-footer__menus {
       grid-template-columns: repeat({{ section.settings.menu_columns }}, minmax(0, 1fr));
+      column-gap: 4rem;
+    }
+
+    #shopify-section-{{ section.id }} .editorial-footer__links a {
+      min-height: 3.2rem;
+      font-size: 1.6rem;
+    }
+
+    #shopify-section-{{ section.id }} .editorial-footer__gallery--polaroid {
+      padding-top: 0.8rem;
+    }
+
+    #shopify-section-{{ section.id }} .editorial-footer__gallery--polaroid .editorial-footer__gallery-item {
+      padding: 1rem 1rem 3.6rem;
     }
 
     #shopify-section-{{ section.id }} .editorial-footer__utility {
@@ -353,7 +497,8 @@
   }
 
   @media (prefers-reduced-motion: reduce) {
-    #shopify-section-{{ section.id }} .editorial-footer__image {
+    #shopify-section-{{ section.id }} .editorial-footer__image,
+    #shopify-section-{{ section.id }} .editorial-footer__gallery--polaroid .editorial-footer__gallery-item {
       transition: none;
     }
   }
@@ -406,6 +551,12 @@
     {%- endif -%}
 
     <div class="editorial-footer__main">
+      <div class="editorial-footer__brand">
+      {%- if section.settings.logo != blank -%}
+        <a class="editorial-footer__logo" href="{{ routes.root_url }}">
+          {{ section.settings.logo | image_url: width: 400 | image_tag: widths: '120, 200, 300, 400', sizes: logo_sizes, alt: logo_alt, loading: 'lazy' }}
+        </a>
+      {%- endif -%}
       <div class="editorial-footer__menus">
         {%- for block in section.blocks -%}
           {%- if block.type == 'menu' and block.settings.show_item -%}
@@ -422,17 +573,30 @@
           {%- endif -%}
         {%- endfor -%}
       </div>
+      {%- if show_social_row or section.settings.social_handle != blank -%}
+        <div class="editorial-footer__social-row">
+          {%- if section.settings.social_handle != blank -%}
+            <a class="editorial-footer__handle"{% if handle_url != blank %} href="{{ handle_url }}"{% else %} role="link" aria-disabled="true"{% endif %}>{{ section.settings.social_handle | escape }}</a>
+          {%- endif -%}
+          {%- if show_social_row and section.settings.social_handle != blank -%}<span class="editorial-footer__social-dot" aria-hidden="true">·</span>{%- endif -%}
+          {%- if show_social_row -%}{% render 'social-icons' %}{%- endif -%}
+        </div>
+      {%- endif -%}
+      </div>
 
       {%- if section.settings.show_gallery -%}
         <div class="editorial-footer__social-gallery">
           {%- if section.settings.gallery_heading != blank -%}<h2 class="editorial-footer__social-heading">{{ section.settings.gallery_heading }}</h2>{%- endif -%}
           {%- if image_count > 0 -%}
-            <div class="editorial-footer__gallery">
+            <div class="editorial-footer__gallery editorial-footer__gallery--{{ section.settings.gallery_style }}">
               {%- for block in section.blocks -%}
                 {%- if block.type == 'social_image' and block.settings.show_item -%}
                   {%- liquid
                     assign image_loading = 'lazy'
                     assign image_sizes = '(min-width: 990px) 18vw, (min-width: 750px) 24vw, 30vw'
+                    if section.settings.gallery_style == 'polaroid'
+                      assign image_sizes = '(min-width: 750px) 200px, 30vw'
+                    endif
                   -%}
                   <div class="editorial-footer__gallery-item" {{ block.shopify_attributes }}>
                     {%- capture gallery_media -%}
@@ -452,18 +616,21 @@
               {%- endfor -%}
             </div>
           {%- endif -%}
-          {%- if section.settings.social_handle != blank -%}
-            <a class="editorial-footer__handle"{% if section.settings.social_url != blank %} href="{{ section.settings.social_url }}"{% else %} role="link" aria-disabled="true"{% endif %}>{{ section.settings.social_handle | escape }}</a>
-          {%- endif -%}
         </div>
       {%- endif -%}
     </div>
 
-    {%- if section.settings.show_social or section.settings.legal_menu != blank -%}
+    {%- if show_wordmark -%}
+      <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,500&display=swap">
+      <div class="editorial-footer__wordmark">
+        <svg viewBox="0 0 1000 {{ wordmark_height }}" role="img" aria-label="{{ shop.name | escape }}" focusable="false">
+          <text x="0" y="{{ wordmark_baseline }}" textLength="1000" lengthAdjust="spacing" font-size="{{ wordmark_size }}">{{ wordmark_text | escape }}</text>
+        </svg>
+      </div>
+    {%- endif -%}
+
+    {%- if section.settings.legal_menu != blank -%}
       <div class="editorial-footer__utility">
-        {%- if section.settings.show_social and has_social_icons -%}
-          <div class="editorial-footer__socials">{% render 'social-icons' %}</div>
-        {%- endif -%}
         {%- if section.settings.legal_menu != blank -%}
           <nav aria-label="{{ section.settings.legal_menu.title | escape }}">
             <ul class="editorial-footer__legal">
@@ -528,19 +695,26 @@
     { "type": "richtext", "id": "consent_text", "label": "Consent text", "default": "<p>By subscribing you agree to the Terms of Use & Privacy Policy.</p>" },
     { "type": "text_alignment", "id": "form_alignment", "label": "Form text alignment", "default": "center" },
 
+    { "type": "header", "content": "Logo and wordmark" },
+    { "type": "image_picker", "id": "logo", "label": "Logo", "info": "When a logo is set it replaces the large wordmark." },
+    { "type": "range", "id": "logo_width", "label": "Logo width", "min": 60, "max": 200, "step": 4, "unit": "px", "default": 120 },
+    { "type": "checkbox", "id": "show_wordmark", "label": "Show large wordmark when there is no logo", "default": true },
+    { "type": "text", "id": "wordmark_text", "label": "Wordmark text", "info": "Leave blank to use the store name." },
+
     { "type": "header", "content": "Menus and gallery" },
     { "type": "range", "id": "menu_columns", "label": "Menu columns", "min": 1, "max": 4, "step": 1, "default": 3 },
     { "type": "range", "id": "menu_width", "label": "Menu area width", "min": 1, "max": 3, "step": 1, "default": 1 },
-    { "type": "range", "id": "panel_padding", "label": "Menu panel padding", "min": 16, "max": 64, "step": 4, "unit": "px", "default": 32 },
     { "type": "checkbox", "id": "show_gallery", "label": "Show gallery", "default": true },
+    { "type": "select", "id": "gallery_style", "label": "Gallery style", "default": "polaroid", "options": [{ "value": "polaroid", "label": "Polaroid" }, { "value": "grid", "label": "Grid" }] },
     { "type": "inline_richtext", "id": "gallery_heading", "label": "Gallery heading", "default": "Follow us on Instagram" },
     { "type": "text", "id": "social_handle", "label": "Social handle", "default": "@yourstore" },
-    { "type": "url", "id": "social_url", "label": "Social profile link" },
+    { "type": "url", "id": "social_url", "label": "Social profile link", "info": "Leave blank to use the Instagram link from Theme settings." },
     { "type": "range", "id": "image_gap", "label": "Image gap", "min": 4, "max": 32, "step": 2, "unit": "px", "default": 12 },
     { "type": "range", "id": "image_radius", "label": "Image corner radius", "min": 0, "max": 40, "step": 1, "unit": "px", "default": 16 },
 
+    { "type": "checkbox", "id": "show_social", "label": "Show social icons", "info": "Uses social links from Theme settings. Shown under the menus.", "default": true },
+
     { "type": "header", "content": "Utility row" },
-    { "type": "checkbox", "id": "show_social", "label": "Show social icons", "info": "Uses social links from Theme settings.", "default": true },
     { "type": "link_list", "id": "legal_menu", "label": "Legal menu" },
     { "type": "select", "id": "utility_alignment", "label": "Mobile alignment", "default": "center", "options": [{ "value": "flex-start", "label": "Left" }, { "value": "center", "label": "Center" }, { "value": "flex-end", "label": "Right" }] },
     { "type": "checkbox", "id": "show_country_selector", "label": "Show country selector", "default": true },
@@ -558,7 +732,10 @@
 
     { "type": "header", "content": "Colors" },
     { "type": "color", "id": "background_color", "label": "Background", "default": "#050505" },
-    { "type": "color", "id": "panel_color", "label": "Menu and icon background", "default": "#113d30" },
+    { "type": "color", "id": "panel_color", "label": "Social icon background", "default": "#e2453a" },
+    { "type": "color", "id": "social_icon_color", "label": "Social icon", "default": "#f6ecd8" },
+    { "type": "color", "id": "menu_heading_color", "label": "Menu headings", "default": "#e2453a" },
+    { "type": "color", "id": "wordmark_color", "label": "Wordmark", "default": "#f6ecd8" },
     { "type": "color", "id": "text_color", "label": "Text", "default": "#ffffff" },
     { "type": "color", "id": "muted_text_color", "label": "Muted text", "default": "#c8c8c8" },
     { "type": "color", "id": "border_color", "label": "Borders", "default": "#3a3a3a" },
