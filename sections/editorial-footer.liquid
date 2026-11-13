@@ -325,6 +325,7 @@
   }
 
   #shopify-section-{{ section.id }} .editorial-footer__social-dot {
+    display: none;
     color: var(--editorial-footer-heading);
   }
 
@@ -462,6 +463,10 @@
     #shopify-section-{{ section.id }} .editorial-footer__menus {
       grid-template-columns: repeat({{ section.settings.menu_columns }}, minmax(0, 1fr));
       column-gap: 4rem;
+    }
+
+    #shopify-section-{{ section.id }} .editorial-footer__social-dot {
+      display: inline;
     }
 
     #shopify-section-{{ section.id }} .editorial-footer__links a {
